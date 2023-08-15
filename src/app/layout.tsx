@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en" className={sans.className}>
       <body className="flex flex-col w-full max-w-screen-2xl mx-auto">
         <Header />
-        <main className="grow bg-sky-200">{children}</main>
+        <main className="grow white">{children}</main>
         <Footer />
       </body>
     </html>

@@ -2,11 +2,11 @@
 
 import CommunityMenu from "@/components/CommunityMenu";
 
-export default function Home() {
+export default function FreeHome() {
   return (
     <div>
       <CommunityMenu />
-      <h1 className="font-bold p-10">분양게시판</h1>
+      <h1 className="font-bold p-10">자유 게시판</h1>
     </div>
   );
 }
