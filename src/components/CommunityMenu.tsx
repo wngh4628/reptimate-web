@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function communityMenu() {
+export default function CommunityMenu() {
   const pathName = usePathname();
   return (
     <div className="flex justify-between items-center pl-10">

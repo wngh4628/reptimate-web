@@ -1,6 +1,8 @@
 import { Post } from "@/service/posts";
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 type Props = { post: Post };
 export default function PostCard({
@@ -13,7 +15,7 @@ export default function PostCard({
           <div className="relative w-[350px] h-[350px] rounded-md overflow-hidden shadow-lg">
             <Image
               className="object-cover w-full h-full"
-              src={`/images/posts/${path}.png`}
+              src="https://reptimate.s3.ap-northeast-2.amazonaws.com/test/20230629233509-e04030ed-107c-4fc7-93b9-d44fad9469d7-video.jpg"
               alt={title}
               layout="fill"
             />
