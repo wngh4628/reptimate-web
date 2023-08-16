@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <p className=" text-[#6D71E6] py-2 text-sm text-center">
+    <p className="py-11 text-center bg-gray-100">
       {"Copyright©ReptiMate All rights reserved."}
     </p>
   );
