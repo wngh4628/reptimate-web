@@ -1,22 +1,43 @@
-import { readFile } from "fs/promises";
-import path from "path";
+export interface getResponse {
+  status: number;
+  message: string;
+  result: {
+    pageSize: number;
+    totalCount: number;
+    totalPage: number;
+    existsNextPage: boolean;
+    items: Array<{
+      view: number;
+      userIdx: number;
+      title: string;
+      category: string;
+      description: string;
+      writeDate: string;
+      images: Array<{
+        idx: number;
+        createdAt: string;
+        updatedAt: string;
+        deletedAt: string | null;
+        boardIdx: number;
+        category: string;
+        mediaSequence: number;
+        path: string;
+        coverImgPath: string | null;
+      }>;
+      UserInfo: {
+        idx: number;
+        nickname: string;
+        profilePath: string;
+      };
+    }>;
+  };
+}
 
 export type Post = {
+  view: number;
+  userIdx: number;
   title: string;
-  description: string;
-  date: Date;
   category: string;
-  path: string;
-  featured: boolean;
+  description: string;
+  writeDate: Date;
 };
-
-export async function getFeaturedPosts(): Promise<Post[]> {
-  return getAllPosts().then((posts) => posts.filter((post) => post.featured));
-}
-
-export async function getAllPosts(): Promise<Post[]> {
-  const filePath = path.join(process.cwd(), "data", "posts.json");
-  return readFile(filePath, "utf-8")
-    .then<Post[]>(JSON.parse)
-    .then((posts) => posts.sort((a, b) => (a.date > b.date ? -1 : 1)));
-}
