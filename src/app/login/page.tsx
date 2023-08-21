@@ -1,5 +1,11 @@
+import LoginInput from '@/components/login/LoginInput'
+
 export default function Home() {
     return(
-        <div>1</div>
+        <div>
+            <LoginInput></LoginInput>
+
+            
+        </div>
     );
 }
