@@ -34,7 +34,7 @@ export default function LoginInput() {
 
 
         <div className="relative pt-2.5 pb-3.5">
-            <h3 className="text-lg tracking-thighter">이메일 주소</h3>
+            <h3 className="text-lg tracking-thighter">이메일</h3>
             <div className="relative">
                 <input
                 className="w-full leading-5 text-base border-b-2 focus:border-b-3 border-b-gray-200 focus:border-b-main-color focus:pb-2 py-2 focus:outline-none"
