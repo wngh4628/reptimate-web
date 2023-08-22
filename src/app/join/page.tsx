@@ -1,9 +1,10 @@
-import LoginInput from '@/components/login/LoginInput'
+import JoinInput from '@/components/join/JoinInput'
 
 export default function Home() {
     return(
         <div>
-            <LoginInput></LoginInput>
+            <JoinInput></JoinInput>
+
 
             
         </div>
