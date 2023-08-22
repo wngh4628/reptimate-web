@@ -19,7 +19,7 @@ export default function JoinInput() {
                         <button type="button" 
                         className="text-[13px] absolute right-0 t-1/2 translate-y-1/2 items-center cursor-pointer inline-flex justify-center align-middle text-center">인증 발송</button>
                     </div>
-                    <p data-v-6c792b84="" data-v-4e1fd2e6="" className="input_error">  </p>
+                    <p data-v-6c792b84 data-v-4e1fd2e6 className="input_error">  </p>
                 </div>
 
                 <div className="input_join input_box">
