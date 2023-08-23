@@ -17,13 +17,19 @@ export default function Header() {
     <header>
       {/* PC 화면(반응형) */}
       <PC>
-        <div className="flex justify-end pr-10 pt-5 gap-2">
+        <div className="flex justify-end pr-10 pt-5 gap-2 font-bold">
           {login ? (
-            <Link href="/">로그아웃</Link>
+            <Link href="/" className="group hover:text-main-color">
+              로그아웃
+            </Link>
           ) : (
             <>
-              <Link href="/">로그인</Link>
-              <Link href="/">회원가입</Link>
+              <Link href="/login" className="group hover:text-main-color">
+                로그인
+              </Link>
+              <Link href="/join" className="group hover:text-main-color">
+                회원가입
+              </Link>
             </>
           )}
         </div>
@@ -36,21 +42,25 @@ export default function Header() {
           <nav className="flex gap-4 font-bold">
             <Link
               href="/"
-              className={
+              className={`${
                 communityPathnames.includes(pathName) ? "text-[#6D71E6]" : ""
-              }
+              } group hover:text-main-color`}
             >
               COMMUNITY
             </Link>
             <Link
               href="/auction"
-              className={pathName === "/auction" ? "text-[#6D71E6]" : ""}
+              className={`${
+                pathName === "/auction" ? "text-[#6D71E6]" : ""
+              } group hover:text-main-color`}
             >
               AUCTION
             </Link>
             <Link
               href="/my"
-              className={pathName === "/my" ? "text-[#6D71E6]" : ""}
+              className={`${
+                pathName === "/my" ? "text-[#6D71E6]" : ""
+              } group hover:text-main-color`}
             >
               MY
             </Link>
