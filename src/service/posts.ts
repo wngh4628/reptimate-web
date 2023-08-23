@@ -7,6 +7,7 @@ export interface getResponse {
     totalPage: number;
     existsNextPage: boolean;
     items: Array<{
+      idx: number;
       view: number;
       userIdx: number;
       title: string;
@@ -34,6 +35,7 @@ export interface getResponse {
 }
 
 export type Post = {
+  idx: number;
   view: number;
   userIdx: number;
   title: string;

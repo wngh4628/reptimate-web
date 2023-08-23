@@ -1,33 +1,40 @@
 import { Post } from "@/service/posts";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import axios from "axios";
 import { Mobile, PC } from "./ResponsiveLayout";
 
 type Props = { post: Post };
 export default function PostCard({
-  post: { view, userIdx, title, category, description, writeDate, coverImage },
+  post: {
+    idx,
+    view,
+    userIdx,
+    title,
+    category,
+    description,
+    writeDate,
+    coverImage,
+  },
 }: Props) {
   return (
     <div className="ml-5 mr-5">
-      <Link href={`/posts/${userIdx}`}>
+      <Link href={`/posts/${idx}`}>
         <article className="flex flex-col items-center">
           <PC>
-            <div className="relative w-[350px] h-[350px] rounded-md overflow-hidden shadow-lg">
+            <div className="relative w-[350px] h-[350px] rounded-md overflow-hidden shadow-lg group">
               <Image
-                className="object-cover w-full h-full"
-                src={`${coverImage}`}
+                className="object-cover w-full h-full group-hover:border-2 group-hover:border-main-color rounded-lg"
+                src={`${coverImage}` || "/img/reptimate_logo.png"}
                 alt={""}
                 layout="fill"
               />
             </div>
           </PC>
           <Mobile>
-            <div className="relative w-[170px] h-[170px] rounded-md overflow-hidden shadow-lg">
+            <div className="relative w-[170px] h-[170px] rounded-md overflow-hidden shadow-lg group">
               <Image
-                className="object-cover w-full h-full"
-                src={`${coverImage}`}
+                className="object-cover w-full h-full group hover:border-2 hover:border-main-color rounded-lg"
+                src={`${coverImage}` || "/img/reptimate_logo.png"}
                 alt={""}
                 layout="fill"
               />
