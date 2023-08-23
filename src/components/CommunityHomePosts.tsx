@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useInView } from "react-intersection-observer";
 import axios from "axios";
 import PostCard from "./PostCard";
+import { Mobile, PC } from "./ResponsiveLayout";
 
 export default function CommunityHomePosts() {
   // 1. 모든 포스트 데이터를 읽어와야 함
@@ -46,12 +47,18 @@ export default function CommunityHomePosts() {
       category: item.category,
       description: item.description,
       writeDate: new Date(item.writeDate),
+      coverImage: item.images[0]?.coverImgPath || "",
     }));
 
     return (
       <section>
-        <h2 className="text-2xl font-bold p-10">분양글</h2>
-        <ul className="pl-10 pr-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        <PC>
+          <h2 className="text-2xl font-bold p-10">분양글</h2>
+        </PC>
+        <Mobile>
+          <h2 className="text-xl font-bold pl-12 pt-4 pb-4">분양글</h2>
+        </Mobile>
+        <ul className="pl-10 pr-10 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
             <li key={post.userIdx} ref={ref}>
               <PostCard post={post} />
