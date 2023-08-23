@@ -40,4 +40,5 @@ export type Post = {
   category: string;
   description: string;
   writeDate: Date;
+  coverImage: String;
 };
