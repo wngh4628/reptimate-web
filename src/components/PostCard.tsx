@@ -28,39 +28,43 @@ export default function PostCard({
         <Link href={`/posts/${idx}`}>
           <article className="flex flex-col items-center">
             <PC>
-              <div className="relative w-[350px] h-[350px] rounded-md overflow-hidden shadow-lg group">
+              <div className="relative w-[350px] h-[350px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
+                <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
                 <Image
-                  className="object-cover w-full h-full group-hover:border-2 group-hover:border-main-color rounded-lg"
+                  className="object-cover w-full h-full"
                   src={`${coverImage}` || "/img/reptimate_logo.png"}
                   alt={""}
                   layout="fill"
+                  style={{ zIndex: 1 }}
                 />
               </div>
-              <div className="absolute bottom-0 left-0 mb-2 flex items-center">
+              <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
                   className="w-10 h-10 rounded-full border-2"
                   src={`${profilePath}` || "/img/reptimate_logo.png"}
                   alt={""}
                 />
-                <p className="text-main-color font-semibold ml-1">{nickname}</p>
+                <p className="text-white font-semibold ml-1">{nickname}</p>
               </div>
             </PC>
             <Mobile>
-              <div className="relative w-[170px] h-[170px] rounded-md overflow-hidden shadow-lg group">
+              <div className="relative w-[170px] h-[170px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
+                <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
                 <Image
-                  className="object-cover w-full h-full group hover:border-2 hover:border-main-color rounded-lg"
+                  className="object-cover w-full h-full"
                   src={`${coverImage}` || "/img/reptimate_logo.png"}
                   alt={""}
                   layout="fill"
+                  style={{ zIndex: 1 }}
                 />
               </div>
-              <div className="absolute bottom-0 left-0 ml-1 mb-2 flex items-center">
+              <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
                   className="w-7 h-7 rounded-full border-2"
                   src={`${profilePath}` || "/img/reptimate_logo.png"}
                   alt={""}
                 />
-                <p className="text-main-color font-semibold ml-1 text-sm">
+                <p className="text-white font-semibold ml-1 text-sm">
                   {nickname}
                 </p>
               </div>
