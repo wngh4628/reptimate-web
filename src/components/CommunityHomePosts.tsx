@@ -1,7 +1,7 @@
 "use client";
 
 import { getResponse, Adpotion } from "@/service/adoption";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import PostCard from "./PostCard";
 import { Mobile, PC } from "./ResponsiveLayout";
@@ -11,6 +11,11 @@ export default function CommunityHomePosts() {
   const [page, setPage] = useState(1);
   const [existNextPage, setENP] = useState(false);
   const [loading, setLoading] = useState(false);
+  const target = useRef(null);
+
+  const options = {
+    threshold: 1.0,
+  };
 
   const getItems = useCallback(async () => {
     setLoading(true);
@@ -32,6 +37,7 @@ export default function CommunityHomePosts() {
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
+      // console.log(page);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -42,9 +48,25 @@ export default function CommunityHomePosts() {
     getItems();
   }, []);
 
-  const handleMoreClick = () => {
-    getItems();
-  };
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !loading && existNextPage) {
+          getItems();
+        }
+      });
+    }, options);
+
+    if (target.current) {
+      observer.observe(target.current);
+    }
+
+    return () => {
+      if (target.current) {
+        observer.unobserve(target.current);
+      }
+    };
+  }, [getItems, existNextPage, loading, options]);
 
   if (data !== null && data.result.items) {
     const itemlist: Adpotion[] = data.result.items.map((item) => ({
@@ -80,17 +102,20 @@ export default function CommunityHomePosts() {
           ))}
         </ul>
         {existNextPage && (
-          <button
-            className="my-4 mx-auto block px-40 text-base tracking-[-.16px] h-11 bg-main-color text-white rounded-lg font-bold border border-transparent group hover:border-2 hover:bg-white hover:text-main-color hover:border-main-color"
-            onClick={handleMoreClick}
-            disabled={loading}
-          >
-            {loading ? "로딩 중..." : "더보기"}
-          </button>
+          <div className="flex justify-center">
+            <div
+              className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"
+              ref={target}
+            ></div>
+          </div>
         )}
       </section>
     );
   } else {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+      </div>
+    );
   }
 }
