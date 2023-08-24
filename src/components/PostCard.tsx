@@ -54,6 +54,16 @@ export default function PostCard({
                   layout="fill"
                 />
               </div>
+              <div className="absolute bottom-0 left-0 ml-1 mb-2 flex items-center">
+                <img
+                  className="w-7 h-7 rounded-full border-2"
+                  src={`${profilePath}` || "/img/reptimate_logo.png"}
+                  alt={""}
+                />
+                <p className="text-main-color font-semibold ml-1 text-sm">
+                  {nickname}
+                </p>
+              </div>
             </Mobile>
           </article>
         </Link>
@@ -75,7 +85,14 @@ export default function PostCard({
           <img className="flex w-6 mx-1" src="/img/eye.png" />
           <p className="">{view}</p>
           <img className="flex w-5 mx-1" src="/img/clock.png" />
-          <p className="">{writeDate.toISOString().split("T")[0]}</p>
+          <p className="">{`${writeDate.getFullYear().toString().slice(2)}.${(
+            writeDate.getMonth() + 1
+          )
+            .toString()
+            .padStart(2, "0")}.${writeDate
+            .getDate()
+            .toString()
+            .padStart(2, "0")}`}</p>
         </div>
       </div>
     </div>
