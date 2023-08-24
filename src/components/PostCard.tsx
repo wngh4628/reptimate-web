@@ -48,7 +48,7 @@ export default function PostCard({
               </div>
             </PC>
             <Mobile>
-              <div className="relative w-[170px] h-[170px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
+              <div className="relative w-[130px] h-[130px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
                 <Image
                   className="object-cover w-full h-full"
