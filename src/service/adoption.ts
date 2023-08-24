@@ -30,19 +30,35 @@ export interface getResponse {
         nickname: string;
         profilePath: string;
       };
+      boardCommercial: {
+        idx: number;
+        createdAt: string;
+        updatedAt: string;
+        deletedAt: string | null;
+        boardIdx: number;
+        price: number;
+        gender: string;
+        size: string;
+        variety: string;
+        state: string;
+      };
     }>;
   };
 }
 
-export type Post = {
+export type Adpotion = {
   idx: number;
   view: number;
   userIdx: number;
   title: string;
   category: string;
-  description: string;
   writeDate: Date;
   coverImage: String;
   nickname: string;
   profilePath: string;
+  price: number;
+  gender: string;
+  size: string;
+  variety: string;
+  state: string;
 };

@@ -1,8 +1,7 @@
 "use client";
 
-import { getResponse, Post } from "@/service/posts";
+import { getResponse, Adpotion } from "@/service/adoption";
 import { useState, useEffect, useCallback } from "react";
-import { useInView } from "react-intersection-observer";
 import axios from "axios";
 import PostCard from "./PostCard";
 import { Mobile, PC } from "./ResponsiveLayout";
@@ -17,7 +16,7 @@ export default function CommunityHomePosts() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://3.35.87.48:3000/board?page=${page}&size=20&order=DESC&category=free`
+        `http://3.35.87.48:3000/board?page=${page}&size=20&order=DESC&category=adoption`
       );
       setData(
         (prevData) =>
@@ -48,15 +47,21 @@ export default function CommunityHomePosts() {
   };
 
   if (data !== null && data.result.items) {
-    const itemlist: Post[] = data.result.items.map((item) => ({
+    const itemlist: Adpotion[] = data.result.items.map((item) => ({
       idx: item.idx,
       view: item.view,
       userIdx: item.userIdx,
       title: item.title,
       category: item.category,
-      description: item.description,
       writeDate: new Date(item.writeDate),
       coverImage: item.images[0]?.coverImgPath || "",
+      nickname: item.UserInfo.nickname,
+      profilePath: item.UserInfo.profilePath,
+      price: item.boardCommercial.price,
+      gender: item.boardCommercial.gender,
+      size: item.boardCommercial.size,
+      variety: item.boardCommercial.variety,
+      state: item.boardCommercial.state,
     }));
 
     return (
