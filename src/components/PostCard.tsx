@@ -42,7 +42,7 @@ export default function PostCard({
                   src={`${profilePath}` || "/img/reptimate_logo.png"}
                   alt={""}
                 />
-                <p className="text-main-color ml-1">{nickname}</p>
+                <p className="text-main-color font-semibold ml-1">{nickname}</p>
               </div>
             </PC>
             <Mobile>
@@ -59,17 +59,18 @@ export default function PostCard({
         </Link>
       </div>
       <div className="mx-3 mt-2 mb-6 flex flex-col">
-        {/* <time>{date.toString()}</time> */}
         <h3 className="font-bold text-xl mx-1">{title}</h3>
-        <div className="flex items-center">
-          <p className="font-bold text-lg ml-1">{price}원</p>
-          <p className="text-xs mx-1 text-white bg-main-color p-1 rounded font-bold">
-            {gender}
-          </p>
-          <p className="text-xs mx-1 text-white bg-gray-400 p-1 rounded font-bold">
-            {size}
-          </p>
-        </div>
+        <PC>
+          <div className="flex items-center">
+            <p className="font-bold text-lg ml-1">{price}원</p>
+            <p className="text-xs mx-1 text-white bg-gender-female-color p-1 rounded font-bold">
+              {gender}
+            </p>
+            <p className="text-xs mx-1 text-white bg-gray-400 p-1 rounded font-bold">
+              {size}
+            </p>
+          </div>
+        </PC>
         <div className="flex items-center mt-1">
           <img className="flex w-6 mx-1" src="/img/eye.png" />
           <p className="">{view}</p>
