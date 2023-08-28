@@ -1,16 +1,143 @@
 "use client";
 
 import { useForm } from 'react-hook-form';
+import { ChangeEvent, FormEvent, MouseEventHandler, useContext, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+
+import { validateEmail, validatePassword, validateNickname } from "../join/JoinExp";
+import { register, emailSend } from "@/api/join/join";
 
 export default function JoinInput() {
 
+    const router = useRouter();
 
+    const [canEdit, setEmailEdit] = useState(true);
 
+    const [email, setEmail] = useState("");
+    const [nickName, setNickName] = useState("");
+    const [password, setPassword] = useState("");
+    const [checkPassword, setCechkPassword] = useState("");
 
+    const [emailCode, setEmailCode] = useState("");
+    const [emailCodeChk, setEmailCodeChk] = useState("");
+
+    const [isPremium, setIsPremium] = useState(false);
+
+    const [agreement, setagreement] = useState(false);
+    const [privacy, setprivacy] = useState(false);
+    const [agreeWithMarketing, setAgreeWithMarketing] = useState(false);
+    const [loginMethod, setLoginMethod] = useState("");
+
+    const onEmailHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target as any;
+        setEmail(value);
+    };
+    const onEmailCodeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target as any;
+        setEmailCodeChk(value);
+    };
+    const onNickNameHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target as any;
+        setNickName(value);
+    };
+    const onPasswordHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target as any;
+        setPassword(value);
+    };
+    const onCheckPasswordHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target as any;
+        setCechkPassword(value);
+    };
+
+    function onagreementHandler () {
+        console.log("이메일 인증 코드 일치!");
+        setagreement(!agreement);
+    };
+    function onprivacyHandler () {
+        console.log("이메일 인증 코드 일치!");
+        setprivacy(!privacy);
+    };
+    function onagreeWithMarketingHandler () {
+        console.log("이메일 인증 코드 일치!");
+        setAgreeWithMarketing(!agreeWithMarketing);
+    };
+
+    const mutation = useMutation({
+        mutationFn: register,
+        onSuccess: (data) => {
+          console.log("============================");
+          console.log("회원가입 성공!");
+          console.log(data);
+          console.log(data.data);
+          console.log("============================");
+          router.replace("/login");
+        },
+    });
+    const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault(); // 리프레시 막기
+      if (
+        validateEmail(email) &&
+        validateNickname(nickName) &&
+        validatePassword(password) &&
+        password === checkPassword
+      ) {
+        mutation.mutate({
+            email: email, nickName: nickName, password: password,
+            agreeWithMarketing: agreeWithMarketing, loginMethod: loginMethod
+        });
+      } else {
+        alert("회원가입에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.");
+      }
+    };
+
+    const mutationEmailSend = useMutation({
+        mutationFn: emailSend,
+        onSuccess: (data) => {
+            var a = JSON.stringify(data.data);
+            var result = JSON.parse(a);
+            var b = JSON.stringify(result.result);
+            var result = JSON.parse(b);
+            setEmailCode(result.signupVerifyToken);
+            setEmailEdit(!canEdit);
+        },
+    });
+    function onEmailSendHandler () {
+      if ( validateEmail(email) ) {
+        mutationEmailSend.mutate({ email: email, type: "NEWUSER" });
+      } else {
+        alert("이메일 형식에 맞게 작성해 주세요.");
+      }
+    };
+    function onEmailCodeValidateHandler () {
+        if ( emailCode == emailCodeChk ) {
+            console.log("이메일 인증 코드 일치!");
+        } else {
+          alert("이메일 인증 코드를 다시 확인해주세요.");
+        }
+    };
     
+    // const mutationNickNameChk = useMutation({
+    //     mutationFn: nickNameChk,
+    //     onSuccess: (data) => {
+    //       console.log("============================");
+    //       console.log("닉네임 발송!");
+    //       console.log(data);
+    //       console.log(data.data);
+    //       console.log("============================");
+    //       setEmailEdit(!canEdit);
+    //     },
+    // });
+    // function onNickNameChkHandler () {
+    //   if ( validateNickname(nickName) ) {
+    //     mutationNickNameChk.mutate({ nickname: nickName });
+    //   } else {
+    //   }
+    // };
+
   return (
+    <form onSubmit={onSubmitHandler}>
     <div className=''>
         <div className=" ml-auto mr-auto max-xl:pl-[40px] max-xl:pr-[40px] max-w-7xl">
             <div className="m-auto pt-[48px] pb-[160px] w-[400px] max-[374px]:w-full max-[374px]:pt-[23px] max-[374px]:pb-[40px]">
@@ -20,20 +147,22 @@ export default function JoinInput() {
                 <div className="pb-[32px] relative">
                     <h3 className="text-[13px] tracking-[-.07px] leading-[18px]">이메일 주소*</h3>
                     <div className="relative m-0 p-0">
-                        <input type="email" placeholder="예) repti@mate.co.kr" className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"/>
-                        <button type="button" 
-                        className="text-[13px] absolute right-0 t-1/2 translate-y-1/2 items-center cursor-pointer inline-flex justify-center align-middle text-center">인증 발송</button>
+                        <input type="email" placeholder="예) repti@mate.co.kr" onChange={onEmailHandler} readOnly={canEdit ? false : true}
+                        className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"/>
+                        <button type="button" onClick={onEmailSendHandler}
+                        className="text-[13px] absolute right-0 t-1/2 translate-y-1/2 items-center cursor-pointer inline-flex justify-center align-middle text-cente hover:text-main-color">인증 발송</button>
                     </div>
                     <p className="hidden">  </p>
-                    <p className="block absolute leading-[16px] text-[11px] text-[#f15746]"> 에러메시지 </p>
+                    {/* <p className="block absolute leading-[16px] text-[11px] text-[#f15746]"> 에러메시지 </p> */}
                 </div>
 
                 <div className="pb-[32px] relative">
                     <h3 className="text-[13px] tracking-[-.07px] leading-[18px]">인증코드</h3>
                     <div className="relative m-0 p-0">
-                        <input type="email_code" placeholder="" className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"/>
-                        <button type="button" 
-                        className="text-[13px] absolute right-0 t-1/2 translate-y-1/2 items-center cursor-pointer inline-flex justify-center align-middle text-center">인증</button>
+                        <input type="text" placeholder="" onChange={onEmailCodeHandler}
+                        className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"/>
+                        <button type="button" onClick={onEmailCodeValidateHandler}
+                        className="text-[13px] absolute right-0 t-1/2 translate-y-1/2 items-center cursor-pointer inline-flex justify-center align-middle text-center hover:text-main-color">인증</button>
                     </div>
                     <p className="input_error">  </p>
                 </div>
@@ -41,7 +170,8 @@ export default function JoinInput() {
                 <div className="pb-[32px] relative">
                     <h3 className="text-[13px] tracking-[-.07px] leading-[18px]">비밀번호</h3>
                     <div className="relative m-0 p-0">
-                        <input type="password" placeholder="영문, 숫자, 특수문자 조합 8-16자" className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"/>
+                        <input type="password" onChange={onPasswordHandler} placeholder="영문, 숫자, 특수문자 조합 8-16자"
+                        className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"/>
                     </div>
                     <p className="hidden">영문, 숫자, 특수문자를 조합하여 입력해주세요.</p>
                 </div>
@@ -49,7 +179,8 @@ export default function JoinInput() {
                 <div className="pb-[32px] relative">
                     <h3 className="text-[13px] tracking-[-.07px] leading-[18px]">비밀번호 확인</h3>
                     <div className="relative m-0 p-0">
-                        <input type="passwordchk" placeholder="영문, 숫자, 특수문자 조합 8-16자" className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"/>
+                        <input type="password" onChange={onCheckPasswordHandler}
+                        className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"/>
                     </div>
                     <p className="hidden">영문, 숫자, 특수문자를 조합하여 입력해주세요.</p>
                 </div>
@@ -57,9 +188,8 @@ export default function JoinInput() {
                 <div className="pb-[32px] relative">
                     <h3 className="text-[13px] tracking-[-.07px] leading-[18px]">닉네임</h3>
                     <div className="relative m-0 p-0">
-                        <input type="nickname" placeholder="" className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"/>
-                        <button type="button" 
-                        className="text-[13px] absolute right-0 t-1/2 translate-y-1/2 items-center cursor-pointer inline-flex justify-center align-middle text-center">중복 확인</button>
+                        <input type="nickname" placeholder="2-8자 이내" onChange={onNickNameHandler}
+                        className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"/>
                     </div>
                     <p className="input_error">  </p>
                 </div>
@@ -70,8 +200,14 @@ export default function JoinInput() {
                         <div className="relative">
                             <div className="relative text-[0px]">
                                 <input id="agreement" type="checkbox" name="" className="overflow-hidden w-[1px] h-[1px] absolute border-0 p-0 bg-clip-border"/>
-                                <label htmlFor="agreement" className="relative cursor-pointer inline-flex">
-                                    <img className="h-[24px] w-[24px]" src="/join/unchecked.png" alt="" />
+                                <label htmlFor="agreement" onClick={onagreementHandler}
+                                className="relative cursor-pointer inline-flex">
+                                    {!agreement && (
+                                        <img className="h-[24px] w-[24px]" src="/join/unchecked.png" alt="" />
+                                    )}
+                                    {agreement && (
+                                        <img className="h-[24px] w-[24px]" src="/join/checked.png" alt="" />
+                                    )}
                                     <span className="pl-[8px] tracking-[-.07px] text-[14px] align-text-top ml-3">이용약관 동의</span>
                                 </label>
                                 <a href="#" className="absolute top-[2px] right-0 text-[12px] leading-[20px] tracking-[-.18px] text-[rgba(34,34,34,.5)]"> 내용 보기 </a>
@@ -80,8 +216,14 @@ export default function JoinInput() {
                         <div className="relative">
                             <div className="relative text-[0px]">
                                 <input id="privacy" type="checkbox" name="" className="overflow-hidden w-[1px] h-[1px] absolute border-0 p-0 bg-clip-border"/>
-                                <label htmlFor="privacy" className="relative cursor-pointer inline-flex">
-                                    <img className="h-[24px] w-[24px]" src="/join/unchecked.png" alt="" />
+                                <label htmlFor="privacy" onClick={onprivacyHandler}
+                                className="relative cursor-pointer inline-flex">
+                                    {!privacy && (
+                                        <img className="h-[24px] w-[24px]" src="/join/unchecked.png" alt="" />
+                                    )}
+                                    {privacy && (
+                                        <img className="h-[24px] w-[24px]" src="/join/checked.png" alt="" />
+                                    )}
                                     <span className="pl-[8px] tracking-[-.07px] text-[14px] align-text-top ml-3">개인정보 수집 및 이용 동의</span>
                                 </label>
                                 <a href="#" className="absolute top-[2px] right-0 text-[12px] leading-[20px] tracking-[-.18px] text-[rgba(34,34,34,.5)]"> 내용 보기 </a>
@@ -90,8 +232,14 @@ export default function JoinInput() {
                         <div className="relative">
                             <div className="relative text-[0px]">
                                 <input id="advertise" type="checkbox" name="" className="overflow-hidden w-[1px] h-[1px] absolute border-0 p-0 bg-clip-border"/>
-                                <label htmlFor="advertise" className="relative cursor-pointer inline-flex">
-                                    <img className="h-[24px] w-[24px]" src="/join/unchecked.png" alt="" />
+                                <label htmlFor="advertise" onClick={onagreeWithMarketingHandler}
+                                className="relative cursor-pointer inline-flex">
+                                    {!agreeWithMarketing && (
+                                        <img className="h-[24px] w-[24px]" src="/join/unchecked.png" alt="" />
+                                    )}
+                                    {agreeWithMarketing && (
+                                        <img className="h-[24px] w-[24px]" src="/join/checked.png" alt="" />
+                                    )}
                                     <span className="pl-[8px] tracking-[-.07px] text-[14px] align-text-top ml-3">[선택] 광고성 정보 수신에 모두 동의합니다.</span>
                                 </label>
                                 <a href="#" className="absolute top-[2px] right-0 text-[12px] leading-[20px] tracking-[-.18px] text-[rgba(34,34,34,.5)]"> 내용 보기 </a>
@@ -102,10 +250,12 @@ export default function JoinInput() {
 
                 </div>
 
-            <a href="#" className=" items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full tracking-[-.16px]"> 가입하기 </a>
+            <button type='submit' className=" items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full tracking-[-.16px]"> 가입하기 </button>
             </div>
         </div>
     </div>
+    </form>
+    
     
         
     

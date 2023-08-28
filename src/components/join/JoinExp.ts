@@ -5,10 +5,10 @@ export const validateEmail = (email: string) => {
   
   // 닉네임: 특수문자제외, 공백제외, 2~8글자
   export const validateNickname = (nickname: string) => {
-    return /^[가-힣\d\w]{2,8}$/.test(nickname);
+    return /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,8}$/.test(nickname);
   };
   
-  // 비밀번호: 4~10글자
+  // 비밀번호: 8~64글자
   export const validatePassword = (value: string) => {
-    return value.length >= 4 && value.length <= 10;
+    return value.length >= 8 && value.length <= 64;
   };
