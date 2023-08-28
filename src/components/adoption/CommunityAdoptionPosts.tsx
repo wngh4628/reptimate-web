@@ -3,10 +3,10 @@
 import { getResponse, Adpotion } from "@/service/adoption";
 import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
-import PostCard from "./PostCard";
-import { Mobile, PC } from "./ResponsiveLayout";
+import PostCard from "./AdoptionPostCard";
+import { Mobile, PC } from "../ResponsiveLayout";
 
-export default function CommunityHomePosts() {
+export default function CommunityAdoptionPosts() {
   const [data, setData] = useState<getResponse | null>(null);
   const [page, setPage] = useState(1);
   const [existNextPage, setENP] = useState(false);
@@ -68,6 +68,11 @@ export default function CommunityHomePosts() {
     };
   }, [getItems, existNextPage, loading, options]);
 
+  const handleWriteClick = () => {
+    // Handle the logic for opening the write page
+    location.href = `community/adoption/write`;
+  };
+
   if (data !== null && data.result.items) {
     const itemlist: Adpotion[] = data.result.items.map((item) => ({
       idx: item.idx,
@@ -109,6 +114,14 @@ export default function CommunityHomePosts() {
             ></div>
           </div>
         )}
+        <div className="fixed bottom-10 right-10 z-50">
+          <button
+            className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
+            onClick={handleWriteClick}
+          >
+            +
+          </button>
+        </div>
       </section>
     );
   } else {
