@@ -15,14 +15,15 @@ export default async function handle(
   const { code } = req.query;
 
   if (code) {
-    const url = "https://kauth.kakao.com/oauth/token";
+    const url = "https://oauth2.googleapis.com/token";
     try {
       // 카카오 토큰 받기
       const { data } = await axios.post(url, null, {
         params: {
           grant_type: "authorization_code",
-          client_id: `007bccc864ba746734949bd87b5bc9dc`,
-          redirect_uri: "http://localhost:3000/api/kakaologin/callback",
+          client_id: `290736847856-24sjvjdch5cpdr5jg64qg1krj19tkfhr.apps.googleusercontent.com`,
+          client_secret: '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',
+          redirect_uri: "http://localhost:3000/api/googlelogin/callback",
           code,
         },
         headers: {
@@ -30,23 +31,8 @@ export default async function handle(
         },
       });
       const { access_token, refresh_token } = data;
-
-      const redirectUrl = `/login/social?access_token=${access_token}&socialType=KAKAO`;
-
-
-      //사용자 정보 조회하기(이메일이랑 프로필 이미지 검색)
-      const infoResult = await axios.post(
-        "https://kapi.kakao.com/v2/user/me",
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        }
-      );
-      const email = infoResult.data.kakao_account.email;
-      const profileImage = infoResult.data.properties.profile_image;
+        
+      const redirectUrl = `/login/social?access_token=${access_token}&socialType=GOOGLE`;
 
       res.writeHead(302, {
         Location: redirectUrl,

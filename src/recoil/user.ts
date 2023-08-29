@@ -14,6 +14,15 @@ interface User {
   id: number;
 }
 
+export interface UserData {
+  USER_DATA: {
+    accessToken: string;
+    refreshToken: string;
+    id: number;
+  }
+}
+
+
 export const userAtom = atom<User | null>({
   key: "USER_DATA",
   default: null,
