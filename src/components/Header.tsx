@@ -70,9 +70,7 @@ export default function Header() {
           <nav className="flex gap-4 font-bold">
             <Link
               href="/"
-              className={`${
-                communityPathnames.includes(pathName) ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color`}
+              className={` group hover:text-main-color`}
             >
               COMMUNITY
             </Link>
