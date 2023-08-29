@@ -12,6 +12,12 @@ import Recoil  from "@/components/Recoil";
 
 const sans = Open_Sans({ subsets: ["latin"] });
 
+declare global { // Kakao 함수를 전역에서 사용할 수 있도록 선언
+  interface Window {
+    Kakao: any;
+  }
+}
+
 export const metadata: Metadata = {
   title: "REPTIMATE",
   description: "파충류 분양 플랫폼",
@@ -24,6 +30,7 @@ export default function RootLayout({
 }) {
   return (
         <html lang="en" className={sans.className}>
+          
           <body className="flex flex-col w-full max-w-screen-2xl mx-auto">
             <Recoil>
               <ReactQuery>

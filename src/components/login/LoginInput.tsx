@@ -3,7 +3,6 @@ import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-// import { useRouter } from "next/router";
 import { useSetRecoilState } from "recoil";
 
 import { login } from "@/api/login/login";
@@ -12,8 +11,10 @@ import { userAtom } from "@/recoil/user";
 
 export default function LoginInput() {
     const setUser = useSetRecoilState(userAtom);
+    const kauthUrl =
+    "https://kauth.kakao.com/oauth/authorize?client_id=007bccc864ba746734949bd87b5bc9dc&redirect_uri=http://localhost:3000/login/kakaologin&response_type=code";
+  
 
-    
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -23,12 +24,17 @@ export default function LoginInput() {
     const mutation = useMutation({
       mutationFn: login,
       onSuccess: (data) => {
+        // status 분기 처리
         console.log("============================");
         console.log("로그인 성공!");
         console.log(data);
         console.log(data.data);
+        var a = JSON.stringify(data.data);
+        var result = JSON.parse(a);
+        var b = JSON.stringify(result.result);
+        var result = JSON.parse(b);
         console.log("============================");
-        setUser(data.data);
+        setUser(result);
         router.replace("/");
       },
     });
@@ -100,18 +106,27 @@ export default function LoginInput() {
         </ul>
 
         <div className="mt-[40px]">
-            <button type="button" className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]" data-v-43813796 data-v-2b15bea4>
-                <img className="h-[24px] left-[15px] absolute top-[13px] w-[24px]" src="/login/pngegg.png" alt=""></img>
-                카카오로 로그인 
-            </button>
-            <button type="button" className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]" data-v-43813796 data-v-2b15bea4>
+            <form method="POST" action="/api/kakaologin">
+                <button type="submit"
+                className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]" data-v-43813796 data-v-2b15bea4>
+                    <img className="h-[24px] left-[15px] absolute top-[13px] w-[24px]" src="/login/pngegg.png" alt=""></img>
+                    카카오로 로그인 
+                </button>
+            </form>
+            <form >
+            <button type="submit" 
+            className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]" data-v-43813796 data-v-2b15bea4>
                 <img className="h-[24px] left-[15px] absolute top-[13px] w-[24px]" src="/login/ic_google.png" alt=""></img>
                 Google로 로그인 
             </button>
-            <button type="button" className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]" data-v-43813796 data-v-2b15bea4>
-                <img className="h-[24px] left-[15px] absolute top-[13px] w-[24px]" src="/login/ic_apple.png" alt=""></img>
-                Apple로 로그인 
-            </button>
+            </form>
+            <form >
+                <button type="submit" 
+                className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]" data-v-43813796 data-v-2b15bea4>
+                    <img className="h-[24px] left-[15px] absolute top-[13px] w-[24px]" src="/login/ic_apple.png" alt=""></img>
+                    Apple로 로그인 
+                </button>
+            </form>
         </div>
 
 
