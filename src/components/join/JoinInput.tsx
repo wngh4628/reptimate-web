@@ -52,21 +52,19 @@ export default function JoinInput() {
     };
 
     function onagreementHandler () {
-        console.log("이메일 인증 코드 일치!");
         setagreement(!agreement);
     };
     function onprivacyHandler () {
-        console.log("이메일 인증 코드 일치!");
         setprivacy(!privacy);
     };
     function onagreeWithMarketingHandler () {
-        console.log("이메일 인증 코드 일치!");
         setAgreeWithMarketing(!agreeWithMarketing);
     };
 
     const mutation = useMutation({
         mutationFn: register,
         onSuccess: (data) => {
+            // status code 분기 처리
           console.log("============================");
           console.log("회원가입 성공!");
           console.log(data);
@@ -117,24 +115,6 @@ export default function JoinInput() {
           alert("이메일 인증 코드를 다시 확인해주세요.");
         }
     };
-    
-    // const mutationNickNameChk = useMutation({
-    //     mutationFn: nickNameChk,
-    //     onSuccess: (data) => {
-    //       console.log("============================");
-    //       console.log("닉네임 발송!");
-    //       console.log(data);
-    //       console.log(data.data);
-    //       console.log("============================");
-    //       setEmailEdit(!canEdit);
-    //     },
-    // });
-    // function onNickNameChkHandler () {
-    //   if ( validateNickname(nickName) ) {
-    //     mutationNickNameChk.mutate({ nickname: nickName });
-    //   } else {
-    //   }
-    // };
 
   return (
     <form onSubmit={onSubmitHandler}>
