@@ -14,7 +14,7 @@ interface User {
   id: number;
 }
 
-export const userAtom = atom<loginResponse | null>({
+export const userAtom = atom<User | null>({
   key: "USER_DATA",
   default: null,
   effects_UNSTABLE: [persistAtom],
