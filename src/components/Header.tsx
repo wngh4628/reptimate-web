@@ -6,7 +6,7 @@ import { Mobile, PC } from "./ResponsiveLayout";
 
 export default function Header() {
   const login = false; // Set this to true or false based on your logic
-  const pathName = usePathname();
+  const pathName = usePathname() || "";
   const communityPathnames = [
     "/",
     "/community/used-deal",
