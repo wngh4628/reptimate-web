@@ -1,9 +1,6 @@
 import instance from "@/api/index";
 
 
-
-
-
 export const login = async ({
   email,
   password,
@@ -20,7 +17,6 @@ export const login = async ({
   };
   // const config = {"Content-Type": 'application/json'};
   const result = await instance.post("/auth", data);
-
   return result;
 };
 
@@ -35,6 +31,29 @@ export const socialLogin = async ({
 }) => {
   const data = {
     'accessToken' : accessToken,
+    'socialType' : socialType,
+    'fbToken' : fbToken
+  };
+  // const config = {"Content-Type": 'application/json'};
+  const result = await instance.post("/auth/social", data);
+
+  return result;
+};
+
+export const socialAppleLogin = async ({
+  email,
+  nickname,
+  socialType,
+  fbToken
+}: {
+  email: string;
+  nickname: string;
+  socialType: string;
+  fbToken: string;
+}) => {
+  const data = {
+    'nickname' : nickname,
+    'email' : email,
     'socialType' : socialType,
     'fbToken' : fbToken
   };
