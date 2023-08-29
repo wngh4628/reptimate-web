@@ -1,4 +1,6 @@
 import axios from "axios";
+import { Console } from "console";
+import { useEffect } from "react";
 
 
 const instance = axios.create({
@@ -26,7 +28,21 @@ instance.interceptors.request.use(
     (response) => {
       // 응답에 대한 로직 작성
       const res = response.data;
+      console.log(res);
 
+      if(res.status == 401) {
+        useEffect(() => {
+          // localStorage에서 데이터 추출
+          const storedData = localStorage.getItem('recoil-persist');
+          // 추출한 데이터 출력
+          console.log('Stored Data:', storedData);
+        }, []);
+
+
+        
+      }else {
+        
+      }
 
       return response;
     },

@@ -1,27 +1,55 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mobile, PC } from "./ResponsiveLayout";
+import { useEffect, useState } from "react";
+import { useRecoilState } from 'recoil';
+import { userAtom } from "@/recoil/user";
 
 export default function Header() {
-  const login = false; // Set this to true or false based on your logic
+  const router = useRouter();
+  const [isLogin, isSetLogin] = useState(false);
+  const [accessToken, setAccessToken] = useRecoilState(userAtom);
+
   const pathName = usePathname();
+
+  useEffect(() => {
+   handleLogin();
+  }, [pathName])
+
+  const handleLogin = () => {
+    const storedData = localStorage.getItem('recoil-persist');
+      if (storedData) {
+        const userData = JSON.parse(storedData);
+        if (userData.USER_DATA.accessToken != null) {
+          const accessToken = userData.USER_DATA.accessToken;
+          isSetLogin(true);
+        }
+      }
+  };
+  const handleLogout = () => {
+    localStorage.removeItem('recoil-persist');
+    isSetLogin(false);
+    router.refresh();
+  };
+  
   const communityPathnames = [
     "/",
     "/community/used-deal",
     "/community/free",
     "/community/ask",
   ];
+
   return (
     <header>
       {/* PC 화면(반응형) */}
       <PC>
         <div className="flex justify-end pr-10 pt-5 gap-2 font-bold">
-          {login ? (
-            <Link href="/" className="group hover:text-main-color">
+          {isLogin ? (
+            <button  className="group hover:text-main-color" onClick={handleLogout}>
               로그아웃
-            </Link>
+            </button>
           ) : (
             <>
               <Link href="/login" className="group hover:text-main-color">
