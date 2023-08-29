@@ -40,5 +40,28 @@ export const socialLogin = async ({
   return result;
 };
 
+export const socialAppleLogin = async ({
+  email,
+  nickname,
+  socialType,
+  fbToken
+}: {
+  email: string;
+  nickname: string;
+  socialType: string;
+  fbToken: string;
+}) => {
+  const data = {
+    'nickname' : nickname,
+    'email' : email,
+    'socialType' : socialType,
+    'fbToken' : fbToken
+  };
+  // const config = {"Content-Type": 'application/json'};
+  const result = await instance.post("/auth/social", data);
+
+  return result;
+};
+
 
     

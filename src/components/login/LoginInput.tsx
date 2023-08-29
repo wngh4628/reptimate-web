@@ -11,18 +11,6 @@ import { userAtom } from "@/recoil/user";
 
 export default function LoginInput() {
     const setUser = useSetRecoilState(userAtom);
-    const kauthUrl =
-    "https://kauth.kakao.com/oauth/authorize?client_id=007bccc864ba746734949bd87b5bc9dc&redirect_uri=http://localhost:3000/login/kakaologin&response_type=code";
-    const gauthUrl =
-    'https://accounts.google.com/o/oauth2/v2/auth?client_id=' +
-    '290736847856-24sjvjdch5cpdr5jg64qg1krj19tkfhr.apps.googleusercontent.com' +
-      '&redirect_uri=' +
-      'http://localhost:3000/login/googlelogin&response' +
-      '&response_type=code' +
-      '&scope=email profile';
-    const aauthUrl =
-    "https://kauth.kakao.com/oauth/authorize?client_id=007bccc864ba746734949bd87b5bc9dc&redirect_uri=http://localhost:3000/login/kakaologin&response_type=code";
-  
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -70,6 +58,17 @@ export default function LoginInput() {
         }
         mutation.mutate({ email: email, password: password, fbToken: "asdfcx" });
     };
+    const config = {
+        client_id: "store.reptimate.web", // This is the service ID we created.
+        redirect_uri: "http://web.reptimate.store/api/applelogin/callback", // As registered along with our service ID
+        response_type: "code id_token",
+        state: "origin:web", // Any string of your choice that you may use for some logic. It's optional and you may omit it.
+        scope: "name email", // To tell apple we want the user name and emails fields in the response it sends us.
+        response_mode: "form_post",
+        
+      };
+      const queryString = Object.entries(config).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+      const url = `https://appleid.apple.com/auth/authorize?${queryString}`
     
   return (
     <div className="m-o m-auto pt-16 px-0 pb-40 w-[400px]">
@@ -125,14 +124,18 @@ export default function LoginInput() {
                     Google로 로그인 
                 </button>
             </form>
-            <form method="POST" action="/api/applelogin">
+            {/* <form method="POST" action="/api/applelogin">
                 <button type="submit"
                 className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]" data-v-43813796 data-v-2b15bea4>
                     <img className="h-[24px] left-[15px] absolute top-[13px] w-[24px]" src="/login/ic_apple.png" alt=""></img>
                     Apple로 로그인 
                 </button>
-                
-            </form>
+            </form> */}
+            <Link href={url}
+                className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]" data-v-43813796 data-v-2b15bea4>
+                    <img className="h-[24px] left-[15px] absolute top-[13px] w-[24px]" src="/login/ic_apple.png" alt=""></img>
+                    Apple로 로그인 
+            </Link>
         </div>
 
 
