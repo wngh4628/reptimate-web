@@ -5,7 +5,6 @@ import AdoptionWrite from "@/components/adoption/AdoptionWrite";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import React from "react";
-import ReactDOM from "react-dom";
 
 export default function AdoptionWritePage() {
   return (
