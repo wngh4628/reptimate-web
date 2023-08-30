@@ -9,6 +9,9 @@ export const adoptionWrite = async ({
   gender,
   size,
   variety,
+  pattern,
+  birthDate,
+  userAccessToken,
 }: {
   userIdx: string;
   title: string;
@@ -18,6 +21,9 @@ export const adoptionWrite = async ({
   gender: string;
   size: string;
   variety: string;
+  pattern: string;
+  birthDate: string;
+  userAccessToken: string;
 }) => {
   const data = {
     userIdx: userIdx,
@@ -28,8 +34,16 @@ export const adoptionWrite = async ({
     gender: gender,
     size: size,
     variety: variety,
+    pattern: pattern,
+    birthDate: birthDate,
   };
-  const result = await instance.post("/board", data);
+
+  const headers = {
+    Authorization: `Bearer ${userAccessToken}`,
+    "Content-Type": "application/json",
+  };
+
+  const result = await instance.post("/board", data, { headers });
 
   return result;
 };

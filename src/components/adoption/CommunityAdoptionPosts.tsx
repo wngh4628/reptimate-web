@@ -5,32 +5,20 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import PostCard from "./AdoptionPostCard";
 import { Mobile, PC } from "../ResponsiveLayout";
+import { useRecoilValue } from "recoil";
+import { isLoggedInState } from "@/recoil/user";
 
 export default function CommunityAdoptionPosts() {
   const [data, setData] = useState<getResponse | null>(null);
   const [page, setPage] = useState(1);
   const [existNextPage, setENP] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isLogin, isSetLogin] = useState(false);
+  const isLogin = useRecoilValue(isLoggedInState);
   const target = useRef(null);
 
   const options = {
     threshold: 1.0,
   };
-
-  useEffect(() => {
-    const storedData = localStorage.getItem("recoil-persist");
-    if (storedData) {
-      const userData = JSON.parse(storedData);
-      if (userData.USER_DATA.accessToken == null) {
-        isSetLogin(false);
-      } else {
-        isSetLogin(true);
-      }
-    } else {
-      isSetLogin(false);
-    }
-  });
 
   const getItems = useCallback(async () => {
     setLoading(true);

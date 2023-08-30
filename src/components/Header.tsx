@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mobile, PC } from "./ResponsiveLayout";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { userAtom } from "@/recoil/user";
+import { isLoggedInState, userAtom } from "@/recoil/user";
 
 export default function Header() {
   const login = false; // Set this to true or false based on your logic
@@ -13,6 +13,8 @@ export default function Header() {
   const router = useRouter();
   const [isLogin, isSetLogin] = useState(false);
   const [accessToken, setAccessToken] = useRecoilState(userAtom);
+
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
 
   useEffect(() => {
     handleLogin();
@@ -31,6 +33,7 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem("recoil-persist");
     isSetLogin(false);
+    setIsLoggedIn(false);
     router.refresh();
   };
 
