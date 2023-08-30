@@ -11,7 +11,6 @@ export default async function handler(
     state: "origin:web", // Any string of your choice that you may use for some logic. It's optional and you may omit it.
     scope: "name email", // To tell apple we want the user name and emails fields in the response it sends us.
     response_mode: "form_post",
-    
   };
   const queryString = Object.entries(config).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
   const url = `https://appleid.apple.com/auth/authorize?${queryString}`

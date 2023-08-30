@@ -44,30 +44,28 @@ export default function Home() {
         },
     });
 
-useEffect(() => {
-    if (query3 && query4 && query2 == "APPLE") {
-        var qsocialtype : string = query2;
-        var qemail : string = query3;
-        var qnickname : string = query4;
-        mutationApple.mutate({
-            email: qemail,
-            nickname: qnickname,
-            socialType: "APPLE",
-            fbToken: "f2f23f23f2g34"
-        });
-        
+    useEffect(() => {
+        if (query3 && query4 && query2 == "APPLE") {
+            var qsocialtype : string = query2;
+            var qemail : string = query3;
+            var qnickname : string = query4;
+            mutationApple.mutate({
+                email: qemail,
+                nickname: qnickname,
+                socialType: "APPLE",
+                fbToken: "f2f23f23f2g34"
+            });
+        } else if (query && query2) {
+            var qa : string = query;
+            var qb : string = query2;
 
-    } else if (query && query2) {
-        var qa : string = query;
-        var qb : string = query2;
-
-        mutation.mutate({
-            accessToken: qa,
-            socialType: qb,
-            fbToken: "vsdvsdvds"
-        });
-    }
-  }, []);
+            mutation.mutate({
+                accessToken: qa,
+                socialType: qb,
+                fbToken: "vsdvsdvds"
+            });
+        }
+    }, []);
   
     
 

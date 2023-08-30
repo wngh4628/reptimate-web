@@ -9,66 +9,80 @@ import { login } from "@/api/login/login";
 import { validateEmail, validatePassword } from "../join/JoinExp";
 import { userAtom } from "@/recoil/user";
 
+import  { reGenerateTokenMutation } from "@/api/accesstoken/regenerate"
+
 export default function LoginInput() {
     const setUser = useSetRecoilState(userAtom);
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    //const [warningMsg, setWarningMsg] = useState(false);
+    const [warningMsg, setWarningMsg] = useState(false);
     
     const mutation = useMutation({
-      mutationFn: login,
-      onSuccess: (data) => {
-        // status 분기 처리
-        console.log("============================");
-        console.log("로그인 성공!");
-        console.log(data);
-        console.log(data.data);
-        var a = JSON.stringify(data.data);
-        var result = JSON.parse(a);
-        var b = JSON.stringify(result.result);
-        var result = JSON.parse(b);
-        console.log("============================");
-        setUser(result);
-        router.replace("/");
-      },
+        mutationFn: login,
+        onSuccess: (data) => {
+            console.log("로그인 시도 > "+email+" & "+password);
+            var a = JSON.stringify(data.data);
+            var result = JSON.parse(a);
+            var b = JSON.stringify(result.result);
+            var result = JSON.parse(b);
+            setUser(result);
+            router.replace("/");
+        },
+        onError: (err: { response: { status: number } }) => {
+            if(err.response.status < 600) {
+                setWarningMsg(true);
+            }
+            // if(err.response.status == 401) {
+            //     reGenerateTokenMutation.mutate({
+            //         refreshToken: ""
+            //     }, {
+            //         onSuccess: () => {
+            //           mutation.mutate({  });
+            //         },
+            //         onError: () => {
+            //             router.replace("/");
+            //             alert("로그인 만료\n다시 로그인 해주세요");
+            //         }
+            //     });
+            // }
+        },
     });
 
     const onEmailHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target as any;
         setEmail(value);
-        console.log(value);
+
     };
     const onPasswordHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target as any;
         setPassword(value);
-        console.log(value);
+
     };
     const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // 리프레시 막기
-        console.log("로그인 시도 > "+email+" & "+password);
         if (
             !email ||
             !password ||
             !validateEmail(email) ||
             !validatePassword(password)
         ) { 
-
+           setWarningMsg(true);
+        } else {
+            mutation.mutate({ email: email, password: password, fbToken: "asdfcx" });
         }
-        mutation.mutate({ email: email, password: password, fbToken: "asdfcx" });
     };
-    const config = {
+    const appleConfig = {
         client_id: "store.reptimate.web", // This is the service ID we created.
         redirect_uri: "http://web.reptimate.store/api/applelogin/callback", // As registered along with our service ID
         response_type: "code id_token",
         state: "origin:web", // Any string of your choice that you may use for some logic. It's optional and you may omit it.
         scope: "name email", // To tell apple we want the user name and emails fields in the response it sends us.
         response_mode: "form_post",
-        
-      };
-      const queryString = Object.entries(config).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
-      const url = `https://appleid.apple.com/auth/authorize?${queryString}`
+    };
+    const queryString = Object.entries(appleConfig).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+    const url = `https://appleid.apple.com/auth/authorize?${queryString}`
     
   return (
     <div className="m-o m-auto pt-16 px-0 pb-40 w-[400px]">
@@ -89,14 +103,22 @@ export default function LoginInput() {
                     className="w-full leading-5 text-base border-b-2 focus:border-b-3 border-b-gray-200 focus:border-b-main-color focus:pb-2 py-2 focus:outline-none" 
                     type="password" id="password" onChange={onPasswordHandler}></input>                       
                 </div>
-                <p className="hidden text-xs leading-4 absolute">영문, 숫자, 특수문자를 조합해서 입력해주세요. (8-16자)</p>
+                <p className="hidden text-main-color text-xs leading-4 absolute">영문, 숫자, 특수문자를 조합해서 입력해주세요. (8-16자)</p>
             </div>
-            <div className="pt-5">
-                <button
-                className="text-white inline-flex cursor-pointer items-center justify-items-center justify-center align-middle text-center bg-main-color font-bold w-full text-base trackting-[-.16px] h-14 rounded-xl"
-                type="submit">
-                로그인</button>
+            <div className="relative pt-5">
+                <div>
+                    <button
+                        className="text-white inline-flex cursor-pointer items-center justify-items-center justify-center align-middle text-center bg-main-color font-bold w-full text-base trackting-[-.16px] h-14 rounded-xl"
+                        type="submit">
+                    로그인</button>
+                </div>
+                {warningMsg ? (
+                    <p className="text-main-color text-xs leading-4 pt-2.5 justify-items-center justify-center text-center">이메일과 비밀번호를 확인후 다시 시도해 주세요</p>
+                ) : (
+                <p className="hidden text-main-color text-xs leading-4 pt-2.5 justify-items-center justify-center text-center">이메일과 비밀번호를 확인후 다시 시도해 주세요</p>
+                )}
             </div>
+            
         </form>
 
         <ul className="flex justify-evenly mt-5">
@@ -124,13 +146,6 @@ export default function LoginInput() {
                     Google로 로그인 
                 </button>
             </form>
-            {/* <form method="POST" action="/api/applelogin">
-                <button type="submit"
-                className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]" data-v-43813796 data-v-2b15bea4>
-                    <img className="h-[24px] left-[15px] absolute top-[13px] w-[24px]" src="/login/ic_apple.png" alt=""></img>
-                    Apple로 로그인 
-                </button>
-            </form> */}
             <Link href={url}
                 className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]" data-v-43813796 data-v-2b15bea4>
                     <img className="h-[24px] left-[15px] absolute top-[13px] w-[24px]" src="/login/ic_apple.png" alt=""></img>
