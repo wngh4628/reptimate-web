@@ -8,6 +8,8 @@ import { useRecoilState } from 'recoil';
 import { userAtom } from "@/recoil/user";
 
 export default function Header() {
+  const login = false; // Set this to true or false based on your logic
+  const pathName = usePathname() || "";
   const router = useRouter();
   const [isLogin, isSetLogin] = useState(false);
   const [accessToken, setAccessToken] = useRecoilState(userAtom);
