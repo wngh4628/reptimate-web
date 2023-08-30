@@ -12,6 +12,14 @@ interface FileItem {
 export default function AdoptionWrite() {
   const router = useRouter();
 
+  let userIdx: string | null = null;
+  if (typeof window !== "undefined") {
+    // Check if running on the client side
+    const storedData = localStorage.getItem("recoil-persist");
+    const userData = JSON.parse(storedData || "");
+    userIdx = userData.USER_DATA.idx;
+  }
+
   const [selectedFiles, setSelectedFiles] = useState<
     Array<{ file: File; id: number }>
   >([]);
@@ -152,15 +160,14 @@ export default function AdoptionWrite() {
   });
   const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // 리프레시 막기
-    if (
-      title == "" &&
-      price == "" &&
-      selectedGender == "" &&
-      selectedSize == "" &&
-      variety == ""
-    ) {
+
+    const headers = {
+      userIdx: userIdx || "",
+    };
+
+    {
       mutation.mutate({
-        userIdx: "userIdx",
+        userIdx: userIdx || "",
         title: title,
         category: "adoption",
         description: description,
@@ -169,13 +176,11 @@ export default function AdoptionWrite() {
         size: selectedSize || "",
         variety: variety,
       });
-    } else {
-      alert("글 작성에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.");
     }
   };
 
   return (
-    <div className="max-w-screen-sm mx-auto">
+    <div className="max-w-screen-md mx-auto">
       <PC>
         <h2 className="flex flex-col items-center justify-center text-4xl font-bold p-10">
           분양 게시글

@@ -11,11 +11,26 @@ export default function CommunityAdoptionPosts() {
   const [page, setPage] = useState(1);
   const [existNextPage, setENP] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isLogin, isSetLogin] = useState(false);
   const target = useRef(null);
 
   const options = {
     threshold: 1.0,
   };
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("recoil-persist");
+    if (storedData) {
+      const userData = JSON.parse(storedData);
+      if (userData.USER_DATA.accessToken == null) {
+        isSetLogin(false);
+      } else {
+        isSetLogin(true);
+      }
+    } else {
+      isSetLogin(false);
+    }
+  });
 
   const getItems = useCallback(async () => {
     setLoading(true);
@@ -37,7 +52,7 @@ export default function CommunityAdoptionPosts() {
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
-      // console.log(page);
+      console.log(isLogin);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -101,7 +116,7 @@ export default function CommunityAdoptionPosts() {
         </Mobile>
         <ul className="pl-10 pr-10 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
-            <li key={post.userIdx}>
+            <li key={post.idx}>
               <PostCard post={post} />
             </li>
           ))}
@@ -114,14 +129,17 @@ export default function CommunityAdoptionPosts() {
             ></div>
           </div>
         )}
-        <div className="fixed bottom-10 right-10 z-50">
-          <button
-            className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
-            onClick={handleWriteClick}
-          >
-            +
-          </button>
-        </div>
+
+        {isLogin && (
+          <div className="fixed bottom-10 right-10 z-50">
+            <button
+              className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
+              onClick={handleWriteClick}
+            >
+              +
+            </button>
+          </div>
+        )}
       </section>
     );
   } else {
