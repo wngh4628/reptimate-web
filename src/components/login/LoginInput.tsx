@@ -21,15 +21,11 @@ export default function LoginInput() {
       mutationFn: login,
       onSuccess: (data) => {
         // status 분기 처리
-        console.log("============================");
-        console.log("로그인 성공!");
-        console.log(data);
-        console.log(data.data);
+        
         var a = JSON.stringify(data.data);
         var result = JSON.parse(a);
         var b = JSON.stringify(result.result);
         var result = JSON.parse(b);
-        console.log("============================");
         setUser(result);
         router.replace("/");
       },
@@ -58,17 +54,16 @@ export default function LoginInput() {
         }
         mutation.mutate({ email: email, password: password, fbToken: "asdfcx" });
     };
-    const config = {
+    const appleConfig = {
         client_id: "store.reptimate.web", // This is the service ID we created.
         redirect_uri: "http://web.reptimate.store/api/applelogin/callback", // As registered along with our service ID
         response_type: "code id_token",
         state: "origin:web", // Any string of your choice that you may use for some logic. It's optional and you may omit it.
         scope: "name email", // To tell apple we want the user name and emails fields in the response it sends us.
         response_mode: "form_post",
-        
-      };
-      const queryString = Object.entries(config).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
-      const url = `https://appleid.apple.com/auth/authorize?${queryString}`
+    };
+    const queryString = Object.entries(appleConfig).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+    const url = `https://appleid.apple.com/auth/authorize?${queryString}`
     
   return (
     <div className="m-o m-auto pt-16 px-0 pb-40 w-[400px]">
@@ -124,13 +119,6 @@ export default function LoginInput() {
                     Google로 로그인 
                 </button>
             </form>
-            {/* <form method="POST" action="/api/applelogin">
-                <button type="submit"
-                className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]" data-v-43813796 data-v-2b15bea4>
-                    <img className="h-[24px] left-[15px] absolute top-[13px] w-[24px]" src="/login/ic_apple.png" alt=""></img>
-                    Apple로 로그인 
-                </button>
-            </form> */}
             <Link href={url}
                 className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]" data-v-43813796 data-v-2b15bea4>
                     <img className="h-[24px] left-[15px] absolute top-[13px] w-[24px]" src="/login/ic_apple.png" alt=""></img>
