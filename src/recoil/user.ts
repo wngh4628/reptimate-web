@@ -27,3 +27,8 @@ export const userAtom = atom<User | null>({
   default: null,
   effects_UNSTABLE: [persistAtom],
 });
+
+export const isLoggedInState = atom({
+  key: "isLoggedInState",
+  default: false, // Initially, the user is not logged in
+});
