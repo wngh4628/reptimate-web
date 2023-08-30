@@ -28,11 +28,16 @@ export default function JoinInput() {
     const [agreement, setagreement] = useState(false);
     const [privacy, setprivacy] = useState(false);
     const [agreeWithMarketing, setAgreeWithMarketing] = useState(false);
-    const [loginMethod, setLoginMethod] = useState("");
+
+    const [emailErrM, setemailErrM] = useState(false);
+    const [nickErrM, setnickErrM] = useState(false);
+    const [isJoinTry, setJoinTry] = useState(false);
+
 
     const onEmailHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target as any;
         setEmail(value);
+        setemailErrM(false);
     };
     const onEmailCodeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target as any;
@@ -41,6 +46,7 @@ export default function JoinInput() {
     const onNickNameHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target as any;
         setNickName(value);
+        setJoinTry(false);
     };
     const onPasswordHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target as any;
@@ -65,12 +71,19 @@ export default function JoinInput() {
         mutationFn: register,
         onSuccess: (data) => {
             // status code 분기 처리
-          console.log("============================");
-          console.log("회원가입 성공!");
-          console.log(data);
-          console.log(data.data);
-          console.log("============================");
           router.replace("/login");
+        },
+        onError: (err: { response: { status: number, data:{errorCode: string} } }) => {
+            if(err.response.status == 409) {
+                if(err.response.data.errorCode == "EXIST_EMAIL") {
+                    setemailErrM(true);
+                } else {
+                    setnickErrM(true);
+                    setJoinTry(true);
+                }
+            } else {
+
+            }
         },
     });
     const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
@@ -83,7 +96,7 @@ export default function JoinInput() {
       ) {
         mutation.mutate({
             email: email, nickName: nickName, password: password,
-            agreeWithMarketing: agreeWithMarketing, loginMethod: loginMethod
+            agreeWithMarketing: agreeWithMarketing, loginMethod: ""
         });
       } else {
         alert("회원가입에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.");
@@ -132,8 +145,13 @@ export default function JoinInput() {
                         <button type="button" onClick={onEmailSendHandler}
                         className="text-[13px] absolute right-0 t-1/2 translate-y-1/2 items-center cursor-pointer inline-flex justify-center align-middle text-cente hover:text-main-color">인증 발송</button>
                     </div>
-                    <p className="hidden">  </p>
-                    {/* <p className="block absolute leading-[16px] text-[11px] text-[#f15746]"> 에러메시지 </p> */}
+                    {!validateEmail(email) && (
+                        <p className="text-xs text-main-color">올바른 형식의 이메일을 작성해 주세요.</p>
+                    )}
+                    {!validateEmail(email) && isJoinTry && (
+                        <p className="block absolute leading-[16px] text-xs text-main-color">이미 가입한 이메일입니다.</p>
+                    )}
+                    {/* <p className=" text-[11px] text-[#f15746]"> 에러메시지 </p> */}
                 </div>
 
                 <div className="pb-[32px] relative">
@@ -144,7 +162,6 @@ export default function JoinInput() {
                         <button type="button" onClick={onEmailCodeValidateHandler}
                         className="text-[13px] absolute right-0 t-1/2 translate-y-1/2 items-center cursor-pointer inline-flex justify-center align-middle text-center hover:text-main-color">인증</button>
                     </div>
-                    <p className="input_error">  </p>
                 </div>
 
                 <div className="pb-[32px] relative">
@@ -153,7 +170,10 @@ export default function JoinInput() {
                         <input type="password" onChange={onPasswordHandler} placeholder="영문, 숫자, 특수문자 조합 8-16자"
                         className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"/>
                     </div>
-                    <p className="hidden">영문, 숫자, 특수문자를 조합하여 입력해주세요.</p>
+                    {!validatePassword(password) && (
+                        <p className="block absolute leading-[16px] text-xs text-main-color">영문, 숫자, 특수문자를 조합하여 입력해주세요.</p>
+                    )}
+                    
                 </div>
 
                 <div className="pb-[32px] relative">
@@ -162,7 +182,6 @@ export default function JoinInput() {
                         <input type="password" onChange={onCheckPasswordHandler}
                         className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"/>
                     </div>
-                    <p className="hidden">영문, 숫자, 특수문자를 조합하여 입력해주세요.</p>
                 </div>
 
                 <div className="pb-[32px] relative">
@@ -171,7 +190,9 @@ export default function JoinInput() {
                         <input type="nickname" placeholder="2-8자 이내" onChange={onNickNameHandler}
                         className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"/>
                     </div>
-                    <p className="input_error">  </p>
+                    {!nickErrM && isJoinTry && (
+                        <p className="text-xs text-main-color">중복되는 닉네임이 존재합니다.</p>
+                    )}
                 </div>
 
                 <div className="pb-[40px]">
