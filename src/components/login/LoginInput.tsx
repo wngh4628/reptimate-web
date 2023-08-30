@@ -9,50 +9,69 @@ import { login } from "@/api/login/login";
 import { validateEmail, validatePassword } from "../join/JoinExp";
 import { userAtom } from "@/recoil/user";
 
+import  { reGenerateTokenMutation } from "@/api/accesstoken/regenerate"
+
 export default function LoginInput() {
     const setUser = useSetRecoilState(userAtom);
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    //const [warningMsg, setWarningMsg] = useState(false);
+    const [warningMsg, setWarningMsg] = useState(false);
     
     const mutation = useMutation({
-      mutationFn: login,
-      onSuccess: (data) => {
-        // status 분기 처리
-        
-        var a = JSON.stringify(data.data);
-        var result = JSON.parse(a);
-        var b = JSON.stringify(result.result);
-        var result = JSON.parse(b);
-        setUser(result);
-        router.replace("/");
-      },
+        mutationFn: login,
+        onSuccess: (data) => {
+            console.log("로그인 시도 > "+email+" & "+password);
+            var a = JSON.stringify(data.data);
+            var result = JSON.parse(a);
+            var b = JSON.stringify(result.result);
+            var result = JSON.parse(b);
+            setUser(result);
+            router.replace("/");
+        },
+        onError: (err: { response: { status: number } }) => {
+            if(err.response.status < 600) {
+                setWarningMsg(true);
+            }
+            // if(err.response.status == 401) {
+            //     reGenerateTokenMutation.mutate({
+            //         refreshToken: ""
+            //     }, {
+            //         onSuccess: () => {
+            //           mutation.mutate({  });
+            //         },
+            //         onError: () => {
+            //             router.replace("/");
+            //             alert("로그인 만료\n다시 로그인 해주세요");
+            //         }
+            //     });
+            // }
+        },
     });
 
     const onEmailHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target as any;
         setEmail(value);
-        console.log(value);
+
     };
     const onPasswordHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target as any;
         setPassword(value);
-        console.log(value);
+
     };
     const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // 리프레시 막기
-        console.log("로그인 시도 > "+email+" & "+password);
         if (
             !email ||
             !password ||
             !validateEmail(email) ||
             !validatePassword(password)
         ) { 
-
+           setWarningMsg(true);
+        } else {
+            mutation.mutate({ email: email, password: password, fbToken: "asdfcx" });
         }
-        mutation.mutate({ email: email, password: password, fbToken: "asdfcx" });
     };
     const appleConfig = {
         client_id: "store.reptimate.web", // This is the service ID we created.
@@ -84,14 +103,22 @@ export default function LoginInput() {
                     className="w-full leading-5 text-base border-b-2 focus:border-b-3 border-b-gray-200 focus:border-b-main-color focus:pb-2 py-2 focus:outline-none" 
                     type="password" id="password" onChange={onPasswordHandler}></input>                       
                 </div>
-                <p className="hidden text-xs leading-4 absolute">영문, 숫자, 특수문자를 조합해서 입력해주세요. (8-16자)</p>
+                <p className="hidden text-main-color text-xs leading-4 absolute">영문, 숫자, 특수문자를 조합해서 입력해주세요. (8-16자)</p>
             </div>
-            <div className="pt-5">
-                <button
-                className="text-white inline-flex cursor-pointer items-center justify-items-center justify-center align-middle text-center bg-main-color font-bold w-full text-base trackting-[-.16px] h-14 rounded-xl"
-                type="submit">
-                로그인</button>
+            <div className="relative pt-5">
+                <div>
+                    <button
+                        className="text-white inline-flex cursor-pointer items-center justify-items-center justify-center align-middle text-center bg-main-color font-bold w-full text-base trackting-[-.16px] h-14 rounded-xl"
+                        type="submit">
+                    로그인</button>
+                </div>
+                {warningMsg ? (
+                    <p className="text-main-color text-xs leading-4 pt-2.5 justify-items-center justify-center text-center">이메일과 비밀번호를 확인후 다시 시도해 주세요</p>
+                ) : (
+                <p className="hidden text-main-color text-xs leading-4 pt-2.5 justify-items-center justify-center text-center">이메일과 비밀번호를 확인후 다시 시도해 주세요</p>
+                )}
             </div>
+            
         </form>
 
         <ul className="flex justify-evenly mt-5">
