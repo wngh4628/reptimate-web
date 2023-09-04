@@ -1,6 +1,5 @@
 import instance from "@/api/index";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 
     export const reGenerateToken = async ({
         refreshToken
@@ -16,7 +15,19 @@ import { useRouter } from "next/navigation";
         return result;
     };
     
-    export const reGenerateTokenMutation = useMutation({
+    // export const reGenerateTokenMutation = useMutation({
+    //     mutationFn: reGenerateToken,
+    //     onSuccess: (data) => {
+    //       var a = JSON.stringify(data.data);
+    //       var result = JSON.parse(a);
+    //       var b = JSON.stringify(result.result);
+    //       var result = JSON.parse(b);
+    //       //setUser(result);
+    //     },
+    // });
+
+    export function useReGenerateTokenMutation() {
+      return useMutation({
         mutationFn: reGenerateToken,
         onSuccess: (data) => {
           var a = JSON.stringify(data.data);
@@ -25,6 +36,7 @@ import { useRouter } from "next/navigation";
           var result = JSON.parse(b);
           //setUser(result);
         },
-    });
+      });
+    }
 
 
