@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { Mobile, PC } from "../ResponsiveLayout";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { adoptionWrite } from "@/api/adoption/adoptionWrite";
 import { useRouter } from "next/navigation";
@@ -12,16 +12,28 @@ interface FileItem {
 export default function AdoptionWrite() {
   const router = useRouter();
 
+  let userIdx: string | null = null;
+  let userAccessToken: string | null = null;
+  if (typeof window !== "undefined") {
+    // Check if running on the client side
+    const storedData = localStorage.getItem("recoil-persist");
+    const userData = JSON.parse(storedData || "");
+    userIdx = userData.USER_DATA.idx;
+    userAccessToken = userData.USER_DATA.accessToken;
+  }
+
   const [selectedFiles, setSelectedFiles] = useState<
     Array<{ file: File; id: number }>
   >([]);
   const [selectedGender, setSelectedGender] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [birthDate, setBirthDate] = useState<string>("");
 
   const [title, setTitle] = useState("");
   const [variety, setVariety] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
+  const [pattern, setPattern] = useState("");
 
   const handleGenderClick = (gender: string) => {
     setSelectedGender(gender);
@@ -29,6 +41,11 @@ export default function AdoptionWrite() {
 
   const handleSizeClick = (size: string) => {
     setSelectedSize(size);
+  };
+
+  const handleDateChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newDate = event.target.value;
+    setBirthDate(newDate);
   };
 
   const [showFileLimitWarning, setShowFileLimitWarning] = useState(false);
@@ -141,41 +158,62 @@ export default function AdoptionWrite() {
   const mutation = useMutation({
     mutationFn: adoptionWrite,
     onSuccess: (data) => {
-      // status code 분기 처리
       console.log("============================");
-      console.log("글 작성 성공!");
+      console.log("Successful writing of post!");
       console.log(data);
       console.log(data.data);
       console.log("============================");
-      router.replace("/board");
+      router.replace("/");
     },
   });
   const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // 리프레시 막기
+    e.preventDefault();
+
+    const requestData = {
+      userIdx: userIdx || "",
+      title: title,
+      category: "adoption",
+      description: description,
+      price: price,
+      gender: selectedGender || "",
+      size: selectedSize || "",
+      variety: variety,
+      pattern: pattern,
+      birthDate: birthDate,
+      userAccessToken: userAccessToken || "",
+    };
+
     if (
-      title == "" &&
-      price == "" &&
-      selectedGender == "" &&
-      selectedSize == "" &&
-      variety == ""
+      title !== "" &&
+      price !== "" &&
+      selectedGender !== "" &&
+      selectedSize !== "" &&
+      variety !== "" &&
+      pattern !== "" &&
+      birthDate !== ""
     ) {
-      mutation.mutate({
-        userIdx: "userIdx",
-        title: title,
-        category: "adoption",
-        description: description,
-        price: price,
-        gender: selectedGender || "",
-        size: selectedSize || "",
-        variety: variety,
-      });
+      mutation.mutate(requestData);
     } else {
-      alert("글 작성에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.");
+      // Create a list of missing fields
+      const missingFields = [];
+      if (title === "") missingFields.push("제목");
+      if (variety === "") missingFields.push("품종");
+      if (pattern === "") missingFields.push("패턴");
+      if (birthDate === "") missingFields.push("생년월일");
+      if (selectedGender === "" || "null") missingFields.push("성별");
+      if (selectedSize === "" || "null") missingFields.push("크기");
+      if (price === "") missingFields.push("가격");
+
+      // Create the alert message based on missing fields
+      let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
+      alertMessage += missingFields.join(", ");
+
+      alert(alertMessage);
     }
   };
 
   return (
-    <div className="max-w-screen-sm mx-auto">
+    <div className="max-w-screen-md mx-auto">
       <PC>
         <h2 className="flex flex-col items-center justify-center text-4xl font-bold p-10">
           분양 게시글
@@ -216,52 +254,72 @@ export default function AdoptionWrite() {
         </label>
       </div>
       <div className="mt-4 flex flex-col">
-        <p className="font-bold text-xl my-2 ml-3">제목</p>
+        <p className="font-bold text-xl my-2">제목</p>
         <input
           type="text"
           placeholder="제목을 입력해주세요."
-          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full ml-3"
+          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
-        <p className="font-bold text-xl my-2 ml-3">품종</p>
+        <p className="font-bold text-xl my-2">품종</p>
         <input
           type="text"
           placeholder="품종을 입력해주세요."
-          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full ml-3"
+          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          value={variety}
+          onChange={(e) => setVariety(e.target.value)}
         />
-        <p className="font-bold text-xl my-2 ml-3">성별</p>
+        <p className="font-bold text-xl my-2">패턴</p>
+        <input
+          type="text"
+          placeholder="패턴을 입력해주세요."
+          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          value={pattern}
+          onChange={(e) => setPattern(e.target.value)}
+        />
+        <p className="font-bold text-xl my-2">생년월일</p>
+        <input
+          type="date"
+          placeholder="선택해주세요."
+          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          value={birthDate}
+          onChange={handleDateChange}
+        />
+        <p className="font-bold text-xl my-2">성별</p>
         <div className="flex flex-row items-center justify-center">
           <button
             className={`w-52 py-2 rounded ${
-              selectedGender === "male"
+              selectedGender === "수컷"
                 ? "bg-gender-male-dark-color"
                 : "bg-gender-male-color"
             } text-lg text-white font-bold`}
-            onClick={() => handleGenderClick("male")}
+            onClick={() => handleGenderClick("수컷")}
           >
             수컷
           </button>
           <button
             className={`w-52 py-2 rounded ${
-              selectedGender === "female"
+              selectedGender === "암컷"
                 ? "bg-gender-female-dark-color"
                 : "bg-gender-female-color"
             } text-lg text-white font-bold`}
-            onClick={() => handleGenderClick("female")}
+            onClick={() => handleGenderClick("암컷")}
           >
             암컷
           </button>
           <button
             className={`w-52 py-2 rounded ${
-              selectedGender === "none"
+              selectedGender === "미구분"
                 ? "bg-gender-none-dark-color"
                 : "bg-gender-none-color"
             } text-lg text-white font-bold`}
-            onClick={() => handleGenderClick("none")}
+            onClick={() => handleGenderClick("미구분")}
           >
             미구분
           </button>
         </div>
-        <p className="font-bold text-xl my-2 ml-3">크기</p>
+        <p className="font-bold text-xl my-2">크기</p>
         <div className="flex flex-row items-center justify-center">
           <button
             className={`w-36 py-2 mx-0.5 rounded ${
@@ -302,17 +360,21 @@ export default function AdoptionWrite() {
             성체
           </button>
         </div>
-        <p className="font-bold text-xl my-2 ml-3">가격</p>
+        <p className="font-bold text-xl my-2">가격</p>
         <input
           type="number"
           placeholder="가격을 입력해주세요. (원)"
-          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full ml-3"
+          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
         />
-        <p className="font-bold text-xl my-2 ml-3">내용</p>
+        <p className="font-bold text-xl my-2">내용</p>
         <input
           type="text"
           placeholder="내용을 입력해주세요."
-          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full ml-3"
+          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
       </div>
       <form onSubmit={onSubmitHandler}>

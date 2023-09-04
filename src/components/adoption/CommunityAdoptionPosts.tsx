@@ -5,12 +5,15 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import PostCard from "./AdoptionPostCard";
 import { Mobile, PC } from "../ResponsiveLayout";
+import { useRecoilValue } from "recoil";
+import { isLoggedInState } from "@/recoil/user";
 
 export default function CommunityAdoptionPosts() {
   const [data, setData] = useState<getResponse | null>(null);
   const [page, setPage] = useState(1);
   const [existNextPage, setENP] = useState(false);
   const [loading, setLoading] = useState(false);
+  const isLogin = useRecoilValue(isLoggedInState);
   const target = useRef(null);
 
   const options = {
@@ -37,7 +40,7 @@ export default function CommunityAdoptionPosts() {
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
-      // console.log(page);
+      console.log(isLogin);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -101,7 +104,7 @@ export default function CommunityAdoptionPosts() {
         </Mobile>
         <ul className="pl-10 pr-10 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
-            <li key={post.userIdx}>
+            <li key={post.idx}>
               <PostCard post={post} />
             </li>
           ))}
@@ -114,14 +117,17 @@ export default function CommunityAdoptionPosts() {
             ></div>
           </div>
         )}
-        <div className="fixed bottom-10 right-10 z-50">
-          <button
-            className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
-            onClick={handleWriteClick}
-          >
-            +
-          </button>
-        </div>
+
+        {isLogin && (
+          <div className="fixed bottom-10 right-10 z-50">
+            <button
+              className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
+              onClick={handleWriteClick}
+            >
+              +
+            </button>
+          </div>
+        )}
       </section>
     );
   } else {

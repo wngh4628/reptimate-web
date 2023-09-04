@@ -77,7 +77,15 @@ export default function PostCard({
         <PC>
           <div className="flex items-center">
             <p className="font-bold text-lg ml-1">{price}원</p>
-            <p className="text-xs mx-1 text-white bg-gender-female-color p-1 rounded font-bold">
+            <p
+              className={`text-xs mx-1 text-white p-1 rounded font-bold ${
+                gender === "수컷"
+                  ? "bg-gender-male-color"
+                  : gender === "암컷"
+                  ? "bg-gender-female-color"
+                  : "bg-gray-400"
+              }`}
+            >
               {gender}
             </p>
             <p className="text-xs mx-1 text-white bg-gray-400 p-1 rounded font-bold">
