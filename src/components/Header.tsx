@@ -14,7 +14,6 @@ export default function Header() {
   const [isLogin, isSetLogin] = useState(false);
   const [accessToken, setAccessToken] = useRecoilState(userAtom);
 
-  const pathName = usePathname();
 
   useEffect(() => {
    handleLogin();

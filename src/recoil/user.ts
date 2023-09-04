@@ -22,7 +22,6 @@ export interface UserData {
   }
 }
 
-
 export const userAtom = atom<User | null>({
   key: "USER_DATA",
   default: null,

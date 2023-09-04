@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import { userAtom } from "@/recoil/user";
 import { useEffect } from "react";
 import * as jwt from 'jsonwebtoken';
-import * as fs from 'fs'
 
 
 export default async function handle(
