@@ -33,7 +33,6 @@ export default async function handle(
 
       const redirectUrl = `/login/social?access_token=${access_token}&socialType=KAKAO`;
 
-
       //사용자 정보 조회하기(이메일이랑 프로필 이미지 검색)
       const infoResult = await axios.post(
         "https://kapi.kakao.com/v2/user/me",
