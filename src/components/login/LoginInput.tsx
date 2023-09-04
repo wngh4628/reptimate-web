@@ -9,11 +9,12 @@ import { login } from "@/api/login/login";
 import { validateEmail, validatePassword } from "../join/JoinExp";
 import { isLoggedInState, userAtom } from "@/recoil/user";
 
-import { reGenerateTokenMutation } from "@/api/accesstoken/regenerate";
+import { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate";
 
 export default function LoginInput() {
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+  const reGenerateTokenMutation = useReGenerateTokenMutation();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

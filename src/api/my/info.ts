@@ -5,13 +5,11 @@ export const getAccountInfo = async ({
   }: {
     accessToken: string;
   }) => {
-    const data = {
-    };
     const headers = {
-      Authorization: 'Bearer '+{accessToken},
+      Authorization: 'Bearer ${accessToken}',
       'Content-Type': 'application/json'
     };
-    const result = await instance.post("/users/me", data, {headers});
+    const result = await instance.get("/users/me", {headers});
   
     return result;
   };
