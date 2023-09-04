@@ -2,11 +2,6 @@ import instance from "@/api/index";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
-
-
-
-
-
     export const reGenerateToken = async ({
         refreshToken
       }: {

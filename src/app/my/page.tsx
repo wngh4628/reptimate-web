@@ -1,3 +1,12 @@
+import MypageMenu from '@/components/mypage/MypageMenu'
+
+
 export default function MyPage() {
-  return <p>마이 페이지</p>;
+  return (
+    <div>
+      <MypageMenu></MypageMenu>
+      
+        
+    </div>
+);
 }
