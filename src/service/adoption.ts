@@ -62,3 +62,45 @@ export type Adpotion = {
   variety: string;
   state: string;
 };
+
+export interface GetAdoptionPostsView {
+  status: number;
+  message: string;
+  result: {
+    idx: number;
+    view: number;
+    userIdx: number;
+    title: string;
+    category: string;
+    description: string;
+    writeDate: string;
+    images: Array<{
+      idx: number;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: string | null;
+      boardIdx: number;
+      category: string;
+      mediaSequence: number;
+      path: string;
+      coverImgPath: string | null;
+    }>;
+    UserInfo: {
+      idx: number;
+      nickname: string;
+      profilePath: string;
+    };
+    boardCommercial: {
+      idx: number;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: string | null;
+      boardIdx: number;
+      price: number;
+      gender: string;
+      size: string;
+      variety: string;
+      state: string;
+    };
+  };
+}

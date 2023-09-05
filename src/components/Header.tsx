@@ -35,6 +35,7 @@ export default function Header() {
     isSetLogin(false);
     setIsLoggedIn(false);
     router.refresh();
+    window.location.reload();
   };
 
   const communityPathnames = [
