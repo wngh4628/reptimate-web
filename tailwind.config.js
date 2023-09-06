@@ -17,5 +17,10 @@ module.exports = {
       },
     },
   },
-  plugins: [[require('@tailwindcss/typography')]],
+  corePlugins: {
+    aspectRatio: false,
+  },
+  plugins: [
+    [require("@tailwindcss/aspect-ratio"), require("@tailwindcss/typography")],
+  ],
 };

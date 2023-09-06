@@ -104,3 +104,12 @@ export interface GetAdoptionPostsView {
     };
   };
 }
+
+export type Images = {
+  idx: number;
+  createdAt: string;
+  updatedAt: string;
+  boardIdx: number;
+  category: string;
+  path: string;
+};
