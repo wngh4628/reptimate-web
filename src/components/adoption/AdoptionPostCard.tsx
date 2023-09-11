@@ -25,7 +25,10 @@ export default function PostCard({
   return (
     <div>
       <div className="ml-5 mr-5 relative">
-        <Link href={`/posts/${idx}`}>
+        <Link
+          href="/community/adoption/posts/[idx]"
+          as={`/community/adoption/posts/${idx}`}
+        >
           <article className="flex flex-col items-center">
             <PC>
               <div className="relative w-[350px] h-[350px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">

@@ -6,14 +6,14 @@ import axios from "axios";
 import PostCard from "./AdoptionPostCard";
 import { Mobile, PC } from "../ResponsiveLayout";
 import { useRecoilValue } from "recoil";
-import { isLoggedInState } from "@/recoil/user";
+import { isLoggedInState, userAtom } from "@/recoil/user";
 
-export default function CommunityAdoptionPosts() {
+export default function AdoptionPosts() {
   const [data, setData] = useState<getResponse | null>(null);
   const [page, setPage] = useState(1);
   const [existNextPage, setENP] = useState(false);
   const [loading, setLoading] = useState(false);
-  const isLogin = useRecoilValue(isLoggedInState);
+  const isLogin = useRecoilValue(userAtom);
   const target = useRef(null);
 
   const options = {
@@ -84,7 +84,12 @@ export default function CommunityAdoptionPosts() {
       title: item.title,
       category: item.category,
       writeDate: new Date(item.writeDate),
-      coverImage: item.images[0]?.coverImgPath || "",
+      coverImage:
+        item.images[0]?.category === "img"
+          ? item.images[0]?.path || ""
+          : item.images[0]?.category === "video"
+          ? item.images[0]?.coverImgPath || ""
+          : "",
       nickname: item.UserInfo.nickname,
       profilePath: item.UserInfo.profilePath,
       price: item.boardCommercial.price,

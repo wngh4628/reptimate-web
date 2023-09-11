@@ -34,7 +34,8 @@ export default function Header() {
     localStorage.removeItem("recoil-persist");
     isSetLogin(false);
     setIsLoggedIn(false);
-    router.replace("/");
+    router.refresh();
+    window.location.reload();
   };
 
   const communityPathnames = [

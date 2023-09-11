@@ -12,6 +12,7 @@ export const adoptionWrite = async ({
   pattern,
   birthDate,
   userAccessToken,
+  fileUrl,
 }: {
   userIdx: string;
   title: string;
@@ -24,6 +25,7 @@ export const adoptionWrite = async ({
   pattern: string;
   birthDate: string;
   userAccessToken: string;
+  fileUrl: String;
 }) => {
   const data = {
     userIdx: userIdx,
@@ -36,6 +38,7 @@ export const adoptionWrite = async ({
     variety: variety,
     pattern: pattern,
     birthDate: birthDate,
+    fileUrl: fileUrl,
   };
 
   const headers = {
