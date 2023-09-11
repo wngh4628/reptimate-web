@@ -6,7 +6,7 @@ type CommentFormProps = {
   onChange: (value: string) => void;
 };
 
-const ReplyForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
+const CommentForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
   const [comment, setComment] = useState<string>("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -24,7 +24,7 @@ const ReplyForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
           <input
             id="comment"
             name="comment"
-            placeholder="답글을 작성해주세요."
+            placeholder="댓글을 남겨보세요."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             className="flex-grow border-2 border-gray-400 p-3 rounded-md"
@@ -44,4 +44,4 @@ const ReplyForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
   );
 };
 
-export default ReplyForm;
+export default CommentForm;

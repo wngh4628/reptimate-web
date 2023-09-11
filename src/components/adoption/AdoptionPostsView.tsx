@@ -1,21 +1,18 @@
 import { GetAdoptionPostsView, Images, getResponse } from "@/service/adoption";
 import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import VideoPlayer from "../VideoPlayer";
 import { Mobile, PC } from "../ResponsiveLayout";
 import ImageSlider from "./ImageSlider";
-import CommentForm from "../CommentForm";
 import { useMutation } from "@tanstack/react-query";
 import { commentWrtie } from "@/api/comment";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "@/recoil/user";
 import { Comment, getCommentResponse } from "@/service/comment";
-import CommentCard from "../CommentCard";
+import CommentCard from "../comment/CommentCard";
+import CommentForm from "../comment/CommentForm";
 
 export default function AdoptionPostsView() {
-  const router = useRouter();
-
   const params = useParams();
   const idx = params?.idx;
 
@@ -32,12 +29,20 @@ export default function AdoptionPostsView() {
 
   const [commentFormValue, setCommentFormValue] = useState<string>(""); // 댓글 작성 후, 댓글 폼 불러오기 위한 변수
 
+  const [commentList, setCommentList] = useState<Comment[]>();
+
   let userAccessToken: string | null = null;
+  let currentUserIdx: number | null = null;
+  let userProfilePath: string | null = null;
+  let userNickname: string | null = null;
   if (typeof window !== "undefined") {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
     const userData = JSON.parse(storedData || "");
+    currentUserIdx = userData.USER_DATA.idx;
     userAccessToken = userData.USER_DATA.accessToken;
+    userProfilePath = userData.USER_DATA.profilePath;
+    userNickname = userData.USER_DATA.nickname;
   }
 
   const options = {
@@ -93,6 +98,26 @@ export default function AdoptionPostsView() {
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
+
+      // 댓글 데이터를 받은 후에 댓글 리스트를 업데이트
+      const newComments = response.data.result.items.map((item: any) => ({
+        idx: item.idx,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        deletedAt: item.deletedAt,
+        userIdx: item.UserInfo.idx,
+        boardIdx: item.boardIdx,
+        boardState: item.boardState,
+        filePath: item.filePath,
+        description: item.description,
+        replyCnt: item.replyCnt,
+        nickname: item.UserInfo.nickname,
+        profilePath: item.UserInfo.profilePath,
+      }));
+      setCommentList((prevCommentList) => [
+        ...(prevCommentList || []),
+        ...newComments,
+      ]);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -123,6 +148,7 @@ export default function AdoptionPostsView() {
     };
   }, [getCommentData, existNextPage, loading, options]);
 
+  //댓글 작성 성공 시,
   const mutation = useMutation({
     mutationFn: commentWrtie,
     onSuccess: (data) => {
@@ -131,9 +157,24 @@ export default function AdoptionPostsView() {
       console.log(data);
       console.log(data.data);
       console.log("============================");
-      setPage(1); // 페이지 초기화
-      setCommentData(null); // 댓글 데이터 초기화
-      getCommentData(); // 새로운 댓글 데이터 불러오기
+      const newComment: Comment = {
+        idx: data.data.result.idx,
+        createdAt: data.data.result.createdAt,
+        updatedAt: data.data.result.updatedAt,
+        deletedAt: data.data.result.deletedAt,
+        userIdx: data.data.result.userIdx,
+        boardIdx: data.data.result.boardIdx,
+        boardState: data.data.result.boardState,
+        filePath: null,
+        description: data.data.result.description,
+        replyCnt: data.data.result.replyCnt,
+        nickname: userNickname || "",
+        profilePath: userProfilePath || "",
+      };
+      setCommentList((prevCommentList) => [
+        newComment,
+        ...(prevCommentList || []),
+      ]);
     },
   });
 
@@ -172,111 +213,87 @@ export default function AdoptionPostsView() {
       }
     };
 
-    if (commentData !== null && commentData.result.items) {
-      const commentList: Comment[] = commentData.result.items.map((item) => ({
-        idx: item.idx,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
-        deletedAt: item.deletedAt,
-        userIdx: item.UserInfo.idx,
-        boardIdx: item.boardIdx,
-        boardState: item.boardState,
-        filePath: item.filePath,
-        description: item.description,
-        replyCnt: item.replyCnt,
-        nickname: item.UserInfo.nickname,
-        profilePath: item.UserInfo.profilePath,
-      }));
-
-      return (
-        <div>
-          {post && (
-            <div className="max-w-screen-sm mx-auto">
-              <PC>
-                <h2 className="text-4xl font-bold pt-10">{post.title}</h2>
-                <div className="flex items-center my-2">
-                  <img
-                    className="w-10 h-10 rounded-full border-2"
-                    src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
-                    alt=""
-                  />
-                  <p className="text-xl font-bold ml-1">
-                    {post.UserInfo.nickname}
-                  </p>
-                  <p className="ml-2 text-gray-500">{postWriteDate}</p>
-                  <p className="ml-1 text-gray-500">{postWriteTime}</p>
+    return (
+      <div>
+        {post && (
+          <div className="max-w-screen-sm mx-auto">
+            <PC>
+              <h2 className="text-4xl font-bold pt-10">{post.title}</h2>
+              <div className="flex items-center my-2">
+                <img
+                  className="w-10 h-10 rounded-full border-2"
+                  src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
+                  alt=""
+                />
+                <p className="text-xl font-bold ml-1">
+                  {post.UserInfo.nickname}
+                </p>
+                <p className="ml-2 text-gray-500">{postWriteDate}</p>
+                <p className="ml-1 text-gray-500">{postWriteTime}</p>
+                <p className="ml-2 text-gray-500">조회 {post.view}</p>
+              </div>
+              <ImageSlider imageUrls={itemlist} />
+              <div className="flex flex-row items-center py-3">
+                <p className="text-lg font-semibold ml-5">판매가격</p>
+                <p className="text-xl font-bold ml-auto mr-5">
+                  {post.boardCommercial.price.toLocaleString()}원
+                </p>
+              </div>
+              <div className="flex flex-row items-center justify-center">
+                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 text-lg font-bold">품종</p>
+                  <p className="pb-1 text-lg">{post.boardCommercial.variety}</p>
                 </div>
-                <ImageSlider imageUrls={itemlist} />
-                <div className="flex flex-row items-center py-3">
-                  <p className="text-lg font-semibold ml-5">판매가격</p>
-                  <p className="text-xl font-bold ml-auto mr-5">
-                    {post.boardCommercial.price}원
-                  </p>
+                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 text-lg font-bold">성별</p>
+                  <p className="pb-1 text-lg">{post.boardCommercial.gender}</p>
                 </div>
-                <div className="flex flex-row items-center justify-center">
-                  <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                    <p className="pt-1 text-lg font-bold">품종</p>
-                    <p className="pb-1 text-lg">
-                      {post.boardCommercial.variety}
-                    </p>
-                  </div>
-                  <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                    <p className="pt-1 text-lg font-bold">성별</p>
-                    <p className="pb-1 text-lg">
-                      {post.boardCommercial.gender}
-                    </p>
-                  </div>
-                  <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                    <p className="pt-1 text-lg font-bold">크기</p>
-                    <p className="pb-1 text-lg">{post.boardCommercial.size}</p>
-                  </div>
+                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 text-lg font-bold">크기</p>
+                  <p className="pb-1 text-lg">{post.boardCommercial.size}</p>
                 </div>
-                <p className="text-lg my-7">{post.description}</p>
-                <hr className="border-t border-gray-300 my-1" />
-                <div className="flex flex-row items-center py-3">
-                  <p className="text-lg font-semibold ml-3 mr-2">댓글</p>
-                  <p className="text-xl font-bold text-gender-none-color">
-                    &gt;
-                  </p>
-                </div>
-                <div>
-                  <CommentForm
-                    value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
-                    onSubmit={handleCommentSubmit}
-                    onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
-                  />
-                </div>
-              </PC>
-              <Mobile>
-                <h2 className="text-xl font-bold pl-12 pt-4 pb-4">
-                  {post.title}
-                </h2>
-              </Mobile>
-              <ul className="mt-6">
-                {commentList.map((comment) => (
+              </div>
+              <p className="text-lg my-7">{post.description}</p>
+              <hr className="border-t border-gray-300 my-1" />
+              <div className="flex flex-row items-center py-3">
+                <p className="text-lg font-semibold ml-3 mr-2">댓글</p>
+                <p className="text-xl font-bold text-gender-none-color">&gt;</p>
+              </div>
+              <div>
+                <CommentForm
+                  value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
+                  onSubmit={handleCommentSubmit}
+                  onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
+                />
+              </div>
+            </PC>
+            <Mobile>
+              <h2 className="text-xl font-bold pl-12 pt-4 pb-4">
+                {post.title}
+              </h2>
+            </Mobile>
+            <ul className="mt-6">
+              {commentList !== null && commentList ? (
+                commentList.map((comment) => (
                   <li key={comment.idx}>
                     <CommentCard comment={comment} />
                   </li>
-                ))}
-              </ul>
-              {existNextPage && (
-                <div className="flex justify-center">
-                  <div
-                    className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"
-                    ref={target}
-                  ></div>
-                </div>
+                ))
+              ) : (
+                <li></li>
               )}
-            </div>
-          )}
-        </div>
-      );
-    } else {
-      return (
-        <div className="flex items-center justify-center h-screen">
-          <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
-        </div>
-      );
-    }
+            </ul>
+            {existNextPage && (
+              <div className="flex justify-center">
+                <div
+                  className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"
+                  ref={target}
+                ></div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
   }
 }
