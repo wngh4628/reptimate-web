@@ -1,5 +1,8 @@
 import instance from "@/api/index";
 import { useMutation } from "@tanstack/react-query";
+import { useSetRecoilState } from "recoil";
+import { userAtom, isLoggedInState } from "@/recoil/user";
+
 
     export const reGenerateToken = async ({
         refreshToken
@@ -12,29 +15,24 @@ import { useMutation } from "@tanstack/react-query";
         // const config = {"Content-Type": 'application/json'};
         const result = await instance.post("/auth/token", data);
     
-        return result;
+        return result.data.result.accessToken;
     };
-    
-    // export const reGenerateTokenMutation = useMutation({
-    //     mutationFn: reGenerateToken,
-    //     onSuccess: (data) => {
-    //       var a = JSON.stringify(data.data);
-    //       var result = JSON.parse(a);
-    //       var b = JSON.stringify(result.result);
-    //       var result = JSON.parse(b);
-    //       //setUser(result);
-    //     },
-    // });
 
     export function useReGenerateTokenMutation() {
+      const setUser = useSetRecoilState(userAtom);
       return useMutation({
         mutationFn: reGenerateToken,
-        onSuccess: (data) => {
-          var a = JSON.stringify(data.data);
-          var result = JSON.parse(a);
-          var b = JSON.stringify(result.result);
-          var result = JSON.parse(b);
-          //setUser(result);
+        onSuccess: (accessToken) => {
+
+          setUser((prevUser) => {
+            if (prevUser) {
+              return { ...prevUser, accessToken };
+            }
+            return prevUser;
+          });
+
+
+          
         },
       });
     }

@@ -24,7 +24,7 @@ export const register = async ({ email, nickName, password, loginMethod, agreeWi
 
 export const emailSend = async ({ email, type}:  {
     email: string;
-    type: string;
+    type?: string;
   }) => {
     const data = {
         'email' : email,
@@ -35,13 +35,18 @@ export const emailSend = async ({ email, type}:  {
   return result;
 };
 
-export const nickNameChk = async ({ nickname }:  {
+export const nickNameChk = async ({ nickname, accessToken }:  {
     nickname: string;
+    accessToken: string
   }) => {
     const data = {
-        'nickname' : nickname
-      };
-  const result = await instance.post("/users/nickname", data);
+      'nickname' : nickname
+    };
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    };
+  const result = await instance.post("/users/nickname", data, {headers});
 
   return result;
 };

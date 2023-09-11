@@ -5,7 +5,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
-import { getAccountInfo } from "@/api/my/info";
 import { userAtom, isLoggedInState } from "@/recoil/user";
 import { Mobile, PC } from "@/components/ResponsiveLayout";
 
@@ -34,49 +33,49 @@ export default function MypageMenu() {
         const storedData = localStorage.getItem('recoil-persist');
         if (storedData) {
             const userData = JSON.parse(storedData);
-            if (userData.USER_DATA.accessToken != null) {
+            if (userData.USER_DATA.accessToken) {
                 setAccessToken(userData.USER_DATA.accessToken);
             }
+        } else {
+            router.replace("/");
+            alert("로그인이 필요한 기능입니다.");
         }
     };
-    
-
-    
     
   return (
     <div className="flex">
       <PC>
-        <div className="flex w-[235px] drop-shadow">
+        <div className="flex w-[235px] drop-shadow-md">
           <nav className="flex flex-col font-bold w-full">
             <Link
               href="/my"
               className={`${
-                pathName === "/my" ? "bg-[#6D71E6] text-white" : "hover:text-[#6D71E6]"
-              } group bg-white border-b-[1px] h-[60px] flex items-center pl-2`}
+                pathName === "/my" ? "bg-[#6D71E6] text-white" : "hover:text-[#6D71E6] bg-white"
+              } group  border-b-[1px] h-[60px] flex items-center pl-2`}
             >
               내 정보 수정
             </Link>
             <Link
               href="/my/board"
               className={`${
-                pathName === "/my/board" ? "text-white bg-main-color" : "hover:text-[#6D71E6]"
-              } group  bg-white border-b-[1px] h-[60px] flex items-center pl-2`}
+                pathName === "/my/board" ? "bg-[#6D71E6] text-white" : "hover:text-[#6D71E6] bg-white"
+              } group border-b-[1px] h-[60px] flex items-center pl-2`}
             >
               내가 쓴 글
             </Link>
             <Link
               href="/my/auction"
               className={`${
-                pathName === "/my/auction" ? "text-[#6D71E6]" : "hover:text-[#6D71E6]"
-              } group  bg-white border-b-[1px] h-[60px] flex items-center pl-2`}
+                pathName === "/my/auction" ? "text-white bg-[#6D71E6]" : "hover:text-[#6D71E6] bg-white"
+              } group border-b-[1px] h-[60px] flex items-center pl-2`}
             >
               내 경매
             </Link>
             <Link
               href="/my/bookmark"
               className={`${
-                pathName === "/my/bookmark" ? "text-[#6D71E6]" : "hover:text-[#6D71E6]"
-              } group  bg-white h-[60px] flex items-center pl-2`}
+                pathName === "/my/bookmark" ? "text-white bg-[#6D71E6]" : "hover:text-[#6D71E6] bg-white"
+              } group  h-[60px] flex items-center pl-2`}
             >
               북마크
             </Link>
@@ -85,13 +84,13 @@ export default function MypageMenu() {
       </PC>
 
       <Mobile>
-        <div className="flex mb-[25px] drop-shadow-sm items-center justify-center content-center m-auto w-full">
+        <div className="flex mb-[25px] drop-shadow-md items-center justify-center content-center m-auto w-full border-[1px]">
             <nav className="flex font-bold w-full">
                 <Link
                   href="/my"
                   className={`${
                     pathName === "/my" ? "bg-[#6D71E6] text-white" : "hover:text-[#6D71E6] "
-                  } group  bg-white h-[50px] flex items-center justify-center text-center px-5 border-r-[1px] w-1/4`}
+                  } group  bg-white h-[50px] flex items-center justify-center text-center px-3 border-r-[1px] w-1/4`}
                 >
                   내 정보 수정
                 </Link>
@@ -99,7 +98,7 @@ export default function MypageMenu() {
                   href="/my/board"
                   className={`${
                     pathName === "/my/board" ? "bg-[#6D71E6] text-white" : "hover:text-[#6D71E6]"
-                  } group  bg-white h-[50px] flex items-center justify-center text-center px-5 border-r-[1px] w-1/4`}
+                  } group  bg-white h-[50px] flex items-center justify-center text-center px-3 border-r-[1px] w-1/4`}
                 >
                   내가 쓴 글
                 </Link>
