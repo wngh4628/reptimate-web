@@ -83,8 +83,9 @@ export default function EditProfileInput() {
                             },
                             onError: () => {
                                 router.replace("/");
+                                setIsLoggedIn(false)
                                 // 
-                                alert("로그인 만료\n다시 로그인 해주세요\n 에메메");
+                                alert("로그인 만료\n다시 로그인 해주세요");
                             }
                         });
                     } else {

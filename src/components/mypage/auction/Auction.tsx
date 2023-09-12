@@ -10,7 +10,7 @@ import { userAtom, isLoggedInState } from "@/recoil/user";
 import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
 import axios from "axios";
 
-import { getResponseAuction, Auction, getResponseBid, Bid } from "@/service/auction";
+import { getResponseAuction, Auction, getResponseBid, Bid } from "@/service/my/auction";
 
 import AuctionItem from "./AuctionItem";
 import AuctionBidItem from "./AuctionBidItem";
@@ -28,41 +28,54 @@ export default function AuctionList() {
     const [replyPage, setReplyPage] = useState(1);
 
     const [existNextPage, setENP] = useState(false);
-    //const isLogin = useRecoilValue(isLoggedInState);s
+    //const isLogin = useRecoilValue(isLoggedInState);
     const target = useRef(null);
     const [loading, setLoading] = useState(false);
 
     const [accessToken, setAccessToken] = useState("");
 
-    const [myBoardType, setMyBoardType] = useState(true);
-    const pathName = usePathname() || "";
 
+    const [myAuctionType, setMyAuctionType] = useState(0);
+
+    
+    const pathName = usePathname() || "";
     const options = {
         threshold: 1.0,
     };
 
-    function onMyBoardTypeChange() {
-        if (myBoardType){
-            setMyBoardType(false);
+    function onMyAuctionTypeChange() {
+        if (myAuctionType == 0){
+            
             setReplyPage(1)
+
             setReplyData(null)
-        } else {
-            setMyBoardType(true);
-            setBoardPage(1)
-            setData(null)
+            setMyAuctionType(1)
+            // console.log("myAuctionType  :  "+ myAuctionType);
         }
-        console.log("myBoardType  :  "+ myBoardType);
+
+    }
+    function onMyAuctionTypeChange2() {
+        if (myAuctionType == 1) {
+            
+            setBoardPage(1)
+
+            setData(null)
+            setMyAuctionType(0)
+            // console.log("myAuctionType  :  "+ myAuctionType);
+        }
+        
     }
 
-    const getItems = useCallback(async (accessToken: any) => {
+    const getItems = useCallback(async (accessToken: any, myAuctionType: number ) => {
         setLoading(true);
         try {
+            console.log("myAuctionType  :  "+ myAuctionType);
             const config = {
                 headers: {
                   Authorization: `Bearer ${accessToken}`,
                 },
             };
-            if(myBoardType) {
+            if(myAuctionType == 0) {
                 console.log("리스트 요청  :  경매글 목록");
                 const response = await axios.get(
                     `${process.env.NEXT_PUBLIC_API_URL}/mypage/auction?page=${boardPage}&size=20&order=DESC`
@@ -115,12 +128,12 @@ export default function AuctionList() {
                         }, {
                             onSuccess: (data) => {
                                 // api call 재선언
-                                getItems(data);
+                                getItems(data, myAuctionType);
                             },
                             onError: () => {
                                 router.replace("/");
-                                // 
-                                alert("로그인 만료\n다시 로그인 해주세요\n 에메메");
+                                setIsLoggedIn(false);
+                                alert("로그인 만료\n다시 로그인 해주세요");
                             }
                         });
                     } else {
@@ -131,8 +144,7 @@ export default function AuctionList() {
             }
         }
         setLoading(false);
-    }, [replyPage,boardPage]);
-
+    }, [replyPage, boardPage]);
 
     useEffect(() => {
         const storedData = localStorage.getItem('recoil-persist');
@@ -142,19 +154,21 @@ export default function AuctionList() {
                 const extractedAccessToken = userData.USER_DATA.accessToken;
                 setAccessToken(extractedAccessToken);
 
-                getItems(extractedAccessToken);
+                getItems(extractedAccessToken, myAuctionType);
             } else {
                 router.replace("/");
+                setIsLoggedIn(false);
                 alert("로그인이 필요한 기능입니다.");
             }
         }
-    }, [myBoardType])
+        
+    }, [myAuctionType])
 
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting && !loading && existNextPage) {
-                    getItems(accessToken);
+                    getItems(accessToken, myAuctionType);
                 }
             });
         }, options);
@@ -169,8 +183,6 @@ export default function AuctionList() {
         };
     }, [getItems, existNextPage, loading, options]);
 
-
-    
 
     const boardItemlist: Auction[] = (data?.result.items ?? []).map((item) => ({
         idx: item.idx,
@@ -202,6 +214,7 @@ export default function AuctionList() {
         roomIdx: item.roomIdx,
         message: item.message,
         action: item.action,
+        title: item.board.title,
     }));
 
     return (
@@ -215,30 +228,30 @@ export default function AuctionList() {
                             </div>
                             <div className="border-x-[1px] border-b-[1px] border-gray-300 h-[50%] flex-row flex">
                                 <div className="border-r-[1px] border-gray-300 w-[50%]">
-                                    <button onClick={onMyBoardTypeChange}
+                                    <button onClick={onMyAuctionTypeChange2}
                                     className={`${
-                                        myBoardType ? "font-bold" : ""
+                                        myAuctionType == 0 ? "font-bold" : ""
                                         } w-full h-[95%] justify-center text-[18px] pt-[25px]`}>
                                     경매</button>
                                     <p className={`${
-                                        myBoardType ? "" : "hidden"
+                                        myAuctionType == 0 ? "" : "hidden"
                                         } bg-[#6D71E6] h-[5%] self-end`}></p>
                                 </div>
                                 <div className="w-[50%]">
-                                    <button onClick={onMyBoardTypeChange}
+                                    <button onClick={onMyAuctionTypeChange}
                                     className={`${
-                                        myBoardType ? "" : "font-bold"
+                                        myAuctionType == 0 ? "" : "font-bold"
                                         } w-full h-[95%] justify-center text-[18px] pt-[25px]`}>
                                     내 비딩</button>
                                     <p className={`${
-                                        myBoardType ? "hidden" : ""
+                                        myAuctionType == 0 ? "hidden" : ""
                                         } bg-[#6D71E6] h-[5%] self-end`}></p>
                                 </div>
                             </div>
                         </div>
 
-                        {myBoardType ? (
-                            <ul className="w-full mt-5 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                        {myAuctionType == 0 ? (
+                            <ul className="w-full mt-5 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
                             {boardItemlist.map((post) => (
                               <li key={post.idx}>
                                 <AuctionItem post={post} />
@@ -249,7 +262,7 @@ export default function AuctionList() {
                             <div></div>
                         )}
 
-                        {!myBoardType ? (
+                        {myAuctionType == 1 ? (
                             <ul className="w-full mt-5">
                             {replyItemlist.map((post) => (
                                 <li key={post.idx}>

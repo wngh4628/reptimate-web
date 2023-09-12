@@ -11,7 +11,10 @@ import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
 import axios from "axios";
 
 import { getResponse, Post } from "@/service/posts";
+import { getResponseBookmarkBoard, BookmarkBoard } from "@/service/my/bookmark";
+import { getResponseBoard, Board } from "@/service/my/board";
 import { getResponseReply, Reply } from "@/service/reply";
+
 import BoardItem from "./BoardItem";
 import BoardReplyItem from "./BoardReplyItem";
 
@@ -21,7 +24,7 @@ export default function BoardList() {
 
     const router = useRouter();
 
-    const [data, setData] = useState<getResponse | null>(null);
+    const [data, setData] = useState<getResponseBoard | null>(null);
     const [replyData, setReplyData] = useState<getResponseReply | null>(null);
 
     const [boardPage, setBoardPage] = useState(1);
@@ -46,7 +49,11 @@ export default function BoardList() {
             setMyBoardType(false);
             setReplyPage(1)
             setReplyData(null)
-        } else {
+        }
+        console.log("myBoardType  :  "+ myBoardType);
+    }
+    function onMyBoardTypeChange2() {
+        if (!myBoardType) {
             setMyBoardType(true);
             setBoardPage(1)
             setData(null)
@@ -77,7 +84,7 @@ export default function BoardList() {
                           ],
                           existsNextPage: response.data.result.existsNextPage,
                         },
-                      } as getResponse)
+                      } as getResponseBoard)
                   );
                   setENP(response.data?.result.existsNextPage);
                   setBoardPage((prevPage) => prevPage + 1);
@@ -119,8 +126,8 @@ export default function BoardList() {
                             },
                             onError: () => {
                                 router.replace("/");
-                                // 
-                                alert("로그인 만료\n다시 로그인 해주세요\n 에메메");
+                                setIsLoggedIn(false);
+                                alert("로그인 만료\n다시 로그인 해주세요");
                             }
                         });
                     } else {
@@ -169,22 +176,15 @@ export default function BoardList() {
         };
     }, [getItems, existNextPage, loading, options]);
 
-
-    
-
-    const boardItemlist: Post[] = (data?.result.items ?? []).map((item) => ({
+    const boardItemlist: Board[] = (data?.result.items ?? []).map((item) => ({
         idx: item.idx,
-        view: item.view,
+        category: item.category,
         userIdx: item.userIdx,
         title: item.title,
         description: item.description,
-        category: item.category,
+        view: item.view,
         writeDate: new Date(item.writeDate),
-        coverImage: item.images[0]?.coverImgPath || "",
-        nickname: item.UserInfo.nickname,
-        profilePath: item.UserInfo.profilePath,
     }));
-
     const replyItemlist: Reply[] = (replyData?.result.items ?? []).map((item) => ({
         idx: item.idx,
         userIdx: item.userIdx,
@@ -207,7 +207,7 @@ export default function BoardList() {
                             </div>
                             <div className="border-x-[1px] border-b-[1px] border-gray-300 h-[50%] flex-row flex">
                                 <div className="border-r-[1px] border-gray-300 w-[50%]">
-                                    <button onClick={onMyBoardTypeChange}
+                                    <button onClick={onMyBoardTypeChange2}
                                     className={`${
                                         myBoardType ? "font-bold" : ""
                                         } w-full h-[95%] justify-center text-[18px] pt-[25px]`}>

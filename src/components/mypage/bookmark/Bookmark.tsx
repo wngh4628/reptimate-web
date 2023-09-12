@@ -11,7 +11,8 @@ import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
 import axios from "axios";
 
 import { getResponse, Post } from "@/service/posts";
-import { getResponseAuction, Auction } from "@/service/auction";
+import { getResponseBookmarkBoard, BookmarkBoard } from "@/service/my/bookmark";
+import { getResponseAuction, Auction } from "@/service/my/auction";
 import { getResponseReply, Reply } from "@/service/reply";
 import BoardItem from "./BookmarkItem";
 import AuctionItem from "../auction/AuctionItem";
@@ -22,8 +23,8 @@ export default function BookmarkList() {
 
     const router = useRouter();
 
-    const [data, setData] = useState<getResponse | null>(null);
-    const [replyData, setReplyData] = useState<getResponseAuction | null>(null);
+    const [data, setData] = useState<getResponseBookmarkBoard | null>(null);
+    const [replyData, setReplyData] = useState<getResponseBookmarkBoard | null>(null);
 
     const [boardPage, setBoardPage] = useState(1);
     const [replyPage, setReplyPage] = useState(1);
@@ -35,7 +36,7 @@ export default function BookmarkList() {
 
     const [accessToken, setAccessToken] = useState("");
 
-    const [myBoardType, setMyBoardType] = useState(true);
+    const [myBookmarkType, setMyBoardType] = useState(true);
     const pathName = usePathname() || "";
 
     const options = {
@@ -43,19 +44,21 @@ export default function BookmarkList() {
     };
 
     function onMyBoardTypeChange() {
-        if (myBoardType){
+        if (myBookmarkType){
             setMyBoardType(false);
             setReplyPage(1)
             setReplyData(null)
-        } else {
+        }
+    }
+    function onMyBoardTypeChange2() {
+        if (!myBookmarkType) {
             setMyBoardType(true);
             setBoardPage(1)
             setData(null)
         }
-        console.log("myBoardType  :  "+ myBoardType);
     }
 
-    const getItems = useCallback(async (accessToken: any) => {
+    const getItems = useCallback(async (accessToken: any, myBookmarkType: boolean) => {
         setLoading(true);
         try {
             const config = {
@@ -63,10 +66,9 @@ export default function BookmarkList() {
                   Authorization: `Bearer ${accessToken}`,
                 },
             };
-            if(myBoardType) {
-                console.log("리스트 요청  :  게시글 목록");
+            if(myBookmarkType) {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_URL}/mypage/bookmark?page=${boardPage}&size=20&order=DESC`
+                    `${process.env.NEXT_PUBLIC_API_URL}/mypage/bookmark/board?page=${boardPage}&size=20&order=DESC`
                   , config);
                   setData(
                     (prevData) =>
@@ -78,14 +80,13 @@ export default function BookmarkList() {
                           ],
                           existsNextPage: response.data.result.existsNextPage,
                         },
-                      } as getResponse)
+                      } as getResponseBookmarkBoard)
                   );
                   setENP(response.data?.result.existsNextPage);
                   setBoardPage((prevPage) => prevPage + 1);
             } else {
-                console.log("리스트 요청  :  댓글 목록");
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_URL}/mypage/auction?page=${replyPage}&size=20&order=DESC`
+                    `${process.env.NEXT_PUBLIC_API_URL}/mypage/bookmark/auction?page=${replyPage}&size=20&order=DESC`
                   , config);
                   setReplyData(
                     (prevData) =>
@@ -97,7 +98,7 @@ export default function BookmarkList() {
                           ],
                           existsNextPage: response.data.result.existsNextPage,
                         },
-                      } as getResponseAuction)
+                      } as getResponseBookmarkBoard)
                   );
                   setENP(response.data?.result.existsNextPage);
                   setReplyPage((prevPage) => prevPage + 1);
@@ -116,7 +117,7 @@ export default function BookmarkList() {
                         }, {
                             onSuccess: (data) => {
                                 // api call 재선언
-                                getItems(data);
+                                getItems(data, myBookmarkType);
                             },
                             onError: () => {
                                 router.replace("/");
@@ -143,19 +144,19 @@ export default function BookmarkList() {
                 const extractedAccessToken = userData.USER_DATA.accessToken;
                 setAccessToken(extractedAccessToken);
 
-                getItems(extractedAccessToken);
+                getItems(extractedAccessToken, myBookmarkType);
             } else {
                 router.replace("/");
                 alert("로그인이 필요한 기능입니다.");
             }
         }
-    }, [myBoardType])
+    }, [myBookmarkType])
 
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting && !loading && existNextPage) {
-                    getItems(accessToken);
+                    getItems(accessToken, myBookmarkType);
                 }
             });
         }, options);
@@ -173,36 +174,36 @@ export default function BookmarkList() {
 
     
 
-    const boardItemlist: Post[] = (data?.result.items ?? []).map((item) => ({
+    const boardItemlist: BookmarkBoard[] = (data?.result.items ?? []).map((item) => ({
         idx: item.idx,
-        view: item.view,
-        userIdx: item.userIdx,
-        title: item.title,
-        description: item.description,
+        createdAt: new Date(item.board.createdAt),
+        updatedAt: new Date(item.board.updatedAt),
+        deletedAt: new Date(item.board.deletedAt),
         category: item.category,
-        writeDate: new Date(item.writeDate),
-        coverImage: item.images[0]?.coverImgPath || "",
-        nickname: item.UserInfo.nickname,
-        profilePath: item.UserInfo.profilePath,
+        userIdx: item.userIdx,
+        title: item.board.title,
+        thumbnail: item.board.thumbnail || "",
+        media: item.board.media,
+        description: item.board.description,
+        view: item.board.view,
+        commentCnt: item.board.commentCnt,
+        status: item.board.status,
     }));
 
-    const auctionItemlist: Auction[] = (replyData?.result.items ?? []).map((item) => ({
+    const auctionItemlist: BookmarkBoard[] = (replyData?.result.items ?? []).map((item) => ({
         idx: item.idx,
-        view: item.view,
-        userIdx: item.userIdx,
-        title: item.title,
+        createdAt: new Date(item.board.createdAt),
+        updatedAt: new Date(item.board.updatedAt),
+        deletedAt: new Date(item.board.deletedAt),
         category: item.category,
-        createdAt: new Date(item.writeDate),
-        coverImage: item.images[0]?.coverImgPath || "",
-        nickname: item.UserInfo.nickname,
-        currentPrice: item.boardAuction.currentPrice,
-        endTime: item.boardAuction.endTime,
-        gender: item.boardAuction.gender,
-        size: item.boardAuction.size,
-        variety: item.boardAuction.variety,
-        state: item.boardAuction.state,
-        unit: item.boardAuction.unit,
-        boardIdx: item.boardAuction.boardIdx,
+        userIdx: item.userIdx,
+        title: item.board.title,
+        thumbnail: item.board.thumbnail || "",
+        media: item.board.media,
+        description: item.board.description,
+        view: item.board.view,
+        commentCnt: item.board.commentCnt,
+        status: item.board.status,
     }));
 
     return (
@@ -216,29 +217,29 @@ export default function BookmarkList() {
                             </div>
                             <div className="border-x-[1px] border-b-[1px] border-gray-300 h-[50%] flex-row flex">
                                 <div className="border-r-[1px] border-gray-300 w-[50%]">
-                                    <button onClick={onMyBoardTypeChange}
+                                    <button onClick={onMyBoardTypeChange2}
                                     className={`${
-                                        myBoardType ? "font-bold" : ""
+                                        myBookmarkType ? "font-bold" : ""
                                         } w-full h-[95%] justify-center text-[18px] pt-[25px]`}>
                                     게시글</button>
                                     <p className={`${
-                                        myBoardType ? "" : "hidden"
+                                        myBookmarkType ? "" : "hidden"
                                         } bg-[#6D71E6] h-[5%] self-end`}></p>
                                 </div>
                                 <div className="w-[50%]">
                                     <button onClick={onMyBoardTypeChange}
                                     className={`${
-                                        myBoardType ? "" : "font-bold"
+                                        myBookmarkType ? "" : "font-bold"
                                         } w-full h-[95%] justify-center text-[18px] pt-[25px]`}>
                                     경매</button>
                                     <p className={`${
-                                        myBoardType ? "hidden" : ""
+                                        myBookmarkType ? "hidden" : ""
                                         } bg-[#6D71E6] h-[5%] self-end`}></p>
                                 </div>
                             </div>
                         </div>
 
-                        {myBoardType ? (
+                        {myBookmarkType ? (
                             <ul className="w-full mt-5">
                             {boardItemlist.map((post) => (
                               <li key={post.idx}>
@@ -249,11 +250,11 @@ export default function BookmarkList() {
                         ) : (
                             <div></div>
                         )}
-                        {!myBoardType ? (
+                        {!myBookmarkType ? (
                             <ul className="w-full mt-5">
                             {auctionItemlist.map((post) => (
                               <li key={post.idx}>
-                                <AuctionItem post={post} />
+                                <BoardItem post={post} />
                               </li>
                             ))}
                             </ul>
