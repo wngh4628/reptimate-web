@@ -32,3 +32,8 @@ export const isLoggedInState = atom({
   key: "isLoggedInState",
   default: false, // Initially, the user is not logged in
 });
+
+export const chatVisisibleState = atom({
+  key: "chatVisibleState",
+  default: true, 
+});

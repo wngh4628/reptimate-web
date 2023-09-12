@@ -1,0 +1,20 @@
+.list_json {
+    margin: 20px;
+
+}
+
+.list_obj {
+    margin: 5px;
+}
+
+.list_obj .nature_idx {
+    padding-right: 10px;
+}
+
+.list_obj .nature_temp {
+    padding-right: 10px;
+}
+
+.list_obj .move_btn {
+    padding-right: 10px;
+}
