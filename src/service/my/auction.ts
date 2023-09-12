@@ -86,8 +86,23 @@ export interface getResponseAuction {
         score: number;
         roomIdx: string;
         userIdx: number;
-        message: string;
+        message: number;
         action: string;
+        board: {
+            idx: number,
+            createdAt: Date,
+            updatedAt: Date,
+            deletedAt: Date,
+            category: string,
+            userIdx: number,
+            title: string,
+            thumbnail: string,
+            media: string,
+            description: string,
+            view: number,
+            commentCnt: number,
+            status: string,
+        };
       }>;
     };
   }
@@ -100,7 +115,8 @@ export interface getResponseAuction {
     score: number,
     roomIdx: string,
     userIdx: number,
-    message: string,
+    message: number,
     action: string,
+    title: string
   };
   

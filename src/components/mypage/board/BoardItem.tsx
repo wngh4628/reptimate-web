@@ -1,8 +1,9 @@
 import { Post } from "@/service/posts";
+import { Board } from "@/service/my/board"
 import Image from "next/image";
 import Link from "next/link";
 
-type Props = { post: Post };
+type Props = { post: Board };
 export default function BoardItem({
   post: {
     idx,
@@ -11,9 +12,8 @@ export default function BoardItem({
     title,
     category,
     writeDate,
-    coverImage,
-    nickname,
-    profilePath,
+    description,
+
   },
 }: Props) {
   return (

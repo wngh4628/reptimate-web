@@ -1,6 +1,6 @@
 import { Post } from "@/service/posts";
 import { Reply } from "@/service/reply";
-import { Bid } from "@/service/auction";
+import { Bid } from "@/service/my/auction";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -16,6 +16,7 @@ export default function AuctionBidItem({
     roomIdx,
     userIdx,
     message,
+    title,
     action,
   },    
 }: Props) {
@@ -34,20 +35,18 @@ export default function AuctionBidItem({
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-
   return (
         <div className="w-full h-[160px] p-2 border-gray-200 border-[1px] rounded-[12px] mb-[5px] shadow">
             <Link href={`/posts/${idx}`}>
                 <div className="w-full flex flex-col">
                     <div className="border-b-[1px] h-[85px] pt-[10px]">
                         <div className="flex flex-row mx-1">
-                            <h2 className=" text-xl">{formatNumberWithCommas(score)}</h2>
+                            <h2 className=" text-xl">{title}</h2>
                         </div>
-                        {/* 작성일 */}
                         <p className="text-gray-500 mt-auto mx-1 ">{formatDateToCustomString(createdAt)}</p>
                     </div>
                     <div className="flex items-center h-[65px]">
-                        <h3 className="font-bold text-xl mx-1">{}</h3>
+                        <h3 className="font-bold text-xl mx-1">내 입찰 금액 : {formatNumberWithCommas(message)}원</h3>
                     </div>
                 </div>
             </Link>

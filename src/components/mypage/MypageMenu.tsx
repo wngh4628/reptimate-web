@@ -90,7 +90,7 @@ export default function MypageMenu() {
                   href="/my"
                   className={`${
                     pathName === "/my" ? "bg-[#6D71E6] text-white" : "hover:text-[#6D71E6] "
-                  } group  bg-white h-[50px] flex items-center justify-center text-center px-3 border-r-[1px] w-1/4`}
+                  } group  h-[50px] flex items-center justify-center text-center px-2 border-r-[1px] w-1/4 text-[13px]`}
                 >
                   내 정보 수정
                 </Link>
@@ -98,7 +98,7 @@ export default function MypageMenu() {
                   href="/my/board"
                   className={`${
                     pathName === "/my/board" ? "bg-[#6D71E6] text-white" : "hover:text-[#6D71E6]"
-                  } group  bg-white h-[50px] flex items-center justify-center text-center px-3 border-r-[1px] w-1/4`}
+                  } group  h-[50px] flex items-center justify-center text-center px-2 border-r-[1px] w-1/4 text-[13px]`}
                 >
                   내가 쓴 글
                 </Link>
@@ -106,15 +106,15 @@ export default function MypageMenu() {
                   href="/my/free"
                   className={`${
                     pathName === "/my/auction" ? "bg-[#6D71E6] text-white" : "hover:text-[#6D71E6]"
-                  } group  bg-white h-[50px] flex items-center justify-center text-center px-5 border-r-[1px] w-1/4`}
+                  } group  h-[50px] flex items-center justify-center text-center px-5 border-r-[1px] w-1/4 text-[13px]`}
                 >
                   내 경매
                 </Link>
                 <Link
                   href="/my/bookmark"
                   className={`${
-                    pathName === "/my/bookmark" ? "bg-[#6D71E6] text-white" : "hover:text-[#6D71E6]"
-                  } group  bg-white h-[50px] flex items-center justify-center text-center px-5 w-1/4`}
+                    pathName === "/my/bookmark" ? "bg-[#6D71E6] text-white" : "hover:text-[#6D71E6] "
+                  } group  h-[50px] flex items-center justify-center text-center px-5 w-1/4 text-[13px]`}
                 >
                   북마크
                 </Link>

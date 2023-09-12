@@ -1,19 +1,24 @@
 import { Post } from "@/service/posts";
+import { BookmarkBoard } from "@/service/my/bookmark"
 import Image from "next/image";
 import Link from "next/link";
 
-type Props = { post: Post };
+type Props = { post: BookmarkBoard };
 export default function BoardItem({
   post: {
     idx,
-    view,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    category,
     userIdx,
     title,
-    category,
-    writeDate,
-    coverImage,
-    nickname,
-    profilePath,
+    thumbnail,
+    media,
+    description,
+    view,
+    commentCnt,
+    status,
   },
 }: Props) {
   return (
@@ -29,7 +34,7 @@ export default function BoardItem({
 
                         {/* 작성일 */}
                         <img className="flex w-3 mx-1" src="/img/clock.png" />
-                        <p className="">{`${writeDate.getFullYear().toString().slice(2)}.${(writeDate.getMonth() + 1).toString().padStart(2,"0")}.${writeDate.getDate().toString().padStart(2,"0")}`}</p>
+                        <p className="">{`${createdAt.getFullYear().toString().slice(2)}.${(createdAt.getMonth() + 1).toString().padStart(2,"0")}.${createdAt.getDate().toString().padStart(2,"0")}`}</p>
                     </div>
                 </div>
             </Link>
