@@ -12,6 +12,8 @@ interface User {
   accessToken: string;
   refreshToken: string;
   id: number;
+  profilePath: string;
+  nickname: string;
 }
 
 export interface UserData {
