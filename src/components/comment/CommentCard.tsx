@@ -57,6 +57,7 @@ export default function CommentCard({
 
   const isCurrentUserComment = currentUserIdx === userIdx;
 
+  const [isReplyWrtie, setIsReplyWrtie] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
   const [commentFormValue, setCommentFormValue] = useState<string>("");
 
@@ -97,32 +98,35 @@ export default function CommentCard({
     getReplyData();
   }, []);
 
-  const handleReplyClick = () => {
-    // 답글 달기 버튼을 클릭했을 때 댓글 창을 토글
-    setIsReplying((prevIsReplying) => !prevIsReplying);
-    if (!isReplying) {
-      console.log(replyData);
-      if (replyData !== null && replyData.result.items) {
-        setReplyList(
-          replyData.result.items.map((item) => ({
-            idx: item.idx,
-            createdAt: item.createdAt,
-            updatedAt: item.updatedAt,
-            deletedAt: item.deletedAt,
-            userIdx: item.UserInfo.idx,
-            boardIdx: item.boardIdx,
-            boardState: item.boardState,
-            filePath: item.filePath,
-            description: item.description,
-            replyCnt: item.replyCnt,
-            nickname: item.UserInfo.nickname,
-            profilePath: item.UserInfo.profilePath,
-          }))
-        );
-      } else {
-        setReplyList([]);
-      }
+  useEffect(() => {
+    if (replyData !== null && replyData.result.items) {
+      setReplyList(
+        replyData.result.items.map((item) => ({
+          idx: item.idx,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt,
+          deletedAt: item.deletedAt,
+          userIdx: item.UserInfo.idx,
+          boardIdx: item.boardIdx,
+          boardState: item.boardState,
+          filePath: item.filePath,
+          description: item.description,
+          replyCnt: item.replyCnt,
+          nickname: item.UserInfo.nickname,
+          profilePath: item.UserInfo.profilePath,
+        }))
+      );
+    } else {
+      setReplyList([]);
     }
+  }, [replyData]);
+
+  const handleReplyWriteClick = () => {
+    setIsReplyWrtie((prevIsReplyWrtie) => !prevIsReplyWrtie);
+  };
+
+  const handleReplyClick = () => {
+    setIsReplying((prevIsReplying) => !prevIsReplying);
   };
 
   const replyMutation = useMutation({
@@ -232,6 +236,28 @@ export default function CommentCard({
     editMutation.mutate(requestData);
   };
 
+  //답글 수정 상태 업데이트
+  const handleEditReply = (replyIdx: number, description: string) => {
+    const updatedReplyList = replyList?.map((reply) => {
+      if (reply.idx === replyIdx) {
+        // If the reply idx matches the one being edited, update the description
+        return { ...reply, description: description };
+      }
+      return reply; // For other replies, return them unchanged
+    });
+
+    // Update the state with the new replyList
+    setReplyList(updatedReplyList);
+  };
+
+  //답글 삭제 상태 업데이트
+  const handleDeleteReply = (replyIdx: number) => {
+    setReplyList((prevReplyList) =>
+      prevReplyList?.filter((reply) => reply.idx !== replyIdx)
+    );
+    console.log(replyList);
+  };
+
   return (
     <div>
       {isDeleted ? null : (
@@ -266,7 +292,7 @@ export default function CommentCard({
                 <p className="ml-1 text-gray-500">{postWriteTime}</p>
                 <p
                   className="ml-2 text-gray-500 cursor-pointer"
-                  onClick={handleReplyClick}
+                  onClick={handleReplyWriteClick}
                 >
                   답글 달기
                 </p>
@@ -287,11 +313,19 @@ export default function CommentCard({
                   </>
                 )}
               </div>
+              {replyCnt > 0 && (
+                <p
+                  className="ml-10 text-sm text-gray-500 cursor-pointer"
+                  onClick={handleReplyClick}
+                >
+                  ㅡ 답글 {replyList?.length}개
+                </p>
+              )}
             </div>
           )}
 
-          {isReplying && (
-            <div className="ml-10 my-2">
+          {isReplyWrtie && (
+            <div className="ml-10 -2">
               {!isEditing ? (
                 <ReplyForm
                   value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
@@ -301,11 +335,19 @@ export default function CommentCard({
               ) : (
                 <></>
               )}
+            </div>
+          )}
+          {isReplying && (
+            <div className="ml-10 my-2">
               <ul>
                 {replyList !== null && replyList ? (
                   replyList.map((reply) => (
                     <li key={reply.idx}>
-                      <ReplyCard comment={reply} />
+                      <ReplyCard
+                        comment={reply}
+                        onEdit={handleEditReply}
+                        onDelete={handleDeleteReply}
+                      />
                     </li>
                   ))
                 ) : (

@@ -5,7 +5,11 @@ import { useMutation } from "@tanstack/react-query";
 import { commentDelete, commentEdit } from "@/api/comment";
 import CommentEditForm from "./CommentEditForm";
 
-type Props = { comment: Comment };
+type Props = {
+  comment: Comment;
+  onEdit: (idx: number, description: string) => void; // Define the onDelete prop
+  onDelete: (idx: number) => void; // Define the onDelete prop
+};
 export default function ReplyCard({
   comment: {
     idx,
@@ -21,6 +25,8 @@ export default function ReplyCard({
     nickname,
     profilePath,
   },
+  onEdit,
+  onDelete,
 }: Props) {
   let userAccessToken: string | null = null;
   let currentUserIdx: number | null = null;
@@ -60,6 +66,7 @@ export default function ReplyCard({
       console.log("============================");
       setIsDeleted(true);
       // alert("댓글이 삭제되었습니다.");
+      onDelete(idx);
     },
   });
 
@@ -97,6 +104,7 @@ export default function ReplyCard({
       console.log("============================");
       setEditedComment(data.data.result.description);
       setIsEditing(false);
+      onEdit(idx, data.data.result.description);
     },
   });
 

@@ -31,6 +31,24 @@ export default function AdoptionPostsView() {
 
   const [commentList, setCommentList] = useState<Comment[]>();
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuOpen((prevMenuOpen) => !prevMenuOpen);
+  };
+
+  const handleEdit = () => {
+    // Implement the edit action here
+  };
+
+  const handleDelete = () => {
+    // Implement the delete action here
+  };
+
+  const handleReport = () => {
+    // Implement the report action here
+  };
+
   let userAccessToken: string | null = null;
   let currentUserIdx: number | null = null;
   let userProfilePath: string | null = null;
@@ -52,7 +70,7 @@ export default function AdoptionPostsView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `https://api.reptimate.store/board/${idx}?userIdx=1`
+        `https://api.reptimate.store/board/${idx}?userIdx=${currentUserIdx}`
       );
       // Assuming your response data has a 'result' property
       setData(response.data);
@@ -231,6 +249,47 @@ export default function AdoptionPostsView() {
                 <p className="ml-2 text-gray-500">{postWriteDate}</p>
                 <p className="ml-1 text-gray-500">{postWriteTime}</p>
                 <p className="ml-2 text-gray-500">조회 {post.view}</p>
+                <div className="relative ml-auto">
+                  <button
+                    onClick={toggleMenu}
+                    className="text-gray-500 cursor-pointer text-xl"
+                  >
+                    ⁝
+                  </button>
+                  {menuOpen && (
+                    <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
+                      <ul>
+                        <li
+                          onClick={() => {
+                            handleEdit();
+                            toggleMenu();
+                          }}
+                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                        >
+                          수정
+                        </li>
+                        <li
+                          onClick={() => {
+                            handleDelete();
+                            toggleMenu();
+                          }}
+                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                        >
+                          삭제
+                        </li>
+                        <li
+                          onClick={() => {
+                            handleReport();
+                            toggleMenu();
+                          }}
+                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                        >
+                          신고
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
               <ImageSlider imageUrls={itemlist} />
               <div className="flex flex-row items-center py-3">
@@ -268,9 +327,95 @@ export default function AdoptionPostsView() {
               </div>
             </PC>
             <Mobile>
-              <h2 className="text-xl font-bold pl-12 pt-4 pb-4">
-                {post.title}
-              </h2>
+              <h2 className="text-2xl font-bold pt-10">{post.title}</h2>
+              <div className="flex items-center my-2">
+                <img
+                  className="w-10 h-10 rounded-full border-2"
+                  src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
+                  alt=""
+                />
+                <p className="text-xl font-bold ml-1">
+                  {post.UserInfo.nickname}
+                </p>
+                <p className="ml-2 text-gray-500">{postWriteDate}</p>
+                <p className="ml-1 text-gray-500">{postWriteTime}</p>
+                <p className="ml-2 text-gray-500">조회 {post.view}</p>
+                <div className="relative ml-auto">
+                  <button
+                    onClick={toggleMenu}
+                    className="text-gray-500 cursor-pointer text-xl"
+                  >
+                    ⁝
+                  </button>
+                  {menuOpen && (
+                    <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
+                      <ul>
+                        <li
+                          onClick={() => {
+                            handleEdit();
+                            toggleMenu();
+                          }}
+                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                        >
+                          수정
+                        </li>
+                        <li
+                          onClick={() => {
+                            handleDelete();
+                            toggleMenu();
+                          }}
+                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                        >
+                          삭제
+                        </li>
+                        <li
+                          onClick={() => {
+                            handleReport();
+                            toggleMenu();
+                          }}
+                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                        >
+                          신고
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <ImageSlider imageUrls={itemlist} />
+              <div className="flex flex-row items-center py-3">
+                <p className="text-lg font-semibold ml-5">판매가격</p>
+                <p className="text-xl font-bold ml-auto mr-5">
+                  {post.boardCommercial.price.toLocaleString()}원
+                </p>
+              </div>
+              <div className="flex flex-row items-center justify-center">
+                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 text-lg font-bold">품종</p>
+                  <p className="pb-1 text-lg">{post.boardCommercial.variety}</p>
+                </div>
+                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 text-lg font-bold">성별</p>
+                  <p className="pb-1 text-lg">{post.boardCommercial.gender}</p>
+                </div>
+                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 text-lg font-bold">크기</p>
+                  <p className="pb-1 text-lg">{post.boardCommercial.size}</p>
+                </div>
+              </div>
+              <p className="text-lg my-7">{post.description}</p>
+              <hr className="border-t border-gray-300 my-1" />
+              <div className="flex flex-row items-center py-3">
+                <p className="text-lg font-semibold ml-3 mr-2">댓글</p>
+                <p className="text-xl font-bold text-gender-none-color">&gt;</p>
+              </div>
+              <div>
+                <CommentForm
+                  value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
+                  onSubmit={handleCommentSubmit}
+                  onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
+                />
+              </div>
             </Mobile>
             <ul className="mt-6">
               {commentList !== null && commentList ? (
