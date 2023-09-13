@@ -29,7 +29,13 @@ export default function LoginInput() {
       var result = JSON.parse(a);
       var b = JSON.stringify(result.result);
       var result = JSON.parse(b);
-      setUser(result);
+      setUser({
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+        idx: result.idx,
+        profilePath: result.profilePath,
+        nickname: result.nickname,
+      });
       setIsLoggedIn(true);
       router.replace("/");
     },

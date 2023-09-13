@@ -313,27 +313,26 @@ export default function CommentCard({
                   </>
                 )}
               </div>
-              {replyCnt > 0 && (
+              {isReplyWrtie && (
+                <div className="ml-10 -2">
+                  {!isEditing ? (
+                    <ReplyForm
+                      value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
+                      onSubmit={handleCommentSubmit}
+                      onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
+                    />
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              )}
+              {replyList && replyList.length > 0 && (
                 <p
                   className="ml-10 text-sm text-gray-500 cursor-pointer"
                   onClick={handleReplyClick}
                 >
                   ㅡ 답글 {replyList?.length}개
                 </p>
-              )}
-            </div>
-          )}
-
-          {isReplyWrtie && (
-            <div className="ml-10 -2">
-              {!isEditing ? (
-                <ReplyForm
-                  value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
-                  onSubmit={handleCommentSubmit}
-                  onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
-                />
-              ) : (
-                <></>
               )}
             </div>
           )}

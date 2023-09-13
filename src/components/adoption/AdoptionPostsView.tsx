@@ -37,6 +37,18 @@ export default function AdoptionPostsView() {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
+  function BackButton() {
+    const handleGoBack = () => {
+      window.history.back(); // Go back to the previous page using window.history
+    };
+
+    return (
+      <button onClick={handleGoBack} className="cursor-poiter px-2 font-bold">
+        &lt; 분양게시판
+      </button>
+    );
+  }
+
   const toggleMenu = () => {
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
   };
@@ -331,8 +343,9 @@ export default function AdoptionPostsView() {
               </div>
             </PC>
             <Mobile>
+              <BackButton />
               <div className="mx-2">
-                <h2 className="text-2xl font-bold pt-10">{post.title}</h2>
+                <h2 className="text-2xl font-bold pt-5">{post.title}</h2>
                 <div className="flex items-center my-2">
                   <img
                     className="w-7 h-7 rounded-full border-2"
