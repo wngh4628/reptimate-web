@@ -240,7 +240,6 @@ export default function BoardList() {
                         ) : (
                             <div></div>
                         )}
-
                         {!myBoardType ? (
                             <ul className="w-full mt-5">
                             {replyItemlist.map((post) => (
