@@ -11,7 +11,7 @@ import ImageSlider from "./ImageSlider";
 import { useMutation } from "@tanstack/react-query";
 import { commentWrtie } from "@/api/comment";
 import { useRecoilValue } from "recoil";
-import { userAtom, userInfoState } from "@/recoil/user";
+import { userAtom } from "@/recoil/user";
 import { Comment, getCommentResponse } from "@/service/comment";
 import CommentCard from "../comment/CommentCard";
 import CommentForm from "../comment/CommentForm";
@@ -53,18 +53,18 @@ export default function AdoptionPostsView() {
     // Implement the report action here
   };
 
-  const userInfo = useRecoilValue(userInfoState);
-
   let userAccessToken: string | null = null;
-  let currentUserIdx = userInfo.idx;
-  let userProfilePath = userInfo.profilePath;
-  let userNickname = userInfo.nickname;
-  console.log(userInfo.nickname);
+  let currentUserIdx: number | null = null;
+  let userProfilePath: string | null = null;
+  let userNickname: string | null = null;
   if (typeof window !== "undefined") {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
     const userData = JSON.parse(storedData || "");
+    currentUserIdx = userData.USER_DATA.idx;
     userAccessToken = userData.USER_DATA.accessToken;
+    userProfilePath = userData.USER_DATA.profilePath;
+    userNickname = userData.USER_DATA.nickname;
   }
 
   const options = {
