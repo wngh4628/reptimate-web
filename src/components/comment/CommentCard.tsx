@@ -7,8 +7,6 @@ import { commentDelete, commentEdit, replyWrite } from "@/api/comment";
 import CommentEditForm from "./CommentEditForm";
 import axios from "axios";
 import ReplyCard from "./ReplyCard";
-import { userInfoState } from "@/recoil/user";
-import { useRecoilValue } from "recoil";
 
 type Props = { comment: Comment };
 export default function CommentCard({
@@ -27,18 +25,18 @@ export default function CommentCard({
     profilePath,
   },
 }: Props) {
-  const userInfo = useRecoilValue(userInfoState);
-
   let userAccessToken: string | null = null;
-  let currentUserIdx = userInfo.idx;
-  let userProfilePath = userInfo.profilePath;
-  let userNickname = userInfo.nickname;
-  console.log(userInfo.nickname);
+  let currentUserIdx: number | null = null;
+  let userProfilePath: string | null = null;
+  let userNickname: string | null = null;
   if (typeof window !== "undefined") {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
     const userData = JSON.parse(storedData || "");
+    currentUserIdx = userData.USER_DATA.idx;
     userAccessToken = userData.USER_DATA.accessToken;
+    userProfilePath = userData.USER_DATA.profilePath;
+    userNickname = userData.USER_DATA.nickname;
   }
 
   const [replyData, setReplyData] = useState<getCommentResponse | null>(null);
