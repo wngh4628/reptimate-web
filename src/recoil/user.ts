@@ -11,17 +11,13 @@ interface loginResponse {
 interface User {
   accessToken: string;
   refreshToken: string;
-  id: number;
-  profilePath: string;
-  nickname: string;
+  idx: number;
 }
 
-export interface UserData {
-  USER_DATA: {
-    accessToken: string;
-    refreshToken: string;
-    id: number;
-  };
+interface UserInfo {
+  idx: number;
+  profilePath: string;
+  nickname: string;
 }
 
 export const userAtom = atom<User | null>({
@@ -35,7 +31,16 @@ export const isLoggedInState = atom({
   default: false, // Initially, the user is not logged in
 });
 
+export const userInfoState = atom<UserInfo>({
+  key: "userInfoState",
+  default: {
+    profilePath: "",
+    nickname: "",
+    idx: 0,
+  },
+});
+
 export const chatVisisibleState = atom({
   key: "chatVisibleState",
-  default: true, 
+  default: true,
 });
