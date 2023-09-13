@@ -15,8 +15,11 @@ import { userAtom } from "@/recoil/user";
 import { Comment, getCommentResponse } from "@/service/comment";
 import CommentCard from "../comment/CommentCard";
 import CommentForm from "../comment/CommentForm";
+import { adoptionDelete } from "@/api/adoption/adoption";
+import { useRouter } from "next/navigation";
 
 export default function AdoptionPostsView() {
+  const router = useRouter();
   const params = useParams();
   const idx = params?.idx;
 
@@ -49,16 +52,40 @@ export default function AdoptionPostsView() {
     );
   }
 
+  const deleteMutation = useMutation({
+    mutationFn: adoptionDelete,
+    onSuccess: (data) => {
+      console.log("============================");
+      console.log("Successful Deleting of adoption post!");
+      console.log(data);
+      console.log(data.data);
+      console.log("============================");
+      alert("게시글이 삭제되었습니다.");
+      router.replace("/");
+    },
+  });
+
   const toggleMenu = () => {
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
   };
 
   const handleEdit = () => {
-    // Implement the edit action here
+    // Implement th`e edit action here
+    window.location.href = `/community/adoption/edit/${idx}`;
   };
 
   const handleDelete = () => {
     // Implement the delete action here
+    const confirmation = window.confirm("해당 게시글을 삭제하시겠습니까?");
+
+    if (confirmation) {
+      const requestData = {
+        boardIdx: idx,
+        userAccessToken: userAccessToken || "",
+      };
+
+      deleteMutation.mutate(requestData);
+    }
   };
 
   const handleReport = () => {

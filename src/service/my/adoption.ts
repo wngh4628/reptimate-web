@@ -99,8 +99,10 @@ export interface GetAdoptionPostsView {
       price: number;
       gender: string;
       size: string;
+      pattern: string;
       variety: string;
       state: string;
+      birthDate: string;
     };
   };
 }

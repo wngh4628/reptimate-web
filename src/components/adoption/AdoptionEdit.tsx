@@ -1,10 +1,23 @@
-import { useMutation } from "@tanstack/react-query";
-import { Mobile, PC } from "../ResponsiveLayout";
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
-import { useDrag, useDrop } from "react-dnd";
-import { adoptionWrite } from "@/api/adoption/adoption";
-import { useRouter } from "next/navigation";
+import { GetAdoptionPostsView } from "@/service/my/adoption";
 import axios from "axios";
+import { useParams } from "next/navigation";
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Mobile, PC } from "../ResponsiveLayout";
+import { useMutation } from "@tanstack/react-query";
+import { useRecoilValue } from "recoil";
+import { userAtom } from "@/recoil/user";
+import { Comment, getCommentResponse } from "@/service/comment";
+import { adoptionEdit } from "@/api/adoption/adoption";
+import { useRouter } from "next/navigation";
+import { useDrag, useDrop } from "react-dnd";
 
 interface FileItem {
   file: File;
@@ -104,18 +117,12 @@ const patternOptions: Record<string, Option[]> = {
   ],
 };
 
-export default function AdoptionWrite() {
+export default function AdoptionEdit() {
   const router = useRouter();
+  const params = useParams();
+  const idx = params?.idx;
 
-  let userIdx: string | null = null;
-  let userAccessToken: string | null = null;
-  if (typeof window !== "undefined") {
-    // Check if running on the client side
-    const storedData = localStorage.getItem("recoil-persist");
-    const userData = JSON.parse(storedData || "");
-    userIdx = userData.USER_DATA.idx;
-    userAccessToken = userData.USER_DATA.accessToken;
-  }
+  const [data, setData] = useState<GetAdoptionPostsView | null>(null);
 
   const [selectedFiles, setSelectedFiles] = useState<
     Array<{ file: File; id: number }>
@@ -131,7 +138,69 @@ export default function AdoptionWrite() {
   const [variety, setVariety] = useState<string>("품종을 선택하세요");
   const [pattern, setPattern] = useState<string>("모프를 선택하세요");
 
+  const [boardCommercialIdx, setBoardCommercialIdx] = useState("");
+
   const [isLoading, setIsLoading] = useState(false);
+
+  window.onbeforeunload = function (event) {
+    const confirmationMessage =
+      "변경 내용이 저장되지 않습니다.\n뒤로 가시겠습니까?";
+
+    (event || window.event).returnValue = confirmationMessage;
+    return confirmationMessage;
+  };
+
+  function BackButton() {
+    const handleGoBack = () => {
+      window.history.back(); // Go back to the previous page using window.history
+    };
+
+    return (
+      <button onClick={handleGoBack} className="cursor-poiter px-2 font-bold">
+        &lt;
+      </button>
+    );
+  }
+
+  let userAccessToken: string | null = null;
+  let currentUserIdx: number | null = null;
+  let userProfilePath: string | null = null;
+  let userNickname: string | null = null;
+  if (typeof window !== "undefined") {
+    // Check if running on the client side
+    const storedData = localStorage.getItem("recoil-persist");
+    const userData = JSON.parse(storedData || "");
+    currentUserIdx = userData.USER_DATA.idx;
+    userAccessToken = userData.USER_DATA.accessToken;
+    userProfilePath = userData.USER_DATA.profilePath;
+    userNickname = userData.USER_DATA.nickname;
+  }
+
+  const getData = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `https://api.reptimate.store/board/${idx}?userIdx=${currentUserIdx}`
+      );
+      // Assuming your response data has a 'result' property
+      setData(response.data);
+      const post = response.data.result;
+      setTitle(post?.title || "");
+      setVariety(post?.boardCommercial.variety || "품종을 선택하세요");
+      setPattern(post?.boardCommercial.pattern || "모프를 선택하세요");
+      setBirthDate(post?.boardCommercial.birthDate || "연도-월-일");
+      setSelectedGender(post?.boardCommercial.gender || "");
+      setSelectedSize(post?.boardCommercial.size || "");
+      setPrice(post?.boardCommercial.price.toString() || "");
+      setDescription(post?.description || "");
+      setBoardCommercialIdx(post?.boardCommercial.idx || "");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const handleVarietyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVariety = e.target.value;
@@ -260,16 +329,16 @@ export default function AdoptionWrite() {
       </div>
     );
   };
-
   const mutation = useMutation({
-    mutationFn: adoptionWrite,
+    mutationFn: adoptionEdit,
     onSuccess: (data) => {
       console.log("============================");
-      console.log("Successful writing of post!");
+      console.log("Successful Editing of post!");
       console.log(data);
       console.log(data.data);
       console.log("============================");
-      router.replace("/");
+      alert("게시글 수정이 완료되었습니다.");
+      router.replace(`/community/adoption/posts/${idx}`);
     },
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
@@ -278,7 +347,9 @@ export default function AdoptionWrite() {
     setIsLoading(true);
 
     const requestData = {
-      userIdx: userIdx || "",
+      boardIdx: idx,
+      boardCommercialIdx: boardCommercialIdx,
+      userIdx: currentUserIdx || 0,
       title: title,
       category: "adoption",
       description: description,
@@ -326,7 +397,9 @@ export default function AdoptionWrite() {
             console.log(responseData);
             // Now, you can send additional data to the API server
             const requestData1 = {
-              userIdx: userIdx || "",
+              boardIdx: idx,
+              boardCommercialIdx: boardCommercialIdx,
+              userIdx: currentUserIdx || 0,
               title: title,
               category: "adoption",
               description: description,
@@ -385,7 +458,8 @@ export default function AdoptionWrite() {
         </h2>
       </PC>
       <Mobile>
-        <h2 className="flex flex-col items-center justify-center text-xl font-bold p-10">
+        <BackButton />
+        <h2 className="flex flex-col items-center justify-center text-xl font-bold p-4">
           분양 게시글
         </h2>
       </Mobile>
@@ -557,7 +631,7 @@ export default function AdoptionWrite() {
           type="submit"
           className=" items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
         >
-          게시글 등록
+          게시글 수정
         </button>
       </form>
     </div>

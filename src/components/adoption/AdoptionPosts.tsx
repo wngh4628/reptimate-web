@@ -1,6 +1,6 @@
 "use client";
 
-import { getResponse, Adpotion } from "@/service/adoption";
+import { getResponse, Adpotion } from "@/service/my/adoption";
 import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import PostCard from "./AdoptionPostCard";
