@@ -5,7 +5,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mobile, PC } from "./ResponsiveLayout";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { isLoggedInState, userAtom } from "@/recoil/user";
+import { isLoggedInState, userAtom, chatVisisibleState } from "@/recoil/user";
+import ChatModal from "@/components/chatting/ChatModal"
 
 export default function Header() {
   const login = false; // Set this to true or false based on your logic
@@ -15,6 +16,7 @@ export default function Header() {
   const [accessToken, setAccessToken] = useRecoilState(userAtom);
 
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+  const [isChatVisisible, setIsChatVisisible] = useRecoilState(chatVisisibleState);
 
   useEffect(() => {
     handleLogin();
@@ -37,6 +39,11 @@ export default function Header() {
     router.refresh();
     window.location.reload();
   };
+  function chattingClick() {
+    setIsChatVisisible(!isChatVisisible);
+  };
+  
+  
 
   const communityPathnames = [
     "/",
@@ -116,11 +123,16 @@ export default function Header() {
       <Mobile>
         <div className="flex justify-end pt-2 pb-5 pr-5">
           <nav className="flex gap-4 font-bold">
-            <Link href="">
+            {/* <Link href="">
               <div className="flex w-5 my-0.5">
                 <img src="/img/chat.png" />
               </div>
-            </Link>
+            </Link> */}
+            <a onClick={chattingClick}>
+              <div className="flex w-5 my-0.5">
+              <img src="/img/chat.png" />
+              </div>
+            </a>
             <Link href="">
               <div className="flex w-5 my-0.5">
                 <img src="/img/notification.png" />

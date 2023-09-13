@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import ReactQuery from "@/components/ReactQuery";
 import Recoil  from "@/components/Recoil";
+import ChatModal from "@/components/chatting/ChatModal"
 
 
 const sans = Open_Sans({ subsets: ["latin"] });
