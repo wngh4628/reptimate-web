@@ -11,7 +11,7 @@ interface loginResponse {
 interface User {
   accessToken: string;
   refreshToken: string;
-  id: number;
+  idx: number;
   profilePath: string;
   nickname: string;
 }
