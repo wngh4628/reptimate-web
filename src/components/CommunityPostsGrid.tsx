@@ -1,4 +1,4 @@
-import { Adpotion } from "@/service/adoption";
+import { Adpotion } from "@/service/my/adoption";
 import PostCard from "./adoption/AdoptionPostCard";
 
 type Props = { posts: Adpotion[] };

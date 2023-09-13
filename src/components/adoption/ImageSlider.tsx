@@ -1,4 +1,4 @@
-import { Images } from "@/service/adoption";
+import { Images } from "@/service/my/adoption";
 import React, { useState } from "react";
 import VideoPlayer from "../VideoPlayer";
 
