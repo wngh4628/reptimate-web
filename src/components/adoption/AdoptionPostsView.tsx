@@ -1,4 +1,8 @@
-import { GetAdoptionPostsView, Images, getResponse } from "@/service/adoption";
+import {
+  GetAdoptionPostsView,
+  Images,
+  getResponse,
+} from "@/service/my/adoption";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -7,7 +11,7 @@ import ImageSlider from "./ImageSlider";
 import { useMutation } from "@tanstack/react-query";
 import { commentWrtie } from "@/api/comment";
 import { useRecoilValue } from "recoil";
-import { userAtom } from "@/recoil/user";
+import { userAtom, userInfoState } from "@/recoil/user";
 import { Comment, getCommentResponse } from "@/service/comment";
 import CommentCard from "../comment/CommentCard";
 import CommentForm from "../comment/CommentForm";
@@ -49,18 +53,18 @@ export default function AdoptionPostsView() {
     // Implement the report action here
   };
 
+  const userInfo = useRecoilValue(userInfoState);
+
   let userAccessToken: string | null = null;
-  let currentUserIdx: number | null = null;
-  let userProfilePath: string | null = null;
-  let userNickname: string | null = null;
+  let currentUserIdx = userInfo.idx;
+  let userProfilePath = userInfo.profilePath;
+  let userNickname = userInfo.nickname;
+  console.log(userInfo.nickname);
   if (typeof window !== "undefined") {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
     const userData = JSON.parse(storedData || "");
-    currentUserIdx = userData.USER_DATA.idx;
     userAccessToken = userData.USER_DATA.accessToken;
-    userProfilePath = userData.USER_DATA.profilePath;
-    userNickname = userData.USER_DATA.nickname;
   }
 
   const options = {
@@ -327,94 +331,100 @@ export default function AdoptionPostsView() {
               </div>
             </PC>
             <Mobile>
-              <h2 className="text-2xl font-bold pt-10">{post.title}</h2>
-              <div className="flex items-center my-2">
-                <img
-                  className="w-10 h-10 rounded-full border-2"
-                  src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
-                  alt=""
-                />
-                <p className="text-xl font-bold ml-1">
-                  {post.UserInfo.nickname}
-                </p>
-                <p className="ml-2 text-gray-500">{postWriteDate}</p>
-                <p className="ml-1 text-gray-500">{postWriteTime}</p>
-                <p className="ml-2 text-gray-500">조회 {post.view}</p>
-                <div className="relative ml-auto">
-                  <button
-                    onClick={toggleMenu}
-                    className="text-gray-500 cursor-pointer text-xl"
-                  >
-                    ⁝
-                  </button>
-                  {menuOpen && (
-                    <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
-                      <ul>
-                        <li
-                          onClick={() => {
-                            handleEdit();
-                            toggleMenu();
-                          }}
-                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                        >
-                          수정
-                        </li>
-                        <li
-                          onClick={() => {
-                            handleDelete();
-                            toggleMenu();
-                          }}
-                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                        >
-                          삭제
-                        </li>
-                        <li
-                          onClick={() => {
-                            handleReport();
-                            toggleMenu();
-                          }}
-                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                        >
-                          신고
-                        </li>
-                      </ul>
-                    </div>
-                  )}
+              <div className="mx-2">
+                <h2 className="text-2xl font-bold pt-10">{post.title}</h2>
+                <div className="flex items-center my-2">
+                  <img
+                    className="w-7 h-7 rounded-full border-2"
+                    src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
+                    alt=""
+                  />
+                  <p className="text-lg font-bold">{post.UserInfo.nickname}</p>
+                  <p className="ml-2 text-gray-500 text-sm">{postWriteDate}</p>
+                  <p className="ml-1 text-gray-500 text-sm">{postWriteTime}</p>
+                  <p className="ml-2 text-gray-500 text-sm">조회 {post.view}</p>
+                  <div className="relative ml-auto">
+                    <button
+                      onClick={toggleMenu}
+                      className="text-gray-500 cursor-pointer text-xl"
+                    >
+                      ⁝
+                    </button>
+                    {menuOpen && (
+                      <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
+                        <ul>
+                          <li
+                            onClick={() => {
+                              handleEdit();
+                              toggleMenu();
+                            }}
+                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                          >
+                            수정
+                          </li>
+                          <li
+                            onClick={() => {
+                              handleDelete();
+                              toggleMenu();
+                            }}
+                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                          >
+                            삭제
+                          </li>
+                          <li
+                            onClick={() => {
+                              handleReport();
+                              toggleMenu();
+                            }}
+                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                          >
+                            신고
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <ImageSlider imageUrls={itemlist} />
-              <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-5">판매가격</p>
-                <p className="text-xl font-bold ml-auto mr-5">
-                  {post.boardCommercial.price.toLocaleString()}원
-                </p>
-              </div>
-              <div className="flex flex-row items-center justify-center">
-                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">품종</p>
-                  <p className="pb-1 text-lg">{post.boardCommercial.variety}</p>
+                <ImageSlider imageUrls={itemlist} />
+                <div className="flex flex-row items-center py-1">
+                  <p className="font-semibold ml-2">판매가격</p>
+                  <p className="font-bold ml-auto mr-2">
+                    {post.boardCommercial.price.toLocaleString()}원
+                  </p>
                 </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">성별</p>
-                  <p className="pb-1 text-lg">{post.boardCommercial.gender}</p>
+                <div className="flex flex-row items-center justify-center">
+                  <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                    <p className="pt-1 font-bold">품종</p>
+                    <p className="pb-1 text-sm">
+                      {post.boardCommercial.variety}
+                    </p>
+                  </div>
+                  <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                    <p className="pt-1 font-bold">성별</p>
+                    <p className="pb-1 text-sm">
+                      {post.boardCommercial.gender}
+                    </p>
+                  </div>
+                  <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                    <p className="pt-1 font-bold">크기</p>
+                    <p className="pb-1 text-sm">{post.boardCommercial.size}</p>
+                  </div>
                 </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">크기</p>
-                  <p className="pb-1 text-lg">{post.boardCommercial.size}</p>
+                <p className="my-4">{post.description}</p>
+                <hr className="border-t border-gray-300" />
+                <div className="flex flex-row items-center py-2">
+                  <p className="font-semibold ml-1 mr-1">댓글</p>
+                  <p className="text-lg font-bold text-gender-none-color">
+                    &gt;
+                  </p>
                 </div>
-              </div>
-              <p className="text-lg my-7">{post.description}</p>
-              <hr className="border-t border-gray-300 my-1" />
-              <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-3 mr-2">댓글</p>
-                <p className="text-xl font-bold text-gender-none-color">&gt;</p>
-              </div>
-              <div>
-                <CommentForm
-                  value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
-                  onSubmit={handleCommentSubmit}
-                  onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
-                />
+                <div>
+                  <CommentForm
+                    value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
+                    onSubmit={handleCommentSubmit}
+                    onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
+                  />
+                </div>
               </div>
             </Mobile>
             <ul className="mt-6">
