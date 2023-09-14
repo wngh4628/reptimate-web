@@ -152,6 +152,7 @@ export default function CommentCard({
         profilePath: userProfilePath || "",
       };
       setReplyList((prevReplyList) => [newComment, ...(prevReplyList || [])]);
+      setIsReplyWrtie((prevIsReplyWrtie) => !prevIsReplyWrtie);
     },
   });
 

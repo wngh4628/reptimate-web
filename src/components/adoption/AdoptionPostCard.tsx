@@ -1,7 +1,7 @@
-import { Adpotion } from "@/service/adoption";
 import Image from "next/image";
 import Link from "next/link";
 import { Mobile, PC } from "../ResponsiveLayout";
+import { Adpotion } from "@/service/my/adoption";
 
 type Props = { post: Adpotion };
 export default function PostCard({
