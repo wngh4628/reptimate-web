@@ -91,7 +91,9 @@ export default function AuctionList() {
                           existsNextPage: response.data.result.existsNextPage,
                         },
                       } as getResponseAuction)
+                      
                   );
+                  console.log(response.data?.result)
                   setENP(response.data?.result.existsNextPage);
                   setBoardPage((prevPage) => prevPage + 1);
             } else {
@@ -193,7 +195,7 @@ export default function AuctionList() {
         createdAt: new Date(item.writeDate),
         coverImage: item.images[0]?.coverImgPath || "",
         nickname: item.UserInfo.nickname,
-        currentPrice: item.boardAuction.currentPrice,
+        currentPrice: item.boardAuction.currentPrice || 0,
         endTime: item.boardAuction.endTime,
         gender: item.boardAuction.gender,
         size: item.boardAuction.size,
