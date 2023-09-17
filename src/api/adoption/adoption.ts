@@ -1,6 +1,7 @@
 import instance from "@/api/index";
 
 export const adoptionWrite = async ({
+  state,
   userIdx,
   title,
   category,
@@ -14,6 +15,7 @@ export const adoptionWrite = async ({
   userAccessToken,
   fileUrl,
 }: {
+  state: string;
   userIdx: string;
   title: string;
   category: string;
@@ -28,6 +30,7 @@ export const adoptionWrite = async ({
   fileUrl: String;
 }) => {
   const data = {
+    state: state,
     userIdx: userIdx,
     title: title,
     category: category,
@@ -52,6 +55,7 @@ export const adoptionWrite = async ({
 };
 
 export const adoptionEdit = async ({
+  state,
   boardIdx,
   boardCommercialIdx,
   userIdx,
@@ -67,6 +71,7 @@ export const adoptionEdit = async ({
   userAccessToken,
   fileUrl,
 }: {
+  state: string;
   boardIdx: string | string[] | undefined;
   boardCommercialIdx: string;
   userIdx: number;
@@ -83,6 +88,7 @@ export const adoptionEdit = async ({
   fileUrl: String;
 }) => {
   const data = {
+    state: state,
     boardIdx: boardIdx,
     boardCommercialIdx: boardCommercialIdx,
     userIdx: userIdx,

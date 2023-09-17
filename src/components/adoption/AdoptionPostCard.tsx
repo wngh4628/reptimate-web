@@ -44,7 +44,11 @@ export default function PostCard({
               <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
                   className="w-10 h-10 rounded-full border-2"
-                  src={`${profilePath}` || "/img/reptimate_logo.png"}
+                  src={
+                    profilePath !== null
+                      ? profilePath
+                      : "/img/reptimate_logo.png"
+                  }
                   alt={""}
                 />
                 <p className="text-white font-semibold ml-1">{nickname}</p>
@@ -64,7 +68,11 @@ export default function PostCard({
               <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
                   className="w-7 h-7 rounded-full border-2"
-                  src={`${profilePath}` || "/img/reptimate_logo.png"}
+                  src={
+                    profilePath !== null
+                      ? profilePath
+                      : "/img/reptimate_logo.png"
+                  }
                   alt={""}
                 />
                 <p className="text-white font-semibold ml-1 text-sm">

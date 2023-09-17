@@ -18,6 +18,12 @@ interface Option {
 
 const uploadUri = "https://www.reptimate.store/conv/board/upload";
 
+const sellingOption: Option[] = [
+  { value: "selling", label: "판매중" },
+  { value: "end", label: "판매완료" },
+  { value: "reservation", label: "예약중" },
+];
+
 const varietyOptions: Option[] = [
   { value: "품종을 선택하세요", label: "품종을 선택하세요" },
   { value: "크레스티드 게코", label: "크레스티드 게코" },
@@ -128,6 +134,7 @@ export default function AdoptionWrite() {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
 
+  const [selling, setSelling] = useState<string>("selling");
   const [variety, setVariety] = useState<string>("품종을 선택하세요");
   const [pattern, setPattern] = useState<string>("모프를 선택하세요");
 
@@ -139,6 +146,11 @@ export default function AdoptionWrite() {
 
     // Reset pattern when variety changes
     setPattern("모프를 선택하세요");
+  };
+
+  const handleSellingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedSelling = e.target.value;
+    setSelling(selectedSelling);
   };
 
   const handleGenderClick = (gender: string) => {
@@ -278,6 +290,7 @@ export default function AdoptionWrite() {
     setIsLoading(true);
 
     const requestData = {
+      state: selling,
       userIdx: userIdx || "",
       title: title,
       category: "adoption",
@@ -326,6 +339,7 @@ export default function AdoptionWrite() {
             console.log(responseData);
             // Now, you can send additional data to the API server
             const requestData1 = {
+              state: selling,
               userIdx: userIdx || "",
               title: title,
               category: "adoption",
@@ -389,6 +403,18 @@ export default function AdoptionWrite() {
           분양 게시글
         </h2>
       </Mobile>
+      {/* <p className="font-bold text-sm">거래 상태</p>
+      <select
+        className="focus:outline-none text-sm mb-6"
+        value={selling}
+        onChange={handleSellingChange}
+      >
+        {sellingOption.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select> */}
       <div className="">
         <input
           type="file"

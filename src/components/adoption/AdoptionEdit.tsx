@@ -1,4 +1,4 @@
-import { GetAdoptionPostsView } from "@/service/my/adoption";
+import { GetAdoptionPostsView, Images } from "@/service/my/adoption";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import {
@@ -30,6 +30,12 @@ interface Option {
 }
 
 const uploadUri = "https://www.reptimate.store/conv/board/upload";
+
+const sellingOption: Option[] = [
+  { value: "selling", label: "판매중" },
+  { value: "end", label: "판매완료" },
+  { value: "reservation", label: "예약중" },
+];
 
 const varietyOptions: Option[] = [
   { value: "품종을 선택하세요", label: "품종을 선택하세요" },
@@ -135,6 +141,7 @@ export default function AdoptionEdit() {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
 
+  const [selling, setSelling] = useState<string>("selling");
   const [variety, setVariety] = useState<string>("품종을 선택하세요");
   const [pattern, setPattern] = useState<string>("모프를 선택하세요");
 
@@ -142,13 +149,13 @@ export default function AdoptionEdit() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  window.onbeforeunload = function (event) {
-    const confirmationMessage =
-      "변경 내용이 저장되지 않습니다.\n뒤로 가시겠습니까?";
+  // window.onbeforeunload = function (event) {
+  //   const confirmationMessage =
+  //     "변경 내용이 저장되지 않습니다.\n뒤로 가시겠습니까?";
 
-    (event || window.event).returnValue = confirmationMessage;
-    return confirmationMessage;
-  };
+  //   (event || window.event).returnValue = confirmationMessage;
+  //   return confirmationMessage;
+  // };
 
   function BackButton() {
     const handleGoBack = () => {
@@ -184,6 +191,8 @@ export default function AdoptionEdit() {
       // Assuming your response data has a 'result' property
       setData(response.data);
       const post = response.data.result;
+      setSelling(post.boardCommercial.state);
+      console.log(post.boardCommercial.state);
       setTitle(post?.title || "");
       setVariety(post?.boardCommercial.variety || "품종을 선택하세요");
       setPattern(post?.boardCommercial.pattern || "모프를 선택하세요");
@@ -193,6 +202,28 @@ export default function AdoptionEdit() {
       setPrice(post?.boardCommercial.price.toString() || "");
       setDescription(post?.description || "");
       setBoardCommercialIdx(post?.boardCommercial.idx || "");
+      const itemlist: Images[] = post.images.map((item: Images) => ({
+        idx: item.idx,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        boardIdx: item.boardIdx,
+        category: item.category,
+        path: item.path,
+      }));
+
+      // Update the selectedFiles state with itemlist
+      setSelectedFiles(
+        itemlist.map((item) => ({
+          file: new File(
+            [
+              /* You can provide dummy data here if needed */
+            ],
+            item.path
+          ),
+          id: item.idx,
+        }))
+      );
+      console.log(selectedFiles);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -208,6 +239,11 @@ export default function AdoptionEdit() {
 
     // Reset pattern when variety changes
     setPattern("모프를 선택하세요");
+  };
+
+  const handleSellingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedSelling = e.target.value;
+    setSelling(selectedSelling);
   };
 
   const handleGenderClick = (gender: string) => {
@@ -347,6 +383,7 @@ export default function AdoptionEdit() {
     setIsLoading(true);
 
     const requestData = {
+      state: selling,
       boardIdx: idx,
       boardCommercialIdx: boardCommercialIdx,
       userIdx: currentUserIdx || 0,
@@ -373,6 +410,7 @@ export default function AdoptionEdit() {
       birthDate !== ""
     ) {
       if (selectedFiles.length === 0) {
+        console.log(requestData);
         mutation.mutate(requestData);
       } else {
         console.log(selectedFiles);
@@ -397,6 +435,7 @@ export default function AdoptionEdit() {
             console.log(responseData);
             // Now, you can send additional data to the API server
             const requestData1 = {
+              state: selling,
               boardIdx: idx,
               boardCommercialIdx: boardCommercialIdx,
               userIdx: currentUserIdx || 0,
@@ -463,6 +502,18 @@ export default function AdoptionEdit() {
           분양 게시글
         </h2>
       </Mobile>
+      <p className="font-bold text-sm">거래 상태</p>
+      <select
+        className="focus:outline-none text-sm mb-6"
+        value={selling}
+        onChange={handleSellingChange}
+      >
+        {sellingOption.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
       <div className="">
         <input
           type="file"
