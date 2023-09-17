@@ -33,9 +33,11 @@ export default function ReplyCard({
   if (typeof window !== "undefined") {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
-    const userData = JSON.parse(storedData || "");
-    currentUserIdx = userData.USER_DATA.idx;
-    userAccessToken = userData.USER_DATA.accessToken;
+    if (storedData != null) {
+      const userData = JSON.parse(storedData || "");
+      currentUserIdx = userData.USER_DATA.idx;
+      userAccessToken = userData.USER_DATA.accessToken;
+    }
   }
 
   const date = new Date(createdAt || "");

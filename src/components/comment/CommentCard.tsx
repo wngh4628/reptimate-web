@@ -32,11 +32,13 @@ export default function CommentCard({
   if (typeof window !== "undefined") {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
-    const userData = JSON.parse(storedData || "");
-    currentUserIdx = userData.USER_DATA.idx;
-    userAccessToken = userData.USER_DATA.accessToken;
-    userProfilePath = userData.USER_DATA.profilePath;
-    userNickname = userData.USER_DATA.nickname;
+    if (storedData != null) {
+      const userData = JSON.parse(storedData || "");
+      currentUserIdx = userData.USER_DATA.idx;
+      userAccessToken = userData.USER_DATA.accessToken;
+      userProfilePath = userData.USER_DATA.profilePath;
+      userNickname = userData.USER_DATA.nickname;
+    }
   }
 
   const [replyData, setReplyData] = useState<getCommentResponse | null>(null);
@@ -291,12 +293,14 @@ export default function CommentCard({
               <div className="flex items-center my-1 text-sm ml-10">
                 <p className="text-gray-500">{postWriteDate}</p>
                 <p className="ml-1 text-gray-500">{postWriteTime}</p>
-                <p
-                  className="ml-2 text-gray-500 cursor-pointer"
-                  onClick={handleReplyWriteClick}
-                >
-                  답글 달기
-                </p>
+                {userAccessToken && (
+                  <p
+                    className="ml-2 text-gray-500 cursor-pointer"
+                    onClick={handleReplyWriteClick}
+                  >
+                    답글 달기
+                  </p>
+                )}
                 {isCurrentUserComment && (
                   <>
                     <p
