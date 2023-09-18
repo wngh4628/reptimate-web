@@ -28,7 +28,7 @@ export default function BiddingView() {
     const [textMsg, settextMsg] = useState('');
     const [roomName, setroomName] = useState('');
     const [userIdx, setUserIdx] = useState(0); // 유저의 userIdx 저장
-    const [chattingData, setchattingData] = useState<IMessage[]>([]);
+
     const socketRef = useRef<Socket | null>(null);
     let auctionRoomIdx = useRef<string>();
     const [userInfoData, setUserInfoData] = useState({});
@@ -163,8 +163,6 @@ export default function BiddingView() {
           socketRef.current.emit("Auction_message", message);
           settextMsg("");
         }
-        
-        
       }
     }
     const roomOut = () => {
