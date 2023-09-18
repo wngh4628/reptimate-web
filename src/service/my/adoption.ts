@@ -113,5 +113,6 @@ export type Images = {
   updatedAt: string;
   boardIdx: number;
   category: string;
+  mediaSequence: number;
   path: string;
 };

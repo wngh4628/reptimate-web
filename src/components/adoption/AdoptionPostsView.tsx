@@ -258,6 +258,7 @@ export default function AdoptionPostsView() {
       boardIdx: item.boardIdx,
       category: item.category,
       path: item.path,
+      mediaSequence: item.mediaSequence,
     }));
 
     //댓글 작성 버튼 클릭 시
