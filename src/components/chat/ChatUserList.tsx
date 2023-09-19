@@ -81,7 +81,7 @@ const ChatUserList = forwardRef((props :{
 		}
 	}
     return (
-		<div className="flex mt-2" key={props.userList.userIdx} style={{cursor:"pointer"}} onClick={optionBoxOnOff} >
+		<div className="flex" key={props.userList.userIdx} style={{cursor:"pointer"}} onClick={optionBoxOnOff} >
 
 			{/* <div>{props.userList.userIdx}</div>
 			<div>:</div> */}

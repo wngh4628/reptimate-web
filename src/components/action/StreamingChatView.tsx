@@ -4,9 +4,9 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { io, Socket } from "socket.io-client";
 
-import ChatItem from '../../components/chat/ChatItem';
-import ChatUserList from '../../components/chat/ChatUserList';
-import BanUserList from '../../components/chat/BanUserList';
+import ChatItem from '../chat/ChatItem';
+import ChatUserList from '../chat/ChatUserList';
+import BanUserList from '../chat/BanUserList';
 import {IMessage,connectMessage,Ban_Message,userInfo } from "@/service/chat/chat"
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -19,11 +19,10 @@ interface UserInfoData {
     profilePath: string;
   };
 }
-export default function ChatView() {
+export default function StreamingChatView() {
 
   const router = useRouter();
   const pathName = usePathname() || "";
-
 
   const [roomEnter, setroomEnter] = useState<boolean>(false);
   const [textMsg, settextMsg] = useState('');
@@ -184,7 +183,29 @@ export default function ChatView() {
       if(userIdx === host){
         setUserAuth('host');
       }
-      for (const data of message) {
+      // for (const data of message) {
+      //   const getUserInfo = JSON.parse(data);
+      //   setUserInfoData((prevUserInfoData) => ({
+      //     ...prevUserInfoData,
+      //     [getUserInfo.userIdx]: {
+      //       userIdx: getUserInfo.userIdx,
+      //       profilePath: getUserInfo.profilePath,
+      //       nickname: getUserInfo.nickname,
+      //     },
+      //   }));
+      //   setUserList((prevsetUserList) => ({
+      //     ...prevsetUserList,
+      //     [getUserInfo.userIdx]: {
+      //       userIdx: getUserInfo.userIdx,
+      //       profilePath: getUserInfo.profilePath,
+      //       nickname: getUserInfo.nickname,
+      //     },
+      //   }));
+      // };
+
+      // message가 배열이 아닌 경우, 배열로 변환
+      const messageArray = Array.isArray(message) ? message : [message];
+      messageArray.forEach((data) => {
         const getUserInfo = JSON.parse(data);
         setUserInfoData((prevUserInfoData) => ({
           ...prevUserInfoData,
@@ -202,8 +223,7 @@ export default function ChatView() {
             nickname: getUserInfo.nickname,
           },
         }));
-
-      };
+      });
     });
     console.log(socket.connected)
     // socket disconnect on component unmount if exists 
@@ -255,13 +275,13 @@ export default function ChatView() {
     console.log(roomName);
     liveRoomIdx.current = roomName;
     auctionRoomIdx.current = roomName;
-    }, [roomName])
+  }, [roomName])
   useEffect(() => {
     if(userInfoBidData[userIdx]){
       setbiddingState(true);
     }
   }, [userInfoBidData])
-  useEffect(() => {
+    useEffect(() => {
     console.log('banList', banList);
   }, [banList])
 
@@ -407,6 +427,7 @@ export default function ChatView() {
       settextMsg("");
     }
   }
+
   // 경매 입찰 관련
   //방에 들어왔을 때 작동하는 함수
   const joinBidRoom = () => {
@@ -430,7 +451,6 @@ export default function ChatView() {
      
       fetchBidData();
     });
-  
     // 메시지 리스너
     socketBid.on("Auction_message", (message: IMessage) => {
       setchattingBidData(chattingData => [...chattingData, message]);
@@ -528,6 +548,8 @@ export default function ChatView() {
       }
     }
   }
+
+
   function viewChat() {
     if(sideView != "chat") {
         setSideView("chat")
@@ -546,7 +568,7 @@ export default function ChatView() {
 
   return (
     <>
-      <div className=" flex-col w-[20rem] right-0 h-[87%] lg:flex hidden bg-white">
+      <div className="flex-col w-full right-0 h-[87%] flex bg-white">
         <div className='flex py-[0.5rem] text-sm bg-gray-100 w-full'>
             <span className='basis-1/2 text-[#CB3E3E] text-center'>최고가 : - - 원</span>
             <span className='basis-1/2 text-[#A447CF] text-center'>남은 시간 : - - : - -</span>
