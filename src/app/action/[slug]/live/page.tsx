@@ -8,7 +8,7 @@ import React, { useCallback, useState, useEffect } from 'react'
 import VideoPlayer from '@/components/action/video-player'
 import BottomPopup from '@/components/action/bottom-popup'
 // import ChettingOpen from '../../../../components/action/chetting-open'
-import ChatView from '@/components/action/chat-view'
+import ChatView from '@/components/action/chatView'
 
 import Image from 'next/image'
 import unlike_black from '../../../../../public/img/unlike_black.png';
@@ -29,6 +29,7 @@ export default function ActionPage({ params: { slug } }: Props) {
     const [videoUrl, setVideoUrl] = useState('');
     const [actionTitle, setActionTitle] = useState('');
     const [nickname, setNickname] = useState('');
+    const [sideView, setSideView] = useState('chat');
 
     // const [value1, setValue1]:use = useState()
     // const [count, setCount] = useState(0);
@@ -50,23 +51,39 @@ export default function ActionPage({ params: { slug } }: Props) {
         getActionInfo(callback);
 
         // let mounted = true
-        console.log('마운트 될 때만 실행된다.');
+        // console.log('마운트 될 때만 실행된다.');
 
         // if (mounted) {
 
         // }
 
-        return () => {
-            console.log('컴포넌트가 화면에서 사라짐');
-        };
+        // return () => {
+        //     console.log('컴포넌트가 화면에서 사라짐');
+        // };
 
     }, []);
+
+    function viewChat() {
+        if(sideView != "chat") {
+            setSideView("chat")
+        }
+    }
+    function viewParticipate() {
+        if(sideView != "participate") {
+            setSideView("participate")
+        }
+    }
+    function viewBid() {
+        if(sideView != "bid") {
+            setSideView("bid")
+        }
+    }
 
     //데이터 받아오는 부분
     function callback(message: acitonLiveDto): void {
 
-        console.log("message");
-        console.log(message);
+        // console.log("message");
+        // console.log(message);
 
         ///data = message;
         setActionTitle(message.title);
@@ -132,17 +149,7 @@ export default function ActionPage({ params: { slug } }: Props) {
                     </div>
                 </div>
                 
-                <div className=" flex-col w-[20rem] right-0 h-[87%] lg:flex hidden bg-white">
-                    <div className='flex py-[0.5rem] text-sm bg-gray-200'>
-                        <span className='basis-1/2 text-[#CB3E3E]'>최고가 : 25만원</span>
-                        <span className='basis-1/2 text-[#A447CF]'>남은 시간 : 00:56</span>
-                    </div>
-                    <div className='flex py-[0.5rem] text-sm bg-gray-200'>
-                        <span className='basis-1/2'>실시간 채팅</span>
-                        <span className='basis-1/2'>경매가</span>
-                    </div>
-                    <ChatView></ChatView>
-                </div>
+                <ChatView></ChatView>
             </div>
         </>
     )

@@ -57,8 +57,8 @@ export default function AuctionItem({
                 />
                 <div className="flex-grow"></div>
                 <p className={`${
-                state === "selling" ? "text-main-color" : "text-gray-400"
-              } text-xl z-[9999] relative mt-1 mr-1`}>{setStateString(state)}</p>
+                state === "selling" ? "text-red-500" : "text-gray-400"
+                } text-xl font-bold z-[9999] relative mt-1 mr-[6px]`}>{setStateString(state)}</p>
               </div>
               
             </PC>
