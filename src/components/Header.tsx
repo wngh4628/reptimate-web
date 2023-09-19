@@ -45,6 +45,9 @@ export default function Header() {
     console.log("1234");
     setIsChatVisisible(!isChatVisisible);
   };
+  function chattingClose() {
+    setIsChatVisisible(false);
+  };
   function chattingClickM() {
     setIsChatVisisible(!isChatVisisible);
   };
@@ -125,10 +128,13 @@ export default function Header() {
           </nav>
         </div>
         <div className={`${
-          isChatVisisible ? "" : "hidden"
-          }bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] border-gray-300 right-[40px] flex flex-col shadow-md`}>
-            <div className="border-b-[1px] border-gray-300 h-[40px]">
-              
+          isChatVisisible ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md" : "hidden"
+          }`}>
+            <div className="border-b-[1px] border-gray-300 h-[40px] flex flex-row ">
+              <p className="text-[20px] text-black self-center">채팅</p>
+              <button type="button" onClick={chattingClose} >
+                <img className="w-[25px] h-[25px] self-center right-0" src="/img/search.png"/>
+              </button>
             </div>
 
         </div>
