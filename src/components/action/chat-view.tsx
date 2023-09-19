@@ -48,7 +48,6 @@ export default function ChatView(props: Props) {
                             alt="send message"
                             className='m-auto py-[9px]'
                         />
-
                     </div>
                 </span>
             </div>

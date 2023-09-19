@@ -56,8 +56,6 @@ export default function EditProfileInput() {
     const pathName = usePathname() || "";
 
 
-
-
     const getUserInfo = async (accessToken: string) => {
         const config = {
             headers: {
