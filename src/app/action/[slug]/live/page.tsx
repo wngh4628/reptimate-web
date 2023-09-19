@@ -8,7 +8,7 @@ import React, { useCallback, useState, useEffect } from 'react'
 import VideoPlayer from '@/components/action/video-player'
 import BottomPopup from '@/components/action/bottom-popup'
 // import ChettingOpen from '../../../../components/action/chetting-open'
-import ChatView from '@/components/action/chat-view'
+import StreamingChatView from '@/components/action/StreamingChatView'
 
 import Image from 'next/image'
 import unlike_black from '../../../../../public/img/unlike_black.png';
@@ -29,6 +29,7 @@ export default function ActionPage({ params: { slug } }: Props) {
     const [videoUrl, setVideoUrl] = useState('');
     const [actionTitle, setActionTitle] = useState('');
     const [nickname, setNickname] = useState('');
+    const [sideView, setSideView] = useState('chat');
 
     // const [value1, setValue1]:use = useState()
     // const [count, setCount] = useState(0);
@@ -50,23 +51,39 @@ export default function ActionPage({ params: { slug } }: Props) {
         getActionInfo(callback);
 
         // let mounted = true
-        console.log('마운트 될 때만 실행된다.');
+        // console.log('마운트 될 때만 실행된다.');
 
         // if (mounted) {
 
         // }
 
-        return () => {
-            console.log('컴포넌트가 화면에서 사라짐');
-        };
+        // return () => {
+        //     console.log('컴포넌트가 화면에서 사라짐');
+        // };
 
     }, []);
+
+    function viewChat() {
+        if(sideView != "chat") {
+            setSideView("chat")
+        }
+    }
+    function viewParticipate() {
+        if(sideView != "participate") {
+            setSideView("participate")
+        }
+    }
+    function viewBid() {
+        if(sideView != "bid") {
+            setSideView("bid")
+        }
+    }
 
     //데이터 받아오는 부분
     function callback(message: acitonLiveDto): void {
 
-        console.log("message");
-        console.log(message);
+        // console.log("message");
+        // console.log(message);
 
         ///data = message;
         setActionTitle(message.title);
@@ -86,14 +103,13 @@ export default function ActionPage({ params: { slug } }: Props) {
                     console.log(`script loaded correctly, window.FB has been populated`)
                 }
             /> */}
-            <div className="flex flex-row h-full">
-                <div className="flex-auto flex-col ">
+            <div className="flex flex-col lg:flex-row">
 
+                <div className="flex-auto flex-col">
                     <div className='bg-black w-full'>
                         <VideoPlayer src={videoUrl}></VideoPlayer>
                     </div>
 
-                    <div>
                         <div className='flex h-[8rem] flex-col py-4 px-6 text-black border-b-[1px] border-gray border-r-[1px] border-gray'>
                             <span className="basis-1/2 text-left text-lg">{actionTitle}</span>
                             <div className="flex text-left basis-1/2">
@@ -119,30 +135,19 @@ export default function ActionPage({ params: { slug } }: Props) {
                             </div>
                         </div>
 
-                        <div className=" flex-col w-full h-[450px] lg:hidden flex">
-                            <ChatView></ChatView>
-                        </div>
-
-
                         <div className='h-[20rem] p-4 text-start border-r-[1px] border-gray'>
                             <div className='h-[18rem] rounded-lg bg-silver p-4'>
                                 경매 간단 정보
                             </div>
                         </div>
-                    </div>
+
+                </div>
+                <div className='lg:w-[20rem] w-full'>
+                    <StreamingChatView></StreamingChatView>
                 </div>
                 
-                <div className=" flex-col w-[20rem] right-0 h-[87%] lg:flex hidden bg-white">
-                    <div className='flex py-[0.5rem] text-sm bg-gray-200'>
-                        <span className='basis-1/2 text-[#CB3E3E]'>최고가 : 25만원</span>
-                        <span className='basis-1/2 text-[#A447CF]'>남은 시간 : 00:56</span>
-                    </div>
-                    <div className='flex py-[0.5rem] text-sm bg-gray-200'>
-                        <span className='basis-1/2'>실시간 채팅</span>
-                        <span className='basis-1/2'>경매가</span>
-                    </div>
-                    <ChatView></ChatView>
-                </div>
+                
+
             </div>
         </>
     )

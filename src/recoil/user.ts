@@ -37,5 +37,5 @@ export const isLoggedInState = atom({
 
 export const chatVisisibleState = atom({
   key: "chatVisibleState",
-  default: true,
+  default: false,
 });
