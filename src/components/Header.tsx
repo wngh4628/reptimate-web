@@ -15,6 +15,8 @@ export default function Header() {
   const [isLogin, isSetLogin] = useState(false);
   const [accessToken, setAccessToken] = useRecoilState(userAtom);
 
+  
+
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const [isChatVisisible, setIsChatVisisible] = useRecoilState(chatVisisibleState);
 
@@ -40,6 +42,10 @@ export default function Header() {
     window.location.reload();
   };
   function chattingClick() {
+    console.log("1234");
+    setIsChatVisisible(!isChatVisisible);
+  };
+  function chattingClickM() {
     setIsChatVisisible(!isChatVisisible);
   };
   
@@ -102,7 +108,7 @@ export default function Header() {
               MY
             </Link>
             <Link href="">
-              <div className="flex w-5 my-0.5">
+              <div className="flex w-5 my-0.5" onClick={chattingClick}>
                 <img src="/img/chat.png" />
               </div>
             </Link>
@@ -118,19 +124,27 @@ export default function Header() {
             </Link>
           </nav>
         </div>
+        <div className={`${
+          isChatVisisible ? "" : "hidden"
+          }bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] border-gray-300 right-[40px] flex flex-col shadow-md`}>
+            <div className="border-b-[1px] border-gray-300 h-[40px]">
+              
+            </div>
+
+        </div>
       </PC>
       {/* 모바일 화면(반응형) */}
       <Mobile>
         <div className="flex justify-end pt-2 pb-5 pr-5">
           <nav className="flex gap-4 font-bold">
             {/* <Link href="">
-              <div className="flex w-5 my-0.5">
+              <div className="flex w-5 my-0.5" onClick={chattingClick}>
                 <img src="/img/chat.png" />
               </div>
             </Link> */}
             <a onClick={chattingClick}>
               <div className="flex w-5 my-0.5">
-              <img src="/img/chat.png" />
+                <img src="/img/chat.png" />
               </div>
             </a>
             <Link href="">
@@ -144,6 +158,11 @@ export default function Header() {
               </div>
             </Link>
           </nav>
+        </div>
+        <div className={`${
+          isChatVisisible ? "" : "hidden"
+          }bg-black w-full h-full z-[9999] fixed bottom-0`}>
+
         </div>
       </Mobile>
     </header>
