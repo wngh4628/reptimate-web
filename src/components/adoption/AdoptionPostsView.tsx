@@ -92,6 +92,14 @@ export default function AdoptionPostsView() {
     // Implement the report action here
   };
 
+  const handleLogin = () => {
+    const confirmation = window.confirm("로그인 후 댓글을 작성할 수 있습니다.");
+
+    if (confirmation) {
+      window.location.href = `/login`;
+    }
+  };
+
   let userAccessToken: string | null = null;
   let currentUserIdx: number | null = null;
   let userProfilePath: string | null = null;
@@ -99,11 +107,14 @@ export default function AdoptionPostsView() {
   if (typeof window !== "undefined") {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
-    const userData = JSON.parse(storedData || "");
-    currentUserIdx = userData.USER_DATA.idx;
-    userAccessToken = userData.USER_DATA.accessToken;
-    userProfilePath = userData.USER_DATA.profilePath;
-    userNickname = userData.USER_DATA.nickname;
+    console.log(storedData);
+    if (storedData != null) {
+      const userData = JSON.parse(storedData || "");
+      currentUserIdx = userData.USER_DATA.idx;
+      userAccessToken = userData.USER_DATA.accessToken;
+      userProfilePath = userData.USER_DATA.profilePath;
+      userNickname = userData.USER_DATA.nickname;
+    }
   }
 
   const options = {
@@ -113,7 +124,7 @@ export default function AdoptionPostsView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `https://api.reptimate.store/board/${idx}?userIdx=${currentUserIdx}`
+        `https://api.reptimate.store/board/${idx}?userIdx=1`
       );
       // Assuming your response data has a 'result' property
       setData(response.data);
@@ -247,6 +258,7 @@ export default function AdoptionPostsView() {
       boardIdx: item.boardIdx,
       category: item.category,
       path: item.path,
+      mediaSequence: item.mediaSequence,
     }));
 
     //댓글 작성 버튼 클릭 시
@@ -273,6 +285,8 @@ export default function AdoptionPostsView() {
         alert(alertMessage);
       }
     };
+
+    const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
 
     return (
       <div>
@@ -301,35 +315,40 @@ export default function AdoptionPostsView() {
                   </button>
                   {menuOpen && (
                     <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
-                      <ul>
-                        <li
-                          onClick={() => {
-                            handleEdit();
-                            toggleMenu();
-                          }}
-                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                        >
-                          수정
-                        </li>
-                        <li
-                          onClick={() => {
-                            handleDelete();
-                            toggleMenu();
-                          }}
-                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                        >
-                          삭제
-                        </li>
-                        <li
-                          onClick={() => {
-                            handleReport();
-                            toggleMenu();
-                          }}
-                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                        >
-                          신고
-                        </li>
-                      </ul>
+                      {isCurrentUserComment ? (
+                        <ul>
+                          <li
+                            onClick={() => {
+                              handleEdit();
+                              toggleMenu();
+                            }}
+                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                          >
+                            수정
+                          </li>
+                          <li
+                            onClick={() => {
+                              handleDelete();
+                              toggleMenu();
+                            }}
+                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                          >
+                            삭제
+                          </li>
+                        </ul>
+                      ) : (
+                        <ul>
+                          <li
+                            onClick={() => {
+                              handleReport();
+                              toggleMenu();
+                            }}
+                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                          >
+                            신고
+                          </li>
+                        </ul>
+                      )}
                     </div>
                   )}
                 </div>
@@ -355,19 +374,52 @@ export default function AdoptionPostsView() {
                   <p className="pb-1 text-lg">{post.boardCommercial.size}</p>
                 </div>
               </div>
+              <div className="flex flex-row items-center justify-center mt-1">
+                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 text-lg font-bold">모프</p>
+                  <p className="pb-1 text-lg">{post.boardCommercial.pattern}</p>
+                </div>
+                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 text-lg font-bold">출생</p>
+                  <p className="pb-1 text-lg">
+                    {post.boardCommercial.birthDate}
+                  </p>
+                </div>
+                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 text-lg font-bold">상태</p>
+                  {post.boardCommercial.state === "reservation" ? (
+                    <p className="pb-1 text-lg text-red-600">예약중</p>
+                  ) : post.boardCommercial.state === "end" ? (
+                    <p className="pb-1 text-lg text-gray-500">판매완료</p>
+                  ) : (
+                    <p className="pb-1 text-lg text-blue-600">판매중</p>
+                  )}
+                </div>
+              </div>
               <p className="text-lg my-7">{post.description}</p>
               <hr className="border-t border-gray-300 my-1" />
               <div className="flex flex-row items-center py-3">
                 <p className="text-lg font-semibold ml-3 mr-2">댓글</p>
                 <p className="text-xl font-bold text-gender-none-color">&gt;</p>
               </div>
-              <div>
-                <CommentForm
-                  value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
-                  onSubmit={handleCommentSubmit}
-                  onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
-                />
-              </div>
+              {userAccessToken ? (
+                <div>
+                  <CommentForm
+                    value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
+                    onSubmit={handleCommentSubmit}
+                    onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
+                  />
+                </div>
+              ) : (
+                <p
+                  className="cursor-pointer"
+                  onClick={() => {
+                    handleLogin();
+                  }}
+                >
+                  로그인 후 댓글을 작성할 수 있습니다.
+                </p>
+              )}
             </PC>
             <Mobile>
               <BackButton />
@@ -458,13 +510,24 @@ export default function AdoptionPostsView() {
                     &gt;
                   </p>
                 </div>
-                <div>
-                  <CommentForm
-                    value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
-                    onSubmit={handleCommentSubmit}
-                    onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
-                  />
-                </div>
+                {userAccessToken ? (
+                  <div>
+                    <CommentForm
+                      value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
+                      onSubmit={handleCommentSubmit}
+                      onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
+                    />
+                  </div>
+                ) : (
+                  <p
+                    className="cursor-pointer"
+                    onClick={() => {
+                      handleLogin();
+                    }}
+                  >
+                    로그인 후 댓글을 작성할 수 있습니다.
+                  </p>
+                )}
               </div>
             </Mobile>
             <ul className="mt-6">

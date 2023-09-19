@@ -1,4 +1,4 @@
-import { GetAdoptionPostsView } from "@/service/my/adoption";
+import { GetAdoptionPostsView, Images } from "@/service/my/adoption";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import {
@@ -7,21 +7,22 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { Mobile, PC } from "../ResponsiveLayout";
 import { useMutation } from "@tanstack/react-query";
-import { useRecoilValue } from "recoil";
-import { userAtom } from "@/recoil/user";
-import { Comment, getCommentResponse } from "@/service/comment";
 import { adoptionEdit } from "@/api/adoption/adoption";
 import { useRouter } from "next/navigation";
 import { useDrag, useDrop } from "react-dnd";
+import VideoThumbnail from "../VideoThumbnail";
 
 interface FileItem {
+  idx: number;
   file: File;
+  url: string;
   id: number;
+  type: string;
+  mediaSequence: number;
 }
 
 interface Option {
@@ -29,7 +30,11 @@ interface Option {
   label: string;
 }
 
-const uploadUri = "https://www.reptimate.store/conv/board/upload";
+const sellingOption: Option[] = [
+  { value: "selling", label: "판매중" },
+  { value: "end", label: "판매완료" },
+  { value: "reservation", label: "예약중" },
+];
 
 const varietyOptions: Option[] = [
   { value: "품종을 선택하세요", label: "품종을 선택하세요" },
@@ -123,10 +128,29 @@ export default function AdoptionEdit() {
   const idx = params?.idx;
 
   const [data, setData] = useState<GetAdoptionPostsView | null>(null);
-
-  const [selectedFiles, setSelectedFiles] = useState<
-    Array<{ file: File; id: number }>
+  const [allFiles, setAllFiles] = useState<
+    Array<{
+      idx: number;
+      file: File | null;
+      url: string | null;
+      id: number;
+      type: string;
+      mediaSequence: number;
+    }>
   >([]);
+  const [addFiles, setAddFiles] = useState<
+    Array<{
+      idx: number;
+      file: File | null;
+      url: string | null;
+      id: number;
+      type: string;
+      mediaSequence: number;
+    }>
+  >([]);
+  const [deletedFiles, setDeletedFiles] = useState<Array<number>>([]);
+  const [mediaSequence, setMediaSequence] = useState<number>(-1);
+
   const [selectedGender, setSelectedGender] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [birthDate, setBirthDate] = useState<string>("");
@@ -135,6 +159,7 @@ export default function AdoptionEdit() {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
 
+  const [selling, setSelling] = useState<string>("selling");
   const [variety, setVariety] = useState<string>("품종을 선택하세요");
   const [pattern, setPattern] = useState<string>("모프를 선택하세요");
 
@@ -142,13 +167,13 @@ export default function AdoptionEdit() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  window.onbeforeunload = function (event) {
-    const confirmationMessage =
-      "변경 내용이 저장되지 않습니다.\n뒤로 가시겠습니까?";
+  // window.onbeforeunload = function (event) {
+  //   const confirmationMessage =
+  //     "변경 내용이 저장되지 않습니다.\n뒤로 가시겠습니까?";
 
-    (event || window.event).returnValue = confirmationMessage;
-    return confirmationMessage;
-  };
+  //   (event || window.event).returnValue = confirmationMessage;
+  //   return confirmationMessage;
+  // };
 
   function BackButton() {
     const handleGoBack = () => {
@@ -184,6 +209,8 @@ export default function AdoptionEdit() {
       // Assuming your response data has a 'result' property
       setData(response.data);
       const post = response.data.result;
+      setSelling(post.boardCommercial.state);
+      console.log(post.boardCommercial.state);
       setTitle(post?.title || "");
       setVariety(post?.boardCommercial.variety || "품종을 선택하세요");
       setPattern(post?.boardCommercial.pattern || "모프를 선택하세요");
@@ -193,6 +220,20 @@ export default function AdoptionEdit() {
       setPrice(post?.boardCommercial.price.toString() || "");
       setDescription(post?.description || "");
       setBoardCommercialIdx(post?.boardCommercial.idx || "");
+      setAllFiles(
+        post.images.map((item: Images) => ({
+          idx: item.idx,
+          id: Date.now() + Math.random(),
+          url: item.path,
+          type: item.category,
+          file: null,
+          mediaSequence: item.mediaSequence,
+        }))
+      );
+      console.log(post.images.length);
+      if (post.images.length > 0) {
+        setMediaSequence(post.images.length - 1);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -200,7 +241,16 @@ export default function AdoptionEdit() {
 
   useEffect(() => {
     getData();
+    console.log(allFiles);
   }, []);
+
+  useEffect(() => {
+    console.log(allFiles);
+  }, [allFiles]);
+
+  useEffect(() => {
+    console.log(deletedFiles);
+  }, [deletedFiles]);
 
   const handleVarietyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVariety = e.target.value;
@@ -208,6 +258,11 @@ export default function AdoptionEdit() {
 
     // Reset pattern when variety changes
     setPattern("모프를 선택하세요");
+  };
+
+  const handleSellingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedSelling = e.target.value;
+    setSelling(selectedSelling);
   };
 
   const handleGenderClick = (gender: string) => {
@@ -229,42 +284,59 @@ export default function AdoptionEdit() {
     const files = event.target.files;
     if (files) {
       const newFiles: FileItem[] = Array.from(files)
-        .slice(0, 5 - selectedFiles.length)
-        .map((file) => ({
+        .slice(0, 5 - allFiles.length)
+        .map((file, index) => ({
+          idx: 0,
           file,
           id: Date.now() + Math.random(),
+          url: "", // 새로 업로드할 파일의 경우 URL은 null로 설정
+          type: file.type,
+          mediaSequence: mediaSequence + index + 1, // Increment mediaSequence based on index
         }));
 
-      if (selectedFiles.length + newFiles.length > 5) {
+      setMediaSequence(mediaSequence + newFiles.length);
+
+      if (allFiles.length + newFiles.length > 5) {
         setShowFileLimitWarning(true);
       } else {
-        setSelectedFiles((prevSelectedFiles) => [
-          ...prevSelectedFiles,
-          ...newFiles,
-        ]);
+        setAllFiles((prevFiles) => [...prevFiles, ...newFiles]);
+        setAddFiles((prevFiles) => [...prevFiles, ...newFiles]);
       }
     }
   };
 
-  const handleRemoveItem = (id: number) => {
-    setSelectedFiles((prevSelectedFiles) =>
-      prevSelectedFiles.filter((item) => item.id !== id)
+  const handleRemoveItem = (id: number, idx: number) => {
+    setAllFiles((prevUrlImages) =>
+      prevUrlImages.filter((item) => item.id !== id)
     );
+    setAddFiles((prevUrlImages) =>
+      prevUrlImages.filter((item) => item.id !== id)
+    );
+    if (idx !== 0) {
+      setDeletedFiles((prevDeletedFiles) => [...prevDeletedFiles, idx]);
+    }
+    console.log(addFiles);
   };
 
   const moveFile = (dragIndex: number, hoverIndex: number) => {
-    const draggedFile = selectedFiles[dragIndex];
-    const updatedFiles = [...selectedFiles];
+    const draggedFile = allFiles[dragIndex];
+    const updatedFiles = [...allFiles];
     updatedFiles.splice(dragIndex, 1);
     updatedFiles.splice(hoverIndex, 0, draggedFile);
-    setSelectedFiles(updatedFiles);
+    setAllFiles(updatedFiles);
   };
 
   const FileItem = ({
     fileItem,
     index,
   }: {
-    fileItem: { file: File; id: number };
+    fileItem: {
+      idx: number;
+      file: File | null;
+      url: string | null;
+      id: number;
+      type: string;
+    };
     index: number;
   }) => {
     const [{ isDragging }, drag] = useDrag({
@@ -285,19 +357,6 @@ export default function AdoptionEdit() {
       },
     });
 
-    useEffect(() => {
-      // Preload images when component mounts
-      selectedFiles.forEach((fileItem) => {
-        const img = new Image();
-        img.src = URL.createObjectURL(fileItem.file);
-      });
-    }, [selectedFiles]);
-
-    const imageUrl = useMemo(
-      () => URL.createObjectURL(fileItem.file),
-      [fileItem]
-    ); // Memoize the image URL
-
     return (
       <div ref={(node) => drag(drop(node))}>
         <div
@@ -305,22 +364,33 @@ export default function AdoptionEdit() {
           className="relative w-32 h-32 mx-2 border-2 border-gray-200"
           onClick={(e) => e.preventDefault()}
         >
-          {fileItem.file.type.startsWith("image/") ? (
+          {fileItem.file?.type.startsWith("image/") ? (
             <img
-              src={imageUrl}
+              src={URL.createObjectURL(fileItem.file)}
               alt={`Image ${fileItem.id}`}
               className="object-cover w-full h-full"
             />
-          ) : fileItem.file.type.startsWith("video/") ? (
+          ) : fileItem.file?.type.startsWith("video/") ? (
             <video className="object-cover w-full h-full">
-              <source src={imageUrl} type={fileItem.file.type} />
+              <source
+                src={URL.createObjectURL(fileItem.file)}
+                type={fileItem.file.type}
+              />
               현재 브라우저는 비디오 태그를 지원하지 않습니다.
             </video>
+          ) : fileItem.type == "img" ? (
+            <img
+              src={fileItem.url || ""}
+              alt={`Image ${fileItem.id}`}
+              className="object-cover w-full h-full"
+            />
+          ) : fileItem.type == "video" ? (
+            <VideoThumbnail src={fileItem.url || ""} type="m3u8" />
           ) : (
             <p>지원하지 않는 파일 형태</p>
           )}
           <button
-            onClick={() => handleRemoveItem(fileItem.id)}
+            onClick={() => handleRemoveItem(fileItem.id, fileItem.idx)}
             className="absolute -top-2 -right-2 transform translate-x-1/4 -translate-y-1/4 w-6 h-6 bg-red-500 text-white rounded-full"
           >
             X
@@ -329,6 +399,7 @@ export default function AdoptionEdit() {
       </div>
     );
   };
+
   const mutation = useMutation({
     mutationFn: adoptionEdit,
     onSuccess: (data) => {
@@ -347,6 +418,7 @@ export default function AdoptionEdit() {
     setIsLoading(true);
 
     const requestData = {
+      state: selling,
       boardIdx: idx,
       boardCommercialIdx: boardCommercialIdx,
       userIdx: currentUserIdx || 0,
@@ -372,24 +444,43 @@ export default function AdoptionEdit() {
       pattern !== "" &&
       birthDate !== ""
     ) {
-      if (selectedFiles.length === 0) {
+      if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
+        console.log(requestData);
         mutation.mutate(requestData);
       } else {
-        console.log(selectedFiles);
+        console.log(addFiles);
 
         const formData = new FormData();
-        selectedFiles.forEach((fileItem) => {
-          formData.append("files", fileItem.file);
+        addFiles.forEach((fileItem) => {
+          formData.append("files", fileItem.file || "");
         });
 
+        const modifySqenceArr = allFiles.map((item) => item.mediaSequence);
+        const deleteIdxArr = deletedFiles;
+        const FileIdx = addFiles.map((item) => item.mediaSequence);
+
+        const dataToSend = {
+          modifySqenceArr,
+          deleteIdxArr,
+          FileIdx,
+        };
+
+        // Append JSON data to the FormData object
+        formData.append("dataToSend", JSON.stringify(dataToSend));
+
         try {
-          // Send files to the first server
-          const response = await axios.post(uploadUri, formData, {
-            headers: {
-              Authorization: `Bearer ${userAccessToken}`,
-              "Content-Type": "multipart/form-data",
-            },
-          });
+          console.log(formData);
+          // Send both FormData and JSON data to the server
+          const response = await axios.patch(
+            `https://www.reptimate.store/conv/board/update/${idx}`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${userAccessToken}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
 
           if (response.status === 201) {
             const responseData = response.data;
@@ -397,6 +488,7 @@ export default function AdoptionEdit() {
             console.log(responseData);
             // Now, you can send additional data to the API server
             const requestData1 = {
+              state: selling,
               boardIdx: idx,
               boardCommercialIdx: boardCommercialIdx,
               userIdx: currentUserIdx || 0,
@@ -410,7 +502,7 @@ export default function AdoptionEdit() {
               pattern: pattern,
               birthDate: birthDate,
               userAccessToken: userAccessToken || "",
-              fileUrl: responseData.result, // Use the response from the first server
+              fileUrl: "",
             };
 
             console.log(requestData1);
@@ -463,6 +555,18 @@ export default function AdoptionEdit() {
           분양 게시글
         </h2>
       </Mobile>
+      <p className="font-bold text-sm">거래 상태</p>
+      <select
+        className="focus:outline-none text-sm mb-6"
+        value={selling}
+        onChange={handleSellingChange}
+      >
+        {sellingOption.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
       <div className="">
         <input
           type="file"
@@ -477,7 +581,7 @@ export default function AdoptionEdit() {
           className="flex overflow-x-auto border-2 border-gray-300 items-center justify-center py-3 cursor-pointer mx-auto"
           htmlFor="mediaInput"
         >
-          {selectedFiles.length === 0 && (
+          {allFiles.length === 0 && (
             <div className="w-32 h-32 flex flex-col items-center justify-center">
               <img
                 src="/img/camera.png"
@@ -487,8 +591,8 @@ export default function AdoptionEdit() {
               <span className="">사진 업로드</span>
             </div>
           )}
-          {selectedFiles.map((fileItem, index) => (
-            <FileItem key={fileItem.id} fileItem={fileItem} index={index} />
+          {allFiles.map((file, index) => (
+            <FileItem key={index} fileItem={file} index={index} />
           ))}
         </label>
       </div>
