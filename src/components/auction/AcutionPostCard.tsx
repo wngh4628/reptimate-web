@@ -60,7 +60,7 @@ export default function AuctionPostCard({
                 <p
                   className={`${
                     state === "selling" ? "text-red-500" : "text-gray-400"
-                  } text-xl font-bold z-[9999] relative mt-1 mr-[6px]`}
+                  } text-xl font-bold z-[999] relative mt-1 mr-[6px]`}
                 >
                   {setStateString(state)}
                 </p>

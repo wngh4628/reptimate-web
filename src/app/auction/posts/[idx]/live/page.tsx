@@ -19,6 +19,8 @@ import Image from "next/image";
 import unlike_black from "../../../../../../public/img/unlike_black.png";
 import { getActionInfo } from "@/service/httpconnect/live_stream_axios";
 import acitonLiveDto from "@/service/dto/action-live-dto";
+import { GetAuctionPostsView } from "@/service/my/auction";
+import axios from "axios";
 
 type Props = {
   params: {
@@ -27,12 +29,35 @@ type Props = {
 };
 
 export default function ActionPage({ params: { slug } }: Props) {
+  const router = useRouter();
+  const params = useParams();
+  const idx = params?.idx;
+
   let data: acitonLiveDto;
   // const [menu, setMenu] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
   const [actionTitle, setActionTitle] = useState("");
   const [nickname, setNickname] = useState("");
   const [sideView, setSideView] = useState("chat");
+
+  const [postsData, setPostsData] = useState<GetAuctionPostsView | null>(null);
+
+  const getData = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `https://api.reptimate.store/board/${idx}?userIdx=1`
+      );
+      // Assuming your response data has a 'result' property
+      setPostsData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    getData();
+    console.log(postsData);
+  }, []);
 
   // const [value1, setValue1]:use = useState()
   // const [count, setCount] = useState(0);
