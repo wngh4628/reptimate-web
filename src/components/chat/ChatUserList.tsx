@@ -81,13 +81,13 @@ const ChatUserList = forwardRef((props :{
 		}
 	}
     return (
-		<div className="flex" key={props.userList.userIdx} style={{cursor:"pointer"}} onClick={optionBoxOnOff} >
+		<div className="flex " key={props.userList.userIdx}  >
 
 			{/* <div>{props.userList.userIdx}</div>
 			<div>:</div> */}
-			<div className='flex'>{props.userList.nickname}</div>
+			<div className='flex' onClick={optionBoxOnOff} style={{cursor:"pointer"}}>{props.userList.nickname}</div>
 			{boxState === true ?
-				<div style={{position:"absolute",marginTop:"20px",borderRadius:"10px", border:"solid 1px", backgroundColor:"#e5e7eb", width:"100px", height:"60px"}} ref={wrapperRef}>
+				<div className='border-[10px] border-gray-300' style={{position:"absolute",marginTop:"20px", backgroundColor:"#fffff", width:"100px", height:"60px"}} ref={wrapperRef}>
 					<div style={{display:"flex",alignItems:"center", justifyContent:"center", fontWeight:"bold",}} onClick={() => modalOnOff('ben')}><h1>강퇴</h1></div>
 					<div style={{display:"flex",alignItems:"center", justifyContent:"center", fontWeight:"bold"}} onClick={() => modalOnOff('noChat')}><h1>채금</h1></div>
 				</div>
