@@ -1,8 +1,4 @@
-import {
-  GetAdoptionPostsView,
-  Images,
-  getResponse,
-} from "@/service/my/adoption";
+import { Images } from "@/service/my/auction";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -17,13 +13,15 @@ import CommentCard from "../comment/CommentCard";
 import CommentForm from "../comment/CommentForm";
 import { adoptionDelete } from "@/api/adoption/adoption";
 import { useRouter } from "next/navigation";
+import { GetAuctionPostsView } from "@/service/my/auction";
+import { auctionDelete } from "@/api/auction/auction";
 
-export default function AdoptionPostsView() {
+export default function AuctionPostsView() {
   const router = useRouter();
   const params = useParams();
   const idx = params?.idx;
 
-  const [data, setData] = useState<GetAdoptionPostsView | null>(null);
+  const [data, setData] = useState<GetAuctionPostsView | null>(null);
 
   const [commentData, setCommentData] = useState<getCommentResponse | null>(
     null
@@ -47,16 +45,16 @@ export default function AdoptionPostsView() {
 
     return (
       <button onClick={handleGoBack} className="cursor-poiter px-2 font-bold">
-        &lt; 분양게시판
+        &lt; 경매게시판
       </button>
     );
   }
 
   const deleteMutation = useMutation({
-    mutationFn: adoptionDelete,
+    mutationFn: auctionDelete,
     onSuccess: (data) => {
       console.log("============================");
-      console.log("Successful Deleting of adoption post!");
+      console.log("Successful Deleting of auction post!");
       console.log(data);
       console.log(data.data);
       console.log("============================");
@@ -71,7 +69,7 @@ export default function AdoptionPostsView() {
 
   const handleEdit = () => {
     // Implement th`e edit action here
-    window.location.href = `/community/adoption/edit/${idx}`;
+    window.location.href = `/community/auction/edit/${idx}`;
   };
 
   const handleDelete = () => {
@@ -289,6 +287,11 @@ export default function AdoptionPostsView() {
 
     const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
 
+    const handleLiveClick = () => {
+      // Handle the logic for opening the write page
+      location.href = `/auction/posts/${idx}/live`;
+    };
+
     return (
       <div>
         {post && (
@@ -356,41 +359,72 @@ export default function AdoptionPostsView() {
               </div>
               <ImageSlider imageUrls={itemlist} />
               <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-5">판매가격</p>
+                <p className="text-lg font-semibold ml-5">현재 경매가</p>
                 <p className="text-xl font-bold ml-auto mr-5">
-                  {post.boardCommercial.price.toLocaleString()}원
+                  {post.boardAuction.currentPrice
+                    ? post.boardAuction.currentPrice.toLocaleString() + "원"
+                    : ""}
+                  원
+                </p>
+              </div>
+              <div className="flex flex-row items-center py-3">
+                <p className="text-lg font-semibold ml-5">즉시 구입가</p>
+                <p className="text-xl font-bold ml-auto mr-5">
+                  {post.boardAuction.startPrice.toLocaleString()}원
+                </p>
+              </div>
+              <div className="flex flex-row items-center py-3">
+                <p className="text-lg font-semibold ml-5">마감 시간</p>
+                <p className="text-xl font-bold ml-auto mr-5">
+                  {post.boardAuction.endTime}까지
                 </p>
               </div>
               <div className="flex flex-row items-center justify-center">
                 <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 text-lg font-bold">시작 가격</p>
+                  <p className="pb-1 text-lg">
+                    {post.boardAuction.startPrice}원
+                  </p>
+                </div>
+                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 text-lg font-bold">경매 단위</p>
+                  <p className="pb-1 text-lg">{post.boardAuction.unit}원</p>
+                </div>
+                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 text-lg font-bold">마감 룰</p>
+                  <p className="pb-1 text-lg">
+                    {post.boardAuction.extensionRule === 1 ? "적용" : "미적용"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-row items-center justify-center">
+                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                   <p className="pt-1 text-lg font-bold">품종</p>
-                  <p className="pb-1 text-lg">{post.boardCommercial.variety}</p>
+                  <p className="pb-1 text-lg">{post.boardAuction.variety}</p>
                 </div>
                 <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                   <p className="pt-1 text-lg font-bold">성별</p>
-                  <p className="pb-1 text-lg">{post.boardCommercial.gender}</p>
+                  <p className="pb-1 text-lg">{post.boardAuction.gender}</p>
                 </div>
                 <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                   <p className="pt-1 text-lg font-bold">크기</p>
-                  <p className="pb-1 text-lg">{post.boardCommercial.size}</p>
+                  <p className="pb-1 text-lg">{post.boardAuction.size}</p>
                 </div>
               </div>
               <div className="flex flex-row items-center justify-center mt-1">
                 <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                   <p className="pt-1 text-lg font-bold">모프</p>
-                  <p className="pb-1 text-lg">{post.boardCommercial.pattern}</p>
+                  <p className="pb-1 text-lg">{post.boardAuction.pattern}</p>
                 </div>
                 <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                   <p className="pt-1 text-lg font-bold">출생</p>
-                  <p className="pb-1 text-lg">
-                    {post.boardCommercial.birthDate}
-                  </p>
+                  <p className="pb-1 text-lg">{post.boardAuction.birthDate}</p>
                 </div>
                 <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                   <p className="pt-1 text-lg font-bold">상태</p>
-                  {post.boardCommercial.state === "reservation" ? (
+                  {post.boardAuction.state === "reservation" ? (
                     <p className="pb-1 text-lg text-red-600">예약중</p>
-                  ) : post.boardCommercial.state === "end" ? (
+                  ) : post.boardAuction.state === "end" ? (
                     <p className="pb-1 text-lg text-gray-500">판매완료</p>
                   ) : (
                     <p className="pb-1 text-lg text-blue-600">판매중</p>
@@ -400,7 +434,7 @@ export default function AdoptionPostsView() {
               <p className="text-lg my-7">{post.description}</p>
               <hr className="border-t border-gray-300 my-1" />
               <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-3 mr-1">댓글</p>
+                <p className="text-lg font-semibold ml-3 mr-2">댓글</p>
                 <p className="text-lg font-semibold mr-2">
                   {post.commentCnt}개
                 </p>
@@ -482,27 +516,23 @@ export default function AdoptionPostsView() {
                 </div>
                 <ImageSlider imageUrls={itemlist} />
                 <div className="flex flex-row items-center py-1">
-                  <p className="font-semibold ml-2">판매가격</p>
+                  <p className="font-semibold ml-2">시작가격</p>
                   <p className="font-bold ml-auto mr-2">
-                    {post.boardCommercial.price.toLocaleString()}원
+                    {post.boardAuction.startPrice.toLocaleString()}원
                   </p>
                 </div>
                 <div className="flex flex-row items-center justify-center">
                   <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                     <p className="pt-1 font-bold">품종</p>
-                    <p className="pb-1 text-sm">
-                      {post.boardCommercial.variety}
-                    </p>
+                    <p className="pb-1 text-sm">{post.boardAuction.variety}</p>
                   </div>
                   <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                     <p className="pt-1 font-bold">성별</p>
-                    <p className="pb-1 text-sm">
-                      {post.boardCommercial.gender}
-                    </p>
+                    <p className="pb-1 text-sm">{post.boardAuction.gender}</p>
                   </div>
                   <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                     <p className="pt-1 font-bold">크기</p>
-                    <p className="pb-1 text-sm">{post.boardCommercial.size}</p>
+                    <p className="pb-1 text-sm">{post.boardAuction.size}</p>
                   </div>
                 </div>
                 <p className="my-4">{post.description}</p>
@@ -533,6 +563,14 @@ export default function AdoptionPostsView() {
                 )}
               </div>
             </Mobile>
+            <div className="fixed bottom-10 right-10 z-50">
+              <button
+                className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold"
+                onClick={handleLiveClick}
+              >
+                LIVE
+              </button>
+            </div>
             <ul className="mt-6">
               {commentList !== null && commentList ? (
                 commentList.map((comment) => (

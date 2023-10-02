@@ -1,6 +1,6 @@
 import { Images } from "@/service/my/adoption";
 import React, { useState } from "react";
-import VideoPlayer from "../VideoPlayer";
+import VideoPlayer from "./VideoPlayer";
 
 interface ImageSliderProps {
   imageUrls: Images[];

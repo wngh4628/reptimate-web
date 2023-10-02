@@ -1,34 +1,22 @@
-import { GetAdoptionPostsView, Images } from "@/service/my/adoption";
-import axios from "axios";
-import { useParams } from "next/navigation";
-import {
-  ChangeEvent,
-  FormEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { Mobile, PC } from "../ResponsiveLayout";
 import { useMutation } from "@tanstack/react-query";
-import { adoptionEdit } from "@/api/adoption/adoption";
-import { useRouter } from "next/navigation";
+import { Mobile, PC } from "../ResponsiveLayout";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import VideoThumbnail from "../VideoThumbnail";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { auctionWrite } from "@/api/auction/auction";
 
 interface FileItem {
-  idx: number;
   file: File;
-  url: string;
   id: number;
-  type: string;
-  mediaSequence: number;
 }
 
 interface Option {
   value: string;
   label: string;
 }
+
+const uploadUri = "https://www.reptimate.store/conv/board/upload";
 
 const sellingOption: Option[] = [
   { value: "selling", label: "판매중" },
@@ -122,134 +110,59 @@ const patternOptions: Record<string, Option[]> = {
   ],
 };
 
-export default function AdoptionEdit() {
+const extension_rule: Option[] = [
+  { value: "0", label: "미적용" },
+  { value: "1", label: "적용" },
+];
+
+const alret_time: Option[] = [
+  { value: "0", label: "없음" },
+  { value: "5", label: "5분" },
+  { value: "10", label: "10분" },
+  { value: "30", label: "30분" },
+  { value: "60", label: "1시간" },
+];
+
+export default function AuctionWrite() {
   const router = useRouter();
-  const params = useParams();
-  const idx = params?.idx;
 
-  const [data, setData] = useState<GetAdoptionPostsView | null>(null);
-  const [allFiles, setAllFiles] = useState<
-    Array<{
-      idx: number;
-      file: File | null;
-      url: string | null;
-      id: number;
-      type: string;
-      mediaSequence: number;
-    }>
-  >([]);
-  const [addFiles, setAddFiles] = useState<
-    Array<{
-      idx: number;
-      file: File | null;
-      url: string | null;
-      id: number;
-      type: string;
-      mediaSequence: number;
-    }>
-  >([]);
-  const [deletedFiles, setDeletedFiles] = useState<Array<number>>([]);
-  const [mediaSequence, setMediaSequence] = useState<number>(-1);
+  let userIdx: string | null = null;
+  let userAccessToken: string | null = null;
+  if (typeof window !== "undefined") {
+    // Check if running on the client side
+    const storedData = localStorage.getItem("recoil-persist");
+    const userData = JSON.parse(storedData || "");
+    userIdx = userData.USER_DATA.idx;
+    userAccessToken = userData.USER_DATA.accessToken;
+  }
 
+  const [selectedFiles, setSelectedFiles] = useState<
+    Array<{ file: File; id: number }>
+  >([]);
   const [selectedGender, setSelectedGender] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [birthDate, setBirthDate] = useState<string>("");
 
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
+  const [startPrice, setstartPrice] = useState("");
+  const [unit, setunit] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [rule, setRule] = useState("");
+  const [alretTime, setAlretTime] = useState("");
+
   const [description, setDescription] = useState("");
 
   const [selling, setSelling] = useState<string>("selling");
   const [variety, setVariety] = useState<string>("품종을 선택하세요");
   const [pattern, setPattern] = useState<string>("모프를 선택하세요");
 
-  const [boardCommercialIdx, setBoardCommercialIdx] = useState("");
-
   const [isLoading, setIsLoading] = useState(false);
 
-  // window.onbeforeunload = function (event) {
-  //   const confirmationMessage =
-  //     "변경 내용이 저장되지 않습니다.\n뒤로 가시겠습니까?";
-
-  //   (event || window.event).returnValue = confirmationMessage;
-  //   return confirmationMessage;
-  // };
-
-  function BackButton() {
-    const handleGoBack = () => {
-      window.history.back(); // Go back to the previous page using window.history
-    };
-
-    return (
-      <button onClick={handleGoBack} className="cursor-poiter px-2 font-bold">
-        &lt;
-      </button>
-    );
-  }
-
-  let userAccessToken: string | null = null;
-  let currentUserIdx: number | null = null;
-  let userProfilePath: string | null = null;
-  let userNickname: string | null = null;
-  if (typeof window !== "undefined") {
-    // Check if running on the client side
-    const storedData = localStorage.getItem("recoil-persist");
-    const userData = JSON.parse(storedData || "");
-    currentUserIdx = userData.USER_DATA.idx;
-    userAccessToken = userData.USER_DATA.accessToken;
-    userProfilePath = userData.USER_DATA.profilePath;
-    userNickname = userData.USER_DATA.nickname;
-  }
-
-  const getData = useCallback(async () => {
-    try {
-      const response = await axios.get(
-        `https://api.reptimate.store/board/${idx}?userIdx=${currentUserIdx}`
-      );
-      // Assuming your response data has a 'result' property
-      setData(response.data);
-      const post = response.data.result;
-      setSelling(post.boardCommercial.state);
-      setTitle(post?.title || "");
-      setVariety(post?.boardCommercial.variety || "품종을 선택하세요");
-      setPattern(post?.boardCommercial.pattern || "모프를 선택하세요");
-      setBirthDate(post?.boardCommercial.birthDate || "연도-월-일");
-      setSelectedGender(post?.boardCommercial.gender || "");
-      setSelectedSize(post?.boardCommercial.size || "");
-      setPrice(post?.boardCommercial.price.toString() || "");
-      setDescription(post?.description || "");
-      setBoardCommercialIdx(post?.boardCommercial.idx || "");
-      setAllFiles(
-        post.images.map((item: Images) => ({
-          idx: item.idx,
-          id: Date.now() + Math.random(),
-          url: item.path,
-          type: item.category,
-          file: null,
-          mediaSequence: item.mediaSequence,
-        }))
-      );
-      console.log(post.images.length);
-      if (post.images.length > 0) {
-        setMediaSequence(post.images.length - 1);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+  useEffect(() => {
+    setSelling("selling");
+    setRule("0");
   }, []);
-
-  useEffect(() => {
-    getData();
-    console.log(allFiles);
-  }, []);
-
-  useEffect(() => {
-    console.log(allFiles);
-  }, [allFiles]);
-
-  useEffect(() => {
-    console.log(deletedFiles);
-  }, [deletedFiles]);
 
   const handleVarietyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVariety = e.target.value;
@@ -262,6 +175,16 @@ export default function AdoptionEdit() {
   const handleSellingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedSelling = e.target.value;
     setSelling(selectedSelling);
+  };
+
+  const handleRuleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedRule = e.target.value;
+    setRule(selectedRule);
+  };
+
+  const handleAlertChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedAlert = e.target.value;
+    setAlretTime(selectedAlert);
   };
 
   const handleGenderClick = (gender: string) => {
@@ -283,58 +206,42 @@ export default function AdoptionEdit() {
     const files = event.target.files;
     if (files) {
       const newFiles: FileItem[] = Array.from(files)
-        .slice(0, 5 - allFiles.length)
-        .map((file, index) => ({
-          idx: 0,
+        .slice(0, 5 - selectedFiles.length)
+        .map((file) => ({
           file,
           id: Date.now() + Math.random(),
-          url: "", // 새로 업로드할 파일의 경우 URL은 null로 설정
-          type: file.type,
-          mediaSequence: mediaSequence + index + 1, // Increment mediaSequence based on index
         }));
 
-      setMediaSequence(mediaSequence + newFiles.length);
-
-      if (allFiles.length + newFiles.length > 5) {
+      if (selectedFiles.length + newFiles.length > 5) {
         setShowFileLimitWarning(true);
       } else {
-        setAllFiles((prevFiles) => [...prevFiles, ...newFiles]);
-        setAddFiles((prevFiles) => [...prevFiles, ...newFiles]);
+        setSelectedFiles((prevSelectedFiles) => [
+          ...prevSelectedFiles,
+          ...newFiles,
+        ]);
       }
     }
   };
 
-  const handleRemoveItem = (id: number, idx: number) => {
-    setAllFiles((prevUrlImages) =>
-      prevUrlImages.filter((item) => item.id !== id)
+  const handleRemoveItem = (id: number) => {
+    setSelectedFiles((prevSelectedFiles) =>
+      prevSelectedFiles.filter((item) => item.id !== id)
     );
-    setAddFiles((prevUrlImages) =>
-      prevUrlImages.filter((item) => item.id !== id)
-    );
-    if (idx !== 0) {
-      setDeletedFiles((prevDeletedFiles) => [...prevDeletedFiles, idx]);
-    }
   };
 
   const moveFile = (dragIndex: number, hoverIndex: number) => {
-    const draggedFile = allFiles[dragIndex];
-    const updatedFiles = [...allFiles];
+    const draggedFile = selectedFiles[dragIndex];
+    const updatedFiles = [...selectedFiles];
     updatedFiles.splice(dragIndex, 1);
     updatedFiles.splice(hoverIndex, 0, draggedFile);
-    setAllFiles(updatedFiles);
+    setSelectedFiles(updatedFiles);
   };
 
   const FileItem = ({
     fileItem,
     index,
   }: {
-    fileItem: {
-      idx: number;
-      file: File | null;
-      url: string | null;
-      id: number;
-      type: string;
-    };
+    fileItem: { file: File; id: number };
     index: number;
   }) => {
     const [{ isDragging }, drag] = useDrag({
@@ -355,6 +262,19 @@ export default function AdoptionEdit() {
       },
     });
 
+    useEffect(() => {
+      // Preload images when component mounts
+      selectedFiles.forEach((fileItem) => {
+        const img = new Image();
+        img.src = URL.createObjectURL(fileItem.file);
+      });
+    }, [selectedFiles]);
+
+    const imageUrl = useMemo(
+      () => URL.createObjectURL(fileItem.file),
+      [fileItem]
+    ); // Memoize the image URL
+
     return (
       <div ref={(node) => drag(drop(node))}>
         <div
@@ -362,33 +282,22 @@ export default function AdoptionEdit() {
           className="relative w-32 h-32 mx-2 border-2 border-gray-200"
           onClick={(e) => e.preventDefault()}
         >
-          {fileItem.file?.type.startsWith("image/") ? (
+          {fileItem.file.type.startsWith("image/") ? (
             <img
-              src={URL.createObjectURL(fileItem.file)}
+              src={imageUrl}
               alt={`Image ${fileItem.id}`}
               className="object-cover w-full h-full"
             />
-          ) : fileItem.file?.type.startsWith("video/") ? (
+          ) : fileItem.file.type.startsWith("video/") ? (
             <video className="object-cover w-full h-full">
-              <source
-                src={URL.createObjectURL(fileItem.file)}
-                type={fileItem.file.type}
-              />
+              <source src={imageUrl} type={fileItem.file.type} />
               현재 브라우저는 비디오 태그를 지원하지 않습니다.
             </video>
-          ) : fileItem.type == "img" ? (
-            <img
-              src={fileItem.url || ""}
-              alt={`Image ${fileItem.id}`}
-              className="object-cover w-full h-full"
-            />
-          ) : fileItem.type == "video" ? (
-            <VideoThumbnail src={fileItem.url || ""} type="m3u8" />
           ) : (
             <p>지원하지 않는 파일 형태</p>
           )}
           <button
-            onClick={() => handleRemoveItem(fileItem.id, fileItem.idx)}
+            onClick={() => handleRemoveItem(fileItem.id)}
             className="absolute -top-2 -right-2 transform translate-x-1/4 -translate-y-1/4 w-6 h-6 bg-red-500 text-white rounded-full"
           >
             X
@@ -399,15 +308,14 @@ export default function AdoptionEdit() {
   };
 
   const mutation = useMutation({
-    mutationFn: adoptionEdit,
+    mutationFn: auctionWrite,
     onSuccess: (data) => {
       console.log("============================");
-      console.log("Successful Editing of post!");
+      console.log("Successful writing of post!");
       console.log(data);
       console.log(data.data);
       console.log("============================");
-      alert("게시글 수정이 완료되었습니다.");
-      router.replace(`/community/adoption/posts/${idx}`);
+      router.replace("/auction");
     },
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
@@ -415,19 +323,42 @@ export default function AdoptionEdit() {
 
     setIsLoading(true);
 
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷
+    const day = String(today.getDate()).padStart(2, "0"); // 일자를 2자리로 포맷
+
+    const formattedDate = `${year}-${month}-${day}`;
+
+    const minutesToSubtract = parseInt(alretTime, 10);
+
+    const newTime = new Date(today.getTime() - minutesToSubtract * 60000);
+
+    // newTime을 원하는 형식으로 포맷팅하기 (예: "2023-09-14 12:30" 형태)
+    const newYear = newTime.getFullYear();
+    const newMonth = String(newTime.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 1을 더하고 두 자리로 포맷팅
+    const newDay = String(newTime.getDate()).padStart(2, "0");
+    const hours = String(newTime.getHours()).padStart(2, "0");
+    const minutes = String(newTime.getMinutes()).padStart(2, "0");
+
+    const formattedTime = `${newYear}-${newMonth}-${newDay}T${hours}:${minutes}`;
+
     const requestData = {
       state: selling,
-      boardIdx: idx,
-      boardCommercialIdx: boardCommercialIdx,
-      userIdx: currentUserIdx || 0,
+      userIdx: userIdx || "",
       title: title,
-      category: "adoption",
+      category: "auction",
       description: description,
       price: price,
       gender: selectedGender || "",
       size: selectedSize || "",
       variety: variety,
       pattern: pattern,
+      startPrice: startPrice,
+      unit: unit,
+      endTime: formattedDate + "T" + endTime,
+      alertTime: formattedTime,
+      extensionRule: rule,
       birthDate: birthDate,
       userAccessToken: userAccessToken || "",
       fileUrl: "",
@@ -440,41 +371,31 @@ export default function AdoptionEdit() {
       selectedSize !== "" &&
       variety !== "" &&
       pattern !== "" &&
+      startPrice !== "" &&
+      unit !== "" &&
+      endTime !== "" &&
+      rule !== "" &&
       birthDate !== ""
     ) {
-      if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
+      if (selectedFiles.length === 0) {
         console.log(requestData);
         mutation.mutate(requestData);
       } else {
-        console.log(addFiles);
+        console.log(selectedFiles);
 
         const formData = new FormData();
-        addFiles.forEach((fileItem) => {
-          formData.append("files", fileItem.file || "");
+        selectedFiles.forEach((fileItem) => {
+          formData.append("files", fileItem.file);
         });
 
-        const modifySqenceArr = allFiles.map((item) => item.mediaSequence);
-        const deleteIdxArr = deletedFiles;
-        const FileIdx = addFiles.map((item) => item.mediaSequence);
-        // Append JSON data to the FormData object
-        formData.append("modifySqenceArr", JSON.stringify(modifySqenceArr));
-        formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
-        formData.append("FileIdx", JSON.stringify(FileIdx));
-
         try {
-          // Send both FormData and JSON data to the server
-          const response = await axios.patch(
-            `https://www.reptimate.store/conv/board/update/${idx}`,
-            formData,
-            {
-              headers: {
-                Authorization: `Bearer ${userAccessToken}`,
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-
-          console.log(response.data);
+          // Send files to the first server
+          const response = await axios.post(uploadUri, formData, {
+            headers: {
+              Authorization: `Bearer ${userAccessToken}`,
+              "Content-Type": "multipart/form-data",
+            },
+          });
 
           if (response.status === 201) {
             const responseData = response.data;
@@ -483,20 +404,23 @@ export default function AdoptionEdit() {
             // Now, you can send additional data to the API server
             const requestData1 = {
               state: selling,
-              boardIdx: idx,
-              boardCommercialIdx: boardCommercialIdx,
-              userIdx: currentUserIdx || 0,
+              userIdx: userIdx || "",
               title: title,
-              category: "adoption",
+              category: "auction",
               description: description,
               price: price,
               gender: selectedGender || "",
               size: selectedSize || "",
               variety: variety,
               pattern: pattern,
+              startPrice: startPrice,
+              unit: unit,
+              endTime: formattedDate + "T" + endTime,
+              alertTime: formattedTime,
+              extensionRule: rule,
               birthDate: birthDate,
               userAccessToken: userAccessToken || "",
-              fileUrl: "",
+              fileUrl: responseData.result, // Use the response from the first server
             };
 
             console.log(requestData1);
@@ -517,6 +441,10 @@ export default function AdoptionEdit() {
       if (title === "") missingFields.push("제목");
       if (variety === "") missingFields.push("품종");
       if (pattern === "") missingFields.push("모프");
+      if (startPrice === "" || "null") missingFields.push("시작 가격");
+      if (unit === "" || "null") missingFields.push("경매 단위");
+      if (endTime === "" || "null") missingFields.push("마감 시간");
+      if (rule === "" || "null") missingFields.push("연장 룰");
       if (birthDate === "") missingFields.push("생년월일");
       if (selectedGender === "" || "null") missingFields.push("성별");
       if (selectedSize === "" || "null") missingFields.push("크기");
@@ -540,13 +468,12 @@ export default function AdoptionEdit() {
       )}
       <PC>
         <h2 className="flex flex-col items-center justify-center text-4xl font-bold p-10">
-          분양 게시글
+          경매 등록
         </h2>
       </PC>
       <Mobile>
-        <BackButton />
-        <h2 className="flex flex-col items-center justify-center text-xl font-bold p-4">
-          분양 게시글
+        <h2 className="flex flex-col items-center justify-center text-xl font-bold p-10">
+          경매 등록
         </h2>
       </Mobile>
       <p className="font-bold text-sm">거래 상태</p>
@@ -575,7 +502,7 @@ export default function AdoptionEdit() {
           className="flex overflow-x-auto border-2 border-gray-300 items-center justify-center py-3 cursor-pointer mx-auto"
           htmlFor="mediaInput"
         >
-          {allFiles.length === 0 && (
+          {selectedFiles.length === 0 && (
             <div className="w-32 h-32 flex flex-col items-center justify-center">
               <img
                 src="/img/camera.png"
@@ -585,8 +512,8 @@ export default function AdoptionEdit() {
               <span className="">사진 업로드</span>
             </div>
           )}
-          {allFiles.map((file, index) => (
-            <FileItem key={index} fileItem={file} index={index} />
+          {selectedFiles.map((fileItem, index) => (
+            <FileItem key={fileItem.id} fileItem={fileItem} index={index} />
           ))}
         </label>
       </div>
@@ -599,6 +526,62 @@ export default function AdoptionEdit() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        <p className="font-bold text-xl my-2">즉시 구입가</p>
+        <input
+          type="number"
+          placeholder="즉시 구입가를 선택하시지 않으시면 빈칸으로 해주세요. (원)"
+          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
+        <p className="font-bold text-xl my-2">시작 가격</p>
+        <input
+          type="number"
+          placeholder="시작 가격을 입력해주세요. (원)"
+          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          value={startPrice}
+          onChange={(e) => setstartPrice(e.target.value)}
+        />
+        <p className="font-bold text-xl my-2">경매 단위</p>
+        <input
+          type="number"
+          placeholder="경매 단위를 입력해주세요. (원)"
+          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          value={unit}
+          onChange={(e) => setunit(e.target.value)}
+        />
+        <p className="font-bold text-xl my-2">마감 시간</p>
+        <input
+          type="time"
+          placeholder="마감 시간을 입력해주세요."
+          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          value={endTime}
+          onChange={(e) => setEndTime(e.target.value)}
+        />
+        <p className="font-bold text-xl my-2">연장 룰</p>
+        <select
+          className="focus:outline-none text-sm mb-6"
+          value={rule}
+          onChange={handleRuleChange}
+        >
+          {extension_rule.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <p className="font-bold text-xl my-2">알림 설정</p>
+        <select
+          className="focus:outline-none text-sm mb-6"
+          value={alretTime}
+          onChange={handleAlertChange}
+        >
+          {alret_time.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
         <p className="font-bold text-xl my-2">품종</p>
         <select
           className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
@@ -707,14 +690,6 @@ export default function AdoptionEdit() {
             성체
           </button>
         </div>
-        <p className="font-bold text-xl my-2">가격</p>
-        <input
-          type="number"
-          placeholder="가격을 입력해주세요. (원)"
-          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-        />
         <p className="font-bold text-xl my-2">내용</p>
         <textarea
           placeholder="내용을 입력해주세요."
