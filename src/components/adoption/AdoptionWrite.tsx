@@ -570,22 +570,32 @@ export default function AdoptionWrite() {
           onChange={(e) => setPrice(e.target.value)}
         />
         <p className="font-bold text-xl my-2">내용</p>
-        <input
-          type="text"
+        <textarea
           placeholder="내용을 입력해주세요."
-          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          className="focus:outline-none px-2 py-2 border-gray-400 border-2 text-17px w-full"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          rows={10} // 세로 행의 개수를 조절합니다.
         />
       </div>
-      <form onSubmit={onSubmitHandler}>
+      {!isLoading ? (
+        <form onSubmit={onSubmitHandler}>
+          <button
+            type="submit"
+            className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
+          >
+            경매 등록
+          </button>
+        </form>
+      ) : (
         <button
-          type="submit"
-          className=" items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
+          type="button"
+          className="items-center cursor-not-allowed inline-flex justify-center text-center align-middle bg-gray-300 text-gray-500 font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
+          disabled
         >
-          게시글 등록
+          등록 중...
         </button>
-      </form>
+      )}
     </div>
   );
 }

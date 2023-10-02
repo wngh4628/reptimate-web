@@ -1,122 +1,197 @@
 export interface getResponseAuction {
-    status: number;
-    message: string;
-    result: {
-      pageSize: number;
-      totalCount: number;
-      totalPage: number;
-      existsNextPage: boolean;
-      items: Array<{
+  status: number;
+  message: string;
+  result: {
+    pageSize: number;
+    totalCount: number;
+    totalPage: number;
+    existsNextPage: boolean;
+    items: Array<{
+      idx: number;
+      view: number;
+      userIdx: number;
+      title: string;
+      category: string;
+      description: string;
+      writeDate: string;
+      images: Array<{
         idx: number;
-        view: number;
-        userIdx: number;
-        title: string;
+        createdAt: string;
+        updatedAt: string;
+        deletedAt: string | null;
+        boardIdx: number;
         category: string;
-        description: string;
-        writeDate: string;
-        images: Array<{
-          idx: number;
-          createdAt: string;
-          updatedAt: string;
-          deletedAt: string | null;
-          boardIdx: number;
-          category: string;
-          mediaSequence: number;
-          path: string;
-          coverImgPath: string | null;
-        }>;
-        UserInfo: {
-          idx: number;
-          nickname: string;
-          profilePath: string;
-        };
-        boardAuction: {
-            idx: number,
-            createdAt: Date,
-            updatedAt: Date,
-            deletedAt: Date,
-            boardIdx: number,
-            buyPrice: number,
-            startPrice: number,
-            currentPrice: number,
-            unit: number,
-            alertTime: string,
-            endTime: string,
-            extensionTime: string,
-            extensionRule: number,
-            gender: string,
-            size: string,
-            variety: string,
-            pattern: string,
-            birthDate: string,
-            state: string,
-            streamKey: string
-        };
+        mediaSequence: number;
+        path: string;
+        coverImgPath: string | null;
       }>;
-    };
-  }
-  export type Auction = {
-    idx: number,
-    createdAt: Date,
-    currentPrice: number,
-    unit: number,
-    endTime: string,
-    gender: string,
-    size: string,
-    variety: string,
-    state: string,
-    boardIdx: number,
-    title: string,
-    coverImage: string,
-  };
-  export interface getResponseBid {
-    status: number;
-    message: string;
-    result: {
-      pageSize: number;
-      totalCount: number;
-      totalPage: number;
-      existsNextPage: boolean;
-      items: Array<{
+      UserInfo: {
+        idx: number;
+        nickname: string;
+        profilePath: string;
+      };
+      boardAuction: {
         idx: number;
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date;
-        type: string;
-        score: number;
-        roomIdx: string;
-        userIdx: number;
-        message: number;
-        action: string;
-        board: {
-            idx: number,
-            createdAt: Date,
-            updatedAt: Date,
-            deletedAt: Date,
-            category: string,
-            userIdx: number,
-            title: string,
-            thumbnail: string,
-            media: string,
-            description: string,
-            view: number,
-            commentCnt: number,
-            status: string,
-        };
-      }>;
-    };
-  }
-  export type Bid = {
-    idx: number,
-    createdAt: Date,
-    updatedAt: Date,
-    deletedAt: Date,
-    type: string,
-    score: number,
-    roomIdx: string,
-    userIdx: number,
-    message: number,
-    action: string,
-    title: string
+        boardIdx: number;
+        buyPrice: number;
+        startPrice: number;
+        currentPrice: number;
+        unit: number;
+        alertTime: string;
+        endTime: string;
+        extensionTime: string;
+        extensionRule: number;
+        gender: string;
+        size: string;
+        variety: string;
+        pattern: string;
+        birthDate: string;
+        state: string;
+        streamKey: string;
+      };
+    }>;
   };
-  
+}
+export type Auction = {
+  idx: number;
+  createdAt: Date;
+  currentPrice: number;
+  unit: number;
+  endTime: string;
+  gender: string;
+  size: string;
+  variety: string;
+  state: string;
+  boardIdx: number;
+  title: string;
+  coverImage: string;
+  profilePath: string;
+  nickname: string;
+};
+export interface getResponseBid {
+  status: number;
+  message: string;
+  result: {
+    pageSize: number;
+    totalCount: number;
+    totalPage: number;
+    existsNextPage: boolean;
+    items: Array<{
+      idx: number;
+      createdAt: Date;
+      updatedAt: Date;
+      deletedAt: Date;
+      type: string;
+      score: number;
+      roomIdx: string;
+      userIdx: number;
+      message: number;
+      action: string;
+      board: {
+        idx: number;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt: Date;
+        category: string;
+        userIdx: number;
+        title: string;
+        thumbnail: string;
+        media: string;
+        description: string;
+        view: number;
+        commentCnt: number;
+        status: string;
+      };
+    }>;
+  };
+}
+export type Bid = {
+  idx: number;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
+  type: string;
+  score: number;
+  roomIdx: string;
+  userIdx: number;
+  message: number;
+  action: string;
+  title: string;
+};
+
+export interface GetAuctionPostsView {
+  status: number;
+  message: string;
+  result: {
+    idx: number;
+    view: number;
+    userIdx: number;
+    title: string;
+    category: string;
+    description: string;
+    writeDate: string;
+    images: Array<{
+      idx: number;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: string | null;
+      boardIdx: number;
+      category: string;
+      mediaSequence: number;
+      path: string;
+      coverImgPath: string | null;
+    }>;
+    commentCnt: number;
+    UserInfo: {
+      idx: number;
+      nickname: string;
+      profilePath: string;
+    };
+    boardAuction: {
+      idx: number;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: null;
+      boardIdx: number;
+      buyPrice: number;
+      startPrice: number;
+      currentPrice: number;
+      unit: number;
+      alertTime: string;
+      endTime: string;
+      extensionTime: string;
+      extensionRule: number;
+      gender: string;
+      size: string;
+      variety: string;
+      pattern: string;
+      birthDate: string;
+      state: string;
+      streamKey: string;
+    };
+    liveStream: {
+      idx: number;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: string;
+      boardIdx: number;
+      streamKey: string;
+      startTime: string;
+      endTime: string;
+      state: number;
+    };
+  };
+}
+
+export type Images = {
+  idx: number;
+  createdAt: string;
+  updatedAt: string;
+  boardIdx: number;
+  category: string;
+  mediaSequence: number;
+  path: string;
+};
