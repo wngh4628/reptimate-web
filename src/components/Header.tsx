@@ -64,7 +64,7 @@ export default function Header() {
 
   const communityPathnames = [
     "/",
-    "/community/used-deal",
+    "/community/market",
     "/community/free",
     "/community/ask",
   ];
@@ -190,11 +190,11 @@ export default function Header() {
             </Link>
           </nav>
         </div>
-        {/* <div className={`${
-          isChatVisisible ? "" : "hidden"
-          }bg-black w-full h-full z-[9999] fixed bottom-0`}>
-
-        </div> */}
+        <div
+          className={`${
+            isChatVisisible ? "" : "hidden"
+          }bg-black w-full h-full z-[9999] fixed bottom-0`}
+        ></div>
       </Mobile>
     </header>
   );

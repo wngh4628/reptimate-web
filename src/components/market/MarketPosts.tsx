@@ -1,14 +1,14 @@
 "use client";
 
-import { getResponse, Adpotion } from "@/service/my/adoption";
 import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
-import PostCard from "../PostCard";
 import { Mobile, PC } from "../ResponsiveLayout";
 import { useRecoilValue } from "recoil";
-import { isLoggedInState, userAtom } from "@/recoil/user";
+import { userAtom } from "@/recoil/user";
+import PostCard from "../PostCard";
+import { Adpotion, getResponse } from "@/service/my/adoption";
 
-export default function AdoptionPosts() {
+export default function MarketPosts() {
   const [data, setData] = useState<getResponse | null>(null);
   const [page, setPage] = useState(1);
   const [existNextPage, setENP] = useState(false);
@@ -24,7 +24,7 @@ export default function AdoptionPosts() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://3.35.87.48:3000/board?page=${page}&size=20&order=DESC&category=adoption`
+        `http://3.35.87.48:3000/board?page=${page}&size=20&order=DESC&category=market`
       );
       setData(
         (prevData) =>
@@ -73,7 +73,7 @@ export default function AdoptionPosts() {
 
   const handleWriteClick = () => {
     // Handle the logic for opening the write page
-    location.href = `community/adoption/write`;
+    location.href = `market/write`;
   };
 
   if (data !== null && data.result.items) {
@@ -102,10 +102,10 @@ export default function AdoptionPosts() {
     return (
       <section>
         <PC>
-          <h2 className="text-2xl font-bold p-10">분양글</h2>
+          <h2 className="text-2xl font-bold p-10">중고 거래</h2>
         </PC>
         <Mobile>
-          <h2 className="text-xl font-bold pl-12 pt-4 pb-4">분양글</h2>
+          <h2 className="text-xl font-bold pl-12 pt-4 pb-4">중고 거래</h2>
         </Mobile>
         <ul className="pl-10 pr-10 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
