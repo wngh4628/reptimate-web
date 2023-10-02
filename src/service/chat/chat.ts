@@ -1,4 +1,4 @@
-export interface getResponseBoard {
+export interface getResponseChatList {
     status: number;
     message: string;
     result: {
@@ -8,16 +8,26 @@ export interface getResponseBoard {
       existsNextPage: boolean;
       items: Array<{
         idx: number;
-        category: string;
+        state: string;
         userIdx: number;
-        title: string;
-        view: number;
-        description: string;
-        writeDate: string;
+        deletedAt: string;
+        chatRoomIdx: number;
+        oppositeIdx: number;
+        roomOut: string;
+        chatRoom: {
+            idx: number;
+            // profilePath: string;
+            // nickname: string;
+            recentMessage: string;
+        }
+        UserInfo: {
+            idx: number;
+            nickname: string;
+            profilePath: string;
+        }
       }>;
     };
   }
-
   export interface IMessage {
     userIdx: number;
     socketId: string;
@@ -43,4 +53,26 @@ export interface getResponseBoard {
     profilePath: string;
     nickname: string;
   };
+  export interface chatRoom {
+    idx: number;
+    state: string;
+    userIdx: number;
+    deletedAt: string;
+    chatRoomIdx: number;
+    oppositeIdx: number;
+    roomOut: string;
+    chatRoom: {
+        idx: number;
+        createdAt: string;
+        updatedAt: string;
+        deletedAt: string;
+        recentMessage: string;
+    }
+    UserInfo: {
+        idx: number;
+        nickname: string;
+        profilePath: string;
+    }
+  };
+
   
