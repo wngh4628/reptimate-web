@@ -3,6 +3,16 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
+import axios from "axios";
+
+import ChatList from "@/components/chat/ChatList"
+import PersonalChatBox from "@/components/chat/ChatBox"
+import {chatRoom,connectMessage,Ban_Message,userInfo, getResponseChatList } from "@/service/chat/chat"
+
+import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
+import { userAtom, isLoggedInState } from "@/recoil/user";
+import { chatRoomState, chatRoomVisisibleState, chatNowInfoState} from "@/recoil/chatting";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 interface IMessage {
   userIdx: number;
@@ -15,14 +25,20 @@ interface DMessage {
   score: number;
   room: string;
 }
-
-export default function SearchPage() {
+export default function PersonalChat() {
   const [sendMessage, setSendMessage] = useState<string>("");
   const [connected, setConnected] = useState<boolean>(false);
   const [chat, setChat] = useState<IMessage[]>([]);
   const [textMsg, settextMsg] = useState('');
   const [roomName, setroomName] = useState('');
+  const [data, setData] = useState<getResponseChatList | null>(null);
+  const [chatRoomData, setchatRoomData] = useState<chatRoom[]>([]);
+  const [existNextPage, setENP] = useState(false);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const target = useRef(null);
 
+  const [move, setMove] = useState(false);
 
   const [userIdx, setUserIdx] = useState<number>(0); // 유저의 userIdx 저장
   const [nickname, setNickname] = useState("");
@@ -32,152 +48,192 @@ export default function SearchPage() {
 
   const socketRef = useRef<Socket | null>(null);
 
+  const reGenerateTokenMutation = useReGenerateTokenMutation();
+  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+
+  const setchatRoomState = useSetRecoilState(chatRoomState);
+  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
+  const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
+  // const [chatRoom, setchatRoom] = useRecoilState(chatRoomState);
+
+  const options = {
+    threshold: 1.0,
+  };
+
   useEffect(() => {
     const storedData = localStorage.getItem('recoil-persist');
     if (storedData) {
-        const userData = JSON.parse(storedData);
-        if (userData.USER_DATA.accessToken) {
-          const extractedAccessToken = userData.USER_DATA.accessToken;
-          setAccessToken(extractedAccessToken);
-          //입장한 사용자의 idx지정
-          setUserIdx(userData.USER_DATA.idx);
-          // 입장한 사용자의 이름 지정
-          setNickname(userData.USER_DATA.nickname);
-          setProfilePath(userData.USER_DATA.profilePath);
-        } else {
-          router.replace("/");
-          alert("로그인이 필요한 기능입니다.");
-        }
+      const userData = JSON.parse(storedData);
+      if (userData.USER_DATA.accessToken) {
+        const extractedAccessToken = userData.USER_DATA.accessToken;
+        setAccessToken(extractedAccessToken);
+        //입장한 사용자의 idx지정
+        setUserIdx(userData.USER_DATA.idx);
+        // 입장한 사용자의 이름 지정
+        setNickname(userData.USER_DATA.nickname);
+        setProfilePath(userData.USER_DATA.profilePath);
+
+        console.log("chatRoomVisisible  :  "+chatRoomVisisible)
+        //getChatRoomList(accessToken);
+        setchatRoomData([])
+      } else {
+        router.replace("/");
+        alert("로그인이 필요한 기능입니다.");
+      }
     }
   }, [])
 
-  const onChangeKeyword = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    settextMsg(value);
-  }, []);
+  useEffect(() => {
+    console.log("useEffect[chatRoomVisisible]")
+    console.log(chatRoomData)
+    setchatRoomData([])
+    // getChatRoomList(accessToken);
+  }, [chatRoomVisisible]);
 
-  const onChangeRoom = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setroomName(value);
-  }, []);
-  const onChangeUserIdx = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setUserIdx(value);
-  }, []);
-
-  const sendMsg = () => {
-    if (textMsg.trim() !== "") {
-      if(socketRef.current){
-        const socketId = socketRef.current.id;
-        const message: IMessage = {
-          userIdx: userIdx,
-          socketId: socketId,
-          message: textMsg.trim(),
-          room: roomName,
-        };
-        socketRef.current.emit("message", message);
-        settextMsg("");
-      }
+  // chatRoomData가 업데이트될 때 호출되는 useEffect
+  useEffect(() => {
+    if (chatRoomData.length === 0) {
+      // chatRoomData가 비어 있을 때만 getChatRoomList를 호출
+      getChatRoomList(accessToken);
     }
-  }
-  const deleteMsg = () => {
-      if(socketRef.current){
-        const message: DMessage = {
-          userIdx: 1,
-          score: 1690283005342,
-          room: '3',
-        };
-        socketRef.current.emit("removeMessage", message);
-      }
-  }
-  const joinRoom = () => {
-    const socket = io('https://socket.reptimate.store/chat', {
-      path: '/socket.io',
-    });
-    // log socket connection
-    socketRef.current = socket;
-    socket.on("connect", () => {
-      console.log("SOCKET CONNECTED!", socket.id);
-      const message: IMessage = {
-        userIdx: userIdx,
-        socketId: socket.id,
-        message: textMsg.trim(),
-        room: roomName,
-      };
-      if(socketRef.current){
-        socketRef.current.emit("join-room", message);
-      }
-      setConnected(true);
-    });
+  }, [chatRoomData]);
 
-    // update chat on new message dispatched
-    socket.on("message", (message: IMessage) => {
-      setChat(prevChat => [...prevChat, message]);
-      console.log('message', message);
-      
-    });
-
-    socket.on("removeMessage", (message: IMessage) => {
-      setChat(prevChat => [...prevChat, message]);
-    });
-    // socket disconnect on component unmount if exists 
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
+  // 채팅방 리스트 불러오기
+  const getChatRoomList = async (accessToken: string) => {
+    console.log("======================getChatRoomList=====================")
+    setLoading(true);
+    const config = {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
     };
+    try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_CHAT_URL}/chat/list`, config);
+        console.log(response.data)
+        
+        setData((prevData) =>
+        ({
+          result: {
+            items: [
+              ...(prevData?.result.items || []),
+              ...response.data.result.items,
+            ],
+            existsNextPage: response.data.result.existsNextPage,
+          },
+        } as getResponseChatList));
+        const combinedItems = [
+          ...(chatRoomData || []),
+          ...response.data.result.items,
+        ];
+        // updatedAt를 Date로 변환하고 내림차순으로 정렬합니다.
+        const sortedArray: chatRoom[] = combinedItems.sort((a, b) => {
+          const dateA: Date = new Date(a.chatRoom.updatedAt);
+          const dateB: Date = new Date(b.chatRoom.updatedAt);
+
+          // 내림차순으로 정렬하려면 dateB - dateA를 반환합니다.
+          return dateB.getTime() - dateA.getTime();
+        });
+        setchatRoomData(sortedArray);
+        // console.log(response.data?.result)
+        setENP(response.data?.result.existsNextPage);
+        setPage((prevPage) => prevPage + 1);
+    } catch (error: any) {
+      console.log(error)
+        if(error.response.status == 401) {
+            const storedData = localStorage.getItem('recoil-persist');
+            if (storedData) {
+                const userData = JSON.parse(storedData);
+                if (userData.USER_DATA.accessToken) {
+                    const extractedARefreshToken = userData.USER_DATA.refreshToken;
+                    reGenerateTokenMutation.mutate({
+                        refreshToken: extractedARefreshToken
+                    }, {
+                        onSuccess: (data) => {
+                            // api call 재선언
+                            console.log("accessToken 만료로 인한 재발급")
+                            getChatRoomList(data);
+                        },
+                        onError: () => {
+                            router.replace("/");
+                            setIsLoggedIn(false)
+                            //
+                            alert("로그인 만료\n다시 로그인 해주세요");
+                        }
+                    });
+                } else {
+                    router.replace("/");
+                    alert("로그인이 필요한 기능입니다.");
+                }
+            }
+        }
+    }
+    setLoading(false);
+};
+
+useEffect(() => {
+  const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+          if (entry.isIntersecting && !loading && existNextPage) {
+            getChatRoomList(accessToken);
+            console.log("useEffect[getChatRoomList, existNextPage, loading, options]")
+          }
+      });
+  }, options);
+  if (target.current) {
+    observer.observe(target.current);
   }
+  return () => {
+    if (target.current) {
+      observer.unobserve(target.current);
+    }
+  };
+}, [getChatRoomList, existNextPage, loading, options]);
+
+// 채팅방 입장시 ui 채팅방으로 교체
+function intoChatting(clickedChatRoomData: chatRoom) {
+  setchatRoomData([])
+  setchatRoomVisisibleState(true)
+  setchatRoomData([])
+  setchatNowInfo({ nickname: clickedChatRoomData.UserInfo.nickname, roomName: clickedChatRoomData.chatRoomIdx, profilePath: clickedChatRoomData.UserInfo.profilePath });
+  console.log(clickedChatRoomData);
+}
 
 return (
-    <div className="bg-gray-100 min-h-screen flex justify-center items-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h1 className="text-2xl text-gray-600 mb-4">Reptimate</h1>
-        <div className="mb-4">
-          <input
-            className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={textMsg}
-            onChange={onChangeKeyword}
-            placeholder="메시지 입력..."
-          />
+    <div className="bg-gray-100 flex justify-center">
+      <div className="flex-1 w-full border-gray-100 border-r-[1px]">
+          {//채팅방 입장
+          chatRoomVisisible && (
+            <div className="flex justify-center">
+              <PersonalChatBox></PersonalChatBox>
+            </div>
+          )}
+          {// 채팅방 리스트 보기
+          !chatRoomVisisible && (
+            <div className="flex-1 overflow-auto bg-white">
+              {chatRoomData.map((chatRoomData, i) => (
+              <div className="cursor-pointer"
+                key={i}
+                onClick={() => intoChatting(chatRoomData)} >
+                <ChatList chatRoomData={chatRoomData} key={i}/>
+              </div>
+            ))}
+            </div>
+          )}
         </div>
-        <div className="mb-4">
-          <input
-            className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={roomName}
-            onChange={onChangeRoom}
-            placeholder="방 이름 입력..."
-          />
-        </div>
-        <div className="mb-4">
-          <input
-            className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={userIdx}
-            onChange={onChangeUserIdx}
-            placeholder="상대 유저 ID 입력..."
-          />
-        </div>
-        <div className="flex justify-between items-center">
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onClick={sendMsg}
-          >
-            보내기
-          </button>
-          <button
-            className="px-4 py-2 bg-red-500 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-            onClick={joinRoom}
-          >
-            방 참여
-          </button>
-          <button
-            className="px-4 py-2 bg-red-500 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-            onClick={deleteMsg}
-          >
-            메시지 삭제
-          </button>
-        </div>
-      </div>
+        {existNextPage && (
+            <div className="flex justify-center">
+                <div
+                className="w-[15px] h-[15px] border-t-4 border-main-color border-solid rounded-full animate-spin" ref={target}>
+                </div>
+            </div>
+        )}
+        {loading && (
+            <div className="flex justify-center">
+                <div
+                className="w-[15px] h-[15px] border-t-4 border-main-color border-solid rounded-full animate-spin" ref={target}>
+                </div>
+            </div>
+        )}
     </div>
   );
 }
