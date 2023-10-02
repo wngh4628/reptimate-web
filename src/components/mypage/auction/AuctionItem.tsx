@@ -21,25 +21,24 @@ export default function AuctionItem({
 }: Props) {
   function formatDateToCustomString(date: Date): string {
     const options: Intl.DateTimeFormatOptions = {
-      year: '2-digit',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
+      year: "2-digit",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
     };
-    return new Intl.DateTimeFormat('ko-KR', options).format(date);
+    return new Intl.DateTimeFormat("ko-KR", options).format(date);
   }
 
   function setStateString(state: string): string {
-    var str = ""
+    var str = "";
     if (state == "selling") {
-      str = "진행중"
+      str = "진행중";
     } else {
-      str = "종료"
+      str = "종료";
     }
     return str;
   }
-
 
   return (
     <div>
@@ -56,11 +55,14 @@ export default function AuctionItem({
                   layout="fill"
                 />
                 <div className="flex-grow"></div>
-                <p className={`${
-                state === "selling" ? "text-red-500" : "text-gray-400"
-                } text-xl font-bold z-[9999] relative mt-1 mr-[6px]`}>{setStateString(state)}</p>
+                <p
+                  className={`${
+                    state === "selling" ? "text-red-500" : "text-gray-400"
+                  } text-xl font-bold z-[999] relative mt-1 mr-[6px]`}
+                >
+                  {setStateString(state)}
+                </p>
               </div>
-              
             </PC>
             <Mobile>
               <div className="relative w-4/5 h-[240px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
@@ -73,46 +75,48 @@ export default function AuctionItem({
                   style={{ zIndex: 1 }}
                 />
               </div>
-              
             </Mobile>
           </article>
         </Link>
       </div>
 
-
       <div className="mx-3 mt-2 mb-6 flex flex-col">
         <h3 className="font-bold text-xl mx-1">{title}</h3>
         <PC>
           <div className="flex items-center flex-col">
-
             <div className="w-full flex flex-row items-center">
-              <p className="text-sm mr-1">{state === "selling" ? "현재 입찰가 : " : "낙찰가 : "}</p>
-              <p className="font-bold text-lg">{currentPrice ? currentPrice : "---"}</p>
+              <p className="text-sm mr-1">
+                {state === "selling" ? "현재 입찰가 : " : "낙찰가 : "}
+              </p>
+              <p className="font-bold text-lg">
+                {currentPrice ? currentPrice : "---"}
+              </p>
               <p className="text-sm ml-1">원</p>
             </div>
-        
+
             <div className="flex flex-row mt-1 mr-auto">
-            <p
-              className={`text-xs mx-1 text-white p-1 rounded font-bold ${
-                gender === "수컷"
-                  ? "bg-gender-male-color"
-                  : gender === "암컷"
-                  ? "bg-gender-female-color"
-                  : "bg-gray-400"
-              }`}
-            >
-              {gender}
-            </p>
-            <p className="text-xs mx-1 text-white bg-gray-400 p-1 rounded font-bold">
-              {size}
-            </p>
+              <p
+                className={`text-xs mx-1 text-white p-1 rounded font-bold ${
+                  gender === "수컷"
+                    ? "bg-gender-male-color"
+                    : gender === "암컷"
+                    ? "bg-gender-female-color"
+                    : "bg-gray-400"
+                }`}
+              >
+                {gender}
+              </p>
+              <p className="text-xs mx-1 text-white bg-gray-400 p-1 rounded font-bold">
+                {size}
+              </p>
             </div>
-            
           </div>
         </PC>
         <div className="flex items-center mt-1">
           <img className="flex w-[15px] mx-1" src="/img/clock.png" />
-          <p className="text-gray-500 text-[15px]">{formatDateToCustomString(createdAt)}</p>
+          <p className="text-gray-500 text-[15px]">
+            {formatDateToCustomString(createdAt)}
+          </p>
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ import { Mobile, PC } from "./ResponsiveLayout";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { isLoggedInState, userAtom, chatVisisibleState } from "@/recoil/user";
-import ChatModal from "@/components/chatting/ChatModal"
+import ChatModal from "@/components/chatting/ChatModal";
 
 export default function Header() {
   const login = false; // Set this to true or false based on your logic
@@ -15,10 +15,9 @@ export default function Header() {
   const [isLogin, isSetLogin] = useState(false);
   const [accessToken, setAccessToken] = useRecoilState(userAtom);
 
-  
-
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
-  const [isChatVisisible, setIsChatVisisible] = useRecoilState(chatVisisibleState);
+  const [isChatVisisible, setIsChatVisisible] =
+    useRecoilState(chatVisisibleState);
 
   useEffect(() => {
     handleLogin();
@@ -44,15 +43,13 @@ export default function Header() {
   function chattingClick() {
     console.log("1234");
     setIsChatVisisible(!isChatVisisible);
-  };
+  }
   function chattingClose() {
     setIsChatVisisible(false);
-  };
+  }
   function chattingClickM() {
     setIsChatVisisible(!isChatVisisible);
-  };
-  
-  
+  }
 
   const communityPathnames = [
     "/",
@@ -127,16 +124,22 @@ export default function Header() {
             </Link>
           </nav>
         </div>
-        <div className={`${
-          isChatVisisible ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md" : "hidden"
-          }`}>
-            <div className="border-b-[1px] border-gray-300 h-[40px] flex flex-row ">
-              <p className="text-[20px] text-black self-center">채팅</p>
-              <button type="button" onClick={chattingClose} >
-                <img className="w-[25px] h-[25px] self-center right-0" src="/img/search.png"/>
-              </button>
-            </div>
-
+        <div
+          className={`${
+            isChatVisisible
+              ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
+              : "hidden"
+          }`}
+        >
+          <div className="border-b-[1px] border-gray-300 h-[40px] flex flex-row ">
+            <p className="text-[20px] text-black self-center">채팅</p>
+            <button type="button" onClick={chattingClose}>
+              <img
+                className="w-[25px] h-[25px] self-center right-0"
+                src="/img/search.png"
+              />
+            </button>
+          </div>
         </div>
       </PC>
       {/* 모바일 화면(반응형) */}
@@ -165,11 +168,11 @@ export default function Header() {
             </Link>
           </nav>
         </div>
-        <div className={`${
+        {/* <div className={`${
           isChatVisisible ? "" : "hidden"
           }bg-black w-full h-full z-[9999] fixed bottom-0`}>
 
-        </div>
+        </div> */}
       </Mobile>
     </header>
   );
