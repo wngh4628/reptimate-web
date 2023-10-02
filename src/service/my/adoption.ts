@@ -85,6 +85,7 @@ export interface GetAdoptionPostsView {
       path: string;
       coverImgPath: string | null;
     }>;
+    commentCnt: number;
     UserInfo: {
       idx: number;
       nickname: string;
