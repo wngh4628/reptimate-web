@@ -122,7 +122,7 @@ const patternOptions: Record<string, Option[]> = {
   ],
 };
 
-export default function AdoptionEdit() {
+export default function MarketEdit() {
   const router = useRouter();
   const params = useParams();
   const idx = params?.idx;
@@ -421,7 +421,7 @@ export default function AdoptionEdit() {
       boardCommercialIdx: boardCommercialIdx,
       userIdx: currentUserIdx || 0,
       title: title,
-      category: "adoption",
+      category: "market",
       description: description,
       price: price,
       gender: selectedGender || "",
@@ -487,7 +487,7 @@ export default function AdoptionEdit() {
               boardCommercialIdx: boardCommercialIdx,
               userIdx: currentUserIdx || 0,
               title: title,
-              category: "adoption",
+              category: "market",
               description: description,
               price: price,
               gender: selectedGender || "",
@@ -540,13 +540,13 @@ export default function AdoptionEdit() {
       )}
       <PC>
         <h2 className="flex flex-col items-center justify-center text-4xl font-bold p-10">
-          분양 게시글
+          중고 거래 게시글
         </h2>
       </PC>
       <Mobile>
         <BackButton />
         <h2 className="flex flex-col items-center justify-center text-xl font-bold p-4">
-          분양 게시글
+          중고 거래 게시글
         </h2>
       </Mobile>
       <p className="font-bold text-sm">거래 상태</p>

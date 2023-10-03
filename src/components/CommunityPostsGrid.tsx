@@ -1,5 +1,5 @@
 import { Adpotion } from "@/service/my/adoption";
-import PostCard from "./adoption/AdoptionPostCard";
+import PostCard from "./PostCard";
 
 type Props = { posts: Adpotion[] };
 export default function CommunityHomePostsGird({ posts }: Props) {

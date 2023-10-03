@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Mobile, PC } from "../ResponsiveLayout";
+import { Mobile, PC } from "./ResponsiveLayout";
 import { Adpotion } from "@/service/my/adoption";
 
 type Props = { post: Adpotion };
@@ -26,8 +26,8 @@ export default function PostCard({
     <div>
       <div className="ml-5 mr-5 relative">
         <Link
-          href="/community/adoption/posts/[idx]"
-          as={`/community/adoption/posts/${idx}`}
+          href={`/community/${category}/posts/[idx]`}
+          as={`/community/${category}/posts/${idx}`}
         >
           <article className="flex flex-col items-center">
             <PC>
