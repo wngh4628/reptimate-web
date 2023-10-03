@@ -6,6 +6,7 @@ import { io, Socket } from "socket.io-client";
 import { GetAuctionPostsView, GetAuctionPostsBid } from "@/service/my/auction";
 
 import ChatItem from "../chat/ChatItem";
+import BidItem from "../chat/BidItem";
 import ChatUserList from "../chat/ChatUserList";
 import BanUserList from "../chat/BanUserList";
 import {
@@ -24,11 +25,11 @@ interface UserInfoData {
     profilePath: string;
   };
 }
-export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
+export default function StreamingChatView() {
   const router = useRouter();
   const pathName = usePathname() || "";
 
-  const [postsData, setPostsData] = useState<GetAuctionPostsBid | null>(AuctionPosts);
+  const [postsData, setPostsData] = useState<GetAuctionPostsView>();
 
   const [roomEnter, setroomEnter] = useState<boolean>(false);
   const [textMsg, settextMsg] = useState("");
@@ -45,7 +46,10 @@ export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
   const socketBidRef = useRef<Socket | null>(null);
   const [biddingState, setbiddingState] = useState<boolean>(false);
   const [userInfoBidData, setUserInfoBidData] = useState<userInfo[]>([]); //유저 정보 가지고 있는 리스트
-  const [nowBid, setNowBid] = useState(""); // 현재 최대 입찰가
+  const [nowBid, setNowBid] = useState("0"); // 현재 최대 입찰가
+  const [bidUnit, setBidUnit] = useState(""); // 입찰 단위
+  const [bidStartPrice, setBidStartPrice] = useState(""); // 입찰 시작가
+
 
 
   const [userList, setUserList] = useState<UserInfoData>({}); //현재 참여자 목록
@@ -80,6 +84,8 @@ export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
         // 입장한 사용자의 이름 지정
         setNickname(userData.USER_DATA.nickname);
         setProfilePath(userData.USER_DATA.profilePath);
+
+        getData()
       } else {
         router.replace("/");
         alert("로그인이 필요한 기능입니다.");
@@ -87,6 +93,24 @@ export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
     }
     
   }, []);
+
+  const getData = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `https://api.reptimate.store/board/${roomName}?userIdx=1`
+      );
+      // Assuming your response data has a 'result' property
+      console.log(response.data)
+      setPostsData(response.data);
+
+      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice))
+      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit))
+      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice))
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, []);
+
   useEffect(() => {
     joinRoom();
     joinBidRoom();
@@ -96,12 +120,19 @@ export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
   const onChangeBid = (event: { target: { value: string } }) => {
     const numericInput = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
     console.log(numericInput)
-    //setBidMsg(numericInput);
+    setBidMsg(numericInput);
   };
+  // 숫자 사이에 , 기입
+  function formatNumberWithCommas(input: string): string {
+    // 문자열을 숫자로 변환하고 세 자리마다 쉼표를 추가
+    const numberWithCommas = Number(input).toLocaleString();
+  
+    return numberWithCommas;
+  }
 
   //방에 들어왔을 때 작동하는 함수
   const joinRoom = () => {
-    const socket = io("https://socket.reptimate.store/LiveChat", {
+    const socket = io('https://socket.reptimate.store/LiveChat', {
       path: "/socket.io",
     });
     // log socket connection
@@ -189,27 +220,6 @@ export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
       if (userIdx === host) {
         setUserAuth("host");
       }
-      // for (const data of message) {
-      //   const getUserInfo = JSON.parse(data);
-      //   setUserInfoData((prevUserInfoData) => ({
-      //     ...prevUserInfoData,
-      //     [getUserInfo.userIdx]: {
-      //       userIdx: getUserInfo.userIdx,
-      //       profilePath: getUserInfo.profilePath,
-      //       nickname: getUserInfo.nickname,
-      //     },
-      //   }));
-      //   setUserList((prevsetUserList) => ({
-      //     ...prevsetUserList,
-      //     [getUserInfo.userIdx]: {
-      //       userIdx: getUserInfo.userIdx,
-      //       profilePath: getUserInfo.profilePath,
-      //       nickname: getUserInfo.nickname,
-      //     },
-      //   }));
-      // };
-
-      // message가 배열이 아닌 경우, 배열로 변환
       const messageArray = Array.isArray(message) ? message : [message];
       messageArray.forEach((data) => {
         const getUserInfo = JSON.parse(data);
@@ -259,6 +269,7 @@ export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
     setchattingBidData([]);
     setUserList({});
     setNoChatState(false);
+    setchattingBidData([]);
     setUserAuth("guest");
   }, [socketRef, userIdx, roomName]);
 
@@ -453,7 +464,7 @@ export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
    *************************************/
   //방에 들어왔을 때 작동하는 함수
   const joinBidRoom = () => {
-    const socketBid = io("https://socket.reptimate.store/AuctionChat", {
+    const socketBid = io('https://socket.reptimate.store/AuctionChat', {
       path: "/socket.io",
     });
     // log socket connection
@@ -462,21 +473,24 @@ export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
       const message: IMessage = {
         userIdx: userIdx,
         socketId: socketBid.id,
-        message: textMsg.trim(),
+        message: bidMsg.trim(),
         room: roomName,
       };
 
       if (socketBidRef.current) {
+        console.log("==============================")
+        console.log("=============경매방 입장==============")
+        console.log("==============================")
         socketBidRef.current.emit("join-room", message);
       }
       setroomEnter(true);
 
-      //fetchBidData();
+      fetchBidData();
     });
     // 메시지 리스너
     socketBid.on("Auction_message", (message: IMessage) => {
       setchattingBidData((chattingData) => [...chattingData, message]);
-      console.log("message", message);
+      console.log("bid message", message);
     });
     socketBid.on("Auction_End", (message: string) => {
       console.log("Auction_End message", message);
@@ -534,7 +548,6 @@ export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
         auctionIdx: roomName,
         userIdx: userIdx,
       });
-
       // 알람 받기 On 요청 -> 나중에 jwt토큰 완성되면 userIdx 빼주시면 됩니다. userId는 jwt토큰으로 조회 가능합니다.
       await axios.post(
         `${process.env.NEXT_PUBLIC_CHAT_URL}/AuctionChat/${roomName}`,
@@ -547,20 +560,21 @@ export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
       if (socketBidRef.current) {
         const message = {
           userIdx: userIdx,
-          profilePath: "test",
-          nickname: "nickname",
+          profilePath: profilePath,
+          nickname: nickname,
           room: roomName,
         };
         socketBidRef.current.emit("auction_participate", message);
         setBidMsg("");
       }
+
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
   //메시지 발송하는 함수
   const sendBidMsg = async () => {
-    if (textMsg.trim() !== "") {
+    if (bidMsg.trim() !== "") {
       if (!biddingState) {
         await fetchParticipate();
       }
@@ -569,14 +583,16 @@ export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
         const message: IMessage = {
           userIdx: userIdx,
           socketId: socketId,
-          message: textMsg.trim(),
+          message: bidMsg.trim(),
           room: roomName,
         };
+        console.log(message);
         socketBidRef.current.emit("Auction_message", message);
         setBidMsg("");
       }
     }
   };
+
 
   function viewChat() {
     if (sideView != "chat") {
@@ -594,7 +610,6 @@ export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
       setSideView("bid");
     }
   }
-
   return (
     <>
       <div className="flex-col w-full right-0 h-[87%] flex bg-white">
@@ -689,13 +704,33 @@ export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
             <div className="flex items-start flex-col">
               <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px]">
                 <div className="flex-1 min-h-[62vh] max-h-[62vh] overflow-auto bg-white pb-1">
-                  
+                  {chattingBidData.map((chattingBidData, i) => (
+                    <BidItem
+                    chatData={chattingBidData}
+                    userIdx={userIdx}
+                    userInfoData={userInfoData[chattingBidData.userIdx]}
+                    key={i}
+                  />
+                  ))}
                 </div>
               </div>
-              <div className="flex flex-row min-h-[10vh] w-full max-h-[10vh] text-sm bg-gray-100 pb-1">
-                  <div className="flex flex-row w-full">
-                    <p className="pl-[3px] pt-[3px] basis-1/2">최대 입찰가 :</p>
-                    <p className="pl-[3px] pt-[3px] basis-1/2">입찰 단위 : {postsData?.result.boardAuction.unit}원</p>
+              <div className="flex flex-col min-h-[10vh] w-full max-h-[10vh] text-sm bg-gray-100 pb-1 justify-center">
+                  <div className="flex flex-row w-full my-[5px]">
+                    <div className="flex flex-row pl-[3px] basis-1/2">
+                      <p className="text-[14px]">입찰 시작가 : </p>
+                      <p className="text-[14px] px-1 text-main-color font-semibold">{bidStartPrice}</p>
+                      <p className="text-[14px]"> 원</p>
+                    </div>
+                    <div className="flex flex-row pl-[3px] basis-1/2">
+                      <p className="text-[14px]">입찰 단위 : </p>
+                      <p className="text-[14px] px-1 text-main-color font-semibold">{bidUnit}</p>
+                      <p className="text-[14px]"> 원</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-row pl-[3px] pt-[5px] basis-1/2">
+                    <p className="text-[17px]">현재 입찰 : </p>
+                    <p className="text-[17px] px-1 text-main-color font-semibold">{nowBid}</p>
+                    <p className="text-[17px]"> 원</p>
                   </div>
               </div>
               <div className="flex border-[#A7A7A7] text-sm w-full pl-[2px]">

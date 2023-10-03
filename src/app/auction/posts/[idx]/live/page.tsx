@@ -168,40 +168,7 @@ export default function ActionPage({ params: { slug } }: Props) {
           </div>
         </div>
         <div className="lg:w-[20rem] w-full">
-          <StreamingChatView status={postsData?.status!} message={postsData?.message!} result={{
-            idx: postsData?.result.idx!,
-            view: postsData?.result.view!,
-            userIdx: postsData?.result.userIdx!,
-            title: postsData?.result.title!,
-            category: postsData?.result.category!,
-            description: postsData?.result.description!,
-            writeDate: postsData?.result.writeDate!,
-            images: postsData?.result.images!,
-            commentCnt: postsData?.result.commentCnt!,
-            UserInfo: postsData?.result.UserInfo!,
-            boardAuction: {
-              idx: postsData?.result.boardAuction.idx!,
-              createdAt: postsData?.result.boardAuction.createdAt!,
-              updatedAt: postsData?.result.boardAuction.updatedAt || "",
-              deletedAt: postsData?.result.boardAuction.deletedAt || "",
-              boardIdx: postsData?.result.boardAuction.boardIdx!,
-              buyPrice: postsData?.result.boardAuction.buyPrice || 0,
-              startPrice: postsData?.result.boardAuction.startPrice!,
-              currentPrice: postsData?.result.boardAuction.currentPrice || 0,
-              unit: postsData?.result.boardAuction.unit || 0,
-              alertTime: postsData?.result.boardAuction.alertTime || "",
-              endTime: postsData?.result.boardAuction.endTime || "",
-              extensionTime: postsData?.result.boardAuction.extensionTime || "",
-              extensionRule: postsData?.result.boardAuction.extensionRule || 0,
-              gender: postsData?.result.boardAuction.gender!,
-              size: postsData?.result.boardAuction.size || "",
-              variety: postsData?.result.boardAuction.variety || "",
-              pattern: postsData?.result.boardAuction.pattern || "",
-              birthDate: postsData?.result.boardAuction.birthDate || "",
-              state: postsData?.result.boardAuction.state || "",
-              streamKey: postsData?.result.boardAuction.streamKey || ""
-            }
-          }}></StreamingChatView>
+          <StreamingChatView></StreamingChatView>
         </div>
       </div>
     </>
