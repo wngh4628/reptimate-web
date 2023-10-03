@@ -19,7 +19,7 @@ import Image from "next/image";
 import unlike_black from "../../../../../../public/img/unlike_black.png";
 import { getActionInfo } from "@/service/httpconnect/live_stream_axios";
 import acitonLiveDto from "@/service/dto/action-live-dto";
-import { GetAuctionPostsView } from "@/service/my/auction";
+import { GetAuctionPostsView, GetAuctionPostsBid } from "@/service/my/auction";
 import axios from "axios";
 
 type Props = {
