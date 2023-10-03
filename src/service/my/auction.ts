@@ -154,16 +154,16 @@ export interface GetAuctionPostsView {
       idx: number;
       createdAt: string;
       updatedAt: string;
-      deletedAt: null;
+      deletedAt: string;
       boardIdx: number;
-      buyPrice: number;
-      startPrice: number;
-      currentPrice: number;
-      unit: number;
-      alertTime: string;
-      endTime: string;
-      extensionTime: string;
-      extensionRule: number;
+      buyPrice: number; // 즉시 구매가
+      startPrice: number; // 입찰 시작가
+      currentPrice: number; // 현재 입찰가
+      unit: number; // 경매 입찰가 단위
+      alertTime: string; // 경매 시작 전 알림 (언제 시작인지)
+      endTime: string; // 경매 마감 시간
+      extensionTime: string; // 입찰시 증가하는 시간 extensionRule이 1일 때 만 적용
+      extensionRule: number; // 마감 룰, 0이 미적용
       gender: string;
       size: string;
       variety: string;
@@ -195,3 +195,56 @@ export type Images = {
   mediaSequence: number;
   path: string;
 };
+
+export interface GetAuctionPostsBid {
+  status: number;
+  message: string;
+  result: {
+    idx: number;
+    view: number;
+    userIdx: number;
+    title: string;
+    category: string;
+    description: string;
+    writeDate: string;
+    images: Array<{
+      idx: number;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: string | null;
+      boardIdx: number;
+      category: string;
+      mediaSequence: number;
+      path: string;
+      coverImgPath: string | null;
+    }>;
+    commentCnt: number;
+    UserInfo: {
+      idx: number;
+      nickname: string;
+      profilePath: string;
+    };
+    boardAuction: {
+      idx: number;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: string;
+      boardIdx: number;
+      buyPrice: number; // 즉시 구매가
+      startPrice: number; // 입찰 시작가
+      currentPrice: number; // 현재 입찰가
+      unit: number; // 경매 입찰가 단위
+      alertTime: string; // 경매 시작 전 알림 (언제 시작인지)
+      endTime: string; // 경매 마감 시간
+      extensionTime: string; // 입찰시 증가하는 시간 extensionRule이 1일 때 만 적용
+      extensionRule: number; // 마감 룰, 0이 미적용
+      gender: string;
+      size: string;
+      variety: string;
+      pattern: string;
+      birthDate: string;
+      state: string;
+      streamKey: string;
+    };
+  };
+}

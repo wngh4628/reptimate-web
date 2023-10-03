@@ -242,16 +242,16 @@ export default function PersonalChatBox() {
       }
     }
   }
-  const deleteMsg = () => {
-      if(socketRef.current){
-        const message: DMessage = {
-          userIdx: 1,
-          score: 1690283005342,
-          room: 3,
-        };
-        socketRef.current.emit("removeMessage", message);
-      }
-  }
+  // const deleteMsg = () => {
+  //     if(socketRef.current){
+  //       const message: DMessage = {
+  //         userIdx: 1,
+  //         score: 1690283005342,
+  //         room: 3,
+  //       };
+  //       socketRef.current.emit("removeMessage", message);
+  //     }
+  // }
   const joinRoom = () => {
     console.log("============================")
     console.log("입장한 방 번호 : " + roomName)
@@ -280,13 +280,11 @@ export default function PersonalChatBox() {
     socket.on("message", (message: getMessage) => {
         setchattingData(prevChat => [...prevChat, message]);
         console.log('message', message);
-      
     });
     //읽음 처리 연락 받는 기능 만들어주세요.
     socket.on("afterRead", (message: getMessage) => {
         console.log('message', message);
     });
-
     socket.on("removeMessage", (message: getMessage) => {
         setchattingData(prevChat => [...prevChat, message]);
     });
