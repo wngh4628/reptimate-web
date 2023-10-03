@@ -3,6 +3,7 @@ import Image from "next/image";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { io, Socket } from "socket.io-client";
+import { GetAuctionPostsView, GetAuctionPostsBid } from "@/service/my/auction";
 
 import ChatItem from "../chat/ChatItem";
 import ChatUserList from "../chat/ChatUserList";
@@ -23,9 +24,11 @@ interface UserInfoData {
     profilePath: string;
   };
 }
-export default function StreamingChatView() {
+export default function StreamingChatView(AuctionPosts: GetAuctionPostsBid) {
   const router = useRouter();
   const pathName = usePathname() || "";
+
+  const [postsData, setPostsData] = useState<GetAuctionPostsBid | null>(AuctionPosts);
 
   const [roomEnter, setroomEnter] = useState<boolean>(false);
   const [textMsg, settextMsg] = useState("");
@@ -42,6 +45,8 @@ export default function StreamingChatView() {
   const socketBidRef = useRef<Socket | null>(null);
   const [biddingState, setbiddingState] = useState<boolean>(false);
   const [userInfoBidData, setUserInfoBidData] = useState<userInfo[]>([]); //유저 정보 가지고 있는 리스트
+  const [nowBid, setNowBid] = useState(""); // 현재 최대 입찰가
+
 
   const [userList, setUserList] = useState<UserInfoData>({}); //현재 참여자 목록
   const [host, setHost] = useState(0); //방장 유무: 현재 하드코딩 -> 나중에 방 입장 시, props로 들고와야함
@@ -80,6 +85,7 @@ export default function StreamingChatView() {
         alert("로그인이 필요한 기능입니다.");
       }
     }
+    
   }, []);
   useEffect(() => {
     joinRoom();
@@ -89,7 +95,8 @@ export default function StreamingChatView() {
   //입찰가 입력란
   const onChangeBid = (event: { target: { value: string } }) => {
     const numericInput = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-    setBidMsg(event.target.value);
+    console.log(numericInput)
+    //setBidMsg(numericInput);
   };
 
   //방에 들어왔을 때 작동하는 함수
@@ -119,7 +126,6 @@ export default function StreamingChatView() {
     // 메시지 리스너
     socket.on("live_message", (message: IMessage) => {
       console.log(message);
-
       setchattingData((chattingData) => [...chattingData, message]);
     });
     //강퇴 처리
@@ -438,7 +444,13 @@ export default function StreamingChatView() {
     }
   };
 
-  // 경매 입찰 관련
+  /*************************************
+   * 
+   * 
+   *  경매 입찰 관련
+   * 
+   * 
+   *************************************/
   //방에 들어왔을 때 작동하는 함수
   const joinBidRoom = () => {
     const socketBid = io("https://socket.reptimate.store/AuctionChat", {
@@ -459,7 +471,7 @@ export default function StreamingChatView() {
       }
       setroomEnter(true);
 
-      fetchBidData();
+      //fetchBidData();
     });
     // 메시지 리스너
     socketBid.on("Auction_message", (message: IMessage) => {
@@ -540,7 +552,7 @@ export default function StreamingChatView() {
           room: roomName,
         };
         socketBidRef.current.emit("auction_participate", message);
-        settextMsg("");
+        setBidMsg("");
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -561,13 +573,14 @@ export default function StreamingChatView() {
           room: roomName,
         };
         socketBidRef.current.emit("Auction_message", message);
-        settextMsg("");
+        setBidMsg("");
       }
     }
   };
 
   function viewChat() {
     if (sideView != "chat") {
+      console.log("경매 정보 : "+postsData?.message);
       setSideView("chat");
     }
   }
@@ -586,11 +599,8 @@ export default function StreamingChatView() {
     <>
       <div className="flex-col w-full right-0 h-[87%] flex bg-white">
         <div className="flex py-[0.5rem] text-sm bg-gray-100 w-full">
-          <span className="basis-1/2 text-[#CB3E3E] text-center">
-            최고가 : - - 원
-          </span>
-          <span className="basis-1/2 text-[#A447CF] text-center">
-            남은 시간 : - - : - -
+          <span className="text-center self-center items-center justify-center mx-auto">
+            종료 시간 : - - : - -
           </span>
         </div>
 
@@ -675,8 +685,36 @@ export default function StreamingChatView() {
           ""
         )}
         {sideView === "bid" ? (
-          <div className="flex-1 min-h-[77.9vh] max-h-[77.9vh] w-full border-gray-100 border-r-[1px] border-b-[1px]">
-            <div></div>
+          <div className="min-h-screen w-full">
+            <div className="flex items-start flex-col">
+              <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px]">
+                <div className="flex-1 min-h-[62vh] max-h-[62vh] overflow-auto bg-white pb-1">
+                  
+                </div>
+              </div>
+              <div className="flex flex-row min-h-[10vh] w-full max-h-[10vh] text-sm bg-gray-100 pb-1">
+                  <div className="flex flex-row w-full">
+                    <p className="pl-[3px] pt-[3px] basis-1/2">최대 입찰가 :</p>
+                    <p className="pl-[3px] pt-[3px] basis-1/2">입찰 단위 : {postsData?.result.boardAuction.unit}원</p>
+                  </div>
+              </div>
+              <div className="flex border-[#A7A7A7] text-sm w-full pl-[2px]">
+                <input
+                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded"
+                  onChange={onChangeBid}
+                  value={bidMsg}
+                  placeholder=""
+                />
+                <button
+                  className="w-[20%] h-12 bg-main-color text-white rounded transition duration-300 ml-1"
+                  onClick={sendBidMsg}
+                >
+                  입찰
+                </button>
+              </div>
+
+              <div className="flex flex-col flex-1 space-y-2"></div>
+            </div>
           </div>
         ) : (
           ""
