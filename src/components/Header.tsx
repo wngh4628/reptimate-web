@@ -6,9 +6,8 @@ import { Mobile, PC } from "./ResponsiveLayout";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { isLoggedInState, userAtom, chatVisisibleState } from "@/recoil/user";
-import ChatModal from "@/components/chatting/ChatModal";
-import { chatRoomState, chatRoomVisisibleState} from "@/recoil/chatting";
-import PersonalChat from "@/components/chat/personalChat"
+import { chatRoomState, chatRoomVisisibleState } from "@/recoil/chatting";
+import PersonalChat from "@/components/chat/personalChat";
 
 export default function Header() {
   const login = false; // Set this to true or false based on your logic
@@ -20,8 +19,9 @@ export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const [isChatVisisible, setIsChatVisisible] =
     useRecoilState(chatVisisibleState);
-  const [isChatVisisible, setIsChatVisisible] = useRecoilState(chatVisisibleState);
-  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
+  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(
+    chatRoomVisisibleState
+  );
 
   useEffect(() => {
     handleLogin();
@@ -45,19 +45,13 @@ export default function Header() {
     window.location.reload();
   };
   function chattingClick() {
-    console.log("1234");
-    setIsChatVisisible(!isChatVisisible);
-  }
-  function chattingClose() {
-    setIsChatVisisible(false);
-  }
     console.log("채팅 목록 켜기");
     setIsChatVisisible(true);
-  };
+  }
   function chattingClose() {
     setIsChatVisisible(false);
-    setchatRoomVisisibleState(false)
-  };
+    setchatRoomVisisibleState(false);
+  }
   function chattingClickM() {
     setIsChatVisisible(!isChatVisisible);
   }
@@ -142,26 +136,18 @@ export default function Header() {
               : "hidden"
           }`}
         >
-          <div className="border-b-[1px] border-gray-300 h-[40px] flex flex-row ">
-            <p className="text-[20px] text-black self-center">채팅</p>
-            <button type="button" onClick={chattingClose}>
+          <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
+            <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
+              채팅
+            </p>
+            <button className="right-0" type="button" onClick={chattingClose}>
               <img
-                className="w-[25px] h-[25px] self-center right-0"
-                src="/img/search.png"
+                className="w-[15px] h-[15px] self-center mr-[18px]"
+                src="/img/ic_x.png"
               />
             </button>
           </div>
-        <div className={`${
-          isChatVisisible ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md" : "hidden"
-          }`}>
-            <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
-              <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">채팅</p>
-              <button className="right-0" type="button" onClick={chattingClose} >
-                <img className="w-[15px] h-[15px] self-center mr-[18px]" src="/img/ic_x.png"/>
-              </button>
-            </div>
-            <PersonalChat></PersonalChat>
-
+          <PersonalChat></PersonalChat>
         </div>
       </PC>
       {/* 모바일 화면(반응형) */}
