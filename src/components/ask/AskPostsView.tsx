@@ -1,5 +1,4 @@
-import { Images } from "@/service/my/auction";
-import axios, { isAxiosError } from "axios";
+import axios from "axios";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Mobile, PC } from "../ResponsiveLayout";
@@ -11,18 +10,16 @@ import { userAtom } from "@/recoil/user";
 import { Comment, getCommentResponse } from "@/service/comment";
 import CommentCard from "../comment/CommentCard";
 import CommentForm from "../comment/CommentForm";
-import { adoptionDelete } from "@/api/adoption/adoption";
 import { useRouter } from "next/navigation";
-import { GetAuctionPostsView } from "@/service/my/auction";
-import { auctionDelete } from "@/api/auction/auction";
-import { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate";
+import { GetPostsView, Images } from "@/service/my/board";
+import { freeDelete } from "@/api/free/freeBoard";
 
-export default function AuctionPostsView() {
+export default function AskPostsView() {
   const router = useRouter();
   const params = useParams();
   const idx = params?.idx;
 
-  const [data, setData] = useState<GetAuctionPostsView | null>(null);
+  const [data, setData] = useState<GetPostsView | null>(null);
 
   const [commentData, setCommentData] = useState<getCommentResponse | null>(
     null
@@ -39,8 +36,6 @@ export default function AuctionPostsView() {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const reGenerateTokenMutation = useReGenerateTokenMutation();
-
   function BackButton() {
     const handleGoBack = () => {
       window.history.back(); // Go back to the previous page using window.history
@@ -48,21 +43,21 @@ export default function AuctionPostsView() {
 
     return (
       <button onClick={handleGoBack} className="cursor-poiter px-2 font-bold">
-        &lt; 경매게시판
+        &lt; 질문 게시판
       </button>
     );
   }
 
   const deleteMutation = useMutation({
-    mutationFn: auctionDelete,
+    mutationFn: freeDelete,
     onSuccess: (data) => {
       console.log("============================");
-      console.log("Successful Deleting of auction post!");
+      console.log("Successful Deleting of free post!");
       console.log(data);
       console.log(data.data);
       console.log("============================");
       alert("게시글이 삭제되었습니다.");
-      router.replace("/");
+      router.replace("/community/ask");
     },
   });
 
@@ -72,7 +67,7 @@ export default function AuctionPostsView() {
 
   const handleEdit = () => {
     // Implement th`e edit action here
-    window.location.href = `/community/auction/edit/${idx}`;
+    window.location.href = `/community/ask/edit/${idx}`;
   };
 
   const handleDelete = () => {
@@ -250,61 +245,6 @@ export default function AuctionPostsView() {
         ...(prevCommentList || []),
       ]);
     },
-    onError: async (error: unknown) => {
-      if (isAxiosError(error) && error.response?.data.status === 401) {
-        console.log(error.response?.data.status);
-        const storedData = localStorage.getItem("recoil-persist");
-        if (storedData) {
-          const userData = JSON.parse(storedData);
-          if (userData.USER_DATA.accessToken) {
-            const extractedARefreshToken = userData.USER_DATA.refreshToken;
-            reGenerateTokenMutation.mutate(
-              {
-                refreshToken: extractedARefreshToken,
-              },
-              {
-                onSuccess: async (data1) => {
-                  console.log(data1);
-                  userAccessToken = data1;
-                  console.log(userAccessToken);
-
-                  // Here, we resend the comment write request after getting the new access token
-                  const newAccessToken = data1.result.accessToken;
-                  const requestData = {
-                    boardIdx: data?.result.idx || 0,
-                    category: "comment",
-                    description: commentFormValue,
-                    userAccessToken: newAccessToken,
-                  };
-
-                  if (commentFormValue !== "") {
-                    mutation.mutate(requestData);
-
-                    setCommentFormValue(""); // 댓글 폼 초기화
-                    // 댓글 리스트 다시 로딩을 위해 페이지 및 관련 상태 변수를 초기화합니다.
-                    setPage(1);
-                    setENP(false);
-                    setCommentData(null);
-                  } else {
-                    // Create the alert message based on missing fields
-                    let alertMessage = "오류입니다. :\n 다시 시도해주세요.";
-
-                    alert(alertMessage);
-                  }
-                },
-                onError: () => {
-                  router.replace("/login");
-                  alert("로그인 만료\n다시 로그인 해주세요");
-                },
-              }
-            );
-          } else {
-            router.replace("/login");
-            alert("로그인이 필요한 기능입니다.");
-          }
-        }
-      }
-    },
   });
 
   if (post !== null && post?.images) {
@@ -344,11 +284,6 @@ export default function AuctionPostsView() {
     };
 
     const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
-
-    const handleLiveClick = () => {
-      // Handle the logic for opening the write page
-      location.href = `/auction/posts/${idx}/live`;
-    };
 
     return (
       <div>
@@ -416,83 +351,10 @@ export default function AuctionPostsView() {
                 </div>
               </div>
               <ImageSlider imageUrls={itemlist} />
-              <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-5">현재 경매가</p>
-                <p className="text-xl font-bold ml-auto mr-5">
-                  {post.boardAuction.currentPrice
-                    ? post.boardAuction.currentPrice.toLocaleString() + "원"
-                    : ""}
-                  원
-                </p>
-              </div>
-              <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-5">즉시 구입가</p>
-                <p className="text-xl font-bold ml-auto mr-5">
-                  {post.boardAuction.startPrice.toLocaleString()}원
-                </p>
-              </div>
-              <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-5">마감 시간</p>
-                <p className="text-xl font-bold ml-auto mr-5">
-                  {post.boardAuction.endTime}까지
-                </p>
-              </div>
-              <div className="flex flex-row items-center justify-center">
-                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">시작 가격</p>
-                  <p className="pb-1 text-lg">
-                    {post.boardAuction.startPrice}원
-                  </p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">경매 단위</p>
-                  <p className="pb-1 text-lg">{post.boardAuction.unit}원</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">마감 룰</p>
-                  <p className="pb-1 text-lg">
-                    {post.boardAuction.extensionRule === 1 ? "적용" : "미적용"}
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-row items-center justify-center">
-                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">품종</p>
-                  <p className="pb-1 text-lg">{post.boardAuction.variety}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">성별</p>
-                  <p className="pb-1 text-lg">{post.boardAuction.gender}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">크기</p>
-                  <p className="pb-1 text-lg">{post.boardAuction.size}</p>
-                </div>
-              </div>
-              <div className="flex flex-row items-center justify-center mt-1">
-                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">모프</p>
-                  <p className="pb-1 text-lg">{post.boardAuction.pattern}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">출생</p>
-                  <p className="pb-1 text-lg">{post.boardAuction.birthDate}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">상태</p>
-                  {post.boardAuction.state === "reservation" ? (
-                    <p className="pb-1 text-lg text-red-600">예약중</p>
-                  ) : post.boardAuction.state === "end" ? (
-                    <p className="pb-1 text-lg text-gray-500">판매완료</p>
-                  ) : (
-                    <p className="pb-1 text-lg text-blue-600">판매중</p>
-                  )}
-                </div>
-              </div>
               <p className="text-lg my-7">{post.description}</p>
               <hr className="border-t border-gray-300 my-1" />
               <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-3 mr-2">댓글</p>
+                <p className="text-lg font-semibold ml-3 mr-1">댓글</p>
                 <p className="text-lg font-semibold mr-2">
                   {post.commentCnt}개
                 </p>
@@ -573,26 +435,6 @@ export default function AuctionPostsView() {
                   </div>
                 </div>
                 <ImageSlider imageUrls={itemlist} />
-                <div className="flex flex-row items-center py-1">
-                  <p className="font-semibold ml-2">시작가격</p>
-                  <p className="font-bold ml-auto mr-2">
-                    {post.boardAuction.startPrice.toLocaleString()}원
-                  </p>
-                </div>
-                <div className="flex flex-row items-center justify-center">
-                  <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                    <p className="pt-1 font-bold">품종</p>
-                    <p className="pb-1 text-sm">{post.boardAuction.variety}</p>
-                  </div>
-                  <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                    <p className="pt-1 font-bold">성별</p>
-                    <p className="pb-1 text-sm">{post.boardAuction.gender}</p>
-                  </div>
-                  <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                    <p className="pt-1 font-bold">크기</p>
-                    <p className="pb-1 text-sm">{post.boardAuction.size}</p>
-                  </div>
-                </div>
                 <p className="my-4">{post.description}</p>
                 <hr className="border-t border-gray-300" />
                 <div className="flex flex-row items-center py-2">
@@ -621,14 +463,6 @@ export default function AuctionPostsView() {
                 )}
               </div>
             </Mobile>
-            <div className="fixed bottom-10 right-10 z-50">
-              <button
-                className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold"
-                onClick={handleLiveClick}
-              >
-                LIVE
-              </button>
-            </div>
             <ul className="mt-6">
               {commentList !== null && commentList ? (
                 commentList.map((comment) => (

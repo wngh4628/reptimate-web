@@ -584,7 +584,7 @@ export default function MarketWrite() {
             type="submit"
             className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
           >
-            경매 등록
+            등록
           </button>
         </form>
       ) : (
