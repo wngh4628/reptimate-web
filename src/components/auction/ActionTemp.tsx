@@ -1,14 +1,27 @@
 import { useMutation } from "@tanstack/react-query";
 import { Mobile, PC } from "../ResponsiveLayout";
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import { auctionWrite } from "@/api/auction/auction";
+import { auctionEdit, auctionWrite } from "@/api/auction/auction";
+import { GetAuctionPostsView, Images } from "@/service/my/auction";
+import VideoThumbnail from "../VideoThumbnail";
 
 interface FileItem {
+  idx: number;
   file: File;
+  url: string;
   id: number;
+  type: string;
+  mediaSequence: number;
 }
 
 interface Option {
@@ -123,26 +136,68 @@ const alret_time: Option[] = [
   { value: "60", label: "1시간" },
 ];
 
-export default function AuctionWrite() {
+export default function AuctionTemp() {
   const router = useRouter();
+  const params = useParams();
+  const idx = params?.idx;
 
-  let userIdx: string | null = null;
+  function BackButton() {
+    const handleGoBack = () => {
+      window.history.back(); // Go back to the previous page using window.history
+    };
+
+    return (
+      <button onClick={handleGoBack} className="cursor-poiter px-2 font-bold">
+        &lt;
+      </button>
+    );
+  }
+
   let userAccessToken: string | null = null;
+  let currentUserIdx: number | null = null;
+  let userProfilePath: string | null = null;
+  let userNickname: string | null = null;
   if (typeof window !== "undefined") {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
-    const userData = JSON.parse(storedData || "");
-    userIdx = userData.USER_DATA.idx;
-    userAccessToken = userData.USER_DATA.accessToken;
+    // console.log(storedData);
+    if (storedData != null) {
+      const userData = JSON.parse(storedData || "");
+      currentUserIdx = userData.USER_DATA.idx;
+      userAccessToken = userData.USER_DATA.accessToken;
+      userProfilePath = userData.USER_DATA.profilePath;
+      userNickname = userData.USER_DATA.nickname;
+    }
   }
 
-  const [selectedFiles, setSelectedFiles] = useState<
-    Array<{ file: File; id: number }>
+  const [data, setData] = useState<GetAuctionPostsView | null>(null);
+  const [allFiles, setAllFiles] = useState<
+    Array<{
+      idx: number;
+      file: File | null;
+      url: string | null;
+      id: number;
+      type: string;
+      mediaSequence: number;
+    }>
   >([]);
+  const [addFiles, setAddFiles] = useState<
+    Array<{
+      idx: number;
+      file: File | null;
+      url: string | null;
+      id: number;
+      type: string;
+      mediaSequence: number;
+    }>
+  >([]);
+  const [deletedFiles, setDeletedFiles] = useState<Array<number>>([]);
+  const [mediaSequence, setMediaSequence] = useState<number>(-1);
   const [selectedGender, setSelectedGender] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [birthDate, setBirthDate] = useState<string>("");
 
+  const [auctionIdx, setAuctionIdx] = useState<string>("");
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [startPrice, setstartPrice] = useState("");
@@ -163,6 +218,62 @@ export default function AuctionWrite() {
     setSelling("selling");
     setRule("0");
   }, []);
+
+  const getData = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `https://api.reptimate.store/board/${idx}?userIdx=${currentUserIdx}`
+      );
+      // Assuming your response data has a 'result' property
+      setData(response.data);
+      console.log(response.data);
+      const post = response.data.result;
+      setAuctionIdx(post.boardAuction.idx.toString() || "");
+      setSelling(post.boardAuction.state);
+      setTitle(post?.title || "");
+      setVariety(post?.boardAuction.variety || "품종을 선택하세요");
+      setPattern(post?.boardAuction.pattern || "모프를 선택하세요");
+      setBirthDate(post?.boardAuction.birthDate || "연도-월-일");
+      setSelectedGender(post?.boardAuction.gender || "");
+      setSelectedSize(post?.boardAuction.size || "");
+      setPrice(post?.boardAuction.buyPrice.toString() || "");
+      setDescription(post?.description || "");
+      setstartPrice(post?.boardAuction.startPrice.toString() || "");
+      setunit(post?.boardAuction.unit.toString() || "");
+      setEndTime(post?.boardAuction.endTime.split(" ")[1] || "");
+      setRule(post?.boardAuction.extensionRule.toString() || "");
+      setAlretTime(post?.boardAuction.AlertTime || "");
+      setAllFiles(
+        post.images.map((item: Images) => ({
+          idx: item.idx,
+          id: Date.now() + Math.random(),
+          url: item.path,
+          type: item.category,
+          file: null,
+          mediaSequence: item.mediaSequence,
+        }))
+      );
+      console.log(post.images.length);
+      if (post.images.length > 0) {
+        setMediaSequence(post.images.length - 1);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    getData();
+    console.log(allFiles);
+  }, []);
+
+  useEffect(() => {
+    console.log(allFiles);
+  }, [allFiles]);
+
+  useEffect(() => {
+    console.log(deletedFiles);
+  }, [deletedFiles]);
 
   const handleVarietyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVariety = e.target.value;
@@ -206,42 +317,58 @@ export default function AuctionWrite() {
     const files = event.target.files;
     if (files) {
       const newFiles: FileItem[] = Array.from(files)
-        .slice(0, 5 - selectedFiles.length)
-        .map((file) => ({
+        .slice(0, 5 - allFiles.length)
+        .map((file, index) => ({
+          idx: 0,
           file,
           id: Date.now() + Math.random(),
+          url: "", // 새로 업로드할 파일의 경우 URL은 null로 설정
+          type: file.type,
+          mediaSequence: mediaSequence + index + 1, // Increment mediaSequence based on index
         }));
 
-      if (selectedFiles.length + newFiles.length > 5) {
+      setMediaSequence(mediaSequence + newFiles.length);
+
+      if (allFiles.length + newFiles.length > 5) {
         setShowFileLimitWarning(true);
       } else {
-        setSelectedFiles((prevSelectedFiles) => [
-          ...prevSelectedFiles,
-          ...newFiles,
-        ]);
+        setAllFiles((prevFiles) => [...prevFiles, ...newFiles]);
+        setAddFiles((prevFiles) => [...prevFiles, ...newFiles]);
       }
     }
   };
 
-  const handleRemoveItem = (id: number) => {
-    setSelectedFiles((prevSelectedFiles) =>
-      prevSelectedFiles.filter((item) => item.id !== id)
+  const handleRemoveItem = (id: number, idx: number) => {
+    setAllFiles((prevUrlImages) =>
+      prevUrlImages.filter((item) => item.id !== id)
     );
+    setAddFiles((prevUrlImages) =>
+      prevUrlImages.filter((item) => item.id !== id)
+    );
+    if (idx !== 0) {
+      setDeletedFiles((prevDeletedFiles) => [...prevDeletedFiles, idx]);
+    }
   };
 
   const moveFile = (dragIndex: number, hoverIndex: number) => {
-    const draggedFile = selectedFiles[dragIndex];
-    const updatedFiles = [...selectedFiles];
+    const draggedFile = allFiles[dragIndex];
+    const updatedFiles = [...allFiles];
     updatedFiles.splice(dragIndex, 1);
     updatedFiles.splice(hoverIndex, 0, draggedFile);
-    setSelectedFiles(updatedFiles);
+    setAllFiles(updatedFiles);
   };
 
   const FileItem = ({
     fileItem,
     index,
   }: {
-    fileItem: { file: File; id: number };
+    fileItem: {
+      idx: number;
+      file: File | null;
+      url: string | null;
+      id: number;
+      type: string;
+    };
     index: number;
   }) => {
     const [{ isDragging }, drag] = useDrag({
@@ -262,19 +389,6 @@ export default function AuctionWrite() {
       },
     });
 
-    useEffect(() => {
-      // Preload images when component mounts
-      selectedFiles.forEach((fileItem) => {
-        const img = new Image();
-        img.src = URL.createObjectURL(fileItem.file);
-      });
-    }, [selectedFiles]);
-
-    const imageUrl = useMemo(
-      () => URL.createObjectURL(fileItem.file),
-      [fileItem]
-    ); // Memoize the image URL
-
     return (
       <div ref={(node) => drag(drop(node))}>
         <div
@@ -282,22 +396,33 @@ export default function AuctionWrite() {
           className="relative w-32 h-32 mx-2 border-2 border-gray-200"
           onClick={(e) => e.preventDefault()}
         >
-          {fileItem.file.type.startsWith("image/") ? (
+          {fileItem.file?.type.startsWith("image/") ? (
             <img
-              src={imageUrl}
+              src={URL.createObjectURL(fileItem.file)}
               alt={`Image ${fileItem.id}`}
               className="object-cover w-full h-full"
             />
-          ) : fileItem.file.type.startsWith("video/") ? (
+          ) : fileItem.file?.type.startsWith("video/") ? (
             <video className="object-cover w-full h-full">
-              <source src={imageUrl} type={fileItem.file.type} />
+              <source
+                src={URL.createObjectURL(fileItem.file)}
+                type={fileItem.file.type}
+              />
               현재 브라우저는 비디오 태그를 지원하지 않습니다.
             </video>
+          ) : fileItem.type == "img" ? (
+            <img
+              src={fileItem.url || ""}
+              alt={`Image ${fileItem.id}`}
+              className="object-cover w-full h-full"
+            />
+          ) : fileItem.type == "video" ? (
+            <VideoThumbnail src={fileItem.url || ""} type="m3u8" />
           ) : (
             <p>지원하지 않는 파일 형태</p>
           )}
           <button
-            onClick={() => handleRemoveItem(fileItem.id)}
+            onClick={() => handleRemoveItem(fileItem.id, fileItem.idx)}
             className="absolute -top-2 -right-2 transform translate-x-1/4 -translate-y-1/4 w-6 h-6 bg-red-500 text-white rounded-full"
           >
             X
@@ -308,17 +433,15 @@ export default function AuctionWrite() {
   };
 
   const mutation = useMutation({
-    mutationFn: auctionWrite,
+    mutationFn: auctionEdit,
     onSuccess: (data) => {
       console.log("============================");
-      console.log("Successful writing of post!");
+      console.log("Successful Editing of post!");
       console.log(data);
       console.log(data.data);
       console.log("============================");
-      alert(
-        "경매가 임시 저장되었습니다.\n마이페이지의 내 경매에서 최종 등록을 하실 수 있습니다."
-      );
-      router.replace("/my/auction");
+      alert("경매가 등록 되었습니다.");
+      router.replace(`/auction`);
     },
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
@@ -347,8 +470,10 @@ export default function AuctionWrite() {
     const formattedTime = `${newYear}-${newMonth}-${newDay}T${hours}:${minutes}`;
 
     const requestData = {
-      state: selling,
-      userIdx: userIdx || "",
+      auctionIdx: auctionIdx,
+      state: "selling",
+      boardIdx: idx || "",
+      userIdx: currentUserIdx?.toString() || "",
       title: title,
       category: "auction",
       description: description,
@@ -380,25 +505,39 @@ export default function AuctionWrite() {
       rule !== "" &&
       birthDate !== ""
     ) {
-      if (selectedFiles.length === 0) {
+      if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
         console.log(requestData);
         mutation.mutate(requestData);
       } else {
-        console.log(selectedFiles);
+        console.log(addFiles);
 
         const formData = new FormData();
-        selectedFiles.forEach((fileItem) => {
-          formData.append("files", fileItem.file);
+        addFiles.forEach((fileItem) => {
+          formData.append("files", fileItem.file || "");
         });
 
+        const modifySqenceArr = allFiles.map((item) => item.mediaSequence);
+        const deleteIdxArr = deletedFiles;
+        const FileIdx = addFiles.map((item) => item.mediaSequence);
+        // Append JSON data to the FormData object
+        formData.append("modifySqenceArr", JSON.stringify(modifySqenceArr));
+        formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
+        formData.append("FileIdx", JSON.stringify(FileIdx));
+
         try {
-          // Send files to the first server
-          const response = await axios.post(uploadUri, formData, {
-            headers: {
-              Authorization: `Bearer ${userAccessToken}`,
-              "Content-Type": "multipart/form-data",
-            },
-          });
+          // Send both FormData and JSON data to the server
+          const response = await axios.patch(
+            `https://www.reptimate.store/conv/board/update/${idx}`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${userAccessToken}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          console.log(response.data);
 
           if (response.status === 201) {
             const responseData = response.data;
@@ -406,8 +545,10 @@ export default function AuctionWrite() {
             console.log(responseData);
             // Now, you can send additional data to the API server
             const requestData1 = {
-              state: selling,
-              userIdx: userIdx || "",
+              auctionIdx: auctionIdx,
+              state: "selling",
+              boardIdx: idx,
+              userIdx: currentUserIdx?.toString() || "",
               title: title,
               category: "auction",
               description: description,
@@ -451,7 +592,6 @@ export default function AuctionWrite() {
       if (birthDate === "") missingFields.push("생년월일");
       if (selectedGender === "" || "null") missingFields.push("성별");
       if (selectedSize === "" || "null") missingFields.push("크기");
-      if (price === "") missingFields.push("가격");
 
       // Create the alert message based on missing fields
       let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
@@ -505,7 +645,7 @@ export default function AuctionWrite() {
           className="flex overflow-x-auto border-2 border-gray-300 items-center justify-center py-3 cursor-pointer mx-auto"
           htmlFor="mediaInput"
         >
-          {selectedFiles.length === 0 && (
+          {allFiles.length === 0 && (
             <div className="w-32 h-32 flex flex-col items-center justify-center">
               <img
                 src="/img/camera.png"
@@ -515,8 +655,8 @@ export default function AuctionWrite() {
               <span className="">사진 업로드</span>
             </div>
           )}
-          {selectedFiles.map((fileItem, index) => (
-            <FileItem key={fileItem.id} fileItem={fileItem} index={index} />
+          {allFiles.map((file, index) => (
+            <FileItem key={index} fileItem={file} index={index} />
           ))}
         </label>
       </div>
@@ -708,7 +848,7 @@ export default function AuctionWrite() {
             type="submit"
             className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
           >
-            임시 저장
+            경매 등록
           </button>
         </form>
       ) : (
