@@ -34,8 +34,10 @@ export default function AuctionItem({
     var str = "";
     if (state == "selling") {
       str = "진행중";
-    } else {
+    } else if (state == "end") {
       str = "종료";
+    } else {
+      str = "임시저장";
     }
     return str;
   }
@@ -43,7 +45,11 @@ export default function AuctionItem({
   return (
     <div>
       <div className="ml-5 mr-5 relative">
-        <Link href={`/community/${idx}`}>
+        <Link
+          href={`${
+            state === "temp" ? `/auction/temp/${idx}` : `/auction/posts/${idx}`
+          }`}
+        >
           <article className="flex flex-col items-center">
             <PC>
               <div className=" flex relative w-full h-[320px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
@@ -57,7 +63,11 @@ export default function AuctionItem({
                 <div className="flex-grow"></div>
                 <p
                   className={`${
-                    state === "selling" ? "text-red-500" : "text-gray-400"
+                    state === "selling"
+                      ? "text-red-500"
+                      : state === "end"
+                      ? "text-gray-400"
+                      : "text-main-color"
                   } text-xl font-bold z-[999] relative mt-1 mr-[6px]`}
                 >
                   {setStateString(state)}

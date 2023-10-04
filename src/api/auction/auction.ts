@@ -70,6 +70,7 @@ export const auctionWrite = async ({
 };
 
 export const auctionEdit = async ({
+  auctionIdx,
   state,
   boardIdx,
   userIdx,
@@ -90,6 +91,7 @@ export const auctionEdit = async ({
   userAccessToken,
   fileUrl,
 }: {
+  auctionIdx: string;
   state: string;
   boardIdx: string | string[] | undefined;
   userIdx: string;
@@ -111,6 +113,7 @@ export const auctionEdit = async ({
   fileUrl: String;
 }) => {
   const data = {
+    auctionIdx: auctionIdx,
     state: state,
     boardIdx: boardIdx,
     userIdx: userIdx,

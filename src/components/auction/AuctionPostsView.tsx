@@ -72,7 +72,7 @@ export default function AuctionPostsView() {
 
   const handleEdit = () => {
     // Implement th`e edit action here
-    window.location.href = `/community/auction/edit/${idx}`;
+    window.location.href = `/auction/edit/${idx}`;
   };
 
   const handleDelete = () => {

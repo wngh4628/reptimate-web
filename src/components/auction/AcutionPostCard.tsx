@@ -33,11 +33,14 @@ export default function AuctionPostCard({
   }
 
   function setStateString(state: string): string {
+    console.log(state);
     var str = "";
     if (state == "selling") {
       str = "진행중";
-    } else {
+    } else if (state == "end") {
       str = "종료";
+    } else {
+      str = "임시저장";
     }
     return str;
   }
@@ -59,7 +62,11 @@ export default function AuctionPostCard({
                 <div className="flex-grow"></div>
                 <p
                   className={`${
-                    state === "selling" ? "text-red-500" : "text-gray-400"
+                    state === "selling"
+                      ? "text-red-500"
+                      : state === "end"
+                      ? "text-gray-400"
+                      : "text-main-color"
                   } text-xl font-bold z-[999] relative mt-1 mr-[6px]`}
                 >
                   {setStateString(state)}

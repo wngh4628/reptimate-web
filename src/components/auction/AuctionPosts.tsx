@@ -77,25 +77,27 @@ export default function AuctionPosts() {
   };
 
   if (data !== null && data.result.items) {
-    const itemlist: Auction[] = data.result.items.map((item) => ({
-      idx: item.idx,
-      view: item.view,
-      userIdx: item.userIdx,
-      title: item.title,
-      category: item.category,
-      createdAt: new Date(item.writeDate),
-      coverImage: item.images[0]?.coverImgPath || "",
-      nickname: item.UserInfo.nickname,
-      currentPrice: item.boardAuction?.currentPrice,
-      endTime: item.boardAuction?.endTime,
-      gender: item.boardAuction?.gender,
-      size: item.boardAuction?.size,
-      variety: item.boardAuction?.variety,
-      state: item.boardAuction?.state,
-      unit: item.boardAuction?.unit,
-      boardIdx: item.boardAuction?.boardIdx,
-      profilePath: item.UserInfo.profilePath,
-    }));
+    const itemlist: Auction[] = data.result.items
+      .filter((item) => item.boardAuction !== null)
+      .map((item) => ({
+        idx: item.idx,
+        view: item.view,
+        userIdx: item.userIdx,
+        title: item.title,
+        category: item.category,
+        createdAt: new Date(item.writeDate),
+        coverImage: item.images[0]?.coverImgPath || "",
+        nickname: item.UserInfo.nickname,
+        currentPrice: item.boardAuction?.currentPrice,
+        endTime: item.boardAuction?.endTime,
+        gender: item.boardAuction?.gender,
+        size: item.boardAuction?.size,
+        variety: item.boardAuction?.variety,
+        state: item.boardAuction?.state,
+        unit: item.boardAuction?.unit,
+        boardIdx: item.boardAuction?.boardIdx,
+        profilePath: item.UserInfo.profilePath,
+      }));
 
     return (
       <section>
