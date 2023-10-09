@@ -51,15 +51,15 @@ export default function MypageMenu() {
             <Link
               href="/my"
               className={`${
-                pathName === "/my" ? "bg-[#6D71E6] text-white" : "hover:text-[#6D71E6]"
-              } group bg-white border-b-[1px] h-[60px] flex items-center pl-2`}
+                pathName === "/my" ? "" : "hover:text-[#6D71E6]"
+              } group  border-b-[1px] h-[60px] flex items-center pl-2 bg-[#6D71E6] text-white`}
             >
               내 정보 수정
             </Link>
             <Link
               href="/my/board"
               className={`${
-                pathName === "/my/board" ? "text-white bg-main-color" : "hover:text-[#6D71E6]"
+                pathName === "/my/board" ? "text-white bg-[#6D71E6]" : "hover:text-[#6D71E6]"
               } group  bg-white border-b-[1px] h-[60px] flex items-center pl-2`}
             >
               내가 쓴 글
@@ -90,8 +90,8 @@ export default function MypageMenu() {
                 <Link
                   href="/my"
                   className={`${
-                    pathName === "/my" ? "bg-[#6D71E6] text-white" : "hover:text-[#6D71E6] "
-                  } group  bg-white h-[50px] flex items-center justify-center text-center px-5 border-r-[1px] w-1/4`}
+                    pathName === "/my" ? "" : "hover:text-[#6D71E6] "
+                  } group  h-[50px] flex items-center justify-center text-center px-5 border-r-[1px] w-1/4 bg-[#6D71E6] text-white`}
                 >
                   내 정보 수정
                 </Link>
