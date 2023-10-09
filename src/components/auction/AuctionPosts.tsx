@@ -24,7 +24,7 @@ export default function AuctionPosts() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://3.35.87.48:3000/board?page=${page}&size=20&order=DESC&category=auction`
+        `https://api.reptimate.store/board?page=${page}&size=20&order=DESC&category=auction`
       );
       setData(
         (prevData) =>
