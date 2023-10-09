@@ -20,9 +20,9 @@ export default function CommunityMenu() {
               분양글
             </Link>
             <Link
-              href="/community/used-deal"
+              href="/community/market"
               className={`${
-                pathName === "/community/used-deal" ? "text-[#6D71E6]" : ""
+                pathName === "/community/market" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
             >
               중고 거래
@@ -59,9 +59,9 @@ export default function CommunityMenu() {
               분양글
             </Link>
             <Link
-              href="/community/used-deal"
+              href="/community/market"
               className={`${
-                pathName === "/community/used-deal" ? "text-[#6D71E6]" : ""
+                pathName === "/community/market" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
             >
               중고 거래

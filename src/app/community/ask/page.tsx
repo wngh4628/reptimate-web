@@ -1,12 +1,13 @@
 "use client";
 
 import CommunityMenu from "@/components/CommunityMenu";
+import AskPosts from "@/components/ask/AskPosts";
 
 export default function AskHome() {
   return (
     <div>
       <CommunityMenu />
-      <h1 className="font-bold p-10">질문 게시판</h1>
+      <AskPosts />
     </div>
   );
 }

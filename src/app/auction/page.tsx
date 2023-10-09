@@ -1,3 +1,9 @@
+import AuctionPosts from "@/components/auction/AuctionPosts";
+
 export default function AuctionPage() {
-  return <p>옥션 페이지</p>;
+  return (
+    <div>
+      <AuctionPosts />
+    </div>
+  );
 }

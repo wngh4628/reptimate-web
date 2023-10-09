@@ -1,11 +1,11 @@
 import CommunityMenu from "@/components/CommunityMenu";
-import CommunityAdoptionPosts from "@/components/adoption/CommunityAdoptionPosts";
+import AdoptionPosts from "@/components/adoption/AdoptionPosts";
 
 export default function Home() {
   return (
     <div>
       <CommunityMenu />
-      <CommunityAdoptionPosts />
+      <AdoptionPosts />
     </div>
   );
 }

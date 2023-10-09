@@ -5,7 +5,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mobile, PC } from "./ResponsiveLayout";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { isLoggedInState, userAtom } from "@/recoil/user";
+import { isLoggedInState, userAtom, chatVisisibleState } from "@/recoil/user";
+import ChatModal from "@/components/chatting/ChatModal";
+import { chatRoomState, chatRoomVisisibleState} from "@/recoil/chatting";
+import PersonalChat from "@/components/chat/personalChat"
 
 export default function Header() {
   const login = false; // Set this to true or false based on your logic
@@ -15,6 +18,8 @@ export default function Header() {
   const [accessToken, setAccessToken] = useRecoilState(userAtom);
 
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+  const [isChatVisisible, setIsChatVisisible] = useRecoilState(chatVisisibleState);
+  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
 
   useEffect(() => {
     handleLogin();
@@ -35,15 +40,26 @@ export default function Header() {
     isSetLogin(false);
     setIsLoggedIn(false);
     router.refresh();
+    window.location.reload();
+  };
+  function chattingClick() {
+    console.log("채팅 목록 켜기");
+    setIsChatVisisible(true);
+  };
+  function chattingClose() {
+    setIsChatVisisible(false);
+    setchatRoomVisisibleState(false)
+  };
+  function chattingClickM() {
+    setIsChatVisisible(!isChatVisisible);
   };
 
   const communityPathnames = [
     "/",
-    "/community/used-deal",
+    "/community/market",
     "/community/free",
     "/community/ask",
   ];
-
   return (
     <header>
       {/* PC 화면(반응형) */}
@@ -94,7 +110,7 @@ export default function Header() {
               MY
             </Link>
             <Link href="">
-              <div className="flex w-5 my-0.5">
+              <div className="flex w-5 my-0.5" onClick={chattingClick}>
                 <img src="/img/chat.png" />
               </div>
             </Link>
@@ -109,17 +125,34 @@ export default function Header() {
               </div>
             </Link>
           </nav>
+        </div>
+        <div className={`${
+          isChatVisisible ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md" : "hidden"
+          }`}>
+            <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
+              <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">채팅</p>
+              <button className="right-0" type="button" onClick={chattingClose} >
+                <img className="w-[15px] h-[15px] self-center mr-[18px]" src="/img/ic_x.png"/>
+              </button>
+            </div>
+            <PersonalChat></PersonalChat>
+
         </div>
       </PC>
       {/* 모바일 화면(반응형) */}
       <Mobile>
         <div className="flex justify-end pt-2 pb-5 pr-5">
           <nav className="flex gap-4 font-bold">
-            <Link href="">
+            {/* <Link href="">
+              <div className="flex w-5 my-0.5" onClick={chattingClick}>
+                <img src="/img/chat.png" />
+              </div>
+            </Link> */}
+            <a onClick={chattingClick}>
               <div className="flex w-5 my-0.5">
                 <img src="/img/chat.png" />
               </div>
-            </Link>
+            </a>
             <Link href="">
               <div className="flex w-5 my-0.5">
                 <img src="/img/notification.png" />
@@ -132,6 +165,11 @@ export default function Header() {
             </Link>
           </nav>
         </div>
+        <div
+          className={`${
+            isChatVisisible ? "" : "hidden"
+          }bg-black w-full h-full z-[9999] fixed bottom-0`}
+        ></div>
       </Mobile>
     </header>
   );
