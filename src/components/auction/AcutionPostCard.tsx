@@ -53,11 +53,10 @@ export default function AuctionPostCard({
             <PC>
               <div className=" flex relative w-full h-[320px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
-                <Image
+                <img
                   className="object-cover w-full h-full"
                   src={`${coverImage}` || "/img/reptimate_logo.png"}
                   alt={""}
-                  layout="fill"
                 />
                 <div className="flex-grow"></div>
                 <p
@@ -88,11 +87,10 @@ export default function AuctionPostCard({
             <Mobile>
               <div className="relative w-[130px] h-[130px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
-                <Image
+                <img
                   className="object-cover w-full h-full"
                   src={`${coverImage}` || "/img/reptimate_logo.png"}
                   alt={""}
-                  layout="fill"
                   style={{ zIndex: 1 }}
                 />
               </div>
