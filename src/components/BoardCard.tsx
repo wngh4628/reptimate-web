@@ -28,11 +28,10 @@ export default function PostCard({
             <PC>
               <div className="relative w-[350px] h-[350px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
-                <Image
+                <img
                   className="object-cover w-full h-full"
                   src={`${coverImage}` || "/img/reptimate_logo.png"}
                   alt={""}
-                  layout="fill"
                   style={{ zIndex: 1 }}
                 />
               </div>
@@ -52,11 +51,10 @@ export default function PostCard({
             <Mobile>
               <div className="relative w-[130px] h-[130px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
-                <Image
+                <img
                   className="object-cover w-full h-full"
                   src={`${coverImage}` || "/img/reptimate_logo.png"}
                   alt={""}
-                  layout="fill"
                   style={{ zIndex: 1 }}
                 />
               </div>
