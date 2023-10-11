@@ -32,26 +32,31 @@ export default function AdoptionPosts() {
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
 
-  if (typeof window !== "undefined" && typeof window.Android !== "undefined") {
-    // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
-    const idx = parseInt(window.Android.getIdx() || "", 10) || 0;
-    const accessToken = window.Android.getAccessToken();
-    const refreshToken = window.Android.getRefreshToken();
-    const profilePath = window.Android.getProfilePath();
-    const nickname = window.Android.getProfilePath();
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.Android !== "undefined"
+    ) {
+      // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
+      const idx = parseInt(window.Android.getIdx() || "", 10) || 0;
+      const accessToken = window.Android.getAccessToken();
+      const refreshToken = window.Android.getRefreshToken();
+      const profilePath = window.Android.getProfilePath();
+      const nickname = window.Android.getProfilePath();
 
-    setUser({
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-      idx: idx,
-      profilePath: profilePath,
-      nickname: nickname,
-    });
-    setIsLoggedIn(true);
+      setUser({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        idx: idx,
+        profilePath: profilePath,
+        nickname: nickname,
+      });
+      setIsLoggedIn(true);
 
-    // 이곳에서 idx와 accessToken을 사용하거나 다른 동작을 수행할 수 있습니다.
-    console.log(nickname);
-  }
+      // 이곳에서 idx와 accessToken을 사용하거나 다른 동작을 수행할 수 있습니다.
+      console.log(nickname);
+    }
+  }, []);
 
   const options = {
     threshold: 1.0,
