@@ -10,13 +10,25 @@ import { Mobile, PC } from "../ResponsiveLayout";
 import ImageSlider from "../ImageSlider";
 import { useMutation } from "@tanstack/react-query";
 import { commentWrtie } from "@/api/comment";
-import { useRecoilValue } from "recoil";
-import { userAtom } from "@/recoil/user";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { isLoggedInState, userAtom } from "@/recoil/user";
 import { Comment, getCommentResponse } from "@/service/comment";
 import CommentCard from "../comment/CommentCard";
 import CommentForm from "../comment/CommentForm";
 import { adoptionDelete } from "@/api/adoption/adoption";
 import { useRouter } from "next/navigation";
+
+declare global {
+  interface Window {
+    Android: {
+      getIdx: () => string;
+      getAccessToken: () => string;
+      getRefreshToken: () => string;
+      getNickname: () => string;
+      getProfilePath: () => string;
+    };
+  }
+}
 
 export default function AdoptionPostsView() {
   const router = useRouter();
@@ -39,6 +51,35 @@ export default function AdoptionPostsView() {
   const [commentList, setCommentList] = useState<Comment[]>();
 
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const setUser = useSetRecoilState(userAtom);
+  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.Android !== "undefined"
+    ) {
+      // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
+      const idx = parseInt(window.Android.getIdx() || "", 10) || 0;
+      const accessToken = window.Android.getAccessToken();
+      const refreshToken = window.Android.getRefreshToken();
+      const profilePath = window.Android.getProfilePath();
+      const nickname = window.Android.getProfilePath();
+
+      setUser({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        idx: idx,
+        profilePath: profilePath,
+        nickname: nickname,
+      });
+      setIsLoggedIn(true);
+
+      // 이곳에서 idx와 accessToken을 사용하거나 다른 동작을 수행할 수 있습니다.
+      console.log(nickname);
+    }
+  }, []);
 
   function BackButton() {
     const handleGoBack = () => {
