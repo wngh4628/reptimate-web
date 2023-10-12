@@ -42,7 +42,7 @@ export default function AdoptionPosts() {
       const accessToken = window.Android.getAccessToken();
       const refreshToken = window.Android.getRefreshToken();
       const profilePath = window.Android.getProfilePath();
-      const nickname = window.Android.getProfilePath();
+      const nickname = window.Android.getNickname();
 
       setUser({
         accessToken: accessToken,
