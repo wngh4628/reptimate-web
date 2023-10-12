@@ -2,7 +2,6 @@
 import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { userAtom, isLoggedInState } from "@/recoil/user";
