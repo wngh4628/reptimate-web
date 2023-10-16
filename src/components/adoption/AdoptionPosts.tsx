@@ -5,8 +5,21 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import PostCard from "../PostCard";
 import { Mobile, PC } from "../ResponsiveLayout";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
+import { useLocation } from "react-router-dom";
+
+declare global {
+  interface Window {
+    Android: {
+      getIdx: () => string;
+      getAccessToken: () => string;
+      getRefreshToken: () => string;
+      getNickname: () => string;
+      getProfilePath: () => string;
+    };
+  }
+}
 
 export default function AdoptionPosts() {
   const [data, setData] = useState<getResponse | null>(null);
@@ -15,6 +28,35 @@ export default function AdoptionPosts() {
   const [loading, setLoading] = useState(false);
   const isLogin = useRecoilValue(userAtom);
   const target = useRef(null);
+
+  const setUser = useSetRecoilState(userAtom);
+  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.Android !== "undefined"
+    ) {
+      // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
+      const idx = parseInt(window.Android.getIdx() || "", 10) || 0;
+      const accessToken = window.Android.getAccessToken();
+      const refreshToken = window.Android.getRefreshToken();
+      const profilePath = window.Android.getProfilePath();
+      const nickname = window.Android.getNickname();
+
+      setUser({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        idx: idx,
+        profilePath: profilePath,
+        nickname: nickname,
+      });
+      setIsLoggedIn(true);
+
+      // 이곳에서 idx와 accessToken을 사용하거나 다른 동작을 수행할 수 있습니다.
+      console.log(nickname);
+    }
+  }, []);
 
   const options = {
     threshold: 1.0,

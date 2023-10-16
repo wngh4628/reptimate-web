@@ -10,13 +10,25 @@ import { Mobile, PC } from "../ResponsiveLayout";
 import ImageSlider from "../ImageSlider";
 import { useMutation } from "@tanstack/react-query";
 import { commentWrtie } from "@/api/comment";
-import { useRecoilValue } from "recoil";
-import { userAtom } from "@/recoil/user";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { isLoggedInState, userAtom } from "@/recoil/user";
 import { Comment, getCommentResponse } from "@/service/comment";
 import CommentCard from "../comment/CommentCard";
 import CommentForm from "../comment/CommentForm";
 import { adoptionDelete } from "@/api/adoption/adoption";
 import { useRouter } from "next/navigation";
+
+declare global {
+  interface Window {
+    Android: {
+      getIdx: () => string;
+      getAccessToken: () => string;
+      getRefreshToken: () => string;
+      getNickname: () => string;
+      getProfilePath: () => string;
+    };
+  }
+}
 
 export default function AdoptionPostsView() {
   const router = useRouter();
@@ -38,7 +50,37 @@ export default function AdoptionPostsView() {
 
   const [commentList, setCommentList] = useState<Comment[]>();
 
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const setUser = useSetRecoilState(userAtom);
+  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.Android !== "undefined"
+    ) {
+      // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
+      const idx = parseInt(window.Android.getIdx() || "", 10) || 0;
+      const accessToken = window.Android.getAccessToken();
+      const refreshToken = window.Android.getRefreshToken();
+      const profilePath = window.Android.getProfilePath();
+      const nickname = window.Android.getProfilePath();
+
+      setUser({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        idx: idx,
+        profilePath: profilePath,
+        nickname: nickname,
+      });
+      setIsLoggedIn(true);
+
+      // 이곳에서 idx와 accessToken을 사용하거나 다른 동작을 수행할 수 있습니다.
+      console.log(nickname);
+    }
+  }, []);
 
   function BackButton() {
     const handleGoBack = () => {
@@ -65,8 +107,16 @@ export default function AdoptionPostsView() {
     },
   });
 
+  const profileMenu = () => {
+    setProfileMenuOpen((prevProfileMenuOpen) => !prevProfileMenuOpen);
+  };
+
   const toggleMenu = () => {
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
+  };
+
+  const handleChat = () => {
+    //1:1채팅 코드
   };
 
   const handleEdit = () => {
@@ -295,12 +345,30 @@ export default function AdoptionPostsView() {
           <div className="max-w-screen-sm mx-auto">
             <PC>
               <h2 className="text-4xl font-bold pt-10">{post.title}</h2>
-              <div className="flex items-center my-2">
+              <div className="flex items-center my-2 relative">
                 <img
-                  className="w-10 h-10 rounded-full border-2"
+                  className="w-10 h-10 rounded-full border-2 cursor-pointer"
                   src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
                   alt=""
+                  onClick={profileMenu}
                 />
+                {!isCurrentUserComment && (
+                  <div className="flex items-center justify-center absolute top-full mt-1 bg-white border border-gray-200 shadow-lg rounded z-50">
+                    {profileMenuOpen && (
+                      <ul>
+                        <li
+                          onClick={() => {
+                            handleChat();
+                            profileMenu();
+                          }}
+                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                        >
+                          1:1채팅하기
+                        </li>
+                      </ul>
+                    )}
+                  </div>
+                )}
                 <p className="text-xl font-bold ml-1">
                   {post.UserInfo.nickname}
                 </p>
@@ -428,12 +496,30 @@ export default function AdoptionPostsView() {
               <BackButton />
               <div className="mx-2">
                 <h2 className="text-2xl font-bold pt-5">{post.title}</h2>
-                <div className="flex items-center my-2">
+                <div className="flex items-center my-2 relative">
                   <img
-                    className="w-7 h-7 rounded-full border-2"
+                    className="w-10 h-10 rounded-full border-2 cursor-pointer"
                     src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
                     alt=""
+                    onClick={profileMenu}
                   />
+                  {!isCurrentUserComment && (
+                    <div className="flex items-center justify-center absolute top-full mt-1 bg-white border border-gray-200 shadow-lg rounded z-50">
+                      {profileMenuOpen && (
+                        <ul>
+                          <li
+                            onClick={() => {
+                              handleChat();
+                              profileMenu();
+                            }}
+                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                          >
+                            1:1채팅하기
+                          </li>
+                        </ul>
+                      )}
+                    </div>
+                  )}
                   <p className="text-lg font-bold">{post.UserInfo.nickname}</p>
                   <p className="ml-2 text-gray-500 text-sm">{postWriteDate}</p>
                   <p className="ml-1 text-gray-500 text-sm">{postWriteTime}</p>

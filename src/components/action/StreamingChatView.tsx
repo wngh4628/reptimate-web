@@ -31,6 +31,7 @@ export default function StreamingChatView() {
   const pathName = usePathname() || "";
 
   const [postsData, setPostsData] = useState<GetAuctionPostsView>();
+  const [endTime, setEndTime] = useState("");
 
   const [roomEnter, setroomEnter] = useState<boolean>(false);
   const [textMsg, settextMsg] = useState("");
@@ -52,8 +53,6 @@ export default function StreamingChatView() {
   const [bidUnit, setBidUnit] = useState(""); // 입찰 단위
   const [bidStartPrice, setBidStartPrice] = useState(""); // 입찰 시작가
 
-
-
   const [userList, setUserList] = useState<UserInfoData>({}); //현재 참여자 목록
   const [host, setHost] = useState(0); //방장 유무: 현재 하드코딩 -> 나중에 방 입장 시, props로 들고와야함
   const [boardIdx, setBoardIdx] = useState(0); //게시글 번호: 현재 하드코딩 -> 나중에 방 입장 시, props로 들고와야함
@@ -72,6 +71,39 @@ export default function StreamingChatView() {
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const bidContainerRef = useRef<HTMLDivElement | null>(null);
+  const [countdown, setCountdown] = useState("");
+
+  useEffect(() => {
+    const endTime1 = new Date(endTime).getTime();
+
+    const updateCountdown = () => {
+      const currentTime = new Date().getTime();
+      const timeRemaining = endTime1 - currentTime;
+
+      if (timeRemaining <= 0) {
+        clearInterval(countdownInterval);
+        setCountdown("Time's up!");
+      } else {
+        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor(
+          (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+        setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+      }
+    };
+
+    updateCountdown(); // Initial call to set the countdown
+    const countdownInterval = setInterval(updateCountdown, 1000);
+
+    return () => {
+      clearInterval(countdownInterval);
+    };
+  }, []);
 
   useEffect(() => {
     const storedData = localStorage.getItem("recoil-persist");
@@ -90,13 +122,14 @@ export default function StreamingChatView() {
         setNickname(userData.USER_DATA.nickname);
         setProfilePath(userData.USER_DATA.profilePath);
 
-        
+
+        getData();
+
       } else {
         router.replace("/");
         alert("로그인이 필요한 기능입니다.");
       }
     }
-    
   }, []);
 
   useEffect(() => {
@@ -112,12 +145,29 @@ export default function StreamingChatView() {
       const response = await axios.get(
         `https://api.reptimate.store/board/${roomName}?userIdx=1`
       );
+
       console.log("getData  :  " + response.data)
       console.log(response.data)
       setPostsData(response.data);
       setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice))
       setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit))
       setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice))
+
+
+      // Assuming your response data has a 'result' property
+      console.log(response.data);
+      setPostsData(response.data);
+
+      setNowBid(
+        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
+      );
+      setBidUnit(
+        formatNumberWithCommas(response.data.result.boardAuction.unit)
+      );
+      setBidStartPrice(
+        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
+      );
+      setEndTime(response.data.result.boardAuction.endTime);
 
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -137,20 +187,20 @@ export default function StreamingChatView() {
   //입찰가 입력란
   const onChangeBid = (event: { target: { value: string } }) => {
     const numericInput = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-    console.log(numericInput)
+    console.log(numericInput);
     setBidMsg(numericInput);
   };
   // 숫자 사이에 , 기입
   function formatNumberWithCommas(input: string): string {
     // 문자열을 숫자로 변환하고 세 자리마다 쉼표를 추가
     const numberWithCommas = Number(input).toLocaleString();
-  
+
     return numberWithCommas;
   }
 
   //방에 들어왔을 때 작동하는 함수
   const joinRoom = () => {
-    const socket = io('https://socket.reptimate.store/LiveChat', {
+    const socket = io("https://socket.reptimate.store/LiveChat", {
       path: "/socket.io",
     });
     // log socket connectio
@@ -481,15 +531,15 @@ export default function StreamingChatView() {
   };
 
   /*************************************
-   * 
-   * 
+   *
+   *
    *  경매 입찰 관련
-   * 
-   * 
+   *
+   *
    *************************************/
   //방에 들어왔을 때 작동하는 함수
   const joinBidRoom = () => {
-    const socketBid = io('https://socket.reptimate.store/AuctionChat', {
+    const socketBid = io("https://socket.reptimate.store/AuctionChat", {
       path: "/socket.io",
     });
     // log socket connection
@@ -502,9 +552,11 @@ export default function StreamingChatView() {
         room: roomName,
       };
       if (socketBidRef.current) {
+
         console.log("========================");
         console.log("경매 입찰 채팅 입장");
         console.log("========================");
+
         socketBidRef.current.emit("join-room", message);
       }
       setbidRoomEnter(true);
@@ -598,7 +650,6 @@ export default function StreamingChatView() {
         socketBidRef.current.emit("auction_participate", message);
         setBidMsg("");
       }
-
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -629,10 +680,9 @@ export default function StreamingChatView() {
       }
     };
 
-
   function viewChat() {
     if (sideView != "chat") {
-      console.log("경매 정보 : "+postsData?.message);
+      console.log("경매 정보 : " + postsData?.message);
       setSideView("chat");
     }
   }
@@ -651,7 +701,7 @@ export default function StreamingChatView() {
       <div className="flex-col w-full right-0 h-[87%] flex bg-white">
         <div className="flex py-[0.5rem] text-sm bg-gray-100 w-full">
           <span className="text-center self-center items-center justify-center mx-auto">
-            종료 시간 : - - : - -
+            종료 시간 : {countdown}
           </span>
         </div>
 
@@ -743,32 +793,38 @@ export default function StreamingChatView() {
                 className="flex-1 min-h-[62vh] max-h-[62vh] overflow-auto bg-white pb-1">
                   {chattingBidData.map((chattingBidData, i) => (
                     <BidItem
-                    chatData={chattingBidData}
-                    userIdx={userIdx}
-                    userInfoData={userInfoData[chattingBidData.userIdx]}
-                    key={i}
-                  />
+                      chatData={chattingBidData}
+                      userIdx={userIdx}
+                      userInfoData={userInfoData[chattingBidData.userIdx]}
+                      key={i}
+                    />
                   ))}
                 </div>
               </div>
               <div className="flex flex-col min-h-[10vh] w-full max-h-[10vh] text-sm bg-gray-100 pb-1 justify-center">
-                  <div className="flex flex-row w-full my-[5px]">
-                    <div className="flex flex-row pl-[3px] basis-1/2">
-                      <p className="text-[14px]">입찰 시작가 : </p>
-                      <p className="text-[14px] px-1 text-main-color font-semibold">{bidStartPrice}</p>
-                      <p className="text-[14px]"> 원</p>
-                    </div>
-                    <div className="flex flex-row pl-[3px] basis-1/2">
-                      <p className="text-[14px]">입찰 단위 : </p>
-                      <p className="text-[14px] px-1 text-main-color font-semibold">{bidUnit}</p>
-                      <p className="text-[14px]"> 원</p>
-                    </div>
+                <div className="flex flex-row w-full my-[5px]">
+                  <div className="flex flex-row pl-[3px] basis-1/2">
+                    <p className="text-[14px]">입찰 시작가 : </p>
+                    <p className="text-[14px] px-1 text-main-color font-semibold">
+                      {bidStartPrice}
+                    </p>
+                    <p className="text-[14px]"> 원</p>
                   </div>
-                  <div className="flex flex-row pl-[3px] pt-[5px] basis-1/2">
-                    <p className="text-[17px]">현재 입찰 : </p>
-                    <p className="text-[17px] px-1 text-main-color font-semibold">{nowBid}</p>
-                    <p className="text-[17px]"> 원</p>
+                  <div className="flex flex-row pl-[3px] basis-1/2">
+                    <p className="text-[14px]">입찰 단위 : </p>
+                    <p className="text-[14px] px-1 text-main-color font-semibold">
+                      {bidUnit}
+                    </p>
+                    <p className="text-[14px]"> 원</p>
                   </div>
+                </div>
+                <div className="flex flex-row pl-[3px] pt-[5px] basis-1/2">
+                  <p className="text-[17px]">현재 입찰 : </p>
+                  <p className="text-[17px] px-1 text-main-color font-semibold">
+                    {nowBid}
+                  </p>
+                  <p className="text-[17px]"> 원</p>
+                </div>
               </div>
               <div className="flex border-[#A7A7A7] text-sm w-full pl-[2px]">
                 <input

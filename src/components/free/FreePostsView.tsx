@@ -34,6 +34,7 @@ export default function FreePostsView() {
 
   const [commentList, setCommentList] = useState<Comment[]>();
 
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   function BackButton() {
@@ -61,8 +62,16 @@ export default function FreePostsView() {
     },
   });
 
+  const profileMenu = () => {
+    setProfileMenuOpen((prevProfileMenuOpen) => !prevProfileMenuOpen);
+  };
+
   const toggleMenu = () => {
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
+  };
+
+  const handleChat = () => {
+    //1:1채팅 코드
   };
 
   const handleEdit = () => {
@@ -291,12 +300,30 @@ export default function FreePostsView() {
           <div className="max-w-screen-sm mx-auto">
             <PC>
               <h2 className="text-4xl font-bold pt-10">{post.title}</h2>
-              <div className="flex items-center my-2">
+              <div className="flex items-center my-2 relative">
                 <img
-                  className="w-10 h-10 rounded-full border-2"
+                  className="w-10 h-10 rounded-full border-2 cursor-pointer"
                   src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
                   alt=""
+                  onClick={profileMenu}
                 />
+                {!isCurrentUserComment && (
+                  <div className="flex items-center justify-center absolute top-full mt-1 bg-white border border-gray-200 shadow-lg rounded z-50">
+                    {profileMenuOpen && (
+                      <ul>
+                        <li
+                          onClick={() => {
+                            handleChat();
+                            profileMenu();
+                          }}
+                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                        >
+                          1:1채팅하기
+                        </li>
+                      </ul>
+                    )}
+                  </div>
+                )}
                 <p className="text-xl font-bold ml-1">
                   {post.UserInfo.nickname}
                 </p>
@@ -382,12 +409,30 @@ export default function FreePostsView() {
               <BackButton />
               <div className="mx-2">
                 <h2 className="text-2xl font-bold pt-5">{post.title}</h2>
-                <div className="flex items-center my-2">
+                <div className="flex items-center my-2 relative">
                   <img
-                    className="w-7 h-7 rounded-full border-2"
+                    className="w-10 h-10 rounded-full border-2 cursor-pointer"
                     src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
                     alt=""
+                    onClick={profileMenu}
                   />
+                  {!isCurrentUserComment && (
+                    <div className="flex items-center justify-center absolute top-full mt-1 bg-white border border-gray-200 shadow-lg rounded z-50">
+                      {profileMenuOpen && (
+                        <ul>
+                          <li
+                            onClick={() => {
+                              handleChat();
+                              profileMenu();
+                            }}
+                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                          >
+                            1:1채팅하기
+                          </li>
+                        </ul>
+                      )}
+                    </div>
+                  )}
                   <p className="text-lg font-bold">{post.UserInfo.nickname}</p>
                   <p className="ml-2 text-gray-500 text-sm">{postWriteDate}</p>
                   <p className="ml-1 text-gray-500 text-sm">{postWriteTime}</p>
