@@ -18,18 +18,6 @@ import CommentForm from "../comment/CommentForm";
 import { adoptionDelete } from "@/api/adoption/adoption";
 import { useRouter } from "next/navigation";
 
-declare global {
-  interface Window {
-    Android: {
-      getIdx: () => string;
-      getAccessToken: () => string;
-      getRefreshToken: () => string;
-      getNickname: () => string;
-      getProfilePath: () => string;
-    };
-  }
-}
-
 export default function AdoptionPostsView() {
   const router = useRouter();
   const params = useParams();
@@ -56,29 +44,46 @@ export default function AdoptionPostsView() {
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
 
-  useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      typeof window.Android !== "undefined"
-    ) {
-      // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
-      const idx = parseInt(window.Android.getIdx() || "", 10) || 0;
-      const accessToken = window.Android.getAccessToken();
-      const refreshToken = window.Android.getRefreshToken();
-      const profilePath = window.Android.getProfilePath();
-      const nickname = window.Android.getProfilePath();
+  function getCookie(name: string) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) {
+      var cookieValue = parts.pop()?.split(";").shift();
+      try {
+        var cookieObject = JSON.parse(cookieValue || "");
+        return cookieObject;
+      } catch (error) {
+        console.error("Error parsing JSON from cookie:", error);
+        return null;
+      }
+    }
+  }
 
+  useEffect(() => {
+    // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
+    var myAppCookie = getCookie("myAppCookie");
+
+    if (myAppCookie !== undefined) {
+      console.log(myAppCookie);
+      var accessToken = myAppCookie.accessToken;
+      var idx = parseInt(myAppCookie.idx || "", 10) || 0;
+      var refreshToken = myAppCookie.refreshToken;
+      var nickname = myAppCookie.nickname;
+      var profilePath = myAppCookie.profilePath;
+
+      console.log("accessToken: " + accessToken);
+      console.log("idx: " + idx);
+      console.log("refreshToken: " + refreshToken);
+      console.log("nickname: " + nickname);
+      console.log("profilePath: " + profilePath);
       setUser({
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-        idx: idx,
-        profilePath: profilePath,
-        nickname: nickname,
+        accessToken: accessToken || "",
+        refreshToken: refreshToken || "",
+        idx: idx || 0,
+        profilePath: profilePath || "",
+        nickname: nickname || "",
       });
       setIsLoggedIn(true);
-
-      // 이곳에서 idx와 accessToken을 사용하거나 다른 동작을 수행할 수 있습니다.
-      console.log(nickname);
     }
   }, []);
 

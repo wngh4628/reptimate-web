@@ -8,18 +8,6 @@ import { Mobile, PC } from "../ResponsiveLayout";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
 
-declare global {
-  interface Window {
-    Android: {
-      getIdx: () => string;
-      getAccessToken: () => string;
-      getRefreshToken: () => string;
-      getNickname: () => string;
-      getProfilePath: () => string;
-    };
-  }
-}
-
 export default function AdoptionPosts() {
   const [data, setData] = useState<getResponse | null>(null);
   const [page, setPage] = useState(1);
@@ -47,34 +35,30 @@ export default function AdoptionPosts() {
   }
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      typeof window.Android !== "undefined"
-    ) {
-      // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
-      var myAppCookie = getCookie("myAppCookie");
+    // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
+    var myAppCookie = getCookie("myAppCookie");
 
-      if (myAppCookie !== null) {
-        var accessToken = myAppCookie.accessToken;
-        var idx = parseInt(myAppCookie.idx || "", 10) || 0;
-        var refreshToken = myAppCookie.refreshToken;
-        var nickname = myAppCookie.nickname;
-        var profilePath = myAppCookie.profilePath;
+    if (myAppCookie !== undefined) {
+      console.log(myAppCookie);
+      var accessToken = myAppCookie.accessToken;
+      var idx = parseInt(myAppCookie.idx || "", 10) || 0;
+      var refreshToken = myAppCookie.refreshToken;
+      var nickname = myAppCookie.nickname;
+      var profilePath = myAppCookie.profilePath;
 
-        console.log("accessToken: " + accessToken);
-        console.log("idx: " + idx);
-        console.log("refreshToken: " + refreshToken);
-        console.log("nickname: " + nickname);
-        console.log("profilePath: " + profilePath);
-        setUser({
-          accessToken: accessToken || "",
-          refreshToken: refreshToken || "",
-          idx: idx || 0,
-          profilePath: profilePath || "",
-          nickname: nickname || "",
-        });
-        setIsLoggedIn(true);
-      }
+      console.log("accessToken: " + accessToken);
+      console.log("idx: " + idx);
+      console.log("refreshToken: " + refreshToken);
+      console.log("nickname: " + nickname);
+      console.log("profilePath: " + profilePath);
+      setUser({
+        accessToken: accessToken || "",
+        refreshToken: refreshToken || "",
+        idx: idx || 0,
+        profilePath: profilePath || "",
+        nickname: nickname || "",
+      });
+      setIsLoggedIn(true);
     }
   }, []);
 
