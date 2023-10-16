@@ -88,14 +88,12 @@ export default function PersonalChat() {
     console.log(chatRoomData)
     setchatRoomData([])
     // getChatRoomList(accessToken);
+    getChatRoomList(accessToken);
   }, [chatRoomVisisible]);
 
   // chatRoomData가 업데이트될 때 호출되는 useEffect
   useEffect(() => {
-    if (chatRoomData.length === 0) {
-      // chatRoomData가 비어 있을 때만 getChatRoomList를 호출
-      getChatRoomList(accessToken);
-    }
+    
   }, [chatRoomData]);
 
   // 채팅방 리스트 불러오기
@@ -110,7 +108,6 @@ export default function PersonalChat() {
     try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_CHAT_URL}/chat/list`, config);
         console.log(response.data)
-        
         setData((prevData) =>
         ({
           result: {
@@ -161,14 +158,12 @@ export default function PersonalChat() {
                         }
                     });
                 } else {
-                    router.replace("/");
-                    alert("로그인이 필요한 기능입니다.");
                 }
             }
         }
     }
-    setLoading(false);
-};
+  setLoading(false);
+  };
 
 useEffect(() => {
   const observer = new IntersectionObserver((entries) => {
