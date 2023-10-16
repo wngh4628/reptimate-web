@@ -46,8 +46,8 @@ export default function Header() {
     window.location.reload();
   };
   function chattingClick() {
-    console.log("채팅 목록 켜기");
-    setIsChatVisisible(true);
+      console.log("채팅 목록 켜기");
+      setIsChatVisisible(true);
   }
   function chattingClose() {
     setIsChatVisisible(false);
@@ -147,7 +147,7 @@ export default function Header() {
               />
             </button>
           </div>
-          {/* <PersonalChat></PersonalChat> */}
+          <PersonalChat></PersonalChat>
         </div>
       </PC>
       {/* 모바일 화면(반응형) */}
