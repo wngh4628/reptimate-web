@@ -7,7 +7,6 @@ import PostCard from "../PostCard";
 import { Mobile, PC } from "../ResponsiveLayout";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
-import { useLocation } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -32,24 +31,41 @@ export default function AdoptionPosts() {
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
 
+  function readCookie(name: string) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(";");
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) === " ") c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  }
+
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
       typeof window.Android !== "undefined"
     ) {
       // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
-      const idx = parseInt(window.Android.getIdx() || "", 10) || 0;
-      const accessToken = window.Android.getAccessToken();
-      const refreshToken = window.Android.getRefreshToken();
-      const profilePath = window.Android.getProfilePath();
-      const nickname = window.Android.getNickname();
+      var accessToken = readCookie("accessToken");
+      var idx = parseInt(readCookie("idx") || "", 10) || 0;
+      var refreshToken = readCookie("refreshToken");
+      var nickname = readCookie("nickname");
+      var profilePath = readCookie("profilePath");
+
+      console.log("AccessToken: " + accessToken);
+      console.log("Idx: " + idx);
+      console.log("RefreshToken: " + refreshToken);
+      console.log("Nickname: " + nickname);
+      console.log("ProfilePath: " + profilePath);
 
       setUser({
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-        idx: idx,
-        profilePath: profilePath,
-        nickname: nickname,
+        accessToken: accessToken || "",
+        refreshToken: refreshToken || "",
+        idx: idx || 0,
+        profilePath: profilePath || "",
+        nickname: nickname || "",
       });
       setIsLoggedIn(true);
 
