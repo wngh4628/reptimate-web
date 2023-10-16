@@ -37,7 +37,9 @@ export default function ActionPage({ params: { slug } }: Props) {
   // const [menu, setMenu] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
   const [actionTitle, setActionTitle] = useState("");
+  const [profilePath, setProfilePath] = useState("");
   const [nickname, setNickname] = useState("");
+  const [description, setDescription] = useState("");
   const [sideView, setSideView] = useState("chat");
 
   const [postsData, setPostsData] = useState<GetAuctionPostsView | null>(null);
@@ -112,7 +114,9 @@ export default function ActionPage({ params: { slug } }: Props) {
 
     ///data = message;
     setActionTitle(message.title);
+    setDescription(message.description);
     setNickname(message.UserInfo.nickname);
+    setProfilePath(message.UserInfo.profilePath);
 
     if (message.liveStream.state == 1) {
       setVideoUrl(
@@ -139,9 +143,13 @@ export default function ActionPage({ params: { slug } }: Props) {
           <div className="flex h-[8rem] flex-col py-4 px-6 text-black border-b-[1px] border-gray border-r-[1px] border-gray">
             <span className="basis-1/2 text-left text-lg">{actionTitle}</span>
             <div className="flex text-left basis-1/2">
-              <div className="flex basis-1/2">
-                <div className="rounded-full bg-purple w-14 h-14"></div>
-                <div className="p-[1rem]">{nickname}</div>
+              <div className="flex items-center my-2 relative basis-1/2">
+                <img
+                  className="w-10 h-10 rounded-full border-2 cursor-pointer mr-1"
+                  src={profilePath || "/img/reptimate_logo.png"}
+                  alt=""
+                />
+                <p className="text-lg font-bold">{nickname}</p>
               </div>
 
               <div className="flex basis-1/2 flex-row-reverse text-center">
@@ -163,7 +171,7 @@ export default function ActionPage({ params: { slug } }: Props) {
 
           <div className="h-[20rem] p-4 text-start border-r-[1px] border-gray">
             <div className="h-[18rem] rounded-lg bg-silver p-4">
-              경매 간단 정보
+              {description}
             </div>
           </div>
         </div>

@@ -147,9 +147,9 @@ export default function AdoptionPosts() {
           <h2 className="text-2xl font-bold p-10">분양글</h2>
         </PC>
         <Mobile>
-          <h2 className="text-xl font-bold pl-12 pt-4 pb-4">분양글</h2>
+          <h2 className="font-bold pl-3 pt-2 pb-2">분양글</h2>
         </Mobile>
-        <ul className="pl-10 pr-10 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
             <li key={post.idx}>
               <PostCard post={post} />
