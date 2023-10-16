@@ -46,8 +46,8 @@ export default function Header() {
     window.location.reload();
   };
   function chattingClick() {
-    console.log("채팅 목록 켜기");
-    setIsChatVisisible(true);
+      console.log("채팅 목록 켜기");
+      setIsChatVisisible(true);
   }
   function chattingClose() {
     setIsChatVisisible(false);
@@ -147,13 +147,18 @@ export default function Header() {
               />
             </button>
           </div>
-          {/* <PersonalChat></PersonalChat> */}
+          <PersonalChat></PersonalChat>
         </div>
       </PC>
       {/* 모바일 화면(반응형) */}
       <Mobile>
-        <div className="flex justify-end pt-2 pb-5 pr-5">
-          <nav className="flex gap-4 font-bold">
+        <div className="flex justify-start pt-2 pb-2 pl-5 pr-5">
+          <Link href="/">
+            <div className="flex w-32 p1-0">
+              <img src="/img/main_logo.png" />
+            </div>
+          </Link>
+          <nav className="flex gap-4 font-bold ml-auto">
             {/* <Link href="">
               <div className="flex w-5 my-0.5" onClick={chattingClick}>
                 <img src="/img/chat.png" />

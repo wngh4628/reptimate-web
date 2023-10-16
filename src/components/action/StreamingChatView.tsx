@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { io, Socket } from "socket.io-client";
 import { GetAuctionPostsView, GetAuctionPostsBid } from "@/service/my/auction";
 
@@ -27,6 +27,8 @@ interface UserInfoData {
 }
 export default function StreamingChatView() {
   const router = useRouter();
+  const params = useParams();
+  const idx = params?.idx;
   const pathName = usePathname() || "";
 
   const [postsData, setPostsData] = useState<GetAuctionPostsView>();
@@ -70,38 +72,6 @@ export default function StreamingChatView() {
   const [countdown, setCountdown] = useState("");
 
   useEffect(() => {
-    const endTime1 = new Date(endTime).getTime();
-
-    const updateCountdown = () => {
-      const currentTime = new Date().getTime();
-      const timeRemaining = endTime1 - currentTime;
-
-      if (timeRemaining <= 0) {
-        clearInterval(countdownInterval);
-        setCountdown("Time's up!");
-      } else {
-        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        const minutes = Math.floor(
-          (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
-        );
-        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-        setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
-      }
-    };
-
-    updateCountdown(); // Initial call to set the countdown
-    const countdownInterval = setInterval(updateCountdown, 1000);
-
-    return () => {
-      clearInterval(countdownInterval);
-    };
-  }, []);
-
-  useEffect(() => {
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
@@ -129,9 +99,10 @@ export default function StreamingChatView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `https://api.reptimate.store/board/${roomName}?userIdx=1`
+        `https://api.reptimate.store/board/${idx}?userIdx=1`
       );
       // Assuming your response data has a 'result' property
+      console.log(response);
       console.log(response.data);
       setPostsData(response.data);
 
@@ -145,6 +116,41 @@ export default function StreamingChatView() {
         formatNumberWithCommas(response.data.result.boardAuction.startPrice)
       );
       setEndTime(response.data.result.boardAuction.endTime);
+      console.log(response.data.result.boardAuction.endTime);
+
+      const endTime1 = new Date(
+        response.data.result.boardAuction.endTime
+      ).getTime();
+
+      const updateCountdown = () => {
+        const currentTime = new Date().getTime();
+        const timeRemaining = endTime1 - currentTime;
+
+        if (timeRemaining < 0) {
+          setCountdown("경매가 종료되었습니다!");
+          clearInterval(countdownInterval);
+        } else {
+          const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+          const hours = Math.floor(
+            (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor(
+            (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
+          );
+          const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+          setCountdown(
+            "종료시간 : " + `${hours}시간 ${minutes}분 ${seconds}초`
+          );
+        }
+      };
+
+      updateCountdown(); // Initial call to set the countdown
+      const countdownInterval = setInterval(updateCountdown, 1000);
+
+      return () => {
+        clearInterval(countdownInterval);
+      };
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -652,7 +658,7 @@ export default function StreamingChatView() {
       <div className="flex-col w-full right-0 h-[87%] flex bg-white">
         <div className="flex py-[0.5rem] text-sm bg-gray-100 w-full">
           <span className="text-center self-center items-center justify-center mx-auto">
-            종료 시간 : {countdown}
+            {countdown}
           </span>
         </div>
 
