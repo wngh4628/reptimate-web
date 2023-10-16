@@ -61,11 +61,11 @@ export default function AdoptionPosts() {
         var nickname = myAppCookie.nickname;
         var profilePath = myAppCookie.profilePath;
 
-        console.log("AccessToken: " + accessToken);
-        console.log("Idx: " + idx);
-        console.log("RefreshToken: " + refreshToken);
-        console.log("Nickname: " + nickname);
-        console.log("ProfilePath: " + profilePath);
+        console.log("accessToken: " + accessToken);
+        console.log("idx: " + idx);
+        console.log("refreshToken: " + refreshToken);
+        console.log("nickname: " + nickname);
+        console.log("profilePath: " + profilePath);
         setUser({
           accessToken: accessToken || "",
           refreshToken: refreshToken || "",
@@ -74,9 +74,6 @@ export default function AdoptionPosts() {
           nickname: nickname || "",
         });
         setIsLoggedIn(true);
-
-        // 이곳에서 idx와 accessToken을 사용하거나 다른 동작을 수행할 수 있습니다.
-        console.log(nickname);
       }
     }
   }, []);
