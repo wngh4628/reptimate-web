@@ -33,9 +33,17 @@ export default function AdoptionPosts() {
 
   function getCookie(name: string) {
     var value = "; " + document.cookie;
-    console.log(value);
     var parts = value.split("; " + name + "=");
-    if (parts.length == 2) return parts.pop()?.split(";").shift();
+    if (parts.length == 2) {
+      var cookieValue = parts.pop()?.split(";").shift();
+      try {
+        var cookieObject = JSON.parse(cookieValue || "");
+        return cookieObject;
+      } catch (error) {
+        console.error("Error parsing JSON from cookie:", error);
+        return null;
+      }
+    }
   }
 
   useEffect(() => {
@@ -44,38 +52,32 @@ export default function AdoptionPosts() {
       typeof window.Android !== "undefined"
     ) {
       // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
-      var accessToken = getCookie("accessToken");
-      var idx = parseInt(getCookie("idx") || "", 10) || 0;
-      var refreshToken = getCookie("refreshToken");
-      var nickname = getCookie("nickname");
-      var profilePath = getCookie("profilePath");
+      var myAppCookie = getCookie("myAppCookie");
 
-      if (accessToken !== undefined) {
+      if (myAppCookie !== null) {
+        var accessToken = myAppCookie.accessToken;
+        var idx = parseInt(myAppCookie.idx || "", 10) || 0;
+        var refreshToken = myAppCookie.refreshToken;
+        var nickname = myAppCookie.nickname;
+        var profilePath = myAppCookie.profilePath;
+
         console.log("AccessToken: " + accessToken);
-      }
-      if (idx !== undefined) {
         console.log("Idx: " + idx);
-      }
-      if (refreshToken !== undefined) {
         console.log("RefreshToken: " + refreshToken);
-      }
-      if (nickname !== undefined) {
         console.log("Nickname: " + nickname);
-      }
-      if (profilePath !== undefined) {
         console.log("ProfilePath: " + profilePath);
-      }
-      setUser({
-        accessToken: accessToken || "",
-        refreshToken: refreshToken || "",
-        idx: idx || 0,
-        profilePath: profilePath || "",
-        nickname: nickname || "",
-      });
-      setIsLoggedIn(true);
+        setUser({
+          accessToken: accessToken || "",
+          refreshToken: refreshToken || "",
+          idx: idx || 0,
+          profilePath: profilePath || "",
+          nickname: nickname || "",
+        });
+        setIsLoggedIn(true);
 
-      // 이곳에서 idx와 accessToken을 사용하거나 다른 동작을 수행할 수 있습니다.
-      console.log(nickname);
+        // 이곳에서 idx와 accessToken을 사용하거나 다른 동작을 수행할 수 있습니다.
+        console.log(nickname);
+      }
     }
   }, []);
 
