@@ -23,7 +23,6 @@ const BidItem = forwardRef((props :{
 			{props.chatData.userIdx !=  props.userIdx ? 
 				<div id="outer" style={{display:"flex",maxWidth:"280px",marginTop:"12px",paddingLeft:"10px"}}>
 					<div>
-						<p className='text-[12px] ml-1'>{props.userInfoData.nickname}</p>
 						<div className=' px-[10px] py-[5px]' style={{borderRadius:"20px",maxWidth:"220px", backgroundColor:"#e4e6eb",marginLeft:"5px"}}> 
 							<div style={{fontSize:"15px",wordBreak:"break-all"}}>{props.chatData.message}</div>
 						</div>

@@ -12,6 +12,7 @@ import BanUserList from "../chat/BanUserList";
 import {
   IMessage,
   connectMessage,
+  bidMessage,
   Ban_Message,
   userInfo,
 } from "@/service/chat/chat";
@@ -41,11 +42,12 @@ export default function StreamingChatView() {
   let liveRoomIdx = useRef<string>();
 
   const [bidMsg, setBidMsg] = useState("");
-  const [chattingBidData, setchattingBidData] = useState<IMessage[]>([]);
+  const [bidRoomEnter, setbidRoomEnter] = useState<boolean>(false);
+  const [chattingBidData, setchattingBidData] = useState<bidMessage[]>([]);
   let auctionRoomIdx = useRef<string>();
   const socketBidRef = useRef<Socket | null>(null);
   const [biddingState, setbiddingState] = useState<boolean>(false);
-  const [userInfoBidData, setUserInfoBidData] = useState<userInfo[]>([]); //유저 정보 가지고 있는 리스트
+  const [userInfoBidData, setUserInfoBidData] = useState<UserInfoData[]>([]); //유저 정보 가지고 있는 리스트
   const [nowBid, setNowBid] = useState("0"); // 현재 최대 입찰가
   const [bidUnit, setBidUnit] = useState(""); // 입찰 단위
   const [bidStartPrice, setBidStartPrice] = useState(""); // 입찰 시작가
@@ -68,6 +70,9 @@ export default function StreamingChatView() {
 
   const [sideView, setSideView] = useState("chat");
 
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const bidContainerRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
@@ -85,7 +90,7 @@ export default function StreamingChatView() {
         setNickname(userData.USER_DATA.nickname);
         setProfilePath(userData.USER_DATA.profilePath);
 
-        getData()
+        
       } else {
         router.replace("/");
         alert("로그인이 필요한 기능입니다.");
@@ -94,26 +99,40 @@ export default function StreamingChatView() {
     
   }, []);
 
-  const getData = useCallback(async () => {
+  useEffect(() => {
+    const chatContainer = bidContainerRef.current;
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+  }, [chattingBidData]);
+
+  // 경매글 정보 불러오기
+  const getData = async () => {
     try {
       const response = await axios.get(
         `https://api.reptimate.store/board/${roomName}?userIdx=1`
       );
-      // Assuming your response data has a 'result' property
+      console.log("getData  :  " + response.data)
       console.log(response.data)
       setPostsData(response.data);
 
       setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice))
       setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit))
       setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice))
+
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+  };
+
+  useEffect(() => {
+    
   }, []);
 
   useEffect(() => {
     joinRoom();
     joinBidRoom();
+    getData();
   }, [profilePath]);
 
   //입찰가 입력란
@@ -135,7 +154,7 @@ export default function StreamingChatView() {
     const socket = io('https://socket.reptimate.store/LiveChat', {
       path: "/socket.io",
     });
-    // log socket connection
+    // log socket connectio
     socketRef.current = socket;
     socket.on("connect", () => {
       const message: connectMessage = {
@@ -156,8 +175,13 @@ export default function StreamingChatView() {
     });
     // 메시지 리스너
     socket.on("live_message", (message: IMessage) => {
+      console.log("============실시간 채팅 메시지============");
       console.log(message);
+      console.log("========================");
       setchattingData((chattingData) => [...chattingData, message]);
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      }
     });
     //강퇴 처리
     socket.on("ban-user", (message: IMessage) => {
@@ -296,11 +320,13 @@ export default function StreamingChatView() {
     liveRoomIdx.current = roomName;
     auctionRoomIdx.current = roomName;
   }, [roomName]);
+
   useEffect(() => {
     if (userInfoBidData[userIdx]) {
       setbiddingState(true);
     }
   }, [userInfoBidData]);
+
   useEffect(() => {
     console.log("banList", banList);
   }, [banList]);
@@ -476,24 +502,32 @@ export default function StreamingChatView() {
         message: bidMsg.trim(),
         room: roomName,
       };
-
       if (socketBidRef.current) {
-        console.log("==============================")
-        console.log("=============경매방 입장==============")
-        console.log("==============================")
+        console.log("========================");
+        console.log("경매 입찰 채팅 입장");
+        console.log("========================");
         socketBidRef.current.emit("join-room", message);
       }
-      setroomEnter(true);
+      setbidRoomEnter(true);
 
-      fetchBidData();
+      fetchData();
     });
     // 메시지 리스너
-    socketBid.on("Auction_message", (message: IMessage) => {
+    socketBid.on("Auction_message", (message: bidMessage) => {
       setchattingBidData((chattingData) => [...chattingData, message]);
-      console.log("bid message", message);
+      console.log("======경매 입찰 수신=======");
+      console.log("bid message  :  ", message);
+      console.log("========================");
+      if (bidContainerRef.current) {
+        bidContainerRef.current.scrollTop = bidContainerRef.current.scrollHeight;
+      }
+      setNowBid(message.message);
     });
     socketBid.on("Auction_End", (message: string) => {
       console.log("Auction_End message", message);
+    });
+    socketBid.on("error", (message: string) => {
+      console.log("error message", message);
     });
     //경매 입찰과 동시에 입찰자 명단 정보를 추가하는 리스너
     socketBid.on("auction_participate", (message: userInfo) => {
@@ -508,59 +542,57 @@ export default function StreamingChatView() {
     });
     // socket disconnect on component unmount if exists
     return () => {
-      if (socketBidRef.current) {
-        socketBidRef.current.disconnect();
-        socketBidRef.current = null;
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
       }
     };
   };
   //서버에 채팅 내역을 불러오는 요청 - 20개씩 불러온다.
-  const fetchBidData = async () => {
+  const fetchData = async () => {
     try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_CHAT_URL}/auctionChat/${auctionRoomIdx.current}?page=1&size=20&order=DESC`
-      );
+      const response = await axios.get(`https://socket.reptimate.store/auctionChat/${auctionRoomIdx.current}?page=1&size=20&order=DESC`);
       const userInfoArray = response.data.result.userInfo;
       const resultData = response.data.result.list;
-      const userInfoData = userInfoArray.map((user: string) => {
-        const { userIdx, profilePath, nickname } = JSON.parse(user);
-        return { [userIdx]: { userIdx, profilePath, nickname } };
-      });
-      const userDataObject = Object.assign({}, ...userInfoData);
-      setUserInfoBidData(userDataObject);
-      const messages: IMessage[] = resultData
-        .map((item: any) => ({
-          userIdx: item.userIdx,
-          socketId: item.socketId,
-          message: item.message,
-          room: item.room,
-        }))
-        .reverse();
+
+      // const userInfoData = userInfoArray.map((user: string) => {
+      //   const { userIdx, profilePath, nickname } = JSON.parse(user);
+      //   return { [userIdx]: { userIdx, profilePath, nickname } };
+      // });
+      // const userDataObject = Object.assign({}, ...userInfoData);
+      // setUserInfoBidData(userDataObject);
+
+      const messages: bidMessage[] = resultData.map((item: any) => ({
+        userIdx: item.userIdx,
+        socketId: item.socketId,
+        message: item.message,
+        room: item.room,
+      })).reverse();
       setchattingBidData(messages);
+
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
   const fetchParticipate = async () => {
     try {
       // 참여자 명단 추가 -> 나중에 jwt토큰 완성되면 userIdx 빼주시면 됩니다. userId는 jwt토큰으로 조회 가능합니다.
-      await axios.post(`${process.env.NEXT_PUBLIC_CHAT_URL}/AuctionChat/bid`, {
+      await axios.post(`${process.env.NEXT_PUBLIC_CHAT_URL}/auctionChat/bid`, {
         auctionIdx: roomName,
         userIdx: userIdx,
       });
       // 알람 받기 On 요청 -> 나중에 jwt토큰 완성되면 userIdx 빼주시면 됩니다. userId는 jwt토큰으로 조회 가능합니다.
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_CHAT_URL}/AuctionChat/${roomName}`,
-        {
-          action: "on",
-          userIdx: userIdx,
-        }
-      );
+      // await axios.post(
+      //   `${process.env.NEXT_PUBLIC_CHAT_URL}/auctionChat/${roomName}`,
+      //   {
+      //     action: "on",
+      //     userIdx: userIdx,
+      //   }
+      // );
       //메시지 발송
       if (socketBidRef.current) {
         const message = {
           userIdx: userIdx,
-          profilePath: profilePath,
           nickname: nickname,
           room: roomName,
         };
@@ -572,26 +604,31 @@ export default function StreamingChatView() {
       console.error("Error fetching data:", error);
     }
   };
-  //메시지 발송하는 함수
-  const sendBidMsg = async () => {
-    if (bidMsg.trim() !== "") {
-      if (!biddingState) {
-        await fetchParticipate();
+    //메시지 발송하는 함수
+    const sendBidMsg = async () => {
+      if (bidMsg.trim() !== "") {
+        if (!biddingState) {
+          await fetchParticipate();
+        }
+        if (socketBidRef.current) {
+          const socketId = socketBidRef.current.id;
+          const message: IMessage = {
+            userIdx: userIdx,
+            socketId: socketId,
+            message: bidMsg.trim(),
+            room: roomName,
+          };
+          console.log("============경매 입찰 발송============");
+          console.log(message);
+          console.log("========================");
+          // socketBidRef.current.emit("Auction_message", message);
+          socketBidRef.current.emit("Auction_message", message, (response: any) => {
+            console.log("경매 메시지 발송됨. 서버 응답:", response);
+          });
+          setBidMsg("");
+        }
       }
-      if (socketBidRef.current) {
-        const socketId = socketBidRef.current.id;
-        const message: IMessage = {
-          userIdx: userIdx,
-          socketId: socketId,
-          message: bidMsg.trim(),
-          room: roomName,
-        };
-        console.log(message);
-        socketBidRef.current.emit("Auction_message", message);
-        setBidMsg("");
-      }
-    }
-  };
+    };
 
 
   function viewChat() {
@@ -649,7 +686,8 @@ export default function StreamingChatView() {
           <div className="min-h-screen w-full">
             <div className="flex items-start flex-col">
               <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px]">
-                <div className="flex-1 min-h-[72vh] max-h-[72vh] overflow-auto bg-white pb-1">
+                <div id="liveChatBox"
+                className="flex-1 min-h-[72vh] max-h-[72vh] overflow-auto bg-white pb-1">
                   {chattingData.map((chatData, i) => (
                     <ChatItem
                       chatData={chatData}
@@ -675,7 +713,6 @@ export default function StreamingChatView() {
                   채팅
                 </button>
               </div>
-
               <div className="flex flex-col flex-1 space-y-2"></div>
             </div>
           </div>
@@ -703,7 +740,8 @@ export default function StreamingChatView() {
           <div className="min-h-screen w-full">
             <div className="flex items-start flex-col">
               <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px]">
-                <div className="flex-1 min-h-[62vh] max-h-[62vh] overflow-auto bg-white pb-1">
+                <div ref={bidContainerRef}
+                className="flex-1 min-h-[62vh] max-h-[62vh] overflow-auto bg-white pb-1">
                   {chattingBidData.map((chattingBidData, i) => (
                     <BidItem
                     chatData={chattingBidData}
