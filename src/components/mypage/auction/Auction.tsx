@@ -209,7 +209,8 @@ export default function AuctionList() {
     coverImage: item.images[0]?.coverImgPath || "",
     nickname: item.UserInfo.nickname,
     profilePath: item.UserInfo.profilePath,
-    currentPrice: item.boardAuction.currentPrice || 0,
+    currentPrice: item.boardAuction?.currentPrice || 0,
+
     endTime: item.boardAuction.endTime,
     gender: item.boardAuction.gender,
     size: item.boardAuction.size,

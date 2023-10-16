@@ -42,6 +42,14 @@ export interface getResponseChatList {
     profilePath: string;
     nickname: string;
   }
+  export interface bidMessage {
+    userIdx: number;
+    score: number;
+    message: string;
+    roomIdx: string;
+    type: string;
+    action: string;
+  }
   export interface Ban_Message {
     userIdx: number;
     banUserIdx: number;
