@@ -8,13 +8,18 @@ import AuctionWrite from "@/components/auction/AuctionWrite";
 import { TouchBackend } from "react-dnd-touch-backend";
 
 export default function AuctionWritePage() {
-  const mediaQuery = window.matchMedia("(max-width: 768px)");
-  const isMobile = mediaQuery.matches;
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const isMobileDevice = mediaQuery.matches;
+    setIsMobile(isMobileDevice);
+  }, []);
+
   const DndProviderComponent = isMobile ? TouchBackend : HTML5Backend;
 
   return (
     <div>
-      <CommunityMenu />
       <DndProvider backend={DndProviderComponent}>
         <AuctionWrite />
       </DndProvider>
