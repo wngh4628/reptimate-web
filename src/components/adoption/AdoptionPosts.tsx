@@ -7,19 +7,6 @@ import PostCard from "../PostCard";
 import { Mobile, PC } from "../ResponsiveLayout";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
-import { useLocation } from "react-router-dom";
-
-declare global {
-  interface Window {
-    Android: {
-      getIdx: () => string;
-      getAccessToken: () => string;
-      getRefreshToken: () => string;
-      getNickname: () => string;
-      getProfilePath: () => string;
-    };
-  }
-}
 
 export default function AdoptionPosts() {
   const [data, setData] = useState<getResponse | null>(null);
@@ -32,29 +19,46 @@ export default function AdoptionPosts() {
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
 
-  useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      typeof window.Android !== "undefined"
-    ) {
-      // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
-      const idx = parseInt(window.Android.getIdx() || "", 10) || 0;
-      const accessToken = window.Android.getAccessToken();
-      const refreshToken = window.Android.getRefreshToken();
-      const profilePath = window.Android.getProfilePath();
-      const nickname = window.Android.getNickname();
+  function getCookie(name: string) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) {
+      var cookieValue = parts.pop()?.split(";").shift();
+      try {
+        var cookieObject = JSON.parse(cookieValue || "");
+        return cookieObject;
+      } catch (error) {
+        console.error("Error parsing JSON from cookie:", error);
+        return null;
+      }
+    }
+  }
 
+  useEffect(() => {
+    // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
+    var myAppCookie = getCookie("myAppCookie");
+
+    if (myAppCookie !== undefined) {
+      console.log(myAppCookie);
+      var accessToken = myAppCookie.accessToken;
+      var idx = parseInt(myAppCookie.idx || "", 10) || 0;
+      var refreshToken = myAppCookie.refreshToken;
+      var nickname = myAppCookie.nickname;
+      var profilePath = myAppCookie.profilePath;
+
+      console.log("accessToken: " + accessToken);
+      console.log("idx: " + idx);
+      console.log("refreshToken: " + refreshToken);
+      console.log("nickname: " + nickname);
+      console.log("profilePath: " + profilePath);
       setUser({
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-        idx: idx,
-        profilePath: profilePath,
-        nickname: nickname,
+        accessToken: accessToken || "",
+        refreshToken: refreshToken || "",
+        idx: idx || 0,
+        profilePath: profilePath || "",
+        nickname: nickname || "",
       });
       setIsLoggedIn(true);
-
-      // 이곳에서 idx와 accessToken을 사용하거나 다른 동작을 수행할 수 있습니다.
-      console.log(nickname);
     }
   }, []);
 
@@ -147,9 +151,9 @@ export default function AdoptionPosts() {
           <h2 className="text-2xl font-bold p-10">분양글</h2>
         </PC>
         <Mobile>
-          <h2 className="text-xl font-bold pl-12 pt-4 pb-4">분양글</h2>
+          <h2 className="font-bold pl-3 pt-2 pb-2">분양글</h2>
         </Mobile>
-        <ul className="pl-10 pr-10 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
             <li key={post.idx}>
               <PostCard post={post} />
