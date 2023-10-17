@@ -70,7 +70,7 @@ export default function MarketPosts() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://api.reptimate.store/board?page=${page}&size=20&order=DESC&category=market`
+        `https://reptimate.store/api/board?page=${page}&size=20&order=DESC&category=market`
       );
       setData(
         (prevData) =>

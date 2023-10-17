@@ -254,7 +254,7 @@ export default function AskPostsView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `https://api.reptimate.store/board/${idx}?userIdx=1`
+        `https://reptimate.store/api/board/${idx}?userIdx=1`
       );
       // Assuming your response data has a 'result' property
       setData(response.data);
@@ -293,7 +293,7 @@ export default function AskPostsView() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://api.reptimate.store/board/${idx}/comment?page=${page}&size=20&order=DESC`
+        `https://reptimate.store/api/board/${idx}/comment?page=${page}&size=20&order=DESC`
       );
       setCommentData(
         (prevData) =>
