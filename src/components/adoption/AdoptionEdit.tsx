@@ -252,7 +252,7 @@ export default function AdoptionEdit() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `https://api.reptimate.store/board/${idx}?userIdx=${currentUserIdx}`
+        `https://reptimate.store/api/board/${idx}?userIdx=${currentUserIdx}`
       );
       // Assuming your response data has a 'result' property
       setData(response.data);
