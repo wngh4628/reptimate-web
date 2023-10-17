@@ -6,23 +6,21 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import React from "react";
 import AuctionTemp from "@/components/auction/ActionTemp";
 import { TouchBackend } from "react-dnd-touch-backend";
+import { Mobile, PC } from "@/components/ResponsiveLayout";
 
 export default function AuctionTempPage() {
-  const [isMobile, setIsMobile] = React.useState(false);
-
-  React.useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const isMobileDevice = mediaQuery.matches;
-    setIsMobile(isMobileDevice);
-  }, []);
-
-  const DndProviderComponent = isMobile ? TouchBackend : HTML5Backend;
-
   return (
     <div>
-      <DndProvider backend={DndProviderComponent}>
-        <AuctionTemp />
-      </DndProvider>
+      <PC>
+        <DndProvider backend={HTML5Backend}>
+          <AuctionTemp />
+        </DndProvider>
+      </PC>
+      <Mobile>
+        <DndProvider backend={TouchBackend}>
+          <AuctionTemp />
+        </DndProvider>
+      </Mobile>
     </div>
   );
 }

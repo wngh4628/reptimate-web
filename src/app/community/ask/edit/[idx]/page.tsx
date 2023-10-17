@@ -6,24 +6,22 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import React from "react";
 import AskEdit from "@/components/ask/AskEdit";
 import { TouchBackend } from "react-dnd-touch-backend";
+import { Mobile, PC } from "@/components/ResponsiveLayout";
 
 export default function MarketEditPage() {
-  const [isMobile, setIsMobile] = React.useState(false);
-
-  React.useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const isMobileDevice = mediaQuery.matches;
-    setIsMobile(isMobileDevice);
-  }, []);
-
-  const DndProviderComponent = isMobile ? TouchBackend : HTML5Backend;
-
   return (
     <div>
       <CommunityMenu />
-      <DndProvider backend={DndProviderComponent}>
-        <AskEdit />
-      </DndProvider>
+      <PC>
+        <DndProvider backend={HTML5Backend}>
+          <AskEdit />
+        </DndProvider>
+      </PC>
+      <Mobile>
+        <DndProvider backend={TouchBackend}>
+          <AskEdit />
+        </DndProvider>
+      </Mobile>
     </div>
   );
 }
