@@ -6,24 +6,22 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import React from "react";
 import MarketWrite from "@/components/market/MarketWrite";
 import { TouchBackend } from "react-dnd-touch-backend";
+import { Mobile, PC } from "@/components/ResponsiveLayout";
 
 export default function MarketWritePage() {
-  const [isMobile, setIsMobile] = React.useState(false);
-
-  React.useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const isMobileDevice = mediaQuery.matches;
-    setIsMobile(isMobileDevice);
-  }, []);
-
-  const DndProviderComponent = isMobile ? TouchBackend : HTML5Backend;
-
   return (
     <div>
       <CommunityMenu />
-      <DndProvider backend={DndProviderComponent}>
-        <MarketWrite />
-      </DndProvider>
+      <PC>
+        <DndProvider backend={HTML5Backend}>
+          <MarketWrite />
+        </DndProvider>
+      </PC>
+      <Mobile>
+        <DndProvider backend={TouchBackend}>
+          <MarketWrite />
+        </DndProvider>
+      </Mobile>
     </div>
   );
 }
