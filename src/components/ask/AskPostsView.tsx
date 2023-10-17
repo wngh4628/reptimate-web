@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { commentWrtie } from "@/api/comment";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom, chatVisisibleState } from "@/recoil/user";
+
 import { Comment, getCommentResponse } from "@/service/comment";
 import CommentCard from "../comment/CommentCard";
 import CommentForm from "../comment/CommentForm";
@@ -42,6 +43,7 @@ export default function AskPostsView() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+
   const reGenerateTokenMutation = useReGenerateTokenMutation();
   const [isChatVisisible, setIsChatVisisible] = useRecoilState(chatVisisibleState);
   const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
@@ -50,6 +52,52 @@ export default function AskPostsView() {
   const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
   const [accessToken, setAccessToken] = useState("");
   const [chatRoomData, setchatRoomData] = useState<chatRoom[]>([]);
+
+  const setUser = useSetRecoilState(userAtom);
+  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+
+  function getCookie(name: string) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) {
+      var cookieValue = parts.pop()?.split(";").shift();
+      try {
+        var cookieObject = JSON.parse(cookieValue || "");
+        return cookieObject;
+      } catch (error) {
+        console.error("Error parsing JSON from cookie:", error);
+        return null;
+      }
+    }
+  }
+
+  useEffect(() => {
+    // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
+    var myAppCookie = getCookie("myAppCookie");
+
+    if (myAppCookie !== undefined) {
+      console.log(myAppCookie);
+      var accessToken = myAppCookie.accessToken;
+      var idx = parseInt(myAppCookie.idx || "", 10) || 0;
+      var refreshToken = myAppCookie.refreshToken;
+      var nickname = myAppCookie.nickname;
+      var profilePath = myAppCookie.profilePath;
+
+      console.log("accessToken: " + accessToken);
+      console.log("idx: " + idx);
+      console.log("refreshToken: " + refreshToken);
+      console.log("nickname: " + nickname);
+      console.log("profilePath: " + profilePath);
+      setUser({
+        accessToken: accessToken || "",
+        refreshToken: refreshToken || "",
+        idx: idx || 0,
+        profilePath: profilePath || "",
+        nickname: nickname || "",
+      });
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   function BackButton() {
     const handleGoBack = () => {
