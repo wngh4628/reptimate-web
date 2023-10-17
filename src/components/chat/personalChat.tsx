@@ -69,36 +69,42 @@ export default function PersonalChat() {
         setAccessToken(extractedAccessToken);
         //입장한 사용자의 idx지정
         setUserIdx(userData.USER_DATA.idx);
-        // 입장한 사용자의 이름 지정
+        // 입장한 사용자의 이름, 프로필 이미지 지정
         setNickname(userData.USER_DATA.nickname);
         setProfilePath(userData.USER_DATA.profilePath);
 
-        console.log("chatRoomVisisible  :  "+chatRoomVisisible)
         //getChatRoomList(accessToken);
-        setchatRoomData([])
+        // setchatRoomData([])
       } else {
-        router.replace("/");
-        alert("로그인이 필요한 기능입니다.");
       }
     }
   }, [])
 
   useEffect(() => {
-    console.log("useEffect[chatRoomVisisible]")
-    console.log(chatRoomData)
     setchatRoomData([])
-    // getChatRoomList(accessToken);
-    getChatRoomList(accessToken);
+    if (!chatRoomVisisible) {
+      const storedData = localStorage.getItem('recoil-persist');
+      if (storedData) {
+        const userData = JSON.parse(storedData);
+        if (userData.USER_DATA.accessToken) {
+          const extractedAccessToken = userData.USER_DATA.accessToken;
+          getChatRoomList(extractedAccessToken);
+        } else {
+        }
+      }
+    } else {
+      setchatRoomData([])
+    }
   }, [chatRoomVisisible]);
 
   // chatRoomData가 업데이트될 때 호출되는 useEffect
-  useEffect(() => {
+  // useEffect(() => {
     
-  }, [chatRoomData]);
+  // }, [chatRoomData]);
 
   // 채팅방 리스트 불러오기
   const getChatRoomList = async (accessToken: string) => {
-    console.log("======================getChatRoomList=====================")
+    console.log("=============getChatRoomList() : personalChat.tsx================")
     setLoading(true);
     const config = {
         headers: {
@@ -107,7 +113,6 @@ export default function PersonalChat() {
     };
     try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_CHAT_URL}/chat/list`, config);
-        console.log(response.data)
         setData((prevData) =>
         ({
           result: {
@@ -131,11 +136,16 @@ export default function PersonalChat() {
           return dateB.getTime() - dateA.getTime();
         });
         setchatRoomData(sortedArray);
+        console.log("=============getChatRoomList() : personalChat.tsx : 성공================")
+        console.log(response.data)
+        console.log("=============================")
         // console.log(response.data?.result)
         setENP(response.data?.result.existsNextPage);
         setPage((prevPage) => prevPage + 1);
     } catch (error: any) {
+      console.log("=========getChatRoomList() : personalChat.tsx : catch (error: any)========")
       console.log(error)
+      console.log("======================")
         if(error.response.status == 401) {
             const storedData = localStorage.getItem('recoil-persist');
             if (storedData) {
@@ -148,13 +158,18 @@ export default function PersonalChat() {
                         onSuccess: (data) => {
                             // api call 재선언
                             console.log("accessToken 만료로 인한 재발급")
-                            getChatRoomList(data);
+                            if(userData.USER_DATA.accessToken != data) {
+                              getChatRoomList(data);
+                            } else {
+                              // router.replace("/");
+                              // setIsLoggedIn(false)
+                              // alert("로그인 만료\n다시 로그인 해주세요");
+                            }
                         },
                         onError: () => {
-                            router.replace("/");
-                            setIsLoggedIn(false)
-                            //
-                            alert("로그인 만료\n다시 로그인 해주세요");
+                            // router.replace("/");
+                            // setIsLoggedIn(false)
+                            // alert("로그인 만료\n다시 로그인 해주세요");
                         }
                     });
                 } else {

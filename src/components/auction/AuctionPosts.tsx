@@ -70,7 +70,7 @@ export default function AuctionPosts() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://api.reptimate.store/board?page=${page}&size=20&order=DESC&category=auction`
+        `https://reptimate.store/api/board?page=${page}&size=20&order=DESC&category=auction`
       );
       setData(
         (prevData) =>

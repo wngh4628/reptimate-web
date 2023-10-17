@@ -3,7 +3,7 @@ import { Console } from "console";
 import { useEffect } from "react";
 
 const instance = axios.create({
-  baseURL: "https://api.reptimate.store",
+  baseURL: "https://reptimate.store/api",
 });
 
 // 요청 타임아웃 설정

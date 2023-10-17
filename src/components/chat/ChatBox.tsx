@@ -12,7 +12,7 @@ import {chatRoom,connectMessage,Ban_Message,userInfo, getResponseChatList } from
 
 import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
 import { userAtom, isLoggedInState } from "@/recoil/user";
-import { chatRoomState, chatRoomVisisibleState, chatNowInfoState} from "@/recoil/chatting";
+import { chatRoomState, chatRoomVisisibleState, chatNowInfoState, isNewChatState, isNewChatIdxState } from "@/recoil/chatting";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
 interface IMessage {
@@ -50,6 +50,7 @@ export default function PersonalChatBox() {
   const [existNextPage, setENP] = useState(false);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [newChatSend, setnewChatSend] = useState(false);
   const target = useRef(null);
 
 
@@ -69,6 +70,8 @@ export default function PersonalChatBox() {
   const setchatRoomState = useSetRecoilState(chatRoomState);
   const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
   const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
+  const [isNewChat, setisNewChatState] = useRecoilState(isNewChatState);
+  const [isNewChatIdx, setisNewChatIdx] = useRecoilState(isNewChatIdxState);
   // const [chatRoom, setchatRoom] = useRecoilState(chatRoomState);
 
   const chatDivRef = useRef(null);
@@ -78,35 +81,64 @@ export default function PersonalChatBox() {
   };
 
   useEffect(() => {
-    const storedData = localStorage.getItem('recoil-persist');
+    const fetchData = async () => {
+      const storedData = localStorage.getItem('recoil-persist');
+      if (storedData) {
+        const userData = JSON.parse(storedData);
+        if (userData.USER_DATA.accessToken) {
+          const extractedAccessToken = userData.USER_DATA.accessToken;
+          setAccessToken(extractedAccessToken);
+          //입장한 사용자의 idx지정
+          setUserIdx(userData.USER_DATA.idx);
+          // 입장한 사용자의 이름 지정
+          setNickname(userData.USER_DATA.nickname);
+          setProfilePath(userData.USER_DATA.profilePath);
+
+          if(!newChatSend && isNewChat) {
+            setotherNickname(chatNowInfo.nickname);
+            makeNewChatRoom(extractedAccessToken, isNewChatIdx);
+          } else {
+            //상대 닉네임과 채팅방 번호를 지정
+            setotherNickname(chatNowInfo.nickname);
+            setroomName(chatNowInfo.roomName);
+          }
+          
+
+        } else {
+          router.replace("/");
+          alert("로그인이 필요한 기능입니다.");
+        }
+      }
+    };
+  
+    fetchData(); // 함수 호출
+  }, [])
+
+  useEffect(() => {
+    if (chatRoomVisisible) {
+      const storedData = localStorage.getItem('recoil-persist');
     if (storedData) {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken) {
         const extractedAccessToken = userData.USER_DATA.accessToken;
-        setAccessToken(extractedAccessToken);
-        //입장한 사용자의 idx지정
-        setUserIdx(userData.USER_DATA.idx);
-        // 입장한 사용자의 이름 지정
-        setNickname(userData.USER_DATA.nickname);
-        setProfilePath(userData.USER_DATA.profilePath);
-
-        //상대 닉네임과 채팅방 번호를 지정
-        setotherNickname(chatNowInfo.nickname);
-        setroomName(chatNowInfo.roomName);
-
-        getChatRoomHistory(extractedAccessToken, chatNowInfo.roomName);
+        setUserInfoData({nickname: chatNowInfo.nickname, profilePath: chatNowInfo.profilePath})
+        
+        // 이전 채팅이 이루어 지지 않은 상대의 경우 채팅방은 첫 채팅 전송시 이루어 지도록
+        if (isNewChat) {
+          // makeNewChatRoom(extractedAccessToken, isNewChatIdx);
+        } else {
+          getChatRoomHistory(extractedAccessToken, chatNowInfo.roomName);
+          
+        }
       } else {
-        router.replace("/");
-        alert("로그인이 필요한 기능입니다.");
       }
+    } 
     }
-  }, [])
+  }, [chatRoomVisisible])
 
   useEffect(() => {
-    setUserInfoData({nickname: chatNowInfo.nickname, profilePath: chatNowInfo.profilePath})
-    joinRoom()
-
-  }, [roomName])
+    joinRoom();
+  }, [roomName]);
 
   useEffect(() => {
     if (chatDivRef.current) {
@@ -119,8 +151,52 @@ export default function PersonalChatBox() {
     settextMsg(value);
   }, []);
 
+  const makeNewChatRoom = async (accessToken: string, oppositeIdx: number) => {
+    const config = {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+    };
+    const postData = {
+      oppositeIdx: oppositeIdx,
+    };
+    try {
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_CHAT_URL}/chat`, postData, config);
+        console.log("===makeNewChatRoom() : ChatBox.tsx====");
+        console.log(response.data.result.idx);
+        console.log("================================");
+        // 얻어진 idx로 roomName 설정
+        setroomName(response.data.result.idx);
+    } catch (error: any) {
+        if(error.response.data.status == 401) {
+            const storedData = localStorage.getItem('recoil-persist');
+            if (storedData) {
+                const userData = JSON.parse(storedData);
+                if (userData.USER_DATA.accessToken) {
+                    const extractedARefreshToken = userData.USER_DATA.refreshToken;
+                    reGenerateTokenMutation.mutate({
+                        refreshToken: extractedARefreshToken
+                    }, {
+                        onSuccess: (data) => {
+                            // api call 재선언
+                            makeNewChatRoom(accessToken, oppositeIdx);
+                        },
+                        onError: () => {
+                            router.replace("/");
+                            setIsLoggedIn(false)
+                            // 
+                            alert("로그인 만료\n다시 로그인 해주세요");
+                        }
+                    });
+                } else {
+                    // router.replace("/");
+                    // alert("로그인이 필요한 기능입니다.");
+                }
+            }
+        }
+    }
+  };
   const getChatRoomNo = async (accessToken: string, userIdx: number, otherIdx: number) => {
-    setLoading(true);
       const config = {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -128,7 +204,9 @@ export default function PersonalChatBox() {
       };
       try {
           const response = await axios.get(`${process.env.NEXT_PUBLIC_CHAT_URL}/chat/room/`+otherIdx, config);
+          console.log("===getChatRoomNo() : ChatBox.tsx====");
           console.log(response);
+          console.log("=======");
       } catch (error: any) {
           if(error.response.data.status == 401) {
               const storedData = localStorage.getItem('recoil-persist');
@@ -151,95 +229,96 @@ export default function PersonalChatBox() {
                           }
                       });
                   } else {
-                      router.replace("/");
-                      alert("로그인이 필요한 기능입니다.");
+                      // router.replace("/");
+                      // alert("로그인이 필요한 기능입니다.");
                   }
               }
           }
       }
   };
-    const getChatRoomHistory = useCallback(async (accessToken: string, roomName: number) => {
+  const getChatRoomHistory = useCallback(async (accessToken: string, roomName: number) => {
     setLoading(true);
-      const config = {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-      };
-      try {
-          const response = await axios.get(`${process.env.NEXT_PUBLIC_CHAT_URL}/chat/${roomName}?page=${page}&size=20&order=DESC`, config);
-          console.log("==================getChatRoomHistory===================");
-          const newChattingData = [...chattingData, ...response.data.result];
-          const reversedData = newChattingData.reverse();
-          setchattingData(reversedData);
-          console.log(chattingData);
-
-        //   setENP(response.data?.result.existsNextPage);
-          setPage((prevPage) => prevPage + 1);
-      } catch (error: any) {
-          if(error.response.data.status == 401) {
-              const storedData = localStorage.getItem('recoil-persist');
-              if (storedData) {
-                  const userData = JSON.parse(storedData);
-                  if (userData.USER_DATA.accessToken) {
-                      const extractedARefreshToken = userData.USER_DATA.refreshToken;
-                      reGenerateTokenMutation.mutate({
-                          refreshToken: extractedARefreshToken
-                      }, {
-                          onSuccess: (data) => {
-                              // api call 재선언
-                              getChatRoomHistory(data, roomName);
-                          },
-                          onError: () => {
-                              router.replace("/");
-                              // 
-                              alert("로그인 만료\n다시 로그인 해주세요");
-                          }
-                      });
-                  } else {
-                      router.replace("/");
-                      alert("로그인이 필요한 기능입니다.");
-                  }
-              }
-          }
-      }
-    }, [page]);
-    useEffect(() => {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting && !loading) {
-                    getChatRoomHistory(accessToken, roomName);
+    const config = {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+    };
+    try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_CHAT_URL}/chat/${roomName}?page=${page}&size=20&order=DESC`, config);
+        console.log("==================getChatRoomHistory===================");
+        const newChattingData = [...chattingData, ...response.data.result];
+        const reversedData = newChattingData.reverse();
+        setchattingData(reversedData);
+        console.log(chattingData);
+      //   setENP(response.data?.result.existsNextPage);
+        setPage((prevPage) => prevPage + 1);
+    } catch (error: any) {
+        if(error.response.data.status == 401) {
+            const storedData = localStorage.getItem('recoil-persist');
+            if (storedData) {
+                const userData = JSON.parse(storedData);
+                if (userData.USER_DATA.accessToken) {
+                    const extractedARefreshToken = userData.USER_DATA.refreshToken;
+                    reGenerateTokenMutation.mutate({
+                        refreshToken: extractedARefreshToken
+                    }, {
+                        onSuccess: (data) => {
+                            // api call 재선언
+                            getChatRoomHistory(data, roomName);
+                        },
+                        onError: () => {
+                            router.replace("/");
+                            // 
+                            alert("로그인 만료\n다시 로그인 해주세요");
+                        }
+                    });
+                } else {
+                    router.replace("/");
+                    alert("로그인이 필요한 기능입니다.");
                 }
-            });
-        }, options);
-
-        if (target.current) {
-          observer.observe(target.current);
+            }
         }
-        return () => {
-          if (target.current) {
-            observer.unobserve(target.current);
-          }
-        };
-    }, [getChatRoomHistory, loading, options]);
-  // 채팅방 입장시 ui 채팅방으로 교체
-  function intoChatting(clickedChatRoomData: chatRoom) {
-    setchatRoomVisisibleState(true)
-    console.log(clickedChatRoomData);
-  }
-  //채팅 발송
-  const sendMsg = () => {
-    if (textMsg.trim() !== "") {
-      if(socketRef.current){
-        const socketId = socketRef.current.id;
-        const message: IMessage = {
-          userIdx: userIdx,
-          socketId: socketId,
-          message: textMsg.trim(),
-          room: roomName,
-        };
-        socketRef.current.emit("message", message);
-        settextMsg("");
+    }
+    setLoading(false);
+  }, [page]);
+  useEffect(() => {
+      const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+              if (entry.isIntersecting && !loading) {
+                  getChatRoomHistory(accessToken, roomName);
+              }
+          });
+      }, options);
+
+      if (target.current) {
+        observer.observe(target.current);
       }
+      return () => {
+        if (target.current) {
+          observer.unobserve(target.current);
+        }
+      };
+  }, [getChatRoomHistory, loading, options]);
+
+  //채팅 발송
+  const sendMsg = async () => {
+    if (textMsg.trim() !== "") {
+      console.log("채팅 버튼 눌림")
+      // 첫 번째 채팅인지? & 첫 채팅이 보내 졌는지?
+        console.log("이미 개설된 채팅방으로 메시지 전송")
+        if(socketRef.current){
+          const socketId = socketRef.current.id;
+          const message: IMessage = {
+            userIdx: userIdx,
+            socketId: socketId,
+            message: textMsg.trim(),
+            room: roomName,
+          };
+          socketRef.current.emit("message", message);
+          settextMsg("");
+        }
+      
+      
     }
   }
   // const deleteMsg = () => {
@@ -257,8 +336,8 @@ export default function PersonalChatBox() {
     console.log("입장한 방 번호 : " + roomName)
     console.log("상대방 닉네임 : " + otherNickname)
     console.log("============================")
-    const socket = io('https://socket.reptimate.store/chat', {
-      path: '/socket.io',
+    const socket = io("https://socket.reptimate.store/chat", {
+      path: "/socket.io",
     });
     // log socket connection
     socketRef.current = socket;
@@ -274,7 +353,6 @@ export default function PersonalChatBox() {
         socketRef.current.emit("join-room", message);
       }
       setConnected(true);
-
     });
     // update chat on new message dispatched
     socket.on("message", (message: getMessage) => {
@@ -299,6 +377,8 @@ export default function PersonalChatBox() {
   function chatRoomOut() {
     setchatRoomVisisibleState(false)
     setchatNowInfo({nickname: "", roomName: 0, profilePath: ""});
+    setisNewChatIdx(0);
+    setisNewChatState(false);
   }
 
 return (
@@ -309,11 +389,16 @@ return (
         </div>
 
         <div className="flex items-start flex-col">
-
+        {loading && (
+            <div className="flex justify-center self-center">
+                <div
+                className="w-[15px] h-[15px] border-t-4 border-main-color border-solid rounded-full animate-spin" ref={target}>
+                </div>
+            </div>
+        )}
           <div className="flex-1 w-full border-gray-100 border-r-[1px]">
             <div ref={chatDivRef}
             className="flex-1 h-[375px] overflow-auto bg-white pb-1">
-
               {
               chattingData.map((chatData, i) => (
                 chatData.userIdx ? (
@@ -324,7 +409,6 @@ return (
               }
             </div>
           </div>
-          
           <div className='flex border-[#A7A7A7] text-sm w-full pl-[2px]'>
             <input
               className="w-full h-12 px-4 py-2 border border-gray-300 rounded"
