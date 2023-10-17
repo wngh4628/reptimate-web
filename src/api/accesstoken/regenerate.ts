@@ -23,16 +23,12 @@ import { userAtom, isLoggedInState } from "@/recoil/user";
       return useMutation({
         mutationFn: reGenerateToken,
         onSuccess: (accessToken) => {
-
           setUser((prevUser) => {
             if (prevUser) {
               return { ...prevUser, accessToken };
             }
             return prevUser;
           });
-
-
-          
         },
       });
     }
