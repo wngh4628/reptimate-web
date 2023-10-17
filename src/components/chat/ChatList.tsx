@@ -24,6 +24,7 @@ const ChatList = forwardRef((props :{
             nickname: string,
             profilePath: string
         }
+        unreadCount: number;
     }
     ,
 }, ref) =>{
@@ -50,8 +51,13 @@ const ChatList = forwardRef((props :{
             		<p className='text-[15px] break-words'>{props.chatRoomData.chatRoom.recentMessage}</p>
             	</div>
             </div>
-            <div className='pt-[10px] pr-[10px]'>
+            <div className='flex flex-col pt-[10px] pr-[10px]'>
                 <p className='text-[13px]'>{formatDateToCustomString(props.chatRoomData.chatRoom.updatedAt)}</p>
+                {props.chatRoomData.unreadCount > 0 &&
+                 (<div className='mr-[7px] mt-[5px] rounded-[50%] text-white bg-red-600 w-[23px] h-[23px] self-end text-center justify-self-center justify-center align-middle text-[14px]'>
+                    {props.chatRoomData.unreadCount}
+                </div>)
+                }
             </div>
 		</div>
     );

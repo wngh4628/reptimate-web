@@ -81,6 +81,7 @@ export interface getResponseChatList {
         nickname: string;
         profilePath: string;
     }
+    unreadCount: number;
   };
 
   
