@@ -46,8 +46,8 @@ export default function Header() {
     window.location.reload();
   };
   function chattingClick() {
-      console.log("채팅 목록 켜기");
-      setIsChatVisisible(true);
+    console.log("채팅 목록 켜기");
+    setIsChatVisisible(true);
   }
   function chattingClose() {
     setIsChatVisisible(false);
@@ -63,6 +63,12 @@ export default function Header() {
     "/community/free",
     "/community/ask",
   ];
+
+  const isAuctionRoute = pathName.startsWith("/auction");
+
+  // Set the link based on whether it's an "auction" route or not
+  const link = isAuctionRoute ? "/auction" : "/";
+
   return (
     <header>
       {/* PC 화면(반응형) */}
@@ -87,7 +93,7 @@ export default function Header() {
           )}
         </div>
         <div className="flex justify-between items-center pt-3 pl-10 pb-5 pr-10">
-          <Link href="/">
+          <Link href={link}>
             <div className="flex w-40">
               <img src="/img/main_logo.png" />
             </div>
@@ -153,7 +159,7 @@ export default function Header() {
       {/* 모바일 화면(반응형) */}
       <Mobile>
         <div className="flex justify-start pt-2 pb-2 pl-5 pr-5">
-          <Link href="/">
+          <Link href={link}>
             <div className="flex w-32 p1-0">
               <img src="/img/main_logo.png" />
             </div>
