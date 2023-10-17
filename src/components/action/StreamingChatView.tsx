@@ -146,17 +146,14 @@ export default function StreamingChatView() {
         `https://api.reptimate.store/board/${roomName}?userIdx=1`
       );
 
-      console.log("getData  :  " + response.data)
+      console.log("========getData() : 경매글 정보 불러오기====================")
       console.log(response.data)
+      console.log("============================")
       setPostsData(response.data);
       setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice))
       setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit))
       setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice))
 
-
-      // Assuming your response data has a 'result' property
-      console.log(response.data);
-      setPostsData(response.data);
 
       setNowBid(
         formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
@@ -187,7 +184,6 @@ export default function StreamingChatView() {
   //입찰가 입력란
   const onChangeBid = (event: { target: { value: string } }) => {
     const numericInput = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-    console.log(numericInput);
     setBidMsg(numericInput);
   };
   // 숫자 사이에 , 기입
@@ -215,9 +211,7 @@ export default function StreamingChatView() {
         nickname: nickname,
       };
       if (socketRef.current) {
-        console.log("========================");
-        console.log("채팅 입장");
-        console.log("========================");
+        console.log("=============실시간 채팅 입장===========");
         socketRef.current.emit("join-live", message);
       }
       setroomEnter(true);
@@ -263,7 +257,7 @@ export default function StreamingChatView() {
     });
     //다른 참여자가 방을 나갔을 때
     socket.on("leave-user", (message: IMessage) => {
-      console.log("message", message);
+      // console.log("message", message);
 
       setUserList((prevUserList) => {
         const newData: { [key: number]: any } = { ...prevUserList };
@@ -273,7 +267,7 @@ export default function StreamingChatView() {
     });
     //채팅 금지 리스너
     socket.on("no_chat", (message: string) => {
-      console.log("noChatIdx");
+      // console.log("noChatIdx");
       Swal.fire({
         text: "채팅 금지를 받았습니다.",
         icon: "warning",
@@ -295,7 +289,7 @@ export default function StreamingChatView() {
       }
       const messageArray = Array.isArray(message) ? message : [message];
       messageArray.forEach((data) => {
-        const getUserInfo = JSON.parse(data);
+        const getUserInfo = data;
         setUserInfoData((prevUserInfoData) => ({
           ...prevUserInfoData,
           [getUserInfo.userIdx]: {
@@ -314,7 +308,7 @@ export default function StreamingChatView() {
         }));
       });
     });
-    console.log(socket.connected);
+    // console.log(socket.connected);
     // socket disconnect on component unmount if exists
     return () => {
       if (socketRef.current) {
@@ -365,7 +359,9 @@ export default function StreamingChatView() {
   }, [roomOut]);
 
   useEffect(() => {
+    console.log("======경매글 방 번호======");
     console.log(roomName);
+    console.log("==================");
     liveRoomIdx.current = roomName;
     auctionRoomIdx.current = roomName;
   }, [roomName]);
@@ -377,7 +373,7 @@ export default function StreamingChatView() {
   }, [userInfoBidData]);
 
   useEffect(() => {
-    console.log("banList", banList);
+    // console.log("banList", banList);
   }, [banList]);
 
   //강퇴 시키기
@@ -396,11 +392,11 @@ export default function StreamingChatView() {
   };
   //채팅 금지 먹이기
   const noChat = (banUserIdx: number) => {
-    console.log("noChat");
+    // console.log("noChat");
     if (userAuth === "host") {
-      console.log(socketRef.current);
+      // console.log(socketRef.current);
       if (socketRef.current) {
-        console.log("noChat");
+        // console.log("noChat");
         const message: Ban_Message = {
           userIdx: userIdx,
           banUserIdx: banUserIdx,
@@ -414,9 +410,9 @@ export default function StreamingChatView() {
   //채팅 금지 풀기
   const noChatDelete = (banUserIdx: number) => {
     if (userAuth === "host") {
-      console.log(socketRef.current);
+      // console.log(socketRef.current);
       if (socketRef.current) {
-        console.log("noChat");
+        // console.log("noChat");
         const message: Ban_Message = {
           userIdx: userIdx,
           banUserIdx: banUserIdx,
@@ -466,7 +462,7 @@ export default function StreamingChatView() {
   //채금 목록 조회
   const fetchNoChatList = async () => {
     if (userAuth === "host") {
-      console.log("no chat");
+      // console.log("no chat");
       try {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_CHAT_URL}/LiveChat/nochat/${roomName}/${boardIdx}/${userIdx}`
@@ -522,9 +518,7 @@ export default function StreamingChatView() {
         message: textMsg.trim(),
         room: roomName,
       };
-      console.log("========================");
-      console.log("채팅 발송");
-      console.log("========================");
+      console.log("=============실시간 채팅 발송됨===========");
       socketRef.current.emit("live_message", message);
       settextMsg("");
     }
@@ -553,9 +547,7 @@ export default function StreamingChatView() {
       };
       if (socketBidRef.current) {
 
-        console.log("========================");
-        console.log("경매 입찰 채팅 입장");
-        console.log("========================");
+        console.log("============경매 입찰 채팅 입장============");
 
         socketBidRef.current.emit("join-room", message);
       }
@@ -566,7 +558,7 @@ export default function StreamingChatView() {
     // 메시지 리스너
     socketBid.on("Auction_message", (message: bidMessage) => {
       setchattingBidData((chattingData) => [...chattingData, message]);
-      console.log("======경매 입찰 수신=======");
+      console.log("======경매 입찰 채팅 수신=======");
       console.log("bid message  :  ", message);
       console.log("========================");
       if (bidContainerRef.current) {
@@ -575,10 +567,14 @@ export default function StreamingChatView() {
       setNowBid(message.message);
     });
     socketBid.on("Auction_End", (message: string) => {
+      console.log("======경매 입찰 채팅 : 경매 종료=======");
       console.log("Auction_End message", message);
+      console.log("============================");
     });
     socketBid.on("error", (message: string) => {
+      console.log("======경매 입찰 채팅 에러 수신=======");
       console.log("error message", message);
+      console.log("==============================");
     });
     //경매 입찰과 동시에 입찰자 명단 정보를 추가하는 리스너
     socketBid.on("auction_participate", (message: userInfo) => {
@@ -682,7 +678,6 @@ export default function StreamingChatView() {
 
   function viewChat() {
     if (sideView != "chat") {
-      console.log("경매 정보 : " + postsData?.message);
       setSideView("chat");
     }
   }

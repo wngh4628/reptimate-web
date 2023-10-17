@@ -5,14 +5,19 @@ import { Mobile, PC } from "../ResponsiveLayout";
 import ImageSlider from "../ImageSlider";
 import { useMutation } from "@tanstack/react-query";
 import { commentWrtie } from "@/api/comment";
-import { useRecoilValue } from "recoil";
-import { userAtom } from "@/recoil/user";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { isLoggedInState, userAtom, chatVisisibleState } from "@/recoil/user";
 import { Comment, getCommentResponse } from "@/service/comment";
 import CommentCard from "../comment/CommentCard";
 import CommentForm from "../comment/CommentForm";
 import { useRouter } from "next/navigation";
 import { GetPostsView, Images } from "@/service/my/board";
 import { freeDelete } from "@/api/free/freeBoard";
+
+import { chatRoomState, chatRoomVisisibleState, chatNowInfoState, isNewChatState, isNewChatIdxState} from "@/recoil/chatting";
+import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
+import {chatRoom,connectMessage,Ban_Message,userInfo, getResponseChatList } from "@/service/chat/chat"
+
 
 export default function FreePostsView() {
   const router = useRouter();
@@ -36,6 +41,16 @@ export default function FreePostsView() {
 
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const reGenerateTokenMutation = useReGenerateTokenMutation();
+  const [isChatVisisible, setIsChatVisisible] = useRecoilState(chatVisisibleState);
+  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
+  const [isNewChat, setisNewChatState] = useRecoilState(isNewChatState);
+  const [isNewChatIdx, setisNewChatIdx] = useRecoilState(isNewChatIdxState);
+  const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
+  const [accessToken, setAccessToken] = useState("");
+  const [chatRoomData, setchatRoomData] = useState<chatRoom[]>([]);
+
 
   function BackButton() {
     const handleGoBack = () => {
@@ -72,6 +87,69 @@ export default function FreePostsView() {
 
   const handleChat = () => {
     //1:1채팅 코드
+    setIsChatVisisible(true);
+    checkChatRoom();
+  };
+  function intoChatting(nickname : string, roomName: number, profilePath: string) {
+    setchatRoomVisisibleState(true)
+    setchatNowInfo({ nickname: nickname, roomName: roomName, profilePath: profilePath});
+  }
+  const checkChatRoom = async () => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+    // 해당 사용자와 개설된 채팅방이 있는지 확인
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_CHAT_URL}/chat/room/${post?.UserInfo.idx}`
+      , config);
+      // 개설된 채팅방이 있는 경우
+      if (post?.UserInfo.nickname && response.data.result && post?.UserInfo.profilePath) {
+        intoChatting(post.UserInfo.nickname, response.data.result, post.UserInfo.profilePath);
+      } else {
+        console.error("Error: Some values are undefined");
+      }
+    } catch (error: any) {
+      console.error("Error fetching data:", error);
+      if(error.response.data.status == 401) {
+        const storedData = localStorage.getItem('recoil-persist');
+        if (storedData) {
+            const userData = JSON.parse(storedData);
+            if (userData.USER_DATA.accessToken) {
+                const extractedARefreshToken = userData.USER_DATA.refreshToken;
+                reGenerateTokenMutation.mutate({
+                    refreshToken: extractedARefreshToken
+                }, {
+                    onSuccess: (data) => {
+                        // api call 재선언
+                        checkChatRoom();
+                    },
+                    onError: () => {
+                        router.replace("/");
+                        // 
+                        alert("로그인 만료\n다시 로그인 해주세요");
+                    }
+                });
+            } else {
+            }
+        }
+      } else if(error.response.status == 404) {
+        // 개설된 채팅방이 없는 경우 첫 채팅 state 지정하여 보냄
+        if(error.response.data.errorCode === "CHATROOM_NOT_EXIST") {
+          setchatRoomVisisibleState(true);
+          setisNewChatState(true)
+          if (post?.UserInfo.idx) {
+            setisNewChatIdx(post?.UserInfo.idx);
+            intoChatting(post.UserInfo.nickname, 0, post.UserInfo.profilePath)
+          } else {
+            console.error("Error : setisNewChatIdx(post?.UserInfo.idx); : Some values are undefined");
+          }
+          
+        }
+      }
+    }
   };
 
   const handleEdit = () => {
@@ -139,6 +217,15 @@ export default function FreePostsView() {
   }, []);
 
   useEffect(() => {
+    const storedData = localStorage.getItem('recoil-persist');
+    if (storedData) {
+      const userData = JSON.parse(storedData);
+      if (userData.USER_DATA.accessToken) {
+        const extractedAccessToken = userData.USER_DATA.accessToken;
+        setAccessToken(extractedAccessToken);
+      } else {
+      }
+    }
     getData();
   }, []);
 
