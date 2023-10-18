@@ -95,32 +95,22 @@ export default function MypageMenu() {
         <div className="flex mb-[25px] drop-shadow-md items-center justify-center content-center m-auto w-full border-[1px]">
           <nav className="flex font-bold w-full">
             <Link
-              href="/my"
-              className={`${
-                pathName === "/my"
-                  ? "bg-[#6D71E6] text-white"
-                  : "hover:text-[#6D71E6] "
-              } group  h-[50px] flex items-center justify-center text-center px-2 border-r-[1px] w-1/4 text-[13px]`}
-            >
-              내 정보 수정
-            </Link>
-            <Link
               href="/my/board"
               className={`${
                 pathName === "/my/board"
                   ? "bg-[#6D71E6] text-white"
                   : "hover:text-[#6D71E6]"
-              } group  h-[50px] flex items-center justify-center text-center px-2 border-r-[1px] w-1/4 text-[13px]`}
+              } group  h-[50px] flex items-center justify-center text-center px-2 border-r-[1px] w-1/3 text-[13px]`}
             >
               내가 쓴 글
             </Link>
             <Link
-              href="/my/free"
+              href="/my/auction"
               className={`${
                 pathName === "/my/auction"
                   ? "bg-[#6D71E6] text-white"
                   : "hover:text-[#6D71E6]"
-              } group  h-[50px] flex items-center justify-center text-center px-5 border-r-[1px] w-1/4 text-[13px]`}
+              } group  h-[50px] flex items-center justify-center text-center px-5 border-r-[1px] w-1/3 text-[13px]`}
             >
               내 경매
             </Link>
@@ -130,7 +120,7 @@ export default function MypageMenu() {
                 pathName === "/my/bookmark"
                   ? "bg-[#6D71E6] text-white"
                   : "hover:text-[#6D71E6] "
-              } group  h-[50px] flex items-center justify-center text-center px-5 w-1/4 text-[13px]`}
+              } group  h-[50px] flex items-center justify-center text-center px-5 w-1/3 text-[13px]`}
             >
               북마크
             </Link>
