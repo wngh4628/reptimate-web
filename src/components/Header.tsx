@@ -41,7 +41,12 @@ export default function Header() {
   );
   const [fcm, setfcm] = useRecoilState(fcmState);
 
-  const permission = Android.requestNotificationPermission();
+  if (typeof Android !== "undefined" && Android !== null) {
+    const permission = Android.requestNotificationPermission();
+    useEffect(() => {
+      permission;
+    }, []);
+  }
 
   useEffect(() => {
     handleLogin();
@@ -49,7 +54,6 @@ export default function Header() {
 
   useEffect(() => {
     onMessageFCM();
-    permission;
   }, []);
 
   const onMessageFCM = async () => {
