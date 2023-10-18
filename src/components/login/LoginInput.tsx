@@ -3,17 +3,18 @@ import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { useSetRecoilState } from "recoil";
+import { useSetRecoilState, useRecoilState, useRecoilValue } from "recoil";
 
 import { login } from "@/api/login/login";
 import { validateEmail, validatePassword } from "../join/JoinExp";
-import { isLoggedInState, userAtom } from "@/recoil/user";
+import { isLoggedInState, userAtom, fcmState } from "@/recoil/user";
 
 import { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate";
 
 export default function LoginInput() {
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+  const fcm = useRecoilValue(fcmState);
   const reGenerateTokenMutation = useReGenerateTokenMutation();
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -77,7 +78,7 @@ export default function LoginInput() {
     ) {
       setWarningMsg(true);
     } else {
-      mutation.mutate({ email: email, password: password, fbToken: "asdfcx" });
+      mutation.mutate({ email: email, password: password, fbToken: fcm });
     }
   };
   const appleConfig = {
