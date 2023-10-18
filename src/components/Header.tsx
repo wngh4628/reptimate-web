@@ -69,6 +69,15 @@ export default function Header() {
   // Set the link based on whether it's an "auction" route or not
   const link = isAuctionRoute ? "/auction" : "/";
 
+  if (pathName === "/my/board") return null;
+  if (pathName === "/my/auction") return null;
+  if (pathName === "/my/bookmpoark") return null;
+  if (pathName.startsWith("/community/adoption/posts")) return null;
+  if (pathName.startsWith("/community/market/posts")) return null;
+  if (pathName.startsWith("/community/free/posts")) return null;
+  if (pathName.startsWith("/community/ask/posts")) return null;
+  if (pathName.startsWith("/auction/posts")) return null;
+
   return (
     <header>
       {/* PC 화면(반응형) */}
