@@ -58,8 +58,13 @@ export default function Header() {
 
   const onMessageFCM = async () => {
     // 브라우저에 알림 권한을 요청합니다.
-    const permission = await Notification.requestPermission();
-    if (permission !== "granted") return;
+    if (typeof Android !== "undefined" && Android !== null) {
+      console.log("this is android webview!");
+    } else {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") return;
+      console.log("web noti permission return!!");
+    }
 
     // 이곳에도 아까 위에서 앱 등록할때 받은 'firebaseConfig' 값을 넣어주세요.
     const firebaseApp = initializeApp({
