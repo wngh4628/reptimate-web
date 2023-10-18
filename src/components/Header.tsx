@@ -18,13 +18,13 @@ import PersonalChat from "@/components/chat/personalChat";
 import { initializeApp } from "firebase/app";
 import { getMessaging, onMessage, getToken } from "firebase/messaging";
 
-declare global {
-  interface AndroidInterface {
-    requestNotificationPermission(): void;
-  }
+// declare global {
+//   interface AndroidInterface {
+//     requestNotificationPermission(): void;
+//   }
 
-  var Android: AndroidInterface;
-}
+//   var Android: AndroidInterface;
+// }
 
 export default function Header() {
   const login = false; // Set this to true or false based on your logic
@@ -41,12 +41,12 @@ export default function Header() {
   );
   const [fcm, setfcm] = useRecoilState(fcmState);
 
-  if (typeof Android !== "undefined" && Android !== null) {
-    const permission = Android.requestNotificationPermission();
-    useEffect(() => {
-      permission;
-    }, []);
-  }
+  // if (typeof Android !== "undefined" && Android !== null) {
+  //   const permission = Android.requestNotificationPermission();
+  //   useEffect(() => {
+  //     permission;
+  //   }, []);
+  // }
 
   useEffect(() => {
     handleLogin();
@@ -58,13 +58,13 @@ export default function Header() {
 
   const onMessageFCM = async () => {
     // 브라우저에 알림 권한을 요청합니다.
-    if (typeof Android !== "undefined" && Android !== null) {
-      console.log("this is android webview!");
-    } else {
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") return;
-      console.log("web noti permission return!!");
-    }
+    // if (typeof Android !== "undefined" && Android !== null) {
+    //   console.log("this is android webview!");
+    // } else {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return;
+    //   console.log("web noti permission return!!");
+    // }
 
     // 이곳에도 아까 위에서 앱 등록할때 받은 'firebaseConfig' 값을 넣어주세요.
     const firebaseApp = initializeApp({
