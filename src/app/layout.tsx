@@ -4,7 +4,20 @@ import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import Footer from "@/components/Footer";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import ReactQuery from "@/components/ReactQuery";
+import Recoil from "@/components/Recoil";
+import ChatModal from "@/components/chatting/ChatModal";
+
 const sans = Open_Sans({ subsets: ["latin"] });
+
+declare global {
+  // Kakao 함수를 전역에서 사용할 수 있도록 선언
+  interface Window {
+    Kakao: any;
+  }
+}
 
 export const metadata: Metadata = {
   title: "REPTIMATE",
@@ -19,9 +32,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={sans.className}>
       <body className="flex flex-col w-full max-w-screen-2xl mx-auto">
-        <Header />
-        <main className="grow white">{children}</main>
-        <Footer />
+        <Recoil>
+          <ReactQuery>
+            <Header />
+            <main className="grow white">{children}</main>
+            <Footer />
+          </ReactQuery>
+        </Recoil>
       </body>
     </html>
   );
