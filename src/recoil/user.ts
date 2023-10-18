@@ -39,3 +39,8 @@ export const chatVisisibleState = atom({
   key: "chatVisibleState",
   default: false,
 });
+
+export const fcmState = atom({
+  key: "fcmState",
+  default: "",
+});

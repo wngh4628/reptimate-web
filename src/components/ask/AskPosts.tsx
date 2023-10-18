@@ -146,9 +146,9 @@ export default function AskPosts() {
           <h2 className="text-2xl font-bold p-10">질문 게시판</h2>
         </PC>
         <Mobile>
-          <h2 className="text-xl font-bold pl-12 pt-4 pb-4">질문 게시판</h2>
+          <h2 className="font-bold pl-3 pt-2 pb-2">질문 게시판</h2>
         </Mobile>
-        <ul className="pl-10 pr-10 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
             <li key={post.idx}>
               <PostCard post={post} />
@@ -163,17 +163,30 @@ export default function AskPosts() {
             ></div>
           </div>
         )}
-
-        {isLogin && (
-          <div className="fixed bottom-10 right-10 z-50">
-            <button
-              className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
-              onClick={handleWriteClick}
-            >
-              +
-            </button>
-          </div>
-        )}
+        <PC>
+          {isLogin && (
+            <div className="fixed bottom-10 right-10 z-50">
+              <button
+                className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
+                onClick={handleWriteClick}
+              >
+                +
+              </button>
+            </div>
+          )}
+        </PC>
+        <Mobile>
+          {isLogin && (
+            <div className="fixed bottom-6 right-6 z-50">
+              <button
+                className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
+                onClick={handleWriteClick}
+              >
+                +
+              </button>
+            </div>
+          )}
+        </Mobile>
       </section>
     );
   } else {

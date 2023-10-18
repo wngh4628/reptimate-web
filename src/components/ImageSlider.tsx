@@ -33,7 +33,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ imageUrls }) => {
     const currentImage = imageUrls[currentIndex];
     if (currentImage.category === "img") {
       return (
-        <div className="relative w-full h-0 pb-[100%] overflow-hidden border-2 border-gray-400">
+        <div className="relative w-full h-0 pb-[100%] overflow-hidden ">
           <img
             src={currentImage.path}
             alt={`Image ${currentIndex}`}

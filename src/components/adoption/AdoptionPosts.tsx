@@ -168,17 +168,30 @@ export default function AdoptionPosts() {
             ></div>
           </div>
         )}
-
-        {isLogin && (
-          <div className="fixed bottom-10 right-10 z-50">
-            <button
-              className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
-              onClick={handleWriteClick}
-            >
-              +
-            </button>
-          </div>
-        )}
+        <PC>
+          {isLogin && (
+            <div className="fixed bottom-10 right-10 z-50">
+              <button
+                className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
+                onClick={handleWriteClick}
+              >
+                +
+              </button>
+            </div>
+          )}
+        </PC>
+        <Mobile>
+          {isLogin && (
+            <div className="fixed bottom-6 right-10 z-50">
+              <button
+                className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
+                onClick={handleWriteClick}
+              >
+                +
+              </button>
+            </div>
+          )}
+        </Mobile>
       </section>
     );
   } else {
