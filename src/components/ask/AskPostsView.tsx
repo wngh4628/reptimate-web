@@ -15,10 +15,21 @@ import { useRouter } from "next/navigation";
 import { GetPostsView, Images } from "@/service/my/board";
 import { freeDelete } from "@/api/free/freeBoard";
 
-import { chatRoomState, chatRoomVisisibleState, chatNowInfoState, isNewChatState, isNewChatIdxState} from "@/recoil/chatting";
-import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
-import {chatRoom,connectMessage,Ban_Message,userInfo, getResponseChatList } from "@/service/chat/chat"
-
+import {
+  chatRoomState,
+  chatRoomVisisibleState,
+  chatNowInfoState,
+  isNewChatState,
+  isNewChatIdxState,
+} from "@/recoil/chatting";
+import { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate";
+import {
+  chatRoom,
+  connectMessage,
+  Ban_Message,
+  userInfo,
+  getResponseChatList,
+} from "@/service/chat/chat";
 
 export default function AskPostsView() {
   const router = useRouter();
@@ -43,10 +54,12 @@ export default function AskPostsView() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-
   const reGenerateTokenMutation = useReGenerateTokenMutation();
-  const [isChatVisisible, setIsChatVisisible] = useRecoilState(chatVisisibleState);
-  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
+  const [isChatVisisible, setIsChatVisisible] =
+    useRecoilState(chatVisisibleState);
+  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(
+    chatRoomVisisibleState
+  );
   const [isNewChat, setisNewChatState] = useRecoilState(isNewChatState);
   const [isNewChatIdx, setisNewChatIdx] = useRecoilState(isNewChatIdxState);
   const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
@@ -106,7 +119,7 @@ export default function AskPostsView() {
 
     return (
       <button onClick={handleGoBack} className="cursor-poiter px-2 font-bold">
-        &lt; 질문 게시판
+        &lt; 뒤로가기
       </button>
     );
   }
@@ -137,9 +150,17 @@ export default function AskPostsView() {
     setIsChatVisisible(true);
     checkChatRoom();
   };
-  function intoChatting(nickname : string, roomName: number, profilePath: string) {
-    setchatRoomVisisibleState(true)
-    setchatNowInfo({ nickname: nickname, roomName: roomName, profilePath: profilePath});
+  function intoChatting(
+    nickname: string,
+    roomName: number,
+    profilePath: string
+  ) {
+    setchatRoomVisisibleState(true);
+    setchatNowInfo({
+      nickname: nickname,
+      roomName: roomName,
+      profilePath: profilePath,
+    });
   }
   const checkChatRoom = async () => {
     const config = {
@@ -150,50 +171,63 @@ export default function AskPostsView() {
     // 해당 사용자와 개설된 채팅방이 있는지 확인
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_CHAT_URL}/chat/room/${post?.UserInfo.idx}`
-      , config);
+        `${process.env.NEXT_PUBLIC_CHAT_URL}/chat/room/${post?.UserInfo.idx}`,
+        config
+      );
       // 개설된 채팅방이 있는 경우
-      if (post?.UserInfo.nickname && response.data.result && post?.UserInfo.profilePath) {
-        intoChatting(post.UserInfo.nickname, response.data.result, post.UserInfo.profilePath);
+      if (
+        post?.UserInfo.nickname &&
+        response.data.result &&
+        post?.UserInfo.profilePath
+      ) {
+        intoChatting(
+          post.UserInfo.nickname,
+          response.data.result,
+          post.UserInfo.profilePath
+        );
       } else {
         console.error("Error: Some values are undefined");
       }
     } catch (error: any) {
       console.error("Error fetching data:", error);
-      if(error.response.data.status == 401) {
-        const storedData = localStorage.getItem('recoil-persist');
+      if (error.response.data.status == 401) {
+        const storedData = localStorage.getItem("recoil-persist");
         if (storedData) {
-            const userData = JSON.parse(storedData);
-            if (userData.USER_DATA.accessToken) {
-                const extractedARefreshToken = userData.USER_DATA.refreshToken;
-                reGenerateTokenMutation.mutate({
-                    refreshToken: extractedARefreshToken
-                }, {
-                    onSuccess: (data) => {
-                        // api call 재선언
-                        checkChatRoom()
-                    },
-                    onError: () => {
-                        router.replace("/");
-                        // 
-                        alert("로그인 만료\n다시 로그인 해주세요");
-                    }
-                });
-            } else {
-            }
+          const userData = JSON.parse(storedData);
+          if (userData.USER_DATA.accessToken) {
+            const extractedARefreshToken = userData.USER_DATA.refreshToken;
+            reGenerateTokenMutation.mutate(
+              {
+                refreshToken: extractedARefreshToken,
+              },
+              {
+                onSuccess: (data) => {
+                  // api call 재선언
+                  checkChatRoom();
+                },
+                onError: () => {
+                  router.replace("/");
+                  //
+                  alert("로그인 만료\n다시 로그인 해주세요");
+                },
+              }
+            );
+          } else {
+          }
         }
-      } else if(error.response.status == 404) {
+      } else if (error.response.status == 404) {
         // 개설된 채팅방이 없는 경우 첫 채팅 state 지정하여 보냄
-        if(error.response.data.errorCode === "CHATROOM_NOT_EXIST") {
+        if (error.response.data.errorCode === "CHATROOM_NOT_EXIST") {
           setchatRoomVisisibleState(true);
-          setisNewChatState(true)
+          setisNewChatState(true);
           if (post?.UserInfo.idx) {
             setisNewChatIdx(post?.UserInfo.idx);
-            intoChatting(post.UserInfo.nickname, 0, post.UserInfo.profilePath)
+            intoChatting(post.UserInfo.nickname, 0, post.UserInfo.profilePath);
           } else {
-            console.error("Error : setisNewChatIdx(post?.UserInfo.idx); : Some values are undefined");
+            console.error(
+              "Error : setisNewChatIdx(post?.UserInfo.idx); : Some values are undefined"
+            );
           }
-          
         }
       }
     }
@@ -264,7 +298,7 @@ export default function AskPostsView() {
   }, []);
 
   useEffect(() => {
-    const storedData = localStorage.getItem('recoil-persist');
+    const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken) {
@@ -541,106 +575,104 @@ export default function AskPostsView() {
             </PC>
             <Mobile>
               <BackButton />
-              <div className="mx-2">
-                <h2 className="text-2xl font-bold pt-5">{post.title}</h2>
-                <div className="flex items-center my-2 relative">
-                  <img
-                    className="w-10 h-10 rounded-full border-2 cursor-pointer"
-                    src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
-                    alt=""
-                    onClick={profileMenu}
-                  />
-                  {!isCurrentUserComment && (
-                    <div className="flex items-center justify-center absolute top-full mt-1 bg-white border border-gray-200 shadow-lg rounded z-50">
-                      {profileMenuOpen && (
-                        <ul>
-                          <li
-                            onClick={() => {
-                              handleChat();
-                              profileMenu();
-                            }}
-                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                          >
-                            1:1채팅하기
-                          </li>
-                        </ul>
-                      )}
-                    </div>
-                  )}
-                  <p className="text-lg font-bold">{post.UserInfo.nickname}</p>
-                  <p className="ml-2 text-gray-500 text-sm">{postWriteDate}</p>
-                  <p className="ml-1 text-gray-500 text-sm">{postWriteTime}</p>
-                  <p className="ml-2 text-gray-500 text-sm">조회 {post.view}</p>
-                  <div className="relative ml-auto">
-                    <button
-                      onClick={toggleMenu}
-                      className="text-gray-500 cursor-pointer text-xl"
-                    >
-                      ⁝
-                    </button>
-                    {menuOpen && (
-                      <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
-                        <ul>
-                          <li
-                            onClick={() => {
-                              handleEdit();
-                              toggleMenu();
-                            }}
-                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                          >
-                            수정
-                          </li>
-                          <li
-                            onClick={() => {
-                              handleDelete();
-                              toggleMenu();
-                            }}
-                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                          >
-                            삭제
-                          </li>
-                          <li
-                            onClick={() => {
-                              handleReport();
-                              toggleMenu();
-                            }}
-                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                          >
-                            신고
-                          </li>
-                        </ul>
-                      </div>
+              <h2 className="mx-2 text-2xl font-bold pt-5">{post.title}</h2>
+              <div className="mx-2 flex items-center my-2 relative">
+                <img
+                  className="w-10 h-10 rounded-full border-2 cursor-pointer"
+                  src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
+                  alt=""
+                  onClick={profileMenu}
+                />
+                {!isCurrentUserComment && (
+                  <div className="flex items-center justify-center absolute top-full mt-1 bg-white border border-gray-200 shadow-lg rounded z-50">
+                    {profileMenuOpen && (
+                      <ul>
+                        <li
+                          onClick={() => {
+                            handleChat();
+                            profileMenu();
+                          }}
+                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                        >
+                          1:1채팅하기
+                        </li>
+                      </ul>
                     )}
                   </div>
-                </div>
-                <ImageSlider imageUrls={itemlist} />
-                <p className="my-4">{post.description}</p>
-                <hr className="border-t border-gray-300" />
-                <div className="flex flex-row items-center py-2">
-                  <p className="font-semibold ml-1 mr-1">댓글</p>
-                  <p className="text-lg font-semibold mr-2">
-                    {post.commentCnt}개
-                  </p>
-                </div>
-                {userAccessToken ? (
-                  <div>
-                    <CommentForm
-                      value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
-                      onSubmit={handleCommentSubmit}
-                      onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
-                    />
-                  </div>
-                ) : (
-                  <p
-                    className="cursor-pointer"
-                    onClick={() => {
-                      handleLogin();
-                    }}
-                  >
-                    로그인 후 댓글을 작성할 수 있습니다.
-                  </p>
                 )}
+                <p className="text-lg font-bold">{post.UserInfo.nickname}</p>
+                <p className="ml-2 text-gray-500 text-sm">{postWriteDate}</p>
+                <p className="ml-1 text-gray-500 text-sm">{postWriteTime}</p>
+                <p className="ml-2 text-gray-500 text-sm">조회 {post.view}</p>
+                <div className="relative ml-auto">
+                  <button
+                    onClick={toggleMenu}
+                    className="text-gray-500 cursor-pointer text-xl"
+                  >
+                    ⁝
+                  </button>
+                  {menuOpen && (
+                    <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
+                      <ul>
+                        <li
+                          onClick={() => {
+                            handleEdit();
+                            toggleMenu();
+                          }}
+                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                        >
+                          수정
+                        </li>
+                        <li
+                          onClick={() => {
+                            handleDelete();
+                            toggleMenu();
+                          }}
+                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                        >
+                          삭제
+                        </li>
+                        <li
+                          onClick={() => {
+                            handleReport();
+                            toggleMenu();
+                          }}
+                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                        >
+                          신고
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
+              <ImageSlider imageUrls={itemlist} />
+              <p className="mx-2 my-4">{post.description}</p>
+              <hr className="border-t border-gray-300" />
+              <div className="flex flex-row items-center py-2">
+                <p className="font-semibold ml-1 mr-1">댓글</p>
+                <p className="text-lg font-semibold mr-2">
+                  {post.commentCnt}개
+                </p>
+              </div>
+              {userAccessToken ? (
+                <div>
+                  <CommentForm
+                    value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
+                    onSubmit={handleCommentSubmit}
+                    onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
+                  />
+                </div>
+              ) : (
+                <p
+                  className="cursor-pointer"
+                  onClick={() => {
+                    handleLogin();
+                  }}
+                >
+                  로그인 후 댓글을 작성할 수 있습니다.
+                </p>
+              )}
             </Mobile>
             <ul className="mt-6">
               {commentList !== null && commentList ? (

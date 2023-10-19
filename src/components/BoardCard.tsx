@@ -17,9 +17,13 @@ export default function PostCard({
     profilePath,
   },
 }: Props) {
+  const imgStyle = {
+    paddingBottom: "100%",
+    position: "relative" as "relative",
+  };
   return (
     <div>
-      <div className="ml-5 mr-5 relative">
+      <div className="ml-0.5 mr-0.5 relative">
         <Link
           href={`/community/${category}/posts/[idx]`}
           as={`/community/${category}/posts/${idx}`}
@@ -37,7 +41,7 @@ export default function PostCard({
               </div>
               <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
-                  className="w-10 h-10 rounded-full border-2"
+                  className="ml-6 w-10 h-10 rounded-full border-2"
                   src={
                     profilePath !== null
                       ? profilePath
@@ -49,18 +53,20 @@ export default function PostCard({
               </div>
             </PC>
             <Mobile>
-              <div className="relative w-[130px] h-[130px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
+              <div className="relative w-full overflow-hidden shadow-sm shadow-gray-400 hover:border-2 hover:border-main-color">
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
-                <img
-                  className="object-cover w-full h-full"
-                  src={`${coverImage}` || "/img/reptimate_logo.png"}
-                  alt={""}
-                  style={{ zIndex: 1 }}
-                />
+                <div style={imgStyle}>
+                  <img
+                    className="object-cover absolute inset-0 w-full h-full"
+                    src={`${coverImage || "/img/reptimate_logo.png"}`}
+                    alt=""
+                    style={{ zIndex: 1 }}
+                  />
+                </div>
               </div>
               <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
-                  className="w-7 h-7 rounded-full border-2"
+                  className="ml-2 w-8 h-8 rounded-full border-2"
                   src={
                     profilePath !== null
                       ? profilePath

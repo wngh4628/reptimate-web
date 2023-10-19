@@ -5,13 +5,26 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mobile, PC } from "./ResponsiveLayout";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { isLoggedInState, userAtom, chatVisisibleState, fcmState } from "@/recoil/user";
+import {
+  isLoggedInState,
+  userAtom,
+  chatVisisibleState,
+  fcmState,
+} from "@/recoil/user";
 import ChatModal from "@/components/chatting/ChatModal";
 import { chatRoomState, chatRoomVisisibleState, receivedNewChatState } from "@/recoil/chatting";
 import PersonalChat from "@/components/chat/personalChat";
 
-import { initializeApp } from 'firebase/app'
-import { getMessaging, onMessage, getToken } from 'firebase/messaging'
+import { initializeApp } from "firebase/app";
+import { getMessaging, onMessage, getToken } from "firebase/messaging";
+
+// declare global {
+//   interface AndroidInterface {
+//     requestNotificationPermission(): void;
+//   }
+
+//   var Android: AndroidInterface;
+// }
 
 export default function Header() {
   const login = false; // Set this to true or false based on your logic
@@ -21,11 +34,20 @@ export default function Header() {
   const [accessToken, setAccessToken] = useRecoilState(userAtom);
 
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+
   const [isChatVisisible, setIsChatVisisible] = useRecoilState(chatVisisibleState);
   const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
 
   const [receivedNewChat, setreceivedNewChat] = useRecoilState(receivedNewChatState);
+
   const [fcm, setfcm] = useRecoilState(fcmState);
+
+  // if (typeof Android !== "undefined" && Android !== null) {
+  //   const permission = Android.requestNotificationPermission();
+  //   useEffect(() => {
+  //     permission;
+  //   }, []);
+  // }
 
   useEffect(() => {
     handleLogin();
@@ -33,8 +55,9 @@ export default function Header() {
   }, [pathName]);
 
   useEffect(() => {
-    
+  
   }, [])
+
 
   useEffect(() => {
 
@@ -42,9 +65,14 @@ export default function Header() {
 
   const onMessageFCM = async () => {
     // 브라우저에 알림 권한을 요청합니다.
-    const permission = await Notification.requestPermission()
-    if (permission !== 'granted') return 
- 
+    // if (typeof Android !== "undefined" && Android !== null) {
+    //   console.log("this is android webview!");
+    // } else {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return;
+    //   console.log("web noti permission return!!");
+    // }
+
     // 이곳에도 아까 위에서 앱 등록할때 받은 'firebaseConfig' 값을 넣어주세요.
     const firebaseApp = initializeApp({
       apiKey: "AIzaSyCqNXSJVrAFHqn-Or8YgBswuoYMOxEBABY",
@@ -81,6 +109,7 @@ export default function Header() {
     });
   }
  
+
   const handleLogin = () => {
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
@@ -122,6 +151,15 @@ export default function Header() {
 
   // Set the link based on whether it's an "auction" route or not
   const link = isAuctionRoute ? "/auction" : "/";
+
+  if (pathName === "/my/board") return null;
+  if (pathName === "/my/auction") return null;
+  if (pathName === "/my/bookmpoark") return null;
+  if (pathName.startsWith("/community/adoption/posts")) return null;
+  if (pathName.startsWith("/community/market/posts")) return null;
+  if (pathName.startsWith("/community/free/posts")) return null;
+  if (pathName.startsWith("/community/ask/posts")) return null;
+  if (pathName.startsWith("/auction/posts")) return null;
 
   return (
     <header>
