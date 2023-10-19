@@ -1,12 +1,13 @@
 
 "use client"
 import axios from "axios";
-import { useSetRecoilState } from "recoil";
+import { useSetRecoilState, useRecoilState, useRecoilValue} from "recoil";
 import { socialLogin, socialAppleLogin } from "@/api/login/login";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { userAtom } from "@/recoil/user";
 import { useEffect } from "react";
+
+import { isLoggedInState, userAtom, fcmState } from "@/recoil/user";
 
 
 
@@ -18,6 +19,8 @@ export default function Home() {
     const query2 = searchParams?.get("socialType"); 
     const query3 = searchParams?.get("email"); 
     const query4 = searchParams?.get("nickname"); 
+
+    const [fcm, setfcm] = useRecoilState(fcmState);
 
     const mutation = useMutation({
         mutationFn: socialLogin,
@@ -53,16 +56,18 @@ export default function Home() {
                 email: qemail,
                 nickname: qnickname,
                 socialType: "APPLE",
-                fbToken: "f2f23f23f2g34"
+                fbToken: fcm,
             });
         } else if (query && query2) {
             var qa : string = query;
             var qb : string = query2;
 
+            console.log("useEffect / socialLogin / fbToken = "+ fcm)
+
             mutation.mutate({
                 accessToken: qa,
                 socialType: qb,
-                fbToken: "vsdvsdvds"
+                fbToken: fcm,
             });
         }
     }, []);

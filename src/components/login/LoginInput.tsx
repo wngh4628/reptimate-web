@@ -14,7 +14,7 @@ import { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate";
 export default function LoginInput() {
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
-  const fcm = useRecoilValue(fcmState);
+  const [fcm, setfcm] = useRecoilState(fcmState);
   const reGenerateTokenMutation = useReGenerateTokenMutation();
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -25,7 +25,6 @@ export default function LoginInput() {
   const mutation = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      console.log("로그인 시도 > " + email + " & " + password);
       var a = JSON.stringify(data.data);
       var result = JSON.parse(a);
       var b = JSON.stringify(result.result);

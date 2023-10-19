@@ -11,7 +11,7 @@ import {chatRoom,connectMessage,Ban_Message,userInfo, getResponseChatList } from
 
 import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
 import { userAtom, isLoggedInState } from "@/recoil/user";
-import { chatRoomState, chatRoomVisisibleState, chatNowInfoState} from "@/recoil/chatting";
+import { chatRoomState, chatRoomVisisibleState, chatNowInfoState, receivedNewChatState} from "@/recoil/chatting";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
 interface IMessage {
@@ -54,6 +54,7 @@ export default function PersonalChat() {
   const setchatRoomState = useSetRecoilState(chatRoomState);
   const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
   const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
+  const [receivedNewChat, setreceivedNewChat] = useRecoilState(receivedNewChatState);
   // const [chatRoom, setchatRoom] = useRecoilState(chatRoomState);
 
   const options = {
@@ -75,10 +76,27 @@ export default function PersonalChat() {
 
         //getChatRoomList(accessToken);
         // setchatRoomData([])
+        // chatRoomData 배열의 각 요소를 확인하여 unreadCount가 0보다 큰지 확인
+        const hasUnreadMessages = chatRoomData.some((chatRoom) => chatRoom.unreadCount > 0);
+        if (hasUnreadMessages) {
+          setreceivedNewChat(true);
+        } else {
+          setreceivedNewChat(false);
+        }
       } else {
       }
     }
   }, [])
+
+  useEffect(() => {
+    // chatRoomData 배열의 각 요소를 확인하여 unreadCount가 0보다 큰지 확인
+    const hasUnreadMessages = chatRoomData.some((chatRoom) => chatRoom.unreadCount > 0);
+    if (hasUnreadMessages) {
+      setreceivedNewChat(true);
+    } else {
+      setreceivedNewChat(false);
+    }
+  }, [chatRoomData])
 
   useEffect(() => {
     setchatRoomData([])
@@ -135,13 +153,14 @@ export default function PersonalChat() {
           // 내림차순으로 정렬하려면 dateB - dateA를 반환합니다.
           return dateB.getTime() - dateA.getTime();
         });
-        setchatRoomData(sortedArray);
-        console.log("=============getChatRoomList() : personalChat.tsx : 성공================")
+        await setchatRoomData(sortedArray);
+        console.log("=====getChatRoomList() : personalChat.tsx : 채팅방 리스트 불러오기 성공=====")
         console.log(response.data)
         console.log("=============================")
         // console.log(response.data?.result)
         setENP(response.data?.result.existsNextPage);
         setPage((prevPage) => prevPage + 1);
+        console.log('getChatRoomList() : personalChat.tsx : receivedNewChat:', receivedNewChat);
     } catch (error: any) {
       console.log("=========getChatRoomList() : personalChat.tsx : catch (error: any)========")
       console.log(error)
@@ -167,6 +186,7 @@ export default function PersonalChat() {
                             }
                         },
                         onError: () => {
+                          console.log("accessToken 만료로 인한 재발급 실패 : getChatRoomList() : personalChat.tsx")
                             // router.replace("/");
                             // setIsLoggedIn(false)
                             // alert("로그인 만료\n다시 로그인 해주세요");
