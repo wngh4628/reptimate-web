@@ -12,7 +12,7 @@ import {chatRoom,connectMessage,Ban_Message,userInfo, getResponseChatList } from
 
 import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
 import { userAtom, isLoggedInState } from "@/recoil/user";
-import { chatRoomState, chatRoomVisisibleState, chatNowInfoState, isNewChatState, isNewChatIdxState } from "@/recoil/chatting";
+import { chatRoomState, chatRoomVisisibleState, chatNowInfoState, isNewChatState, isNewChatIdxState, receivedNewChatState } from "@/recoil/chatting";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
 interface IMessage {
@@ -72,6 +72,7 @@ export default function PersonalChatBox() {
   const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
   const [isNewChat, setisNewChatState] = useRecoilState(isNewChatState);
   const [isNewChatIdx, setisNewChatIdx] = useRecoilState(isNewChatIdxState);
+  const [receivedNewChat, setreceivedNewChat] = useRecoilState(receivedNewChatState);
   // const [chatRoom, setchatRoom] = useRecoilState(chatRoomState);
 
   const chatDivRef = useRef(null);
@@ -358,6 +359,7 @@ export default function PersonalChatBox() {
     socket.on("message", (message: getMessage) => {
         setchattingData(prevChat => [...prevChat, message]);
         console.log('message', message);
+        setreceivedNewChat(true);
     });
     //읽음 처리 연락 받는 기능 만들어주세요.
     socket.on("afterRead", (message: getMessage) => {
