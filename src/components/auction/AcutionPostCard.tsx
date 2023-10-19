@@ -107,44 +107,75 @@ export default function AuctionPostCard({
         </Link>
       </div>
 
-      <div className="mx-3 mt-2 mb-6 flex flex-col">
-        <h3 className="font-bold text-xl mx-1">{title}</h3>
+      <div className=" mx-1 mt-2 mb-6 flex flex-col">
         <PC>
-          <div className="flex items-center flex-col">
-            <div className="w-full flex flex-row items-center">
-              <p className="text-sm mr-1">
-                {state === "selling" ? "현재 입찰가 : " : "낙찰가 : "}
-              </p>
-              <p className="font-bold text-lg">
-                {currentPrice ? currentPrice : "---"}
-              </p>
-              <p className="text-sm ml-1">원</p>
-            </div>
-
-            <div className="flex flex-row mt-1 mr-auto">
-              <p
-                className={`text-xs mx-1 text-white p-1 rounded font-bold ${
-                  gender === "수컷"
-                    ? "bg-gender-male-color"
-                    : gender === "암컷"
-                    ? "bg-gender-female-color"
-                    : "bg-gray-400"
-                }`}
-              >
-                {gender}
-              </p>
-              <p className="text-xs mx-1 text-white bg-gray-400 p-1 rounded font-bold">
-                {size}
-              </p>
-            </div>
+          <h3 className="font-bold ml-4 text-xl mx-1">{title}</h3>
+          <div className="w-full flex flex-row items-center">
+            <p className="text-sm ml-4 mr-1">
+              {state === "selling" ? "현재 입찰가 : " : "낙찰가 : "}
+            </p>
+            <p className="font-bold text-lg">
+              {currentPrice ? currentPrice : "---"}
+            </p>
+            <p className="text-sm ml-1">원</p>
+          </div>
+          <div className="flex ml-3 items-center">
+            <p
+              className={`text-xs mx-1 text-white p-1 rounded font-bold ${
+                gender === "수컷"
+                  ? "bg-gender-male-color"
+                  : gender === "암컷"
+                  ? "bg-gender-female-color"
+                  : "bg-gray-400"
+              }`}
+            >
+              {gender}
+            </p>
+            <p className="text-xs mx-1 text-white bg-gray-400 p-1 rounded font-bold">
+              {size}
+            </p>
+          </div>
+          <div className="flex items-center ml-4">
+            <img className="flex w-[15px] mx-1" src="/img/clock.png" />
+            <p className="text-gray-500 text-[15px]">
+              {formatDateToCustomString(createdAt)}
+            </p>
           </div>
         </PC>
-        <div className="flex items-center mt-1">
-          <img className="flex w-[15px] mx-1" src="/img/clock.png" />
-          <p className="text-gray-500 text-[15px]">
-            {formatDateToCustomString(createdAt)}
-          </p>
-        </div>
+        <Mobile>
+          <h3 className="font-bold ml-1 text-xl mx-1">{title}</h3>
+          <div className="w-full flex flex-row items-center">
+            <p className="text-sm ml-1 mr-1">
+              {state === "selling" ? "현재 입찰가 : " : "낙찰가 : "}
+            </p>
+            <p className="font-bold text-lg">
+              {currentPrice ? currentPrice : "---"}
+            </p>
+            <p className="text-sm ml-1">원</p>
+          </div>
+          <div className="flex items-center">
+            <p
+              className={`text-xs ml-1 text-white p-1 rounded font-bold ${
+                gender === "수컷"
+                  ? "bg-gender-male-color"
+                  : gender === "암컷"
+                  ? "bg-gender-female-color"
+                  : "bg-gray-400"
+              }`}
+            >
+              {gender}
+            </p>
+            <p className="text-xs mx-1 text-white bg-gray-400 p-1 rounded font-bold">
+              {size}
+            </p>
+          </div>
+          <div className="flex items-center mt-1">
+            <img className="flex w-[15px] mx-1" src="/img/clock.png" />
+            <p className="text-gray-500 text-[15px]">
+              {formatDateToCustomString(createdAt)}
+            </p>
+          </div>
+        </Mobile>
       </div>
     </div>
   );

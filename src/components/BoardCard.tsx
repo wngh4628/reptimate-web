@@ -82,21 +82,39 @@ export default function PostCard({
           </article>
         </Link>
       </div>
-      <div className="mx-3 mt-2 mb-6 flex flex-col">
-        <h3 className="font-bold text-xl mx-1">{title}</h3>
-        <div className="flex items-center mt-1">
-          <img className="flex w-6 mx-1" src="/img/eye.png" />
-          <p className="">{view}</p>
-          <img className="flex w-5 mx-1" src="/img/clock.png" />
-          <p className="">{`${writeDate.getFullYear().toString().slice(2)}.${(
-            writeDate.getMonth() + 1
-          )
-            .toString()
-            .padStart(2, "0")}.${writeDate
-            .getDate()
-            .toString()
-            .padStart(2, "0")}`}</p>
-        </div>
+      <div className=" mx-1 mt-2 mb-6 flex flex-col">
+        <PC>
+          <h3 className="font-bold ml-4 text-xl mx-1">{title}</h3>
+          <div className="flex items-center ml-5">
+            <img className="flex w-5 mr-1" src="/img/eye.png" />
+            <p className="">{view}</p>
+            <img className="flex w-4 mx-1" src="/img/clock.png" />
+            <p className="">{`${writeDate.getFullYear().toString().slice(2)}.${(
+              writeDate.getMonth() + 1
+            )
+              .toString()
+              .padStart(2, "0")}.${writeDate
+              .getDate()
+              .toString()
+              .padStart(2, "0")}`}</p>
+          </div>
+        </PC>
+        <Mobile>
+          <h3 className="font-bold ml-1 text-xl mx-1">{title}</h3>
+          <div className="flex items-center mt-1 ml-1">
+            <img className="flex w-5 mr-1" src="/img/eye.png" />
+            <p className="">{view}</p>
+            <img className="flex w-4 mx-1" src="/img/clock.png" />
+            <p className="">{`${writeDate.getFullYear().toString().slice(2)}.${(
+              writeDate.getMonth() + 1
+            )
+              .toString()
+              .padStart(2, "0")}.${writeDate
+              .getDate()
+              .toString()
+              .padStart(2, "0")}`}</p>
+          </div>
+        </Mobile>
       </div>
     </div>
   );
