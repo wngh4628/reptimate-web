@@ -22,3 +22,8 @@ export const chatNowInfoState = atom({
     key: "chatNowInfoState",
     default: {nickname: "", roomName: 0, profilePath: ""},
 });
+
+export const receivedNewChatState = atom({
+    key: "receivedNewChatState",
+    default: false,
+});
