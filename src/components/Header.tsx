@@ -5,12 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mobile, PC } from "./ResponsiveLayout";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import {
-  isLoggedInState,
-  userAtom,
-  chatVisisibleState,
-  fcmState,
-} from "@/recoil/user";
+import { isLoggedInState, userAtom, chatVisisibleState, fcmState } from "@/recoil/user";
 import ChatModal from "@/components/chatting/ChatModal";
 import { chatRoomState, chatRoomVisisibleState, receivedNewChatState } from "@/recoil/chatting";
 import PersonalChat from "@/components/chat/personalChat";
@@ -42,20 +37,13 @@ export default function Header() {
 
   const [fcm, setfcm] = useRecoilState(fcmState);
 
-  // if (typeof Android !== "undefined" && Android !== null) {
-  //   const permission = Android.requestNotificationPermission();
-  //   useEffect(() => {
-  //     permission;
-  //   }, []);
-  // }
-
   useEffect(() => {
     handleLogin();
     onMessageFCM()
   }, [pathName]);
 
   useEffect(() => {
-  
+    
   }, [])
 
 
@@ -106,6 +94,14 @@ export default function Header() {
       console.log('*')
       console.log('============================================')
       setreceivedNewChat(true);
+
+      const body = payload.notification?.body;
+      const title = payload.notification?.title || "";
+      const result = typeof body === 'string' ? JSON.parse(body) : body;
+      setfcmNotification({
+        body: result,
+        title: title
+      });
     });
   }
  
@@ -116,7 +112,6 @@ export default function Header() {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken != null) {
         const accessToken = userData.USER_DATA.accessToken;
-        
         isSetLogin(true);
       }
     }

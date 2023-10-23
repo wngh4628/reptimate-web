@@ -19,7 +19,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 interface UserInfoData {
-  [userIdx: number]: {
+  [userIdx: string]: {
     userIdx: number;
     nickname: string;
     profilePath: string;
@@ -54,7 +54,8 @@ export default function StreamingChatView() {
   const [bidStartPrice, setBidStartPrice] = useState(""); // 입찰 시작가
 
   const [userList, setUserList] = useState<UserInfoData>({}); //현재 참여자 목록
-  const [host, setHost] = useState(0); //방장 유무: 현재 하드코딩 -> 나중에 방 입장 시, props로 들고와야함
+  const [viewerCount, setviewerCount] = useState(0);
+  const [host, setHost] = useState(0); //방장 유무: 게시글 작성자의 idx로 지정
   const [boardIdx, setBoardIdx] = useState(0); //게시글 번호: 현재 하드코딩 -> 나중에 방 입장 시, props로 들고와야함
   const [userAuth, setUserAuth] = useState("guest"); //유저 권한
   const [noChatState, setNoChatState] = useState<boolean>(false); //유저 권한
@@ -63,15 +64,17 @@ export default function StreamingChatView() {
 
   const [userInfoData, setUserInfoData] = useState<userInfo[]>([]); //유저 정보 가지고 있는 리스트
 
-  const [userIdx, setUserIdx] = useState<number>(0); // 유저의 userIdx 저장
-  const [nickname, setNickname] = useState(""); // 유저의 userIdx 저장
-  const [profilePath, setProfilePath] = useState(""); // 유저의 userIdx 저장
+  const [userIdx, setUserIdx] = useState<number>(0); // 로그인 한 유저의 userIdx 저장
+  const [nickname, setNickname] = useState(""); // 유저의 nickname 저장
+  const [profilePath, setProfilePath] = useState(""); // 유저의 profilePath 저장
 
   const [sideView, setSideView] = useState("chat");
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const bidContainerRef = useRef<HTMLDivElement | null>(null);
   const [countdown, setCountdown] = useState("");
+
+  const [isInputDisabled, setIsInputDisabled] = useState(true); // 채팅 입력란 입력 가능여부
 
 
   useEffect(() => {
@@ -120,6 +123,12 @@ export default function StreamingChatView() {
       setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit))
       setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice))
 
+      setHost(response.data.result.UserInfo.idx);
+
+      if (response.data.result.UserInfo.idx === userIdx) {
+        setUserAuth("host")
+      }
+
       setNowBid(
         formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
       );
@@ -143,6 +152,7 @@ export default function StreamingChatView() {
         if (timeRemaining < 0) {
           setCountdown("경매가 종료되었습니다!");
           clearInterval(countdownInterval);
+          setIsInputDisabled(false)
         } else {
           const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
           const hours = Math.floor(
@@ -212,7 +222,9 @@ export default function StreamingChatView() {
     });
     // 메시지 리스너
     socket.on("live_message", (message: IMessage) => {
+      console.log("live_message  :  ================");
       console.log(message);
+      console.log("=============================");
       setchattingData((chattingData) => [...chattingData, message]);
     });
     //강퇴 처리
@@ -247,7 +259,6 @@ export default function StreamingChatView() {
     //다른 참여자가 방을 나갔을 때
     socket.on("leave-user", (message: IMessage) => {
       // console.log("message", message);
-
       setUserList((prevUserList) => {
         const newData: { [key: number]: any } = { ...prevUserList };
         delete newData[message.userIdx];
@@ -276,28 +287,35 @@ export default function StreamingChatView() {
       if (userIdx === host) {
         setUserAuth("host");
       }
+      console.log("===========live_participate : =======");
+      console.log(message);
+      console.log("====================================");
       const messageArray = Array.isArray(message) ? message : [message];
-      messageArray.forEach((data) => {
+      messageArray.forEach((data: any) => {
         const getUserInfo = data;
-        setUserInfoData((prevUserInfoData) => ({
-          ...prevUserInfoData,
-          [getUserInfo.userIdx]: {
-            userIdx: getUserInfo.userIdx,
-            profilePath: getUserInfo.profilePath,
-            nickname: getUserInfo.nickname,
-          },
-        }));
-        setUserList((prevsetUserList) => ({
-          ...prevsetUserList,
-          [getUserInfo.userIdx]: {
-            userIdx: getUserInfo.userIdx,
-            profilePath: getUserInfo.profilePath,
-            nickname: getUserInfo.nickname,
-          },
-        }));
+        if (getUserInfo && getUserInfo.profilePath && getUserInfo.profilePath.length > 1) {
+          setUserInfoData((prevUserInfoData) => ({
+            ...prevUserInfoData,
+            [getUserInfo.userIdx]: {
+              userIdx: getUserInfo.userIdx,
+              profilePath: getUserInfo.profilePath,
+              nickname: getUserInfo.nickname,
+            },
+          }));
+          setUserList((prevsetUserList) => ({
+            ...prevsetUserList,
+            [getUserInfo.userIdx]: {
+              userIdx: getUserInfo.userIdx,
+              profilePath: getUserInfo.profilePath,
+              nickname: getUserInfo.nickname,
+            },
+          }));
+        } else {
+
+        }
       });
     });
-    // console.log(socket.connected);
+    console.log(socket.connected);
     // socket disconnect on component unmount if exists
     return () => {
       if (socketRef.current) {
@@ -326,7 +344,6 @@ export default function StreamingChatView() {
     setUserList({});
     setNoChatState(false);
     setchattingBidData([]);
-    setUserAuth("guest");
   }, [socketRef, userIdx, roomName]);
 
   useEffect(() => {
@@ -348,9 +365,6 @@ export default function StreamingChatView() {
   }, [roomOut]);
 
   useEffect(() => {
-    console.log("======경매글 방 번호======");
-    console.log(roomName);
-    console.log("==================");
     liveRoomIdx.current = roomName;
     auctionRoomIdx.current = roomName;
   }, [roomName]);
@@ -362,6 +376,9 @@ export default function StreamingChatView() {
   useEffect(() => {
     // console.log("banList", banList);
   }, [banList]);
+  useEffect(() => {
+    console.log("userList", userList);
+  }, [userList]);
 
   //강퇴 시키기
   const ban = (banUserIdx: number) => {
@@ -554,7 +571,7 @@ export default function StreamingChatView() {
     });
     socketBid.on("Auction_End", (message: string) => {
       console.log("======경매 입찰 채팅 : 경매 종료=======");
-      console.log("Auction_End message", message);
+      console.log("Auction_End message  :  ", message);
       console.log("============================");
     });
     socketBid.on("error", (message: string) => {
@@ -641,6 +658,27 @@ export default function StreamingChatView() {
   //메시지 발송하는 함수
   const sendBidMsg = async () => {
     if (bidMsg.trim() !== "") {
+      const numericValue = parseInt(bidMsg.trim(), 10);
+
+      if (numericValue % parseInt(bidUnit) !== 0) {
+        // 입력값이 1000의 배수가 아니면 초기화
+        Swal.fire({
+          text:'입찰 단위를 확인해 주시기 바랍니다.',
+          icon: 'error',
+          confirmButtonText: '확인', // confirm 버튼 텍스트 지정
+          confirmButtonColor: '#7A75F7', // confrim 버튼 색깔 지정
+        });
+        return
+      }
+      if (parseInt(bidMsg.trim()) < parseInt(bidStartPrice)) {
+        Swal.fire({
+          text:'입찰 시작가 보다 큰 금액을 입력해 주세요',
+          icon: 'error',
+          confirmButtonText: '확인', // confirm 버튼 텍스트 지정
+          confirmButtonColor: '#7A75F7', // confrim 버튼 색깔 지정
+          });
+        return;
+      }
       if (!biddingState) {
         await fetchParticipate();
       }
@@ -652,13 +690,11 @@ export default function StreamingChatView() {
           message: bidMsg.trim(),
           room: roomName,
         };
-        console.log(message);
         socketBidRef.current.emit("Auction_message", message);
         setBidMsg("");
       }
     }
   };
-
   function viewChat() {
     if (sideView != "chat") {
       setSideView("chat");
@@ -677,8 +713,8 @@ export default function StreamingChatView() {
   return (
     <>
       <div className="flex-col w-full right-0 h-[87%] flex bg-white">
-        <div className="flex py-[0.5rem] text-sm bg-gray-100 w-full">
-          <span className="text-center self-center items-center justify-center mx-auto">
+        <div className="flex-col py-[0.5rem] text-sm bg-gray-100 w-full">
+          <span className="flex text-center self-center items-center justify-center mx-auto">
             {countdown}
           </span>
         </div>
@@ -731,10 +767,12 @@ export default function StreamingChatView() {
                   onChange={onChangeKeyword}
                   value={textMsg}
                   placeholder="(100자 이하)"
+                  disabled={isInputDisabled}
                 />
                 <button
                   className="w-[20%] h-12 bg-main-color text-white rounded transition duration-300 ml-1"
                   onClick={sendMsg}
+                  disabled={isInputDisabled}
                 >
                   채팅
                 </button>
@@ -749,7 +787,7 @@ export default function StreamingChatView() {
         {sideView === "participate" ? (
           <div className="flex-1 min-h-[77.9vh] max-h-[77.9vh] w-full border-gray-100 border-r-[1px] border-b-[1px]">
             <div className="flex flex-col overflow-auto bg-white mt-2 pl-5">
-              {Object.values(userList).map((userList) => (
+              {Object.values(userInfoData).map((userList) => (
                 <ChatUserList
                   key={userList.userIdx}
                   userList={userList}
@@ -809,10 +847,12 @@ export default function StreamingChatView() {
                   onChange={onChangeBid}
                   value={bidMsg}
                   placeholder=""
+                  disabled={isInputDisabled}
                 />
                 <button
                   className="w-[20%] h-12 bg-main-color text-white rounded transition duration-300 ml-1"
                   onClick={sendBidMsg}
+                  disabled={isInputDisabled}
                 >
                   입찰
                 </button>

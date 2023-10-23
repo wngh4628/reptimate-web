@@ -1,6 +1,10 @@
 'use client'
 import React, {useState,forwardRef,useImperativeHandle, useEffect} from 'react';
 import { IMessage, connectMessage, chatRoom, userInfo } from "@/service/chat/chat"
+import { fcmNotificationState } from "@/recoil/user";
+import { useRecoilState } from 'recoil';
+
+
 
 
 // type Props = { userIdx: number, chatData: IMessage, userInfoData: userInfo};
@@ -26,10 +30,25 @@ const ChatList = forwardRef((props :{
         }
         unreadCount: number;
     }
+    updateChatRoomData: (targetNickname: string, newRecentMessage: string) => void
     ,
 }, ref) =>{
 	useImperativeHandle(ref, () => ({
 	}));
+    const [fcmNotification, setfcmNotification] = useRecoilState(fcmNotificationState);
+    // 자동으로 값을 변경하는 useEffect
+    useEffect(() => {
+        console.log("useEffect : ChatList : fcmNotification")
+        // 원하는 조건을 설정하여 자동으로 값을 변경
+        if (props.chatRoomData.UserInfo.nickname === fcmNotification.title) {
+          const newRecentMessage = fcmNotification.body.description; // 변경하고자 하는 recentMessage
+          console.log("useEffect : ChatList : fcmNotification : 일치 : " + props.chatRoomData.UserInfo.nickname)
+          // PersonalChat 컴포넌트에서 전달받은 함수 호출
+          props.updateChatRoomData(props.chatRoomData.UserInfo.nickname, newRecentMessage);
+        }
+    }, [fcmNotification]);
+
+
     function formatDateToCustomString(dateString: string): string {
         const dateObject = new Date(dateString);
         const options: Intl.DateTimeFormatOptions = {
@@ -42,6 +61,8 @@ const ChatList = forwardRef((props :{
         const formattedDate = new Intl.DateTimeFormat('ko-KR', options).format(dateObject);
         return formattedDate;
       }
+
+
     return (
 		<div className='w-full flex flex-row justify-between cursor-pointer h-[75px] border-b-[1px]'>
             <div className='flex flex-row'>
