@@ -15,6 +15,13 @@ interface User {
   profilePath: string;
   nickname: string;
 }
+interface fcm {
+  body: {
+    type: string;
+    description: string;
+  };
+  title: string;
+}
 
 export interface UserData {
   USER_DATA: {
@@ -43,4 +50,15 @@ export const chatVisisibleState = atom({
 export const fcmState = atom({
   key: "fcmState",
   default: "",
+});
+
+export const fcmNotificationState = atom<fcm>({
+  key: "fcmNotificationState",
+  default: {
+    body: {
+      type: "",
+      description: "",
+    },
+    title: "",
+  },
 });

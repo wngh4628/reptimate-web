@@ -10,6 +10,7 @@ import {
   userAtom,
   chatVisisibleState,
   fcmState,
+  fcmNotificationState,
 } from "@/recoil/user";
 import ChatModal from "@/components/chatting/ChatModal";
 import {
@@ -49,13 +50,8 @@ export default function Header() {
     useRecoilState(receivedNewChatState);
 
   const [fcm, setfcm] = useRecoilState(fcmState);
-
-  // if (typeof Android !== "undefined" && Android !== null) {
-  //   const permission = Android.requestNotificationPermission();
-  //   useEffect(() => {
-  //     permission;
-  //   }, []);
-  // }
+  const [fcmNotification, setfcmNotification] =
+    useRecoilState(fcmNotificationState);
 
   useEffect(() => {
     handleLogin();
@@ -113,6 +109,14 @@ export default function Header() {
       console.log("*");
       console.log("============================================");
       setreceivedNewChat(true);
+
+      const body = payload.notification?.body;
+      const title = payload.notification?.title || "";
+      const result = typeof body === "string" ? JSON.parse(body) : body;
+      setfcmNotification({
+        body: result,
+        title: title,
+      });
     });
   };
 
@@ -122,7 +126,6 @@ export default function Header() {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken != null) {
         const accessToken = userData.USER_DATA.accessToken;
-
         isSetLogin(true);
       }
     }
