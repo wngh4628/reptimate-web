@@ -27,3 +27,4 @@ export const receivedNewChatState = atom({
     key: "receivedNewChatState",
     default: false,
 });
+

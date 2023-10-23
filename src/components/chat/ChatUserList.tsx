@@ -1,9 +1,8 @@
 'use client'
-import React, {useState,forwardRef,useRef, useEffect} from 'react';
+import React, {useState,forwardRef,useRef, useEffect, useImperativeHandle} from 'react';
 import Swal from 'sweetalert2';
 
 const ChatUserList = forwardRef((props :{
-	key: any,
 	userList: {
 		userIdx: number,
         nickname: string,
@@ -13,10 +12,12 @@ const ChatUserList = forwardRef((props :{
 	noChat : any,
 	userAuth : string
 }, ref) =>{
-
+	useImperativeHandle(ref, () => ({
+		
+	}));
 	const [boxState, setBoxState] = useState(false);// 옵션 박스 상태
 	const [SwalOn, setSwalOn] = useState(false); //알림 모달창 유무
-	const wrapperRef = useRef();
+	const wrapperRef = useRef<HTMLDivElement | null>(null);
 	useEffect(()=>{
         document.addEventListener('mouseup', handleClickOutside);
         return()=>{
@@ -81,15 +82,14 @@ const ChatUserList = forwardRef((props :{
 		}
 	}
     return (
-		<div className="flex " key={props.userList.userIdx}  >
-
+		<div className="flex ">
 			{/* <div>{props.userList.userIdx}</div>
 			<div>:</div> */}
 			<div className='flex' onClick={optionBoxOnOff} style={{cursor:"pointer"}}>{props.userList.nickname}</div>
-			{boxState === true ?
-				<div className='border-[10px] border-gray-300' style={{position:"absolute",marginTop:"20px", backgroundColor:"#fffff", width:"100px", height:"60px"}} ref={wrapperRef}>
-					<div style={{display:"flex",alignItems:"center", justifyContent:"center", fontWeight:"bold",}} onClick={() => modalOnOff('ben')}><h1>강퇴</h1></div>
-					<div style={{display:"flex",alignItems:"center", justifyContent:"center", fontWeight:"bold"}} onClick={() => modalOnOff('noChat')}><h1>채금</h1></div>
+			{boxState ?
+				<div className='border-[5px] border-gray-300 bg-white' style={{position:"absolute",marginTop:"20px", backgroundColor:"#fffff", width:"100px", height:"60px"}} ref={wrapperRef}>
+					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('ben')}><h1>강퇴</h1></div>
+					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('noChat')}><h1>채금</h1></div>
 				</div>
 				: 
 				""

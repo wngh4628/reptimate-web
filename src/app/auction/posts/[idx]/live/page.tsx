@@ -164,7 +164,6 @@ export default function ActionPage({ params: { slug } }: Props) {
                   />
                 </span>
                 <span className="py-[1rem] pe-[1rem]">공유</span>
-                <span className="py-[1rem] pe-[1rem]">20명 참여중</span>
               </div>
             </div>
           </div>
