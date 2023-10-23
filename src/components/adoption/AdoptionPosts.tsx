@@ -147,13 +147,7 @@ export default function AdoptionPosts() {
 
     return (
       <section>
-        <PC>
-          <h2 className="text-2xl font-bold p-10">분양글</h2>
-        </PC>
-        <Mobile>
-          <h2 className="font-bold pl-3 pt-2 pb-2">분양글</h2>
-        </Mobile>
-        <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-5 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
             <li key={post.idx}>
               <PostCard post={post} />
@@ -182,7 +176,7 @@ export default function AdoptionPosts() {
         </PC>
         <Mobile>
           {isLogin && (
-            <div className="fixed bottom-6 right-10 z-50">
+            <div className="fixed bottom-6 right-6 z-50">
               <button
                 className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
                 onClick={handleWriteClick}

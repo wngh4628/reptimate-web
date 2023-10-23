@@ -199,6 +199,14 @@ export default function Header() {
               AUCTION
             </Link>
             <Link
+              href="/ai"
+              className={`${
+                pathName === "/ai" ? "text-[#6D71E6]" : ""
+              } group hover:text-main-color`}
+            >
+              AI
+            </Link>
+            <Link
               href="/my"
               className={`${
                 pathName === "/my" ? "text-[#6D71E6]" : ""

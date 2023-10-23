@@ -87,11 +87,11 @@ export default function PostCard({
           </article>
         </Link>
       </div>
-      <div className=" mx-4 mt-2 mb-6 flex flex-col">
-        <h3 className="font-bold text-xl mx-1">{title}</h3>
+      <div className=" mx-1 mt-2 mb-6 flex flex-col">
         <PC>
-          <div className="flex items-center">
-            <p className="font-bold text-lg ml-1">{price}원</p>
+          <h3 className="font-bold ml-4 text-xl mx-1">{title}</h3>
+          <div className="flex ml-3 items-center">
+            <p className="font-bold text-lg ml-1">{price.toLocaleString()}원</p>
             <p
               className={`text-xs mx-1 text-white p-1 rounded font-bold ${
                 gender === "수컷"
@@ -107,20 +107,53 @@ export default function PostCard({
               {size}
             </p>
           </div>
+          <div className="flex items-center ml-5">
+            <img className="flex w-5 mr-1" src="/img/eye.png" />
+            <p className="">{view}</p>
+            <img className="flex w-4 mx-1" src="/img/clock.png" />
+            <p className="">{`${writeDate.getFullYear().toString().slice(2)}.${(
+              writeDate.getMonth() + 1
+            )
+              .toString()
+              .padStart(2, "0")}.${writeDate
+              .getDate()
+              .toString()
+              .padStart(2, "0")}`}</p>
+          </div>
         </PC>
-        <div className="flex items-center mt-1 ml-1">
-          <img className="flex w-5 mx-1" src="/img/eye.png" />
-          <p className="">{view}</p>
-          <img className="flex w-4 mx-1" src="/img/clock.png" />
-          <p className="">{`${writeDate.getFullYear().toString().slice(2)}.${(
-            writeDate.getMonth() + 1
-          )
-            .toString()
-            .padStart(2, "0")}.${writeDate
-            .getDate()
-            .toString()
-            .padStart(2, "0")}`}</p>
-        </div>
+        <Mobile>
+          <h3 className="font-bold ml-1 text-xl mx-1">{title}</h3>
+          <div className="flex items-center">
+            <p
+              className={`text-xs ml-1 text-white p-1 rounded font-bold ${
+                gender === "수컷"
+                  ? "bg-gender-male-color"
+                  : gender === "암컷"
+                  ? "bg-gender-female-color"
+                  : "bg-gray-400"
+              }`}
+            >
+              {gender}
+            </p>
+            <p className="text-xs mx-1 text-white bg-gray-400 p-1 rounded font-bold">
+              {size}
+            </p>
+          </div>
+          <p className="font-semibold ml-1">{price.toLocaleString()}원</p>
+          <div className="flex items-center mt-1 ml-1">
+            <img className="flex w-5 mr-1" src="/img/eye.png" />
+            <p className="">{view}</p>
+            <img className="flex w-4 mx-1" src="/img/clock.png" />
+            <p className="">{`${writeDate.getFullYear().toString().slice(2)}.${(
+              writeDate.getMonth() + 1
+            )
+              .toString()
+              .padStart(2, "0")}.${writeDate
+              .getDate()
+              .toString()
+              .padStart(2, "0")}`}</p>
+          </div>
+        </Mobile>
       </div>
     </div>
   );
