@@ -230,7 +230,7 @@ export default function AdoptionEdit() {
 
     return (
       <button onClick={handleGoBack} className="cursor-poiter px-2 font-bold">
-        &lt;
+        &lt; 뒤로가기
       </button>
     );
   }

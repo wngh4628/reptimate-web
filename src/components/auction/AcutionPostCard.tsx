@@ -44,36 +44,28 @@ export default function AuctionPostCard({
     }
     return str;
   }
-
+  const imgStyle = {
+    paddingBottom: "100%",
+    position: "relative" as "relative",
+  };
   return (
     <div>
-      <div className="ml-5 mr-5 relative">
+      <div className="ml-0.5 mr-0.5 relative">
         <Link href={`/auction/posts/${idx}`}>
           <article className="flex flex-col items-center">
             <PC>
-              <div className=" flex relative w-full h-[320px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
+              <div className="relative w-[350px] h-[350px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
                 <img
                   className="object-cover w-full h-full"
                   src={`${coverImage}` || "/img/reptimate_logo.png"}
                   alt={""}
+                  style={{ zIndex: 1 }}
                 />
-                <div className="flex-grow"></div>
-                <p
-                  className={`${
-                    state === "selling"
-                      ? "text-red-500"
-                      : state === "end"
-                      ? "text-gray-400"
-                      : "text-main-color"
-                  } text-xl font-bold z-[999] relative mt-1 mr-[6px]`}
-                >
-                  {setStateString(state)}
-                </p>
               </div>
               <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
-                  className="w-10 h-10 rounded-full border-2 ml-1"
+                  className="ml-6 w-10 h-10 rounded-full border-2"
                   src={
                     profilePath !== null
                       ? profilePath
@@ -85,18 +77,20 @@ export default function AuctionPostCard({
               </div>
             </PC>
             <Mobile>
-              <div className="relative w-[130px] h-[130px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
+              <div className="relative w-full overflow-hidden shadow-sm shadow-gray-400 hover:border-2 hover:border-main-color">
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
-                <img
-                  className="object-cover w-full h-full"
-                  src={`${coverImage}` || "/img/reptimate_logo.png"}
-                  alt={""}
-                  style={{ zIndex: 1 }}
-                />
+                <div style={imgStyle}>
+                  <img
+                    className="object-cover absolute inset-0 w-full h-full"
+                    src={`${coverImage || "/img/reptimate_logo.png"}`}
+                    alt=""
+                    style={{ zIndex: 1 }}
+                  />
+                </div>
               </div>
               <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
-                  className="w-7 h-7 rounded-full border-2"
+                  className="ml-2 w-8 h-8 rounded-full border-2"
                   src={
                     profilePath !== null
                       ? profilePath

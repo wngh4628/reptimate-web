@@ -71,7 +71,7 @@ export default function PostCard({
               </div>
               <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
-                  className="ml-1 w-7 h-7 rounded-full border-2"
+                  className="ml-2 w-8 h-8 rounded-full border-2"
                   src={
                     profilePath !== null
                       ? profilePath
