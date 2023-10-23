@@ -1,5 +1,6 @@
 import instance from "@/api/index";
-
+import { isLoggedInState, userAtom } from "@/recoil/user";
+import { useSetRecoilState, useRecoilState, useRecoilValue } from "recoil";
 
 export const login = async ({
   email,
@@ -38,6 +39,7 @@ export const socialLogin = async ({
     'fbToken' : fbToken
   };
   // const config = {"Content-Type": 'application/json'};
+  
   const result = await instance.post("/auth/social", data);
 
   console.log("로그인 시도(login.ts) - social"+socialType+" : fbToken : " + fbToken)

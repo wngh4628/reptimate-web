@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import axios from "axios";
@@ -10,7 +10,7 @@ import PersonalChatBox from "@/components/chat/ChatBox"
 import {chatRoom,connectMessage,Ban_Message,userInfo, getResponseChatList } from "@/service/chat/chat"
 
 import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
-import { userAtom, isLoggedInState } from "@/recoil/user";
+import { userAtom, isLoggedInState, fcmNotificationState } from "@/recoil/user";
 import { chatRoomState, chatRoomVisisibleState, chatNowInfoState, receivedNewChatState} from "@/recoil/chatting";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
@@ -38,6 +38,8 @@ export default function PersonalChat() {
   const [loading, setLoading] = useState(false);
   const target = useRef(null);
 
+  const pathName = usePathname() || "";
+
   const [move, setMove] = useState(false);
 
   const [userIdx, setUserIdx] = useState<number>(0); // 유저의 userIdx 저장
@@ -55,6 +57,8 @@ export default function PersonalChat() {
   const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
   const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
   const [receivedNewChat, setreceivedNewChat] = useRecoilState(receivedNewChatState);
+
+  const [fcmNotification, setfcmNotification] = useRecoilState(fcmNotificationState);
   // const [chatRoom, setchatRoom] = useRecoilState(chatRoomState);
 
   const options = {
@@ -74,7 +78,7 @@ export default function PersonalChat() {
         setNickname(userData.USER_DATA.nickname);
         setProfilePath(userData.USER_DATA.profilePath);
 
-        //getChatRoomList(accessToken);
+        getChatRoomList(extractedAccessToken);
         // setchatRoomData([])
         // chatRoomData 배열의 각 요소를 확인하여 unreadCount가 0보다 큰지 확인
         const hasUnreadMessages = chatRoomData.some((chatRoom) => chatRoom.unreadCount > 0);
@@ -86,7 +90,45 @@ export default function PersonalChat() {
       } else {
       }
     }
-  }, [])
+  }, [pathName])
+
+
+  useEffect(() => {
+    console.log("*******PersonalChat : useEffect : fcmNotification**************")
+    console.log("*")
+    console.log(fcmNotification)
+    console.log("*")
+    console.log("***************************")
+
+    if (fcmNotification.body.type == "chat") {
+      updateChatRoomData(fcmNotification.body.description, fcmNotification.title);
+    }
+  }, [fcmNotification])
+
+  const updateChatRoomData = (newRecentMessage: string, nickname: string) => {
+    // 채팅 목록의 내용 변경
+    const updatedChatRoomData = chatRoomData.map((chatRoom) => {
+      if (chatRoom.UserInfo.nickname === nickname) {
+        return {
+          ...chatRoom,
+          chatRoom: {
+            ...chatRoom.chatRoom,
+            recentMessage: newRecentMessage,
+          },
+          unreadCount: chatRoom.unreadCount + 1,
+        };
+
+      }
+      return chatRoom;
+    });
+    // 목록의 가장 앞으로 위치
+    const indexOfUpdatedChatRoom = updatedChatRoomData.findIndex((chatRoom) => chatRoom.UserInfo.nickname === nickname);
+    if (indexOfUpdatedChatRoom !== -1) {
+      updatedChatRoomData.unshift(updatedChatRoomData.splice(indexOfUpdatedChatRoom, 1)[0]);
+    }
+  
+    setchatRoomData(updatedChatRoomData);
+  };
 
   useEffect(() => {
     // chatRoomData 배열의 각 요소를 확인하여 unreadCount가 0보다 큰지 확인
@@ -99,8 +141,8 @@ export default function PersonalChat() {
   }, [chatRoomData])
 
   useEffect(() => {
-    setchatRoomData([])
     if (!chatRoomVisisible) {
+      setchatRoomData([])
       const storedData = localStorage.getItem('recoil-persist');
       if (storedData) {
         const userData = JSON.parse(storedData);
@@ -165,7 +207,7 @@ export default function PersonalChat() {
       console.log("=========getChatRoomList() : personalChat.tsx : catch (error: any)========")
       console.log(error)
       console.log("======================")
-        if(error.response.status == 401) {
+        if(error.response && error.response.status == 401) {
             const storedData = localStorage.getItem('recoil-persist');
             if (storedData) {
                 const userData = JSON.parse(storedData);
@@ -244,7 +286,7 @@ return (
               <div className="cursor-pointer"
                 key={i}
                 onClick={() => intoChatting(chatRoomData)} >
-                <ChatList chatRoomData={chatRoomData} key={i}/>
+                <ChatList chatRoomData={chatRoomData} key={i} updateChatRoomData={updateChatRoomData}/>
               </div>
             ))}
             </div>
