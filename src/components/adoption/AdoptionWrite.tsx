@@ -474,8 +474,13 @@ export default function AdoptionWrite() {
           max="5"
         />
         <label
-          className="flex overflow-x-auto border-2 border-gray-300 items-center justify-center py-3 cursor-pointer mx-auto"
+          className="flex border-2 border-gray-300 items-center py-3 cursor-pointer mx-auto"
           htmlFor="mediaInput"
+          style={{
+            width: "100%", // 화면 넓이보다 넓도록 설정
+            overflowX: "auto", // 가로 스크롤 허용
+            whiteSpace: "nowrap", // 텍스트 줄 바꿈 방지
+          }}
         >
           {selectedFiles.length === 0 && (
             <div className="w-32 h-32 flex flex-col items-center justify-center">
