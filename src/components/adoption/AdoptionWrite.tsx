@@ -293,7 +293,7 @@ export default function AdoptionWrite() {
       <div ref={(node) => drag(drop(node))}>
         <div
           key={fileItem.id}
-          className="relative w-32 h-32 mx-2 border-2 border-gray-200"
+          className="relative w-28 h-28 mx-2 border-2 border-gray-300 rounded-xl"
           onClick={(e) => e.preventDefault()}
         >
           {fileItem.file.type.startsWith("image/") ? (
@@ -463,29 +463,7 @@ export default function AdoptionWrite() {
           </option>
         ))}
       </select> */}
-      <div className="">
-        <div
-          className="flex border-2 border-gray-300 items-center py-3 mx-auto"
-          style={{
-            width: "100%", // 화면 넓이보다 넓도록 설정
-            overflowX: "auto", // 가로 스크롤 허용
-            whiteSpace: "nowrap", // 텍스트 줄 바꿈 방지
-          }}
-        >
-          {selectedFiles.length === 0 && (
-            <div className="w-auto h-32 flex flex-col items-center justify-center mx-auto">
-              <span className="">
-                사진 및 비디오 최대 5개까지 선택 가능합니다.
-              </span>
-            </div>
-          )}
-          {selectedFiles.map((fileItem, index) => (
-            <FileItem key={fileItem.id} fileItem={fileItem} index={index} />
-          ))}
-        </div>
-        <div className="w-auto flex flex-col items-center mx-auto">
-          {selectedFiles.length}/5개
-        </div>
+      <div className="flex flex-row">
         <input
           type="file"
           accept="image/*, video/*"
@@ -496,11 +474,30 @@ export default function AdoptionWrite() {
           max="5"
         />
         <label
-          className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-md text-[16px] h-10 w-full my-2"
+          className="w-auto h-auto cursor-pointer py-3"
           htmlFor="mediaInput"
         >
-          파일 선택
+          <div className="w-28 h-28 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
+            <img
+              src="/img/camera.png"
+              alt="Camera Icon"
+              className="w-16 h-16"
+            />
+            <span className="">{selectedFiles.length}/5</span>
+          </div>
         </label>
+        <div
+          className="flex items-center py-3 mx-auto"
+          style={{
+            width: "100%", // 화면 넓이보다 넓도록 설정
+            overflowX: "auto", // 가로 스크롤 허용
+            whiteSpace: "nowrap", // 텍스트 줄 바꿈 방지
+          }}
+        >
+          {selectedFiles.map((fileItem, index) => (
+            <FileItem key={fileItem.id} fileItem={fileItem} index={index} />
+          ))}
+        </div>
       </div>
       <div className="mt-4 flex flex-col">
         <p className="font-bold text-xl my-2">제목</p>
