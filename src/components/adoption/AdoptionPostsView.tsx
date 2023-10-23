@@ -73,12 +73,12 @@ export default function AdoptionPostsView() {
   const [chatRoomData, setchatRoomData] = useState<chatRoom[]>([]);
 
   function getCookie(name: string) {
-    var value = "; " + document.cookie;
-    var parts = value.split("; " + name + "=");
+    const value = "; " + document.cookie;
+    const parts = value.split("; " + name + "=");
     if (parts.length == 2) {
-      var cookieValue = parts.pop()?.split(";").shift();
+      const cookieValue = parts.pop()?.split(";").shift();
       try {
-        var cookieObject = JSON.parse(cookieValue || "");
+        const cookieObject = JSON.parse(cookieValue || "");
         return cookieObject;
       } catch (error) {
         console.error("Error parsing JSON from cookie:", error);
@@ -89,15 +89,15 @@ export default function AdoptionPostsView() {
 
   useEffect(() => {
     // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
-    var myAppCookie = getCookie("myAppCookie");
+    const myAppCookie = getCookie("myAppCookie");
 
     if (myAppCookie !== undefined) {
       console.log(myAppCookie);
-      var accessToken = myAppCookie.accessToken;
-      var idx = parseInt(myAppCookie.idx || "", 10) || 0;
-      var refreshToken = myAppCookie.refreshToken;
-      var nickname = myAppCookie.nickname;
-      var profilePath = myAppCookie.profilePath;
+      const accessToken = myAppCookie.accessToken;
+      const idx = parseInt(myAppCookie.idx || "", 10) || 0;
+      const refreshToken = myAppCookie.refreshToken;
+      const nickname = myAppCookie.nickname;
+      const profilePath = myAppCookie.profilePath;
 
       console.log("accessToken: " + accessToken);
       console.log("idx: " + idx);

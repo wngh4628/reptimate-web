@@ -25,16 +25,16 @@ export default function LoginInput() {
   const mutation = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      var a = JSON.stringify(data.data);
-      var result = JSON.parse(a);
-      var b = JSON.stringify(result.result);
-      var result = JSON.parse(b);
+      const a = JSON.stringify(data.data);
+      const resulta = JSON.parse(a);
+      const b = JSON.stringify(resulta.result);
+      const resultb = JSON.parse(b);
       setUser({
-        accessToken: result.accessToken,
-        refreshToken: result.refreshToken,
-        idx: result.idx,
-        profilePath: result.profilePath,
-        nickname: result.nickname,
+        accessToken: resultb.accessToken,
+        refreshToken: resultb.refreshToken,
+        idx: resultb.idx,
+        profilePath: resultb.profilePath,
+        nickname: resultb.nickname,
       });
       setIsLoggedIn(true);
       router.replace("/");

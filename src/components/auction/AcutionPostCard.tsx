@@ -34,7 +34,7 @@ export default function AuctionPostCard({
 
   function setStateString(state: string): string {
     console.log(state);
-    var str = "";
+    let str = "";
     if (state == "selling") {
       str = "진행중";
     } else if (state == "end") {
