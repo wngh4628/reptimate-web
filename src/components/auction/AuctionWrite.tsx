@@ -540,6 +540,28 @@ export default function AuctionWrite() {
         ))}
       </select>
       <div className="">
+        <div
+          className="flex border-2 border-gray-300 items-center py-3 mx-auto"
+          style={{
+            width: "100%", // 화면 넓이보다 넓도록 설정
+            overflowX: "auto", // 가로 스크롤 허용
+            whiteSpace: "nowrap", // 텍스트 줄 바꿈 방지
+          }}
+        >
+          {selectedFiles.length === 0 && (
+            <div className="w-auto h-32 flex flex-col items-center justify-center mx-auto">
+              <span className="">
+                사진 및 비디오 최대 5개까지 선택 가능합니다.
+              </span>
+            </div>
+          )}
+          {selectedFiles.map((fileItem, index) => (
+            <FileItem key={fileItem.id} fileItem={fileItem} index={index} />
+          ))}
+        </div>
+        <div className="w-auto flex flex-col items-center mx-auto">
+          {selectedFiles.length}/5개
+        </div>
         <input
           type="file"
           accept="image/*, video/*"
@@ -550,27 +572,10 @@ export default function AuctionWrite() {
           max="5"
         />
         <label
-          className="flex border-2 border-gray-300 items-center py-3 cursor-pointer mx-auto"
+          className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-md text-[16px] h-10 w-full my-2"
           htmlFor="mediaInput"
-          style={{
-            width: "100%", // 화면 넓이보다 넓도록 설정
-            overflowX: "auto", // 가로 스크롤 허용
-            whiteSpace: "nowrap", // 텍스트 줄 바꿈 방지
-          }}
         >
-          {selectedFiles.length === 0 && (
-            <div className="w-32 h-32 flex flex-col items-center justify-center">
-              <img
-                src="/img/camera.png"
-                alt="Camera Icon"
-                className="w-16 h-16"
-              />
-              <span className="">사진 업로드</span>
-            </div>
-          )}
-          {selectedFiles.map((fileItem, index) => (
-            <FileItem key={fileItem.id} fileItem={fileItem} index={index} />
-          ))}
+          파일 선택
         </label>
       </div>
       <div className="mt-4 flex flex-col">
