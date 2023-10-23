@@ -72,7 +72,7 @@ export default function ActionPage({ params: { slug } }: Props) {
   //     notFound();
   // }
 
-  // var macaddress = require('macaddress');
+  // const macaddress = require('macaddress');
   // console.log(JSON.stringify(macaddress.networkInterfaces(), null, 2));
 
   useEffect(() => {
