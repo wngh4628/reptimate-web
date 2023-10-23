@@ -175,8 +175,6 @@ export default function LoginInput() {
           <button
             type="submit"
             className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]"
-            data-v-43813796
-            data-v-2b15bea4
           >
             <img
               className="h-[24px] left-[15px] absolute top-[13px] w-[24px]"
@@ -190,8 +188,6 @@ export default function LoginInput() {
           <button
             type="submit"
             className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]"
-            data-v-43813796
-            data-v-2b15bea4
           >
             <img
               className="h-[24px] left-[15px] absolute top-[13px] w-[24px]"
@@ -204,8 +200,6 @@ export default function LoginInput() {
         <Link
           href={url}
           className="relative text-[#222] border-[#ebebeb] inline-flex cursor-pointer items-center justify-center align-middle text-center bg-[#fff] w-full text-[16px] tracking-[-.16px] h-14 rounded-xl border-[1px] mb-[8px]"
-          data-v-43813796
-          data-v-2b15bea4
         >
           <img
             className="h-[24px] left-[15px] absolute top-[13px] w-[24px]"
