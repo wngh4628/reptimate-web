@@ -692,10 +692,6 @@ export default function AdoptionPostsView() {
                   )}
                 </div>
               </div>
-              <video controls>
-                <source src="/img/test_video.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
               <ImageSlider imageUrls={itemlist} />
               <div className="flex flex-row items-center py-1">
                 <p className="font-semibold ml-2">판매가격</p>
