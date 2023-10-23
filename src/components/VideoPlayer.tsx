@@ -21,7 +21,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, type }) => {
   return type === "m3u8" ? (
     <div className="absolute inset-0 w-full h-full object-contain bg-black flex justify-center items-center">
       <video ref={videoRef} controls>
-        {type !== "m3u8" && <source src={src} type="video/mp4" />}
+        {type !== "m3u8" && <source src={src} type="application/x-mpegURL" />}
       </video>
     </div>
   ) : (
