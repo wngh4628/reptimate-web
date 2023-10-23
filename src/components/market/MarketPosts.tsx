@@ -147,13 +147,7 @@ export default function MarketPosts() {
 
     return (
       <section>
-        <PC>
-          <h2 className="text-2xl font-bold p-10">중고 거래</h2>
-        </PC>
-        <Mobile>
-          <h2 className="font-bold pl-3 pt-2 pb-2">중고 거래</h2>
-        </Mobile>
-        <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-5 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
             <li key={post.idx}>
               <PostCard post={post} />
