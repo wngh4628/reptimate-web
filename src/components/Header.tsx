@@ -5,9 +5,19 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mobile, PC } from "./ResponsiveLayout";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { isLoggedInState, userAtom, chatVisisibleState, fcmState, fcmNotificationState } from "@/recoil/user";
+import {
+  isLoggedInState,
+  userAtom,
+  chatVisisibleState,
+  fcmState,
+  fcmNotificationState,
+} from "@/recoil/user";
 import ChatModal from "@/components/chatting/ChatModal";
-import { chatRoomState, chatRoomVisisibleState, receivedNewChatState } from "@/recoil/chatting";
+import {
+  chatRoomState,
+  chatRoomVisisibleState,
+  receivedNewChatState,
+} from "@/recoil/chatting";
 import PersonalChat from "@/components/chat/personalChat";
 
 import { initializeApp } from "firebase/app";
@@ -18,7 +28,7 @@ import { getMessaging, onMessage, getToken } from "firebase/messaging";
 //     requestNotificationPermission(): void;
 //   }
 
-//   var Android: AndroidInterface;
+//   const Android: AndroidInterface;
 // }
 
 export default function Header() {
@@ -30,27 +40,27 @@ export default function Header() {
 
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
 
-  const [isChatVisisible, setIsChatVisisible] = useRecoilState(chatVisisibleState);
-  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
+  const [isChatVisisible, setIsChatVisisible] =
+    useRecoilState(chatVisisibleState);
+  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(
+    chatRoomVisisibleState
+  );
 
-  const [receivedNewChat, setreceivedNewChat] = useRecoilState(receivedNewChatState);
+  const [receivedNewChat, setreceivedNewChat] =
+    useRecoilState(receivedNewChatState);
 
   const [fcm, setfcm] = useRecoilState(fcmState);
-  const [fcmNotification, setfcmNotification] = useRecoilState(fcmNotificationState);
+  const [fcmNotification, setfcmNotification] =
+    useRecoilState(fcmNotificationState);
 
   useEffect(() => {
     handleLogin();
-    onMessageFCM()
+    onMessageFCM();
   }, [pathName]);
 
-  useEffect(() => {
-    
-  }, [])
+  useEffect(() => {}, []);
 
-
-  useEffect(() => {
-
-  }, [receivedNewChat])
+  useEffect(() => {}, [receivedNewChat]);
 
   const onMessageFCM = async () => {
     // 브라우저에 알림 권한을 요청합니다.
@@ -69,43 +79,46 @@ export default function Header() {
       projectId: "iot-teamnova",
       storageBucket: "iot-teamnova.appspot.com",
       messagingSenderId: "290736847856",
-      appId: "1:290736847856:web:957b2c6d52cbbae62f3b35"
-    })
-    const messaging = getMessaging(firebaseApp)
- 
+      appId: "1:290736847856:web:957b2c6d52cbbae62f3b35",
+    });
+    const messaging = getMessaging(firebaseApp);
+
     // 이곳 vapidKey 값으로 아까 토큰에서 사용한다고 했던 인증서 키 값을 넣어주세요.
-    getToken(messaging, { vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY }).then((currentToken) => {
-      if (currentToken) {
-        // 정상적으로 토큰이 발급되면 콘솔에 출력합니다.
-        console.log('===========currentToken===============')
-        console.log("currentToken  :  " + currentToken)
-        console.log('======================================')
-        setfcm(currentToken);
-      } else {
-        console.log('No registration token available. Request permission to generate one.')
-      }
-    }).catch((err) => {
-      console.log('An error occurred while retrieving token. ', err)
-    })
+    getToken(messaging, { vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY })
+      .then((currentToken) => {
+        if (currentToken) {
+          // 정상적으로 토큰이 발급되면 콘솔에 출력합니다.
+          console.log("===========currentToken===============");
+          console.log("currentToken  :  " + currentToken);
+          console.log("======================================");
+          setfcm(currentToken);
+        } else {
+          console.log(
+            "No registration token available. Request permission to generate one."
+          );
+        }
+      })
+      .catch((err) => {
+        console.log("An error occurred while retrieving token. ", err);
+      });
     // 메세지가 수신되면 역시 콘솔에 출력합니다.
     onMessage(messaging, (payload) => {
-      console.log('=============fcm 메시지 수신===================')
-      console.log('*')
-      console.log('Message received. : ', payload)
-      console.log('*')
-      console.log('============================================')
+      console.log("=============fcm 메시지 수신===================");
+      console.log("*");
+      console.log("Message received. : ", payload);
+      console.log("*");
+      console.log("============================================");
       setreceivedNewChat(true);
 
       const body = payload.notification?.body;
       const title = payload.notification?.title || "";
-      const result = typeof body === 'string' ? JSON.parse(body) : body;
+      const result = typeof body === "string" ? JSON.parse(body) : body;
       setfcmNotification({
         body: result,
-        title: title
+        title: title,
       });
     });
-  }
- 
+  };
 
   const handleLogin = () => {
     const storedData = localStorage.getItem("recoil-persist");
@@ -216,7 +229,10 @@ export default function Header() {
               MY
             </Link>
             <Link href="">
-              <div className="flex w-[23px] h-5 my-0.5  relative" onClick={chattingClick}>
+              <div
+                className="flex w-[23px] h-5 my-0.5  relative"
+                onClick={chattingClick}
+              >
                 <img src="/img/chat.png" />
                 {receivedNewChat && (
                   <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>

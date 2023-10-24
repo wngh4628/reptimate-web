@@ -113,11 +113,11 @@ export default function EditProfileInput() {
     const mutationEmailSend = useMutation({
         mutationFn: emailSend,
         onSuccess: (data) => {
-            var a = JSON.stringify(data.data);
-            var result = JSON.parse(a);
-            var b = JSON.stringify(result.result);
-            var result = JSON.parse(b);
-            setEmailCode(result.signupVerifyToken);
+            const a = JSON.stringify(data.data);
+            const resulta = JSON.parse(a);
+            const b = JSON.stringify(resulta.result);
+            const resultb = JSON.parse(b);
+            setEmailCode(resultb.signupVerifyToken);
             setEmailEdit(false);
         },
     });
@@ -140,9 +140,9 @@ export default function EditProfileInput() {
                             refreshToken: extractedARefreshToken
                         }, {
                             onSuccess: (data) => {
-                                var a = JSON.stringify(data.data.result);
-                                var result = JSON.parse(a);
-                                setAccessToken(result.accessToken);
+                                const a = JSON.stringify(data.data.result);
+                                const resulta = JSON.parse(a);
+                                setAccessToken(resulta.accessToken);
                                 mutationNicknameSend.mutate({
                                     accessToken: accessToken, nickname: nickname
                                 });
@@ -266,9 +266,9 @@ export default function EditProfileInput() {
                             onSuccess: (data) => {
                                 const formData = new FormData()
 
-                                var a = JSON.stringify(data.data.result);
-                                var result = JSON.parse(a);
-                                setAccessToken(result.accessToken);
+                                const a = JSON.stringify(data.data.result);
+                                const resulta = JSON.parse(a);
+                                setAccessToken(resulta.accessToken);
                                 mutation.mutate({
                                     accessToken: accessToken, formData
                                 });
@@ -331,9 +331,9 @@ export default function EditProfileInput() {
                             refreshToken: extractedARefreshToken
                         }, {
                             onSuccess: (data) => {
-                                var a = JSON.stringify(data.data.result);
-                                var result = JSON.parse(a);
-                                setAccessToken(result.accessToken);
+                                const a = JSON.stringify(data.data.result);
+                                const resulta = JSON.parse(a);
+                                setAccessToken(resulta.accessToken);
 
                                 mutationPwChange.mutate({
                                     accessToken: accessToken,

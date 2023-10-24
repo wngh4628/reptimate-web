@@ -20,12 +20,12 @@ export default function AuctionPosts() {
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
 
   function getCookie(name: string) {
-    var value = "; " + document.cookie;
-    var parts = value.split("; " + name + "=");
+    const value = "; " + document.cookie;
+    const parts = value.split("; " + name + "=");
     if (parts.length == 2) {
-      var cookieValue = parts.pop()?.split(";").shift();
+      const cookieValue = parts.pop()?.split(";").shift();
       try {
-        var cookieObject = JSON.parse(cookieValue || "");
+        const cookieObject = JSON.parse(cookieValue || "");
         return cookieObject;
       } catch (error) {
         console.error("Error parsing JSON from cookie:", error);
@@ -36,15 +36,15 @@ export default function AuctionPosts() {
 
   useEffect(() => {
     // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
-    var myAppCookie = getCookie("myAppCookie");
+    const myAppCookie = getCookie("myAppCookie");
 
     if (myAppCookie !== undefined) {
       console.log(myAppCookie);
-      var accessToken = myAppCookie.accessToken;
-      var idx = parseInt(myAppCookie.idx || "", 10) || 0;
-      var refreshToken = myAppCookie.refreshToken;
-      var nickname = myAppCookie.nickname;
-      var profilePath = myAppCookie.profilePath;
+      const accessToken = myAppCookie.accessToken;
+      const idx = parseInt(myAppCookie.idx || "", 10) || 0;
+      const refreshToken = myAppCookie.refreshToken;
+      const nickname = myAppCookie.nickname;
+      const profilePath = myAppCookie.profilePath;
 
       console.log("accessToken: " + accessToken);
       console.log("idx: " + idx);
@@ -132,7 +132,12 @@ export default function AuctionPosts() {
         title: item.title,
         category: item.category,
         createdAt: new Date(item.writeDate),
-        coverImage: item.images[0]?.coverImgPath || "",
+        coverImage:
+          item.images[0]?.category === "img"
+            ? item.images[0]?.path || ""
+            : item.images[0]?.category === "video"
+            ? item.images[0]?.coverImgPath || ""
+            : "",
         nickname: item.UserInfo.nickname,
         currentPrice: item.boardAuction?.currentPrice,
         endTime: item.boardAuction?.endTime,

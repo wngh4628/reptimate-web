@@ -17,8 +17,8 @@ interface User {
 }
 interface fcm {
   body: {
-    type: string,
-    description: string
+    type: string;
+    description: string;
   };
   title: string;
 }
@@ -49,7 +49,7 @@ export const chatVisisibleState = atom({
 
 export const fcmState = atom({
   key: "fcmState",
-  default: ""
+  default: "",
 });
 
 export const fcmNotificationState = atom<fcm>({
@@ -57,7 +57,8 @@ export const fcmNotificationState = atom<fcm>({
   default: {
     body: {
       type: "",
-      description: ""
+      description: "",
     },
-    title: ""}
+    title: "",
+  },
 });

@@ -220,12 +220,12 @@ export default function AuctionTemp() {
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
 
   function getCookie(name: string) {
-    var value = "; " + document.cookie;
-    var parts = value.split("; " + name + "=");
+    const value = "; " + document.cookie;
+    const parts = value.split("; " + name + "=");
     if (parts.length == 2) {
-      var cookieValue = parts.pop()?.split(";").shift();
+      const cookieValue = parts.pop()?.split(";").shift();
       try {
-        var cookieObject = JSON.parse(cookieValue || "");
+        const cookieObject = JSON.parse(cookieValue || "");
         return cookieObject;
       } catch (error) {
         console.error("Error parsing JSON from cookie:", error);
@@ -236,15 +236,15 @@ export default function AuctionTemp() {
 
   useEffect(() => {
     // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
-    var myAppCookie = getCookie("myAppCookie");
+    const myAppCookie = getCookie("myAppCookie");
 
     if (myAppCookie !== undefined) {
       console.log(myAppCookie);
-      var accessToken = myAppCookie.accessToken;
-      var idx = parseInt(myAppCookie.idx || "", 10) || 0;
-      var refreshToken = myAppCookie.refreshToken;
-      var nickname = myAppCookie.nickname;
-      var profilePath = myAppCookie.profilePath;
+      const accessToken = myAppCookie.accessToken;
+      const idx = parseInt(myAppCookie.idx || "", 10) || 0;
+      const refreshToken = myAppCookie.refreshToken;
+      const nickname = myAppCookie.nickname;
+      const profilePath = myAppCookie.profilePath;
 
       console.log("accessToken: " + accessToken);
       console.log("idx: " + idx);
@@ -441,7 +441,7 @@ export default function AuctionTemp() {
       <div ref={(node) => drag(drop(node))}>
         <div
           key={fileItem.id}
-          className="relative w-32 h-32 mx-2 border-2 border-gray-200"
+          className="relative w-28 h-28 mx-2 border-2 border-gray-200"
           onClick={(e) => e.preventDefault()}
         >
           {fileItem.file?.type.startsWith("image/") ? (
@@ -679,7 +679,7 @@ export default function AuctionTemp() {
           </option>
         ))}
       </select>
-      <div className="">
+      <div className="flex flex-row">
         <input
           type="file"
           accept="image/*, video/*"
@@ -690,23 +690,30 @@ export default function AuctionTemp() {
           max="5"
         />
         <label
-          className="flex overflow-x-auto border-2 border-gray-300 items-center justify-center py-3 cursor-pointer mx-auto"
+          className="w-auto h-auto cursor-pointer py-3"
           htmlFor="mediaInput"
         >
-          {allFiles.length === 0 && (
-            <div className="w-32 h-32 flex flex-col items-center justify-center">
-              <img
-                src="/img/camera.png"
-                alt="Camera Icon"
-                className="w-16 h-16"
-              />
-              <span className="">사진 업로드</span>
-            </div>
-          )}
-          {allFiles.map((file, index) => (
-            <FileItem key={index} fileItem={file} index={index} />
-          ))}
+          <div className="w-28 h-28 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
+            <img
+              src="/img/camera.png"
+              alt="Camera Icon"
+              className="w-16 h-16"
+            />
+            <span className="">{allFiles.length}/5</span>
+          </div>
         </label>
+        <div
+          className="flex items-center py-3 mx-auto"
+          style={{
+            width: "100%", // 화면 넓이보다 넓도록 설정
+            overflowX: "auto", // 가로 스크롤 허용
+            whiteSpace: "nowrap", // 텍스트 줄 바꿈 방지
+          }}
+        >
+          {allFiles.map((fileItem, index) => (
+            <FileItem key={fileItem.id} fileItem={fileItem} index={index} />
+          ))}
+        </div>
       </div>
       <div className="mt-4 flex flex-col">
         <p className="font-bold text-xl my-2">제목</p>
