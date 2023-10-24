@@ -61,6 +61,17 @@ export default function ActionPage({ params: { slug } }: Props) {
     console.log(postsData);
   }, []);
 
+  useEffect(() => {
+    if (postsData && postsData.result) {
+      setActionTitle(postsData.result.title);
+      setDescription(postsData.result.description);
+      if (postsData.result.UserInfo) {
+        setNickname(postsData.result.UserInfo.nickname);
+        setProfilePath(postsData.result.UserInfo.profilePath);
+      }
+    }
+  }, [getData()]);
+
   // const [value1, setValue1]:use = useState()
   // const [count, setCount] = useState(0);
   // const count2 = useRef(0);
@@ -113,10 +124,6 @@ export default function ActionPage({ params: { slug } }: Props) {
     // console.log(message);
 
     ///data = message;
-    setActionTitle(message.title);
-    setDescription(message.description);
-    setNickname(message.UserInfo.nickname);
-    setProfilePath(message.UserInfo.profilePath);
 
     if (message.liveStream.state == 1) {
       setVideoUrl(

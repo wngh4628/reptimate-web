@@ -520,6 +520,10 @@ export default function AuctionPostsView() {
 
     const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
 
+    const handleViewClick = () => {
+      //웹뷰에서 버튼 클릭시 안드로이드 rtmp 송신 액티비티로 이동
+    };
+
     const handleLiveClick = () => {
       // Handle the logic for opening the write page
       location.href = `/auction/posts/${idx}/live`;
@@ -831,6 +835,12 @@ export default function AuctionPostsView() {
               )}
             </Mobile>
             <div className="fixed bottom-10 right-10 z-50">
+              <button
+                className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-2"
+                onClick={handleViewClick}
+              >
+                View
+              </button>
               <button
                 className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold"
                 onClick={handleLiveClick}
