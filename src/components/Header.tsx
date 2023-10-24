@@ -168,7 +168,8 @@ export default function Header() {
   if (pathName.startsWith("/community/market/posts")) return null;
   if (pathName.startsWith("/community/free/posts")) return null;
   if (pathName.startsWith("/community/ask/posts")) return null;
-  if (pathName.startsWith("/auction/posts")) return null;
+  if (pathName.startsWith("/streamhost")) return null;
+  // if (pathName.startsWith("/auction/posts")) return null;
 
   return (
     <header>
