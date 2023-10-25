@@ -63,6 +63,19 @@ export default function AuctionPostCard({
                   style={{ zIndex: 1 }}
                 />
               </div>
+              <div className="absolute right-6 mt-2 flex items-center z-[999]">
+                <p
+                  className={`${
+                    state === "selling"
+                      ? "text-red-500"
+                      : state === "end"
+                      ? "text-gray-400"
+                      : "text-main-color"
+                  } text-xl font-bold z-[999] relative mt-1`}
+                >
+                  {setStateString(state)}
+                </p>
+              </div>
               <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
                   className="ml-6 w-10 h-10 rounded-full border-2"

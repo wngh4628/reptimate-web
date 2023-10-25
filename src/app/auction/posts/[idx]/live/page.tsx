@@ -60,6 +60,17 @@ export default function ActionPage({ params: { slug } }: Props) {
     // console.log(postsData);
   }, []);
 
+  useEffect(() => {
+    if (postsData && postsData.result) {
+      setActionTitle(postsData.result.title);
+      setDescription(postsData.result.description);
+      if (postsData.result.UserInfo) {
+        setNickname(postsData.result.UserInfo.nickname);
+        setProfilePath(postsData.result.UserInfo.profilePath);
+      }
+    }
+  }, [getData()]);
+
   // const [value1, setValue1]:use = useState()
   // const [count, setCount] = useState(0);
   // const count2 = useRef(0);
@@ -89,7 +100,6 @@ export default function ActionPage({ params: { slug } }: Props) {
     //     console.log('컴포넌트가 화면에서 사라짐');
     // };
   }, []);
-
 
   //데이터 받아오는 부분
   function callback(message: acitonLiveDto): void {
