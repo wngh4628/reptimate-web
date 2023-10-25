@@ -893,12 +893,6 @@ export default function AuctionPostsView() {
                     </button>
                     <button
                       className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-1"
-                      onClick={handleViewClick}
-                    >
-                      LIVE
-                    </button>
-                    <button
-                      className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-1"
                       onClick={handleChatClick}
                     >
                       <img
