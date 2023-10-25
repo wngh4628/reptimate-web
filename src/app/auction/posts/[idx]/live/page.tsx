@@ -49,27 +49,20 @@ export default function ActionPage({ params: { slug } }: Props) {
         `https://reptimate.store/api/board/${idx}?userIdx=1`
       );
       // Assuming your response data has a 'result' property
+      console.log(response.data);
       setPostsData(response.data);
+      if (response.data && response.data.result) {
+        setActionTitle(response.data.result.title);
+        setDescription(response.data.result.description);
+        if (response.data.result.UserInfo) {
+          setNickname(response.data.result.UserInfo.nickname);
+          setProfilePath(response.data.result.UserInfo.profilePath);
+        }
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }, []);
-
-  useEffect(() => {
-    getData();
-    // console.log(postsData);
-  }, []);
-
-  useEffect(() => {
-    if (postsData && postsData.result) {
-      setActionTitle(postsData.result.title);
-      setDescription(postsData.result.description);
-      if (postsData.result.UserInfo) {
-        setNickname(postsData.result.UserInfo.nickname);
-        setProfilePath(postsData.result.UserInfo.profilePath);
-      }
-    }
-  }, [getData()]);
 
   // const [value1, setValue1]:use = useState()
   // const [count, setCount] = useState(0);
@@ -86,6 +79,7 @@ export default function ActionPage({ params: { slug } }: Props) {
   // console.log(JSON.stringify(macaddress.networkInterfaces(), null, 2));
 
   useEffect(() => {
+    getData();
     //서버 사이드 렌더링으로 데이터 가져오기
     getActionInfo(callback);
 

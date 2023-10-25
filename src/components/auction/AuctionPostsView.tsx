@@ -861,7 +861,7 @@ export default function AuctionPostsView() {
                   className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-2"
                   onClick={handleViewClick}
                 >
-                  View
+                  Live
                 </button>
                 <button
                   className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold"
@@ -886,16 +886,16 @@ export default function AuctionPostsView() {
                 ) : (
                   <div>
                     <button
-                      className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-1"
+                      className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-[12px] font-bold mb-1"
                       onClick={handleLiveClick}
                     >
-                      LIVE
+                      방송하기
                     </button>
                     <button
                       className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-1"
                       onClick={handleViewClick}
                     >
-                      View
+                      LIVE
                     </button>
                     <button
                       className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-1"

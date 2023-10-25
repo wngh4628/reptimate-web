@@ -33,7 +33,6 @@ export default function AuctionPostCard({
   }
 
   function setStateString(state: string): string {
-    console.log(state);
     let str = "";
     if (state == "selling") {
       str = "진행중";
@@ -113,6 +112,19 @@ export default function AuctionPostCard({
                 />
                 <p className="text-white font-semibold ml-1 text-sm">
                   {nickname}
+                </p>
+              </div>
+              <div className="absolute right-2 mt-2 flex items-center z-[999]">
+                <p
+                  className={`${
+                    state === "selling"
+                      ? "text-red-500"
+                      : state === "end"
+                      ? "text-gray-400"
+                      : "text-main-color"
+                  } text-lg font-bold z-[999] relative`}
+                >
+                  {setStateString(state)}
                 </p>
               </div>
             </Mobile>
