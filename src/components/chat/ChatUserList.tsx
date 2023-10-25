@@ -2,6 +2,8 @@
 import React, {useState,forwardRef,useRef, useEffect, useImperativeHandle} from 'react';
 import Swal from 'sweetalert2';
 
+import { userInfo } from "@/service/chat/chat";
+
 const ChatUserList = forwardRef((props :{
 	userList: {
 		userIdx: number,
@@ -12,13 +14,19 @@ const ChatUserList = forwardRef((props :{
 	noChat : any,
 	unBan: any,
 	unNoChat : any,
-	userAuth : string
+	userAuth : string,
+	banList : userInfo[],
+	noChatList : userInfo[]
 }, ref) =>{
 	useImperativeHandle(ref, () => ({
 		
 	}));
 	const [boxState, setBoxState] = useState(false);// 옵션 박스 상태
 	const [SwalOn, setSwalOn] = useState(false); //알림 모달창 유무
+
+	const [banned, setbanned] = useState(false); // 밴 여부
+	const [noChatted, setNoChatted] = useState(false); // 채금 여부
+
 	const wrapperRef = useRef<HTMLDivElement | null>(null);
 	useEffect(()=>{
         document.addEventListener('mouseup', handleClickOutside);
@@ -27,7 +35,21 @@ const ChatUserList = forwardRef((props :{
 				document.removeEventListener('mouseup', handleClickOutside);
 			}
         }
-      })
+    })
+	useEffect(() => {
+		props.noChatList.map((user: userInfo) => {
+			if (user.userIdx === props.userList.userIdx) {
+				setNoChatted(true)
+			}
+		})
+	  }, [noChatted]);
+	useEffect(() => {
+		props.banList.map((user: userInfo) => {
+			if (user.userIdx === props.userList.userIdx) {
+				setbanned(true)
+			}
+		})
+	}, [banned]);
 	const modalOnOff = (category: string) => {
 		if(props.userAuth !== 'host'){
 			Swal.fire({
@@ -73,9 +95,9 @@ const ChatUserList = forwardRef((props :{
 					}else if(category === 'noChat'){
 						props.noChat(props.userList.userIdx);
 					}else if(category === 'unBan'){
-						props.noChat(props.userList.userIdx);
+						props.unBan(props.userList.userIdx);
 					}else if(category === 'unNoChat'){
-						props.noChat(props.userList.userIdx);
+						props.unNoChat(props.userList.userIdx);
 					}
 					setBoxState(false);
 				}
@@ -84,7 +106,7 @@ const ChatUserList = forwardRef((props :{
 		}
     }
 	const optionBoxOnOff = () => {
-		if(boxState === false){
+		if(boxState === false && props.userAuth == 'host'){
 			setBoxState(true);
 		}
     }
@@ -93,20 +115,17 @@ const ChatUserList = forwardRef((props :{
 			setBoxState(false);
 		}
 	}
+
     return (
 		<div className="flex ">
-			{/* <div>{props.userList.userIdx}</div>
-			<div>:</div> */}
 			<div className='flex' onClick={optionBoxOnOff} style={{cursor:"pointer"}}>{props.userList.nickname}</div>
-			{boxState ?
-				<div className='border-[5px] border-gray-300 bg-white' style={{position:"absolute",marginTop:"20px", backgroundColor:"#fffff", width:"100px", height:"60px"}} ref={wrapperRef}>
+			{boxState &&
+				<div className='border-[5px] border-gray-300 bg-white' style={{position:"absolute",marginTop:"20px", backgroundColor:"#fffff", width:"100px", height:"105px"}} ref={wrapperRef}>
 					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('ban')}><h1>강퇴</h1></div>
 					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('noChat')}><h1>채금</h1></div>
-					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('unBan')}><h1>강퇴 헤제</h1></div>
+					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('unBan')}><h1>강퇴 해제</h1></div>
 					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('unNoChat')}><h1>채금 해제</h1></div>
 				</div>
-				: 
-				""
 			}
         </div>
     );
