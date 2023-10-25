@@ -76,7 +76,6 @@ export default function StreamingChatView() {
 
   const [isInputDisabled, setIsInputDisabled] = useState(false); // 채팅 입력란 입력 가능여부
 
-
   useEffect(() => {
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
@@ -116,21 +115,29 @@ export default function StreamingChatView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}?userIdx=1`
+        `https://reptimate.store/api/board/${idx}macAdress=`
       );
-      console.log("========getData() : 경매글 정보 불러오기====================")
-      console.log(response.data)
-      console.log("============================")
+      console.log(
+        "========getData() : 경매글 정보 불러오기===================="
+      );
+      console.log(response.data);
+      console.log("============================");
       setPostsData(response.data);
-      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice))
-      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit))
-      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice))
+      setNowBid(
+        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
+      );
+      setBidUnit(
+        formatNumberWithCommas(response.data.result.boardAuction.unit)
+      );
+      setBidStartPrice(
+        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
+      );
 
       setHost(response.data.result.UserInfo.idx);
 
       if (parseInt(response.data.result.UserInfo.idx) === userIdx) {
         setUserAuth("host");
-        console.log("당신은 이 방송의 host입니다.======================")
+        console.log("당신은 이 방송의 host입니다.======================");
       }
 
       setNowBid(
@@ -156,7 +163,7 @@ export default function StreamingChatView() {
         if (timeRemaining < 0) {
           setCountdown("경매가 종료되었습니다!");
           clearInterval(countdownInterval);
-          setIsInputDisabled(true)
+          setIsInputDisabled(true);
         } else {
           const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
           const hours = Math.floor(
@@ -240,7 +247,7 @@ export default function StreamingChatView() {
           icon: "warning",
           confirmButtonText: "완료",
           confirmButtonColor: "#7A75F7",
-        })
+        });
       } else {
         setUserList((prevUserList) => {
           const newData: { [key: number]: any } = { ...prevUserList };
@@ -259,7 +266,7 @@ export default function StreamingChatView() {
         confirmButtonText: "완료", // confirm 버튼 텍스트 지정
         confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
       });
-      router.replace("/auction/posts/"+boardIdx);
+      router.replace("/auction/posts/" + boardIdx);
     });
     //다른 참여자가 방을 나갔을 때
     socket.on("leave-user", (message: IMessage) => {
@@ -298,7 +305,11 @@ export default function StreamingChatView() {
       const messageArray = Array.isArray(message) ? message : [message];
       messageArray.forEach((data: any) => {
         const getUserInfo = data;
-        if (getUserInfo && getUserInfo.profilePath && getUserInfo.profilePath.length > 1) {
+        if (
+          getUserInfo &&
+          getUserInfo.profilePath &&
+          getUserInfo.profilePath.length > 1
+        ) {
           setUserInfoData((prevUserInfoData) => ({
             ...prevUserInfoData,
             [getUserInfo.userIdx]: {
@@ -384,7 +395,7 @@ export default function StreamingChatView() {
     if (userAuth === "host") {
       // console.log(socketRef.current);
       if (socketRef.current) {
-        console.log("==========noChat : "+banUserIdx+"=========");
+        console.log("==========noChat : " + banUserIdx + "=========");
         const message: Ban_Message = {
           userIdx: userIdx,
           banUserIdx: banUserIdx,
@@ -491,7 +502,6 @@ export default function StreamingChatView() {
     setUserList({});
     setNoChatState(false);
     setchattingBidData([]);
-
   }, [socketRef, userIdx, roomName]);
 
   const onChangeKeyword = (e: { target: { value: string } }) => {
@@ -569,7 +579,8 @@ export default function StreamingChatView() {
       console.log("bid message  :  ", message);
       console.log("========================");
       if (bidContainerRef.current) {
-        bidContainerRef.current.scrollTop = bidContainerRef.current.scrollHeight;
+        bidContainerRef.current.scrollTop =
+          bidContainerRef.current.scrollHeight;
       }
       setNowBid(message.message);
       console.log("bid message", message);
@@ -668,20 +679,20 @@ export default function StreamingChatView() {
       if (numericValue % parseInt(bidUnit) !== 0) {
         // 입력값이 1000의 배수가 아니면 초기화
         Swal.fire({
-          text:'입찰 단위를 확인해 주시기 바랍니다.',
-          icon: 'error',
-          confirmButtonText: '확인', // confirm 버튼 텍스트 지정
-          confirmButtonColor: '#7A75F7', // confrim 버튼 색깔 지정
+          text: "입찰 단위를 확인해 주시기 바랍니다.",
+          icon: "error",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
         });
-        return
+        return;
       }
       if (parseInt(bidMsg.trim()) < parseInt(bidStartPrice)) {
         Swal.fire({
-          text:'입찰 시작가 보다 큰 금액을 입력해 주세요',
-          icon: 'error',
-          confirmButtonText: '확인', // confirm 버튼 텍스트 지정
-          confirmButtonColor: '#7A75F7', // confrim 버튼 색깔 지정
-          });
+          text: "입찰 시작가 보다 큰 금액을 입력해 주세요",
+          icon: "error",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
         return;
       }
       if (!biddingState) {
@@ -877,5 +888,3 @@ export default function StreamingChatView() {
     </>
   );
 }
-
-
