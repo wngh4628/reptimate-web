@@ -59,18 +59,19 @@ export default function AuctionItem({
                   src={`${coverImage}` || "/img/reptimate_logo.png"}
                   alt={""}
                 />
-                <div className="flex-grow"></div>
-                <p
-                  className={`${
-                    state === "selling"
-                      ? "text-red-500"
-                      : state === "end"
-                      ? "text-gray-400"
-                      : "text-main-color"
-                  } text-xl font-bold z-[999] relative mt-1 mr-[6px]`}
-                >
-                  {setStateString(state)}
-                </p>
+                <div className="absolute right-2 mt-2 flex items-center z-[999]">
+                  <p
+                    className={`${
+                      state === "selling"
+                        ? "text-red-500"
+                        : state === "end"
+                        ? "text-gray-400"
+                        : "text-main-color"
+                    } text-xl font-bold z-[999] relative mt-1`}
+                  >
+                    {setStateString(state)}
+                  </p>
+                </div>
               </div>
             </PC>
             <Mobile>
