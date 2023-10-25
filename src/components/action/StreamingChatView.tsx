@@ -327,63 +327,6 @@ export default function StreamingChatView() {
       }
     };
   };
-
-  const onChangeKeyword = (e: { target: { value: string } }) => {
-    const newValue = e.target.value;
-    settextMsg(newValue);
-  };
-
-  const roomOut = useCallback(() => {
-    if (socketRef.current) {
-      socketRef.current.emit("leave-room", {
-        userIdx: userIdx,
-        roomIdx: roomName,
-      });
-      socketRef.current.disconnect();
-    }
-    setroomEnter(false);
-    setchattingData([]);
-    setchattingBidData([]);
-    setUserList({});
-    setNoChatState(false);
-    setchattingBidData([]);
-
-  }, [socketRef, userIdx, roomName]);
-
-  useEffect(() => {
-    const handleBeforeUnload = (event: {
-      preventDefault: () => void;
-      returnValue: string;
-    }) => {
-      roomOut();
-      event.preventDefault();
-      event.returnValue = ""; // Some browsers require this property to be set.
-    };
-    // beforeunload 이벤트 리스너를 등록합니다.
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      // 컴포넌트가 언마운트 될 때 이벤트 리스너를 제거합니다.
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [roomOut]);
-
-  useEffect(() => {
-    liveRoomIdx.current = roomName;
-    auctionRoomIdx.current = roomName;
-  }, [roomName]);
-  useEffect(() => {
-    if (userInfoBidData[userIdx]) {
-      setbiddingState(true);
-    }
-  }, [userInfoBidData]);
-  useEffect(() => {
-    // console.log("banList", banList);
-  }, [banList]);
-  useEffect(() => {
-    console.log("userList", userList);
-  }, [userList]);
-
   //강퇴 시키기
   const ban = (banUserIdx: number) => {
     if (userAuth === "host") {
@@ -395,40 +338,6 @@ export default function StreamingChatView() {
           boardIdx: boardIdx,
         };
         socketRef.current.emit("user_ban", message);
-      }
-    }
-  };
-  //채팅 금지 먹이기
-  const noChat = (banUserIdx: number) => {
-    // console.log("noChat");
-    if (userAuth === "host") {
-      // console.log(socketRef.current);
-      if (socketRef.current) {
-        console.log("==========noChat : "+banUserIdx+"=========");
-        const message: Ban_Message = {
-          userIdx: userIdx,
-          banUserIdx: banUserIdx,
-          room: roomName,
-          boardIdx: boardIdx,
-        };
-        console.log(message);
-        socketRef.current.emit("noChat", message);
-      }
-    }
-  };
-  //스트리밍 채팅 금지 풀기
-  const noChatDelete = (banUserIdx: number) => {
-    if (userAuth === "host") {
-      // console.log(socketRef.current);
-      if (socketRef.current) {
-        // console.log("noChat");
-        const message: Ban_Message = {
-          userIdx: userIdx,
-          banUserIdx: banUserIdx,
-          room: roomName,
-          boardIdx: boardIdx,
-        };
-        socketRef.current.emit("noChatDelete", message);
       }
     }
   };
@@ -468,6 +377,41 @@ export default function StreamingChatView() {
       });
     }
   };
+  //채팅 금지 먹이기
+  const noChat = (banUserIdx: number) => {
+    // console.log("noChat");
+    if (userAuth === "host") {
+      // console.log(socketRef.current);
+      if (socketRef.current) {
+        console.log("==========noChat : "+banUserIdx+"=========");
+        const message: Ban_Message = {
+          userIdx: userIdx,
+          banUserIdx: banUserIdx,
+          room: roomName,
+          boardIdx: boardIdx,
+        };
+        console.log(message);
+        socketRef.current.emit("noChat", message);
+      }
+    }
+  };
+  //스트리밍 채팅 금지 풀기
+  const noChatDelete = (banUserIdx: number) => {
+    if (userAuth === "host") {
+      // console.log(socketRef.current);
+      if (socketRef.current) {
+        // console.log("noChat");
+        const message: Ban_Message = {
+          userIdx: userIdx,
+          banUserIdx: banUserIdx,
+          room: roomName,
+          boardIdx: boardIdx,
+        };
+        socketRef.current.emit("noChatDelete", message);
+      }
+      fetchnoChatDelete(banUserIdx);
+    }
+  };
   //스트리밍 채금 목록 조회
   const fetchNoChatList = async () => {
     if (userAuth === "host") {
@@ -490,7 +434,7 @@ export default function StreamingChatView() {
       });
     }
   };
-  //스트리밍 채금 풀기
+  //스트리밍 채금 풀기 - db
   const fetchnoChatDelete = async (banUserIdx: number) => {
     if (userAuth === "host") {
       await axios.post(
@@ -532,6 +476,63 @@ export default function StreamingChatView() {
       settextMsg("");
     }
   };
+  const roomOut = useCallback(() => {
+    if (socketRef.current) {
+      socketRef.current.emit("leave-room", {
+        userIdx: userIdx,
+        roomIdx: roomName,
+      });
+      socketRef.current.disconnect();
+    }
+    setroomEnter(false);
+    setchattingData([]);
+    setchattingBidData([]);
+    setUserList({});
+    setNoChatState(false);
+    setchattingBidData([]);
+
+  }, [socketRef, userIdx, roomName]);
+
+  const onChangeKeyword = (e: { target: { value: string } }) => {
+    const newValue = e.target.value;
+    settextMsg(newValue);
+  };
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: {
+      preventDefault: () => void;
+      returnValue: string;
+    }) => {
+      roomOut();
+      event.preventDefault();
+      event.returnValue = ""; // Some browsers require this property to be set.
+    };
+    // beforeunload 이벤트 리스너를 등록합니다.
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      // 컴포넌트가 언마운트 될 때 이벤트 리스너를 제거합니다.
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [roomOut]);
+
+  useEffect(() => {
+    liveRoomIdx.current = roomName;
+    auctionRoomIdx.current = roomName;
+  }, [roomName]);
+  useEffect(() => {
+    if (userInfoBidData[userIdx]) {
+      setbiddingState(true);
+    }
+  }, [userInfoBidData]);
+  useEffect(() => {
+    // console.log("banList", banList);
+  }, [banList]);
+  useEffect(() => {
+    console.log("userList", userList);
+  }, [userList]);
+
+
 
   /*************************************
    *
@@ -798,6 +799,8 @@ export default function StreamingChatView() {
                   userList={userList}
                   ban={ban}
                   noChat={noChat}
+                  unBan={fetchBanDelete}
+                  unNoChat={noChatDelete}
                   userAuth={userAuth}
                 />
               ))}
