@@ -587,7 +587,7 @@ export default function AuctionWrite() {
         <p className="font-bold text-xl my-2">즉시 구입가</p>
         <input
           type="number"
-          placeholder="즉시 구입가를 선택하시지 않으시면 빈칸으로 해주세요. (원)"
+          placeholder="(선택) 즉시 구입가를 입력해주세요. (원)"
           className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
