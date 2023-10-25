@@ -46,7 +46,7 @@ export default function ActionPage({ params: { slug } }: Props) {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}?userIdx=1`
+        `https://reptimate.store/api/board/${idx}?macAdress=`
       );
       // Assuming your response data has a 'result' property
       console.log(response.data);

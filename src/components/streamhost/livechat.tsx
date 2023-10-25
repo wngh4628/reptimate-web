@@ -25,7 +25,7 @@ interface UserInfoData {
     profilePath: string;
   };
 }
-export default function StreamingChatView() {
+export default function HostStreamingChatView() {
   const router = useRouter();
   const params = useParams();
   const idx = params?.idx;
@@ -38,8 +38,8 @@ export default function StreamingChatView() {
   const [textMsg, settextMsg] = useState("");
   const [roomName, setroomName] = useState("");
   const [chattingData, setchattingData] = useState<IMessage[]>([]);
-  const [banList, setBanList] = useState<userInfo[]>([]);
-  const [noChatList, setNoChatList] = useState<userInfo[]>([]);
+  const [banList, setBanList] = useState<userInfo[]>([]); // 밴 목록
+  const [noChatList, setNoChatList] = useState<userInfo[]>([]); // 채금 목록
   const socketRef = useRef<Socket | null>(null);
   let liveRoomIdx = useRef<string>();
 
@@ -76,7 +76,6 @@ export default function StreamingChatView() {
 
   const [isInputDisabled, setIsInputDisabled] = useState(false); // 채팅 입력란 입력 가능여부
 
-
   useEffect(() => {
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
@@ -86,23 +85,46 @@ export default function StreamingChatView() {
         const extractedNumber = match ? match[1] : "";
         // 참가한 스트리밍의 방 번호(boardidx)로 채팅 입장
         setroomName(extractedNumber);
+        setBoardIdx(parseInt(extractedNumber));
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
-        //입장한 사용자의 idx지정
-        setUserIdx(userData.USER_DATA.idx);
-        getData().then(() => {
-          // getData가 완료된 후 실행하려는 코드를 이곳에 배치
-          // 입장한 사용자의 이름 지정
-          setNickname(userData.USER_DATA.nickname);
-          setProfilePath(userData.USER_DATA.profilePath);
+        preset().then(() => {
+          console.log(
+            "useEffect  :  preset  : then : getData 시도================",
+            idx
+          );
+          getData().then(() => {
+            console.log(
+              "useEffect  :  getData  : then : getData 완료=================" +
+                userData.USER_DATA.idx
+            );
+            console.log(
+              "useEffect  :  getData  : then : 소켓 연결 시도================"
+            );
+            joinRoom();
+            joinBidRoom();
+            fetchBanList();
+            fetchNoChatList();
+          });
         });
-        
       } else {
         router.replace("/");
         alert("로그인이 필요한 기능입니다.");
       }
     }
   }, []);
+  const preset = async () => {
+    const storedData = localStorage.getItem("recoil-persist");
+    if (storedData) {
+      const userData = JSON.parse(storedData);
+      if (userData.USER_DATA.idx) {
+        setUserIdx(userData.USER_DATA.idx);
+        setNickname(userData.USER_DATA.nickname);
+        setProfilePath(userData.USER_DATA.profilePath);
+      }
+    }
+    console.log("useEffect  :  preset  : ================");
+  };
 
   useEffect(() => {
     const chatContainer = bidContainerRef.current;
@@ -112,26 +134,40 @@ export default function StreamingChatView() {
   }, [chattingBidData]);
 
   const getData = useCallback(async () => {
+    console.log(
+      "==1======getData() : 경매글 정보 불러오기==================== boardidx : ",
+      idx
+    );
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}?userIdx=1`
+        `https://reptimate.store/api/board/${idx}?macAdress=`
       );
-
-      console.log("========getData() : 경매글 정보 불러오기====================")
-      console.log(response.data)
-      console.log("============================")
+      console.log(
+        "========getData() : 경매글 정보 불러오기==================== boardidx : ",
+        idx
+      );
+      console.log(response.data);
+      console.log("============================");
       setPostsData(response.data);
-      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice))
-      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit))
-      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice))
-
+      setNowBid(
+        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
+      );
+      setBidUnit(
+        formatNumberWithCommas(response.data.result.boardAuction.unit)
+      );
+      setBidStartPrice(
+        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
+      );
       setHost(response.data.result.UserInfo.idx);
-
+      console.log(
+        "당신은 이 방송의 host입?======================" +
+          parseInt(response.data.result.UserInfo.idx)
+      );
+      console.log("당신은 이?======================" + userIdx);
       if (parseInt(response.data.result.UserInfo.idx) === userIdx) {
         setUserAuth("host");
-        console.log("==========당신은 이 방송의 host입니다.============")
+        console.log("당신은 이 방송의 host입니다.======================");
       }
-
       setNowBid(
         formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
       );
@@ -143,19 +179,16 @@ export default function StreamingChatView() {
       );
       setEndTime(response.data.result.boardAuction.endTime);
       console.log(response.data.result.boardAuction.endTime);
-
       const endTime1 = new Date(
         response.data.result.boardAuction.endTime
       ).getTime();
-
       const updateCountdown = () => {
         const currentTime = new Date().getTime();
         const timeRemaining = endTime1 - currentTime;
-
         if (timeRemaining < 0) {
           setCountdown("경매가 종료되었습니다!");
           clearInterval(countdownInterval);
-          setIsInputDisabled(true)
+          setIsInputDisabled(true);
         } else {
           const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
           const hours = Math.floor(
@@ -165,16 +198,13 @@ export default function StreamingChatView() {
             (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
           );
           const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
           setCountdown(
             "종료시간 : " + `${hours}시간 ${minutes}분 ${seconds}초`
           );
         }
       };
-
       updateCountdown(); // Initial call to set the countdown
       const countdownInterval = setInterval(updateCountdown, 1000);
-
       return () => {
         clearInterval(countdownInterval);
       };
@@ -183,10 +213,7 @@ export default function StreamingChatView() {
     }
   }, []);
 
-  useEffect(() => {
-    joinRoom();
-    joinBidRoom();
-  }, [profilePath]);
+  useEffect(() => {}, [postsData]);
 
   //입찰가 입력란
   const onChangeBid = (event: { target: { value: string } }) => {
@@ -197,7 +224,6 @@ export default function StreamingChatView() {
   function formatNumberWithCommas(input: string): string {
     // 문자열을 숫자로 변환하고 세 자리마다 쉼표를 추가
     const numberWithCommas = Number(input).toLocaleString();
-
     return numberWithCommas;
   }
 
@@ -237,8 +263,8 @@ export default function StreamingChatView() {
         Swal.fire({
           text: "방송에서 추방 당했습니다.",
           icon: "warning",
-          confirmButtonText: "완료", // confirm 버튼 텍스트 지정
-          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+          confirmButtonText: "완료",
+          confirmButtonColor: "#7A75F7",
         });
       } else {
         setUserList((prevUserList) => {
@@ -258,6 +284,7 @@ export default function StreamingChatView() {
         confirmButtonText: "완료", // confirm 버튼 텍스트 지정
         confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
       });
+      router.replace("/auction/posts/" + boardIdx);
     });
     //다른 참여자가 방을 나갔을 때
     socket.on("leave-user", (message: IMessage) => {
@@ -296,7 +323,11 @@ export default function StreamingChatView() {
       const messageArray = Array.isArray(message) ? message : [message];
       messageArray.forEach((data: any) => {
         const getUserInfo = data;
-        if (getUserInfo && getUserInfo.profilePath && getUserInfo.profilePath.length > 1) {
+        if (
+          getUserInfo &&
+          getUserInfo.profilePath &&
+          getUserInfo.profilePath.length > 1
+        ) {
           setUserInfoData((prevUserInfoData) => ({
             ...prevUserInfoData,
             [getUserInfo.userIdx]: {
@@ -314,7 +345,6 @@ export default function StreamingChatView() {
             },
           }));
         } else {
-
         }
       });
     });
@@ -327,12 +357,145 @@ export default function StreamingChatView() {
       }
     };
   };
-
-  const onChangeKeyword = (e: { target: { value: string } }) => {
-    const newValue = e.target.value;
-    settextMsg(newValue);
+  //강퇴 시키기
+  const ban = (banUserIdx: number) => {
+    if (userAuth === "host") {
+      if (socketRef.current) {
+        const message: Ban_Message = {
+          userIdx: userIdx,
+          banUserIdx: banUserIdx,
+          room: roomName,
+          boardIdx: boardIdx,
+        };
+        socketRef.current.emit("user_ban", message);
+      }
+    }
   };
-
+  //스트리밍 밴 목록 조회
+  const fetchBanList = async () => {
+    if (userAuth === "host") {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_CHAT_URL}/LiveChat/ban/${roomName}/${boardIdx}/${userIdx}`
+        );
+        const userInfoArray = response.data.result;
+        setBanList(userInfoArray);
+        console.error("setBanList  :  ");
+        console.error(userInfoArray);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    } else {
+    }
+  };
+  //스트리밍 밴 풀기
+  const fetchBanDelete = async (banUserIdx: number) => {
+    if (userAuth === "host") {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_CHAT_URL}/LiveChat/ban/${roomName}/${boardIdx}/${userIdx}/${banUserIdx}`
+      );
+    } else {
+    }
+  };
+  //채팅 금지 먹이기
+  const noChat = (banUserIdx: number) => {
+    // console.log("noChat");
+    if (userAuth === "host") {
+      // console.log(socketRef.current);
+      if (socketRef.current) {
+        console.log("==========noChat : " + banUserIdx + "=========");
+        const message: Ban_Message = {
+          userIdx: userIdx,
+          banUserIdx: banUserIdx,
+          room: roomName,
+          boardIdx: boardIdx,
+        };
+        console.log(message);
+        socketRef.current.emit("noChat", message);
+      }
+    }
+  };
+  //스트리밍 채팅 금지 풀기
+  const noChatDelete = (banUserIdx: number) => {
+    if (userAuth === "host") {
+      // console.log(socketRef.current);
+      if (socketRef.current) {
+        // console.log("noChat");
+        const message: Ban_Message = {
+          userIdx: userIdx,
+          banUserIdx: banUserIdx,
+          room: roomName,
+          boardIdx: boardIdx,
+        };
+        socketRef.current.emit("noChatDelete", message);
+      }
+      fetchnoChatDelete(banUserIdx);
+    }
+  };
+  //스트리밍 채금 목록 조회
+  const fetchNoChatList = async () => {
+    if (userAuth === "host") {
+      // console.log("no chat");
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_CHAT_URL}/LiveChat/nochat/${roomName}/${boardIdx}/${userIdx}`
+        );
+        const userInfoArray = response.data.result;
+        setNoChatList(userInfoArray);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    } else {
+      //   Swal.fire({
+      //     text: "방장이 아닙니다.",
+      //     icon: "error",
+      //     confirmButtonText: "완료", // confirm 버튼 텍스트 지정
+      //     confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      //   });
+    }
+  };
+  //스트리밍 채금 풀기 - db
+  const fetchnoChatDelete = async (banUserIdx: number) => {
+    if (userAuth === "host") {
+      await axios.post(
+        `http://localhost:3003/LiveChat/noChat/${roomName}/${boardIdx}/${userIdx}/${banUserIdx}`
+      );
+    } else {
+      //   Swal.fire({
+      //     text: "방장이 아닙니다.",
+      //     icon: "error",
+      //     confirmButtonText: "완료", // confirm 버튼 텍스트 지정
+      //     confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      //   });
+    }
+  };
+  //메시지 발송하는 함수
+  const sendMsg = async () => {
+    if (textMsg.trim() === "") {
+      return;
+    }
+    if (noChatState === true) {
+      Swal.fire({
+        text: "채팅 금지 상태입니다.",
+        icon: "warning",
+        confirmButtonText: "완료", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
+      return;
+    }
+    if (socketRef.current) {
+      const socketId = socketRef.current.id;
+      const message: IMessage = {
+        userIdx: userIdx,
+        socketId: socketId,
+        message: textMsg.trim(),
+        room: roomName,
+      };
+      console.log("=============실시간 채팅 발송됨===========");
+      socketRef.current.emit("live_message", message);
+      settextMsg("");
+    }
+  };
   const roomOut = useCallback(() => {
     if (socketRef.current) {
       socketRef.current.emit("leave-room", {
@@ -348,6 +511,11 @@ export default function StreamingChatView() {
     setNoChatState(false);
     setchattingBidData([]);
   }, [socketRef, userIdx, roomName]);
+
+  const onChangeKeyword = (e: { target: { value: string } }) => {
+    const newValue = e.target.value;
+    settextMsg(newValue);
+  };
 
   useEffect(() => {
     const handleBeforeUnload = (event: {
@@ -382,155 +550,6 @@ export default function StreamingChatView() {
   useEffect(() => {
     console.log("userList", userList);
   }, [userList]);
-
-  //강퇴 시키기
-  const ban = (banUserIdx: number) => {
-    if (userAuth === "host") {
-      if (socketRef.current) {
-        const message: Ban_Message = {
-          userIdx: userIdx,
-          banUserIdx: banUserIdx,
-          room: roomName,
-          boardIdx: boardIdx,
-        };
-        socketRef.current.emit("user_ban", message);
-      }
-    }
-  };
-  //채팅 금지 먹이기
-  const noChat = (banUserIdx: number) => {
-    // console.log("noChat");
-    if (userAuth === "host") {
-      // console.log(socketRef.current);
-      if (socketRef.current) {
-        console.log("==========noChat : "+banUserIdx+"=========");
-        const message: Ban_Message = {
-          userIdx: userIdx,
-          banUserIdx: banUserIdx,
-          room: roomName,
-          boardIdx: boardIdx,
-        };
-        console.log(message);
-        socketRef.current.emit("noChat", message);
-      }
-    }
-  };
-  //스트리밍 채팅 금지 풀기
-  const noChatDelete = (banUserIdx: number) => {
-    if (userAuth === "host") {
-      // console.log(socketRef.current);
-      if (socketRef.current) {
-        // console.log("noChat");
-        const message: Ban_Message = {
-          userIdx: userIdx,
-          banUserIdx: banUserIdx,
-          room: roomName,
-          boardIdx: boardIdx,
-        };
-        socketRef.current.emit("noChatDelete", message);
-      }
-    }
-  };
-  //스트리밍 밴 목록 조회
-  const fetchBanList = async () => {
-    if (userAuth === "host") {
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_CHAT_URL}/LiveChat/ban/${roomName}/${boardIdx}/${userIdx}`
-        );
-        const userInfoArray = response.data.result;
-        setBanList(userInfoArray);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    } else {
-      Swal.fire({
-        text: "방장이 아닙니다.",
-        icon: "error",
-        confirmButtonText: "완료", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
-    }
-  };
-  //스트리밍 밴 풀기
-  const fetchBanDelete = async (banUserIdx: number) => {
-    if (userAuth === "host") {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_CHAT_URL}/LiveChat/ban/${roomName}/${boardIdx}/${userIdx}/${banUserIdx}`
-      );
-    } else {
-      Swal.fire({
-        text: "방장이 아닙니다.",
-        icon: "error",
-        confirmButtonText: "완료", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
-    }
-  };
-  //스트리밍 채금 목록 조회
-  const fetchNoChatList = async () => {
-    if (userAuth === "host") {
-      // console.log("no chat");
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_CHAT_URL}/LiveChat/nochat/${roomName}/${boardIdx}/${userIdx}`
-        );
-        const userInfoArray = response.data.result;
-        setNoChatList(userInfoArray);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    } else {
-      Swal.fire({
-        text: "방장이 아닙니다.",
-        icon: "error",
-        confirmButtonText: "완료", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
-    }
-  };
-  //스트리밍 채금 풀기
-  const fetchnoChatDelete = async (banUserIdx: number) => {
-    if (userAuth === "host") {
-      await axios.post(
-        `http://localhost:3003/LiveChat/noChat/${roomName}/${boardIdx}/${userIdx}/${banUserIdx}`
-      );
-    } else {
-      Swal.fire({
-        text: "방장이 아닙니다.",
-        icon: "error",
-        confirmButtonText: "완료", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
-    }
-  };
-  //메시지 발송하는 함수
-  const sendMsg = async () => {
-    if (textMsg.trim() === "") {
-      return;
-    }
-    if (noChatState === true) {
-      Swal.fire({
-        text: "채팅 금지 상태입니다.",
-        icon: "warning",
-        confirmButtonText: "완료", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
-      return;
-    }
-    if (socketRef.current) {
-      const socketId = socketRef.current.id;
-      const message: IMessage = {
-        userIdx: userIdx,
-        socketId: socketId,
-        message: textMsg.trim(),
-        room: roomName,
-      };
-      console.log("=============실시간 채팅 발송됨===========");
-      socketRef.current.emit("live_message", message);
-      settextMsg("");
-    }
-  };
 
   /*************************************
    *
@@ -568,7 +587,8 @@ export default function StreamingChatView() {
       console.log("bid message  :  ", message);
       console.log("========================");
       if (bidContainerRef.current) {
-        bidContainerRef.current.scrollTop = bidContainerRef.current.scrollHeight;
+        bidContainerRef.current.scrollTop =
+          bidContainerRef.current.scrollHeight;
       }
       setNowBid(message.message);
       console.log("bid message", message);
@@ -659,46 +679,7 @@ export default function StreamingChatView() {
       console.error("Error fetching data:", error);
     }
   };
-  //메시지 발송하는 함수
-  const sendBidMsg = async () => {
-    if (bidMsg.trim() !== "") {
-      const numericValue = parseInt(bidMsg.trim(), 10);
 
-      if (numericValue % parseInt(bidUnit) !== 0) {
-        // 입력값이 1000의 배수가 아니면 초기화
-        Swal.fire({
-          text:'입찰 단위를 확인해 주시기 바랍니다.',
-          icon: 'error',
-          confirmButtonText: '확인', // confirm 버튼 텍스트 지정
-          confirmButtonColor: '#7A75F7', // confrim 버튼 색깔 지정
-        });
-        return
-      }
-      if (parseInt(bidMsg.trim()) < parseInt(bidStartPrice)) {
-        Swal.fire({
-          text:'입찰 시작가 보다 큰 금액을 입력해 주세요',
-          icon: 'error',
-          confirmButtonText: '확인', // confirm 버튼 텍스트 지정
-          confirmButtonColor: '#7A75F7', // confrim 버튼 색깔 지정
-          });
-        return;
-      }
-      if (!biddingState) {
-        await fetchParticipate();
-      }
-      if (socketBidRef.current) {
-        const socketId = socketBidRef.current.id;
-        const message: IMessage = {
-          userIdx: userIdx,
-          socketId: socketId,
-          message: bidMsg.trim(),
-          room: roomName,
-        };
-        socketBidRef.current.emit("Auction_message", message);
-        setBidMsg("");
-      }
-    }
-  };
   function viewChat() {
     if (sideView != "chat") {
       setSideView("chat");
@@ -716,7 +697,7 @@ export default function StreamingChatView() {
   }
   return (
     <>
-      <div className="flex-col w-full right-0 h-[100%] flex bg-white">
+      <div className="flex-col w-full right-0 h-[87%] flex bg-white">
         <div className="flex-col py-[0.5rem] text-sm bg-gray-100 w-full">
           <span className="flex text-center self-center items-center justify-center mx-auto">
             {countdown}
@@ -781,80 +762,99 @@ export default function StreamingChatView() {
                   채팅
                 </button>
               </div>
-
-              <div className="flex flex-col flex-1 space-y-2"></div>
             </div>
           </div>
         ) : (
           ""
         )}
         {sideView === "participate" ? (
-          <div className="flex-1 min-h-screen w-full border-gray-100 border-r-[1px] border-b-[1px]">
-            <div className="flex flex-col overflow-auto bg-white mt-2 pl-5">
-              {Object.values(userInfoData).map((userList) => (
-                <ChatUserList
-                  key={userList.userIdx}
-                  userList={userList}
-                  ban={ban}
-                  noChat={noChat}
-                  unBan={fetchBanDelete}
-                  unNoChat={noChatDelete}
-                  userAuth={userAuth}
-                />
-              ))}
+          <div className="min-h-screen w-full">
+            <div className="flex items-start flex-col">
+              <div className="flex h-[384px] w-full border-gray-100 border-r-[1px]">
+                <div className="flex flex-col overflow-auto bg-white mt-2 pl-5">
+                  {Object.values(userInfoData).map((userList) => (
+                    <ChatUserList
+                      key={userList.userIdx}
+                      userList={userList}
+                      ban={ban}
+                      noChat={noChat}
+                      unBan={fetchBanDelete}
+                      unNoChat={noChatDelete}
+                      userAuth={userAuth}
+                      banList={banList}
+                      noChatList={noChatList}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="flex items-start flex-col">
+              <div className=" w-full bg-slate-400">밴 목록</div>
+              <div className="flex h-[384px] w-full border-gray-100 border-r-[1px]">
+                <div className="flex flex-col overflow-auto bg-white mt-2 pl-5">
+                  {Object.values(banList).map((userList) => (
+                    <ChatUserList
+                      key={userList.userIdx}
+                      userList={userList}
+                      ban={ban}
+                      noChat={noChat}
+                      unBan={fetchBanDelete}
+                      unNoChat={noChatDelete}
+                      userAuth={userAuth}
+                      banList={banList}
+                      noChatList={noChatList}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         ) : (
           ""
         )}
         {sideView === "bid" ? (
-        <div className="min-h-screen w-full">
+          <div className="min-h-screen w-full">
             <div className="flex items-start flex-col">
-                <div className="flex flex-col min-h-[10vh] w-full max-h-[10vh] text-sm bg-gray-100 pb-1 justify-center">
-                    <div className="flex flex-row w-full my-[5px] border-t-[1px] border-gray-400 pt-[15px] px-[6%]">
-                      <div className="flex flex-row basis-1/2 justify-center">
-                        <p className="text-[14px]">입찰 시작가 : </p>
-                        <p className="text-[14px] px-1 text-main-color font-semibold">
-                          {bidStartPrice}
-                        </p>
-                        <p className="text-[14px]"> 원</p>
-                      </div>
-                      <div className="flex flex-row basis-1/2 justify-center">
-                        <p className="text-[14px]">입찰 단위 : </p>
-                        <p className="text-[14px] px-1 text-main-color font-semibold">
-                          {bidUnit}
-                        </p>
-                        <p className="text-[14px]"> 원</p>
-                      </div>
-                    </div>
-                    <div className="flex flex-row pt-[5px] basis-1/2 px-[12%]">
-                      <p className="text-[17px]">현재 입찰 : </p>
-                      <p className="text-[17px] px-1 text-main-color font-semibold">
-                        {nowBid}
-                      </p>
-                      <p className="text-[17px]"> 원</p>
-                    </div>
+              <div className="flex flex-col min-h-[10vh] max-h-[10vh] w-full text-sm bg-gray-100 border-y-[1px] border-gray-30 py-[10px] px-[5px] justify-center">
+                <div className="flex flex-row w-full mb-[5px]">
+                  <div className="flex flex-row pl-[3px] basis-1/2">
+                    <p className="text-[14px]">입찰 시작가 : </p>
+                    <p className="text-[14px] px-1 text-main-color font-semibold">
+                      {bidStartPrice}
+                    </p>
+                    <p className="text-[14px]"> 원</p>
+                  </div>
+                  <div className="flex flex-row pl-[3px] basis-1/2">
+                    <p className="text-[14px]">입찰 단위 : </p>
+                    <p className="text-[14px] px-1 text-main-color font-semibold">
+                      {bidUnit}
+                    </p>
+                    <p className="text-[14px]"> 원</p>
+                  </div>
                 </div>
-
-                <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px]">
-                    <div className="flex-1 min-h-[62vh] max-h-[62vh] overflow-auto bg-white pb-1">
-                      {chattingBidData.map((chattingBidData, i) => (
-                        <BidItem
-                          chatData={chattingBidData}
-                          userIdx={userIdx}
-                          userInfoData={userInfoData[chattingBidData.userIdx]}
-                          key={i}
-                        />
-                      ))}
-                    </div>
+                <div className="flex flex-row pl-[3px] pt-[5px] basis-1/2">
+                  <p className="text-[18px]">현재 입찰 : </p>
+                  <p className="text-[18px] px-1 text-main-color font-semibold">
+                    {nowBid}
+                  </p>
+                  <p className="text-[17px]"> 원</p>
                 </div>
+              </div>
 
-
-
-
-                <div className="flex flex-col flex-1 space-y-2"></div>
+              <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px]">
+                <div className="flex-1 min-h-[62vh] max-h-[62vh] overflow-auto bg-white pb-1">
+                  {chattingBidData.map((chattingBidData, i) => (
+                    <BidItem
+                      chatData={chattingBidData}
+                      userIdx={userIdx}
+                      userInfoData={userInfoData[chattingBidData.userIdx]}
+                      key={i}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
-        </div>
+          </div>
         ) : (
           ""
         )}
@@ -862,5 +862,3 @@ export default function StreamingChatView() {
     </>
   );
 }
-
-
