@@ -40,7 +40,6 @@ export default function ActionPage({ params: { slug } }: Props) {
   const [profilePath, setProfilePath] = useState("");
   const [nickname, setNickname] = useState("");
   const [description, setDescription] = useState("");
-  const [sideView, setSideView] = useState("chat");
 
   const [postsData, setPostsData] = useState<GetAuctionPostsView | null>(null);
 
@@ -102,28 +101,16 @@ export default function ActionPage({ params: { slug } }: Props) {
     // };
   }, []);
 
-  function viewChat() {
-    if (sideView != "chat") {
-      setSideView("chat");
-    }
-  }
-  function viewParticipate() {
-    if (sideView != "participate") {
-      setSideView("participate");
-    }
-  }
-  function viewBid() {
-    if (sideView != "bid") {
-      setSideView("bid");
-    }
-  }
-
   //데이터 받아오는 부분
   function callback(message: acitonLiveDto): void {
     // console.log("message");
     // console.log(message);
 
     ///data = message;
+    // setActionTitle(message.title);
+    // setDescription(message.description);
+    // setNickname(message.UserInfo.nickname);
+    // setProfilePath(message.UserInfo.profilePath);
 
     if (message.liveStream.state == 1) {
       setVideoUrl(
