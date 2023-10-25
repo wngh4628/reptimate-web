@@ -867,7 +867,10 @@ export default function AuctionPostsView() {
                   className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold"
                   onClick={handleChatClick}
                 >
-                  Chat
+                  <img
+                    src="/img/chat_view.png"
+                    className="w-10 h-10 filter invert"
+                  />
                 </button>
               </div>
             </PC>
