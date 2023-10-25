@@ -82,11 +82,10 @@ export default function StreamingChatView() {
     if (storedData) {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken) {
-        const match = pathName.match(/\/auction\/posts\/(\d+)\/live/);
+        const match = pathName.match(/\/streamhost\/(\d+)/);
         const extractedNumber = match ? match[1] : "";
         // 참가한 스트리밍의 방 번호(boardidx)로 채팅 입장
         setroomName(extractedNumber);
-        setBoardIdx(parseInt(extractedNumber));
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
         //입장한 사용자의 idx지정
@@ -117,6 +116,7 @@ export default function StreamingChatView() {
       const response = await axios.get(
         `https://reptimate.store/api/board/${idx}?userIdx=1`
       );
+
       console.log("========getData() : 경매글 정보 불러오기====================")
       console.log(response.data)
       console.log("============================")
@@ -129,7 +129,7 @@ export default function StreamingChatView() {
 
       if (parseInt(response.data.result.UserInfo.idx) === userIdx) {
         setUserAuth("host");
-        console.log("당신은 이 방송의 host입니다.======================")
+        console.log("==========당신은 이 방송의 host입니다.============")
       }
 
       setNowBid(
@@ -184,7 +184,6 @@ export default function StreamingChatView() {
   }, []);
 
   useEffect(() => {
-    console.log("useEffect  :  profilePath  :  소켓 연결 시도================");
     joinRoom();
     joinBidRoom();
   }, [profilePath]);
@@ -198,6 +197,7 @@ export default function StreamingChatView() {
   function formatNumberWithCommas(input: string): string {
     // 문자열을 숫자로 변환하고 세 자리마다 쉼표를 추가
     const numberWithCommas = Number(input).toLocaleString();
+
     return numberWithCommas;
   }
 
@@ -237,9 +237,9 @@ export default function StreamingChatView() {
         Swal.fire({
           text: "방송에서 추방 당했습니다.",
           icon: "warning",
-          confirmButtonText: "완료",
-          confirmButtonColor: "#7A75F7",
-        })
+          confirmButtonText: "완료", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       } else {
         setUserList((prevUserList) => {
           const newData: { [key: number]: any } = { ...prevUserList };
@@ -258,7 +258,6 @@ export default function StreamingChatView() {
         confirmButtonText: "완료", // confirm 버튼 텍스트 지정
         confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
       });
-      router.replace("/auction/posts/"+boardIdx);
     });
     //다른 참여자가 방을 나갔을 때
     socket.on("leave-user", (message: IMessage) => {
@@ -315,6 +314,7 @@ export default function StreamingChatView() {
             },
           }));
         } else {
+
         }
       });
     });
@@ -347,7 +347,6 @@ export default function StreamingChatView() {
     setUserList({});
     setNoChatState(false);
     setchattingBidData([]);
-
   }, [socketRef, userIdx, roomName]);
 
   useEffect(() => {
@@ -717,7 +716,7 @@ export default function StreamingChatView() {
   }
   return (
     <>
-      <div className="flex-col w-full right-0 h-[87%] flex bg-white">
+      <div className="flex-col w-full right-0 h-[100%] flex bg-white">
         <div className="flex-col py-[0.5rem] text-sm bg-gray-100 w-full">
           <span className="flex text-center self-center items-center justify-center mx-auto">
             {countdown}
@@ -790,7 +789,7 @@ export default function StreamingChatView() {
           ""
         )}
         {sideView === "participate" ? (
-          <div className="flex-1 min-h-[77.9vh] max-h-[77.9vh] w-full border-gray-100 border-r-[1px] border-b-[1px]">
+          <div className="flex-1 min-h-screen w-full border-gray-100 border-r-[1px] border-b-[1px]">
             <div className="flex flex-col overflow-auto bg-white mt-2 pl-5">
               {Object.values(userInfoData).map((userList) => (
                 <ChatUserList
@@ -807,65 +806,53 @@ export default function StreamingChatView() {
           ""
         )}
         {sideView === "bid" ? (
-          <div className="min-h-screen w-full">
+        <div className="min-h-screen w-full">
             <div className="flex items-start flex-col">
-              <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px]">
-                <div className="flex-1 min-h-[62vh] max-h-[62vh] overflow-auto bg-white pb-1">
-                  {chattingBidData.map((chattingBidData, i) => (
-                    <BidItem
-                      chatData={chattingBidData}
-                      userIdx={userIdx}
-                      userInfoData={userInfoData[chattingBidData.userIdx]}
-                      key={i}
-                    />
-                  ))}
+                <div className="flex flex-col min-h-[10vh] w-full max-h-[10vh] text-sm bg-gray-100 pb-1 justify-center">
+                    <div className="flex flex-row w-full my-[5px] border-t-[1px] border-gray-400 pt-[15px] px-[6%]">
+                      <div className="flex flex-row basis-1/2 justify-center">
+                        <p className="text-[14px]">입찰 시작가 : </p>
+                        <p className="text-[14px] px-1 text-main-color font-semibold">
+                          {bidStartPrice}
+                        </p>
+                        <p className="text-[14px]"> 원</p>
+                      </div>
+                      <div className="flex flex-row basis-1/2 justify-center">
+                        <p className="text-[14px]">입찰 단위 : </p>
+                        <p className="text-[14px] px-1 text-main-color font-semibold">
+                          {bidUnit}
+                        </p>
+                        <p className="text-[14px]"> 원</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-row pt-[5px] basis-1/2 px-[12%]">
+                      <p className="text-[17px]">현재 입찰 : </p>
+                      <p className="text-[17px] px-1 text-main-color font-semibold">
+                        {nowBid}
+                      </p>
+                      <p className="text-[17px]"> 원</p>
+                    </div>
                 </div>
-              </div>
-              <div className="flex flex-col min-h-[10vh] w-full max-h-[10vh] text-sm bg-gray-100 pb-1 justify-center">
-                <div className="flex flex-row w-full my-[5px]">
-                  <div className="flex flex-row pl-[3px] basis-1/2">
-                    <p className="text-[14px]">입찰 시작가 : </p>
-                    <p className="text-[14px] px-1 text-main-color font-semibold">
-                      {bidStartPrice}
-                    </p>
-                    <p className="text-[14px]"> 원</p>
-                  </div>
-                  <div className="flex flex-row pl-[3px] basis-1/2">
-                    <p className="text-[14px]">입찰 단위 : </p>
-                    <p className="text-[14px] px-1 text-main-color font-semibold">
-                      {bidUnit}
-                    </p>
-                    <p className="text-[14px]"> 원</p>
-                  </div>
-                </div>
-                <div className="flex flex-row pl-[3px] pt-[5px] basis-1/2">
-                  <p className="text-[17px]">현재 입찰 : </p>
-                  <p className="text-[17px] px-1 text-main-color font-semibold">
-                    {nowBid}
-                  </p>
-                  <p className="text-[17px]"> 원</p>
-                </div>
-              </div>
-              <div className="flex border-[#A7A7A7] text-sm w-full pl-[2px]">
-                <input
-                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded"
-                  onChange={onChangeBid}
-                  value={bidMsg}
-                  placeholder=""
-                  disabled={isInputDisabled}
-                />
-                <button
-                  className="w-[20%] h-12 bg-main-color text-white rounded transition duration-300 ml-1"
-                  onClick={sendBidMsg}
-                  disabled={isInputDisabled}
-                >
-                  입찰
-                </button>
-              </div>
 
-              <div className="flex flex-col flex-1 space-y-2"></div>
+                <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px]">
+                    <div className="flex-1 min-h-[62vh] max-h-[62vh] overflow-auto bg-white pb-1">
+                      {chattingBidData.map((chattingBidData, i) => (
+                        <BidItem
+                          chatData={chattingBidData}
+                          userIdx={userIdx}
+                          userInfoData={userInfoData[chattingBidData.userIdx]}
+                          key={i}
+                        />
+                      ))}
+                    </div>
+                </div>
+
+
+
+
+                <div className="flex flex-col flex-1 space-y-2"></div>
             </div>
-          </div>
+        </div>
         ) : (
           ""
         )}
