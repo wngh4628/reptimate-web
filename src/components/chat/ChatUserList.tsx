@@ -10,6 +10,8 @@ const ChatUserList = forwardRef((props :{
 	},
 	ban: any,
 	noChat : any,
+	unBan: any,
+	unNoChat : any,
 	userAuth : string
 }, ref) =>{
 	useImperativeHandle(ref, () => ({
@@ -40,12 +42,18 @@ const ChatUserList = forwardRef((props :{
 			setSwalOn(true);
 			let title = '';
 			let text = '';
-			if(category === 'ben'){
+			if(category === 'ban'){
 				title = `${props.userList.nickname}님을 강제 퇴장 시키겠습니까?`;
 				text = '강퇴 후, 해당 라이브 방송은 재입장이 불가능합니다.';
 			}else if(category === 'noChat'){
 				title = `${props.userList.nickname}님을 채팅 금지 시키겠습니까?`;
 				text = '채팅 금지 후, 해당 라이브 방송에서 채팅이 불가능합니다.';
+			}else if(category === 'unBan'){
+				title = `${props.userList.nickname}님의 강제 퇴장을 해제 하시겠습니까?`;
+				text = '';
+			}else if(category === 'unNoChat'){
+				title = `${props.userList.nickname}님의 채팅 금지를 해제 시키겠습니까?`;
+				text = '';
 			}
 			Swal.fire({
 				title: title,
@@ -60,9 +68,13 @@ const ChatUserList = forwardRef((props :{
 				
 			  }).then(result => {// 만약 Promise리턴을 받으면,
 				if (result.isConfirmed) { // 만약 모달창에서 confirm 버튼을 눌렀다면
-					if(category === 'ben'){
+					if(category === 'ban'){
 						props.ban(props.userList.userIdx);
 					}else if(category === 'noChat'){
+						props.noChat(props.userList.userIdx);
+					}else if(category === 'unBan'){
+						props.noChat(props.userList.userIdx);
+					}else if(category === 'unNoChat'){
 						props.noChat(props.userList.userIdx);
 					}
 					setBoxState(false);
@@ -88,8 +100,10 @@ const ChatUserList = forwardRef((props :{
 			<div className='flex' onClick={optionBoxOnOff} style={{cursor:"pointer"}}>{props.userList.nickname}</div>
 			{boxState ?
 				<div className='border-[5px] border-gray-300 bg-white' style={{position:"absolute",marginTop:"20px", backgroundColor:"#fffff", width:"100px", height:"60px"}} ref={wrapperRef}>
-					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('ben')}><h1>강퇴</h1></div>
+					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('ban')}><h1>강퇴</h1></div>
 					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('noChat')}><h1>채금</h1></div>
+					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('unBan')}><h1>강퇴 헤제</h1></div>
+					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('unNoChat')}><h1>채금 해제</h1></div>
 				</div>
 				: 
 				""
