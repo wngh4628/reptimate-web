@@ -797,6 +797,8 @@ export default function StreamingChatView() {
                   userList={userList}
                   ban={ban}
                   noChat={noChat}
+                  unBan={fetchBanDelete}
+                  unNoChat={noChatDelete}
                   userAuth={userAuth}
                 />
               ))}
