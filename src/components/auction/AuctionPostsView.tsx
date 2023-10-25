@@ -34,6 +34,15 @@ import {
   getResponseChatList,
 } from "@/service/chat/chat";
 
+declare global {
+  interface Window {
+    Android: {
+      openNativeActivity: () => void;
+      // 다른 메소드나 프로퍼티도 여기에 추가
+    };
+  }
+}
+
 export default function AuctionPostsView() {
   const router = useRouter();
   const params = useParams();
@@ -56,6 +65,7 @@ export default function AuctionPostsView() {
 
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [LiveMenuOpen, setLiveMenuOpen] = useState(false);
 
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
@@ -146,6 +156,10 @@ export default function AuctionPostsView() {
 
   const toggleMenu = () => {
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
+  };
+
+  const handleLiveMenu = () => {
+    setLiveMenuOpen(!LiveMenuOpen);
   };
 
   const handleChat = () => {
@@ -520,13 +534,20 @@ export default function AuctionPostsView() {
 
     const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
 
+    const handleChatClick = () => {
+      //현재 경매의 실시간 채팅을 볼 수 있는 버튼
+    };
+
     const handleViewClick = () => {
-      //웹뷰에서 버튼 클릭시 안드로이드 rtmp 송신 액티비티로 이동
+      //라이브 방송에 시청자로 참가
+      location.href = `/auction/posts/${idx}/live`;
     };
 
     const handleLiveClick = () => {
-      // Handle the logic for opening the write page
-      location.href = `/auction/posts/${idx}/live`;
+      //웹뷰에서 버튼 클릭시 안드로이드 rtmp 송신 액티비티로 이동
+      if (window.Android) {
+        window.Android.openNativeActivity();
+      }
     };
 
     return (
@@ -834,20 +855,67 @@ export default function AuctionPostsView() {
                 </p>
               )}
             </Mobile>
-            <div className="fixed bottom-10 right-10 z-50">
-              <button
-                className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-2"
-                onClick={handleViewClick}
-              >
-                View
-              </button>
-              <button
-                className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold"
-                onClick={handleLiveClick}
-              >
-                LIVE
-              </button>
-            </div>
+            <PC>
+              <div className="fixed bottom-10 right-10 z-50">
+                <button
+                  className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-2"
+                  onClick={handleViewClick}
+                >
+                  View
+                </button>
+                <button
+                  className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold"
+                  onClick={handleChatClick}
+                >
+                  Chat
+                </button>
+              </div>
+            </PC>
+            <Mobile>
+              <div className="fixed bottom-2 right-2 z-50">
+                {!LiveMenuOpen ? (
+                  <button
+                    className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-3xl"
+                    onClick={handleLiveMenu}
+                  >
+                    ⋮
+                  </button>
+                ) : (
+                  <div>
+                    <button
+                      className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-1"
+                      onClick={handleLiveClick}
+                    >
+                      LIVE
+                    </button>
+                    <button
+                      className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-1"
+                      onClick={handleViewClick}
+                    >
+                      View
+                    </button>
+                    <button
+                      className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-1"
+                      onClick={handleChatClick}
+                    >
+                      <img
+                        src="/img/chat_view.png"
+                        className="w-9 h-9 filter invert"
+                      />
+                    </button>
+                  </div>
+                )}
+                {LiveMenuOpen && (
+                  <button
+                    className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-2xl"
+                    onClick={handleLiveMenu}
+                  >
+                    X
+                  </button>
+                )}
+              </div>
+            </Mobile>
+
             <ul className="mt-6">
               {commentList !== null && commentList ? (
                 commentList.map((comment) => (
