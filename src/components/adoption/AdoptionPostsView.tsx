@@ -304,6 +304,7 @@ export default function AdoptionPostsView() {
         `https://reptimate.store/api/board/${idx}?userIdx=1`
       );
       // Assuming your response data has a 'result' property
+      console.log(response.data);
       setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
