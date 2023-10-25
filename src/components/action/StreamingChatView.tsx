@@ -97,7 +97,8 @@ export default function StreamingChatView() {
           setNickname(userData.USER_DATA.nickname);
           setProfilePath(userData.USER_DATA.profilePath);
         });
-        
+        fetchBanList();
+        fetchNoChatList();
       } else {
         router.replace("/");
         alert("로그인이 필요한 기능입니다.");
@@ -354,12 +355,12 @@ export default function StreamingChatView() {
         console.error("Error fetching data:", error);
       }
     } else {
-      Swal.fire({
-        text: "방장이 아닙니다.",
-        icon: "error",
-        confirmButtonText: "완료", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
+      // Swal.fire({
+      //   text: "방장이 아닙니다.",
+      //   icon: "error",
+      //   confirmButtonText: "완료", // confirm 버튼 텍스트 지정
+      //   confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      // });
     }
   };
   //스트리밍 밴 풀기
@@ -426,12 +427,12 @@ export default function StreamingChatView() {
         console.error("Error fetching data:", error);
       }
     } else {
-      Swal.fire({
-        text: "방장이 아닙니다.",
-        icon: "error",
-        confirmButtonText: "완료", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
+      // Swal.fire({
+      //   text: "방장이 아닙니다.",
+      //   icon: "error",
+      //   confirmButtonText: "완료", // confirm 버튼 텍스트 지정
+      //   confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      // });
     }
   };
   //스트리밍 채금 풀기 - db
@@ -531,8 +532,6 @@ export default function StreamingChatView() {
   useEffect(() => {
     console.log("userList", userList);
   }, [userList]);
-
-
 
   /*************************************
    *
@@ -802,6 +801,8 @@ export default function StreamingChatView() {
                   unBan={fetchBanDelete}
                   unNoChat={noChatDelete}
                   userAuth={userAuth}
+                  banList={banList}
+                  noChatList={noChatList}
                 />
               ))}
             </div>
