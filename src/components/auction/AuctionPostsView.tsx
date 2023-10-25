@@ -111,6 +111,15 @@ export default function AuctionPostsView() {
       });
       setIsLoggedIn(true);
     }
+    const storedData = localStorage.getItem("recoil-persist");
+    if (storedData) {
+      const userData = JSON.parse(storedData);
+      if (userData.USER_DATA.accessToken) {
+        const extractedAccessToken = userData.USER_DATA.accessToken;
+        setAccessToken(extractedAccessToken);
+      } else {
+      }
+    }
   }, []);
 
   const reGenerateTokenMutation = useReGenerateTokenMutation();
@@ -305,7 +314,7 @@ export default function AuctionPostsView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}?userIdx=1`
+        `https://reptimate.store/api/board/${idx}?macAdress=`
       );
       // Assuming your response data has a 'result' property
       setData(response.data);
@@ -315,15 +324,6 @@ export default function AuctionPostsView() {
   }, []);
 
   useEffect(() => {
-    const storedData = localStorage.getItem("recoil-persist");
-    if (storedData) {
-      const userData = JSON.parse(storedData);
-      if (userData.USER_DATA.accessToken) {
-        const extractedAccessToken = userData.USER_DATA.accessToken;
-        setAccessToken(extractedAccessToken);
-      } else {
-      }
-    }
     getData();
   }, []);
 
