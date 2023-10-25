@@ -57,7 +57,7 @@ export default function ActionPage({ params: { slug } }: Props) {
 
   useEffect(() => {
     getData();
-    console.log(postsData);
+    // console.log(postsData);
   }, []);
 
   useEffect(() => {
