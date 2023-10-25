@@ -19,16 +19,15 @@ const ChatItem = forwardRef((props :{
 	useImperativeHandle(ref, () => ({
 		
 	}));
+
+	const profilePath = props.userInfoData?.profilePath || '/img/reptimate_logo.png';
+	
     return (
 		<div>
 			{props.chatData.userIdx !=  props.userIdx ? 
 				<div id="outer" style={{display:"flex",maxWidth:"280px",marginTop:"12px",paddingLeft:"10px"}}>
-					{props.userInfoData.profilePath !==  undefined || null ? 
-						<img className="pt-[5px]" 
-						src="/img/reptimate_logo.png" style={{borderRadius: "80px", objectFit: "cover", cursor:"Pointer", width:"30px", height:"30px"}}/>
-						// <img className="pt-[5px]" 
-						// src={props.userInfoData.profilePath} style={{borderRadius: "80px", objectFit: "cover", cursor:"Pointer", width:"30px", height:"30px"}}/>
-					: ''}
+					<img className="pt-[5px]" 
+					src={profilePath} style={{borderRadius: "80px", objectFit: "cover", cursor:"Pointer", width:"30px", height:"30px"}}/>
 					<div>
 						<p className='text-[12px] ml-1'>{props.userInfoData.nickname}</p>
 						<div className=' px-[10px] py-[5px]' style={{borderRadius:"20px",maxWidth:"220px", backgroundColor:"#e4e6eb",marginLeft:"5px"}}> 

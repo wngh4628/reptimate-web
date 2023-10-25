@@ -3,6 +3,8 @@ import Image from 'next/image'
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 
+import StreamingChatView from "@/components/streamhost/livechat";
+
 interface IMessage {
   userIdx: number;
   socketId: string;
@@ -134,53 +136,7 @@ export default function Page() {
 
 return (
     <div className="bg-gray-100 min-h-screen flex justify-center items-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h1 className="text-2xl text-gray-600 mb-4">Reptimate</h1>
-        <div className="mb-4">
-          <input
-            className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={textMsg}
-            onChange={onChangeKeyword}
-            placeholder="메시지 입력..."
-          />
-        </div>
-        <div className="mb-4">
-          <input
-            className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={roomName}
-            onChange={onChangeRoom}
-            placeholder="방 이름 입력..."
-          />
-        </div>
-        <div className="mb-4">
-          <input
-            className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={userIdx}
-            onChange={onChangeUserIdx}
-            placeholder="유저 ID 입력..."
-          />
-        </div>
-        <div className="flex justify-between items-center">
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onClick={sendMsg}
-          >
-            보내기
-          </button>
-          <button
-            className="px-4 py-2 bg-red-500 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-            onClick={joinRoom}
-          >
-            방 참여
-          </button>
-          <button
-            className="px-4 py-2 bg-red-500 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-            onClick={deleteMsg}
-          >
-            메시지 삭제
-          </button>
-        </div>
-      </div>
+      <StreamingChatView></StreamingChatView>
     </div>
   );
 }
