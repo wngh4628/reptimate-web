@@ -111,15 +111,15 @@ export default function HostStreamingChatView() {
   const preset = async () => {
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
-        const userData = JSON.parse(storedData);
-        if (userData.USER_DATA.idx) {
-          setUserIdx(userData.USER_DATA.idx);
-          setNickname(userData.USER_DATA.nickname);
-          setProfilePath(userData.USER_DATA.profilePath);
-        }
+      const userData = JSON.parse(storedData);
+      if (userData.USER_DATA.idx) {
+        setUserIdx(userData.USER_DATA.idx);
+        setNickname(userData.USER_DATA.nickname);
+        setProfilePath(userData.USER_DATA.profilePath);
+      }
     }
     console.log("useEffect  :  preset  : ================");
-  }
+  };
 
   useEffect(() => {
     const chatContainer = bidContainerRef.current;
@@ -134,20 +134,32 @@ export default function HostStreamingChatView() {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`);
       console.log("========getData() : 경매글 정보 불러오기==================== boardidx : ", idx);
       console.log(response.data);
-      console.log("============================")
+      console.log("============================");
       setPostsData(response.data);
-      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
-      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
-      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice));
+      setNowBid(
+        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
+      );
+      setBidUnit(
+        formatNumberWithCommas(response.data.result.boardAuction.unit)
+      );
+      setBidStartPrice(
+        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
+      );
       setHost(response.data.result.UserInfo.idx);
       console.log(userIdx + "   당신은 이 방송의 host입?=========" +parseInt(response.data.result.UserInfo.idx));
       if (parseInt(response.data.result.UserInfo.idx) === userIdx) {
         setUserAuth("host");
         console.log("당신은 이 방송의 host입니다.======================");
       }
-      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
-      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
-      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice));
+      setNowBid(
+        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
+      );
+      setBidUnit(
+        formatNumberWithCommas(response.data.result.boardAuction.unit)
+      );
+      setBidStartPrice(
+        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
+      );
       setEndTime(response.data.result.boardAuction.endTime);
       console.log(response.data.result.boardAuction.endTime);
       const endTime1 = new Date(
@@ -159,13 +171,19 @@ export default function HostStreamingChatView() {
         if (timeRemaining < 0) {
           setCountdown("경매가 종료되었습니다!");
           clearInterval(countdownInterval);
-          setIsInputDisabled(true)
+          setIsInputDisabled(true);
         } else {
           const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+          const hours = Math.floor(
+            (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor(
+            (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
+          );
           const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-          setCountdown("종료시간 : " + `${hours}시간 ${minutes}분 ${seconds}초`);
+          setCountdown(
+            "종료시간 : " + `${hours}시간 ${minutes}분 ${seconds}초`
+          );
         }
       };
       updateCountdown(); // Initial call to set the countdown
@@ -228,7 +246,7 @@ export default function HostStreamingChatView() {
           icon: "warning",
           confirmButtonText: "완료",
           confirmButtonColor: "#7A75F7",
-        })
+        });
       } else {
         setUserList((prevUserList) => {
           const newData: { [key: number]: any } = { ...prevUserList };
@@ -247,7 +265,7 @@ export default function HostStreamingChatView() {
         confirmButtonText: "완료", // confirm 버튼 텍스트 지정
         confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
       });
-      router.replace("/auction/posts/"+boardIdx);
+      router.replace("/auction/posts/" + boardIdx);
     });
     //다른 참여자가 방을 나갔을 때
     socket.on("leave-user", (message: IMessage) => {
@@ -286,7 +304,11 @@ export default function HostStreamingChatView() {
       const messageArray = Array.isArray(message) ? message : [message];
       messageArray.forEach((data: any) => {
         const getUserInfo = data;
-        if (getUserInfo && getUserInfo.profilePath && getUserInfo.profilePath.length > 1) {
+        if (
+          getUserInfo &&
+          getUserInfo.profilePath &&
+          getUserInfo.profilePath.length > 1
+        ) {
           setUserInfoData((prevUserInfoData) => ({
             ...prevUserInfoData,
             [getUserInfo.userIdx]: {
@@ -371,7 +393,7 @@ export default function HostStreamingChatView() {
     if (userAuth === "host") {
       // console.log(socketRef.current);
       if (socketRef.current) {
-        console.log("==========noChat : "+banUserIdx+"=========");
+        console.log("==========noChat : " + banUserIdx + "=========");
         const message: Ban_Message = {
           userIdx: userIdx,
           banUserIdx: banUserIdx,
@@ -414,12 +436,12 @@ export default function HostStreamingChatView() {
         console.error("Error fetching data:", error);
       }
     } else {
-    //   Swal.fire({
-    //     text: "방장이 아닙니다.",
-    //     icon: "error",
-    //     confirmButtonText: "완료", // confirm 버튼 텍스트 지정
-    //     confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-    //   });
+      //   Swal.fire({
+      //     text: "방장이 아닙니다.",
+      //     icon: "error",
+      //     confirmButtonText: "완료", // confirm 버튼 텍스트 지정
+      //     confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      //   });
     }
   };
   //스트리밍 채금 풀기 - db
@@ -429,12 +451,12 @@ export default function HostStreamingChatView() {
         `http://localhost:3003/LiveChat/noChat/${roomName}/${boardIdx}/${userIdx}/${banUserIdx}`
       );
     } else {
-    //   Swal.fire({
-    //     text: "방장이 아닙니다.",
-    //     icon: "error",
-    //     confirmButtonText: "완료", // confirm 버튼 텍스트 지정
-    //     confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-    //   });
+      //   Swal.fire({
+      //     text: "방장이 아닙니다.",
+      //     icon: "error",
+      //     confirmButtonText: "완료", // confirm 버튼 텍스트 지정
+      //     confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      //   });
     }
   };
   //메시지 발송하는 함수
@@ -478,7 +500,6 @@ export default function HostStreamingChatView() {
     setUserList({});
     setNoChatState(false);
     setchattingBidData([]);
-
   }, [socketRef, userIdx, roomName]);
 
   const onChangeKeyword = (e: { target: { value: string } }) => {
@@ -556,7 +577,8 @@ export default function HostStreamingChatView() {
       console.log("bid message  :  ", message);
       console.log("========================");
       if (bidContainerRef.current) {
-        bidContainerRef.current.scrollTop = bidContainerRef.current.scrollHeight;
+        bidContainerRef.current.scrollTop =
+          bidContainerRef.current.scrollHeight;
       }
       setNowBid(message.message);
       console.log("bid message", message);
@@ -736,93 +758,91 @@ export default function HostStreamingChatView() {
           ""
         )}
         {sideView === "participate" ? (
-        <div className="min-h-screen w-full">
+          <div className="min-h-screen w-full">
             <div className="flex items-start flex-col">
-                <div className="flex h-[384px] w-full border-gray-100 border-r-[1px]">
-                    <div className="flex flex-col overflow-auto bg-white mt-2 pl-5">
-                    {Object.values(userInfoData).map((userList) => (
-                      <ChatUserList
-                        key={userList.userIdx}
-                        userList={userList}
-                        ban={ban}
-                        noChat={noChat}
-                        unBan={fetchBanDelete}
-                        unNoChat={noChatDelete}
-                        userAuth={userAuth}
-                        banList={banList}
-                        noChatList={noChatList}
-                      />
-                    ))}
-                    </div>
+              <div className="flex h-[384px] w-full border-gray-100 border-r-[1px]">
+                <div className="flex flex-col overflow-auto bg-white mt-2 pl-5">
+                  {Object.values(userInfoData).map((userList) => (
+                    <ChatUserList
+                      key={userList.userIdx}
+                      userList={userList}
+                      ban={ban}
+                      noChat={noChat}
+                      unBan={fetchBanDelete}
+                      unNoChat={noChatDelete}
+                      userAuth={userAuth}
+                      banList={banList}
+                      noChatList={noChatList}
+                    />
+                  ))}
                 </div>
+              </div>
             </div>
             <div className="flex items-start flex-col">
-                <div className=" w-full bg-slate-400">
-                    밴 목록
+              <div className=" w-full bg-slate-400">밴 목록</div>
+              <div className="flex h-[384px] w-full border-gray-100 border-r-[1px]">
+                <div className="flex flex-col overflow-auto bg-white mt-2 pl-5">
+                  {Object.values(banList).map((userList) => (
+                    <ChatUserList
+                      key={userList.userIdx}
+                      userList={userList}
+                      ban={ban}
+                      noChat={noChat}
+                      unBan={fetchBanDelete}
+                      unNoChat={noChatDelete}
+                      userAuth={userAuth}
+                      banList={banList}
+                      noChatList={noChatList}
+                    />
+                  ))}
                 </div>
-                <div className="flex h-[384px] w-full border-gray-100 border-r-[1px]">
-                    <div className="flex flex-col overflow-auto bg-white mt-2 pl-5">
-                    {Object.values(banList).map((userList) => (
-                      <ChatUserList
-                        key={userList.userIdx}
-                        userList={userList}
-                        ban={ban}
-                        noChat={noChat}
-                        unBan={fetchBanDelete}
-                        unNoChat={noChatDelete}
-                        userAuth={userAuth}
-                        banList={banList}
-                        noChatList={noChatList}
-                      />
-                    ))}
-                    </div>
-                </div>
+              </div>
             </div>
-        </div>
+          </div>
         ) : (
           ""
         )}
         {sideView === "bid" ? (
           <div className="min-h-screen w-full">
             <div className="flex items-start flex-col">
-                <div className="flex flex-col min-h-[10vh] max-h-[10vh] w-full text-sm bg-gray-100 border-y-[1px] border-gray-30 py-[10px] px-[5px] justify-center">
-                    <div className="flex flex-row w-full mb-[5px]">
-                      <div className="flex flex-row pl-[3px] basis-1/2">
-                        <p className="text-[14px]">입찰 시작가 : </p>
-                        <p className="text-[14px] px-1 text-main-color font-semibold">
-                          {bidStartPrice}
-                        </p>
-                        <p className="text-[14px]"> 원</p>
-                      </div>
-                      <div className="flex flex-row pl-[3px] basis-1/2">
-                        <p className="text-[14px]">입찰 단위 : </p>
-                        <p className="text-[14px] px-1 text-main-color font-semibold">
-                          {bidUnit}
-                        </p>
-                        <p className="text-[14px]"> 원</p>
-                      </div>
-                    </div>
-                    <div className="flex flex-row pl-[3px] pt-[5px] basis-1/2">
-                      <p className="text-[18px]">현재 입찰 : </p>
-                      <p className="text-[18px] px-1 text-main-color font-semibold">
-                        {nowBid}
-                      </p>
-                      <p className="text-[17px]"> 원</p>
-                    </div>
-                </div>
-            
-                <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px]">
-                  <div className="flex-1 min-h-[62vh] max-h-[62vh] overflow-auto bg-white pb-1">
-                    {chattingBidData.map((chattingBidData, i) => (
-                      <BidItem
-                        chatData={chattingBidData}
-                        userIdx={userIdx}
-                        userInfoData={userInfoData[chattingBidData.userIdx]}
-                        key={i}
-                      />
-                    ))}
+              <div className="flex flex-col min-h-[10vh] max-h-[10vh] w-full text-sm bg-gray-100 border-y-[1px] border-gray-30 py-[10px] px-[5px] justify-center">
+                <div className="flex flex-row w-full mb-[5px]">
+                  <div className="flex flex-row pl-[3px] basis-1/2">
+                    <p className="text-[14px]">입찰 시작가 : </p>
+                    <p className="text-[14px] px-1 text-main-color font-semibold">
+                      {bidStartPrice}
+                    </p>
+                    <p className="text-[14px]"> 원</p>
+                  </div>
+                  <div className="flex flex-row pl-[3px] basis-1/2">
+                    <p className="text-[14px]">입찰 단위 : </p>
+                    <p className="text-[14px] px-1 text-main-color font-semibold">
+                      {bidUnit}
+                    </p>
+                    <p className="text-[14px]"> 원</p>
                   </div>
                 </div>
+                <div className="flex flex-row pl-[3px] pt-[5px] basis-1/2">
+                  <p className="text-[18px]">현재 입찰 : </p>
+                  <p className="text-[18px] px-1 text-main-color font-semibold">
+                    {nowBid}
+                  </p>
+                  <p className="text-[17px]"> 원</p>
+                </div>
+              </div>
+
+              <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px]">
+                <div className="flex-1 min-h-[62vh] max-h-[62vh] overflow-auto bg-white pb-1">
+                  {chattingBidData.map((chattingBidData, i) => (
+                    <BidItem
+                      chatData={chattingBidData}
+                      userIdx={userIdx}
+                      userInfoData={userInfoData[chattingBidData.userIdx]}
+                      key={i}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         ) : (
@@ -832,5 +852,3 @@ export default function HostStreamingChatView() {
     </>
   );
 }
-
-
