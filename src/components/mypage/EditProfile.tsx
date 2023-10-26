@@ -91,6 +91,8 @@ export default function EditProfileInput() {
                         alert("로그인이 필요한 기능입니다.");
                     }
                 }
+            } else {
+                console.error("Error fetching data:", error);
             }
         }
     };
