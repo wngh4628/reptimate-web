@@ -115,7 +115,7 @@ export default function StreamingChatView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}macAdress=`
+        `https://reptimate.store/api/board/${idx}?macAdress=`
       );
       console.log(
         "========getData() : 경매글 정보 불러오기===================="
