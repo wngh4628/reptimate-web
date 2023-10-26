@@ -89,14 +89,14 @@ export default function HostStreamingChatView() {
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
         preset().then(() => {
-            console.log("useEffect  :  preset  : then : getData 시도================", idx);
             getData().then(() => {
-                console.log("useEffect  :  getData  : then : getData 완료================="+ userData.USER_DATA.idx);
+                console.log("useEffect  :  getData  : then : getData 완료=================");
                 console.log("useEffect  :  getData  : then : 소켓 연결 시도================");
                 joinRoom();
                 joinBidRoom();
                 fetchBanList();
                 fetchNoChatList();
+                
             });
         });
       } else {
@@ -105,6 +105,9 @@ export default function HostStreamingChatView() {
       }
     }
   }, []);
+  useEffect(() => {
+
+  }, [profilePath]);
   const preset = async () => {
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
@@ -126,11 +129,9 @@ export default function HostStreamingChatView() {
   }, [chattingBidData]);
 
   const getData = useCallback(async () => {
-    console.log("==1======getData() : 경매글 정보 불러오기==================== boardidx : ", idx);
+    console.log("11111getData() : 경매글 정보 불러오기==================== boardidx : ", idx);
     try {
-      const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}?userIdx=1`
-      );
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`);
       console.log("========getData() : 경매글 정보 불러오기==================== boardidx : ", idx);
       console.log(response.data);
       console.log("============================")
@@ -139,11 +140,10 @@ export default function HostStreamingChatView() {
       setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
       setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice));
       setHost(response.data.result.UserInfo.idx);
-      console.log("당신은 이 방송의 host입?======================" +parseInt(response.data.result.UserInfo.idx))
-      console.log("당신은 이?======================" +userIdx)
+      console.log(userIdx + "   당신은 이 방송의 host입?=========" +parseInt(response.data.result.UserInfo.idx));
       if (parseInt(response.data.result.UserInfo.idx) === userIdx) {
         setUserAuth("host");
-        console.log("당신은 이 방송의 host입니다.======================")
+        console.log("당신은 이 방송의 host입니다.======================");
       }
       setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
       setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
@@ -177,10 +177,6 @@ export default function HostStreamingChatView() {
       console.error("Error fetching data:", error);
     }
   }, []);
-
-  useEffect(() => {
-
-  }, [postsData]);
 
   //입찰가 입력란
   const onChangeBid = (event: { target: { value: string } }) => {
@@ -354,13 +350,22 @@ export default function HostStreamingChatView() {
   //스트리밍 밴 풀기
   const fetchBanDelete = async (banUserIdx: number) => {
     if (userAuth === "host") {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_CHAT_URL}/LiveChat/ban/${roomName}/${boardIdx}/${userIdx}/${banUserIdx}`
-      );
+        try {
+            const result = await axios.post(
+                `${process.env.NEXT_PUBLIC_CHAT_URL}/LiveChat/ban/${roomName}/${boardIdx}/${userIdx}/${banUserIdx}`
+            );
+            console.log(`${process.env.NEXT_PUBLIC_CHAT_URL}/LiveChat/ban/${roomName}/${boardIdx}/${userIdx}/${banUserIdx}`)
+            console.log(result);
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
     } else {
+    
     }
   };
-  //채팅 금지 먹이기
+  //
+  // 채팅 금지 먹이기
+  //
   const noChat = (banUserIdx: number) => {
     // console.log("noChat");
     if (userAuth === "host") {
