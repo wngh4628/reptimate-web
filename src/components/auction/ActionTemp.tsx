@@ -11,7 +11,7 @@ import {
 import { useDrag, useDrop } from "react-dnd";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import { auctionEdit, auctionWrite } from "@/api/auction/auction";
+import { auctionEdit } from "@/api/auction/auction";
 import { GetAuctionPostsView, Images } from "@/service/my/auction";
 import VideoThumbnail from "../VideoThumbnail";
 import { useSetRecoilState } from "recoil";
@@ -207,6 +207,7 @@ export default function AuctionTemp() {
   const [endTime, setEndTime] = useState("");
   const [rule, setRule] = useState("");
   const [alretTime, setAlretTime] = useState("");
+  const [streamKey, setStreamKey] = useState("");
 
   const [description, setDescription] = useState("");
 
@@ -262,9 +263,33 @@ export default function AuctionTemp() {
     }
   }, []);
 
+  function makeStreamKey() {
+    let streamKey = "";
+    const len: number = 5;
+    for (let i = 1; i <= len; i++) {
+      const date = new Date();
+      const charset = Array.from(
+        "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      ) as string[];
+      charset.push(date.getTime().toString());
+      const rangeRandom = Array.from(
+        { length: 4 },
+        () => charset[Math.floor(Math.random() * charset.length)]
+      ).join("");
+      streamKey += rangeRandom;
+      if (i < len) {
+        streamKey += "-";
+      }
+    }
+
+    setStreamKey(streamKey);
+    console.log(streamKey);
+  }
+
   useEffect(() => {
     setSelling("selling");
     setRule("0");
+    makeStreamKey();
   }, []);
 
   const getData = useCallback(async () => {
@@ -538,6 +563,7 @@ export default function AuctionTemp() {
       alertTime: formattedTime,
       extensionRule: rule,
       birthDate: birthDate,
+      stream_key: streamKey,
       userAccessToken: userAccessToken || "",
       fileUrl: "",
     };
@@ -613,6 +639,7 @@ export default function AuctionTemp() {
               alertTime: formattedTime,
               extensionRule: rule,
               birthDate: birthDate,
+              stream_key: streamKey,
               userAccessToken: userAccessToken || "",
               fileUrl: responseData.result, // Use the response from the first server
             };
