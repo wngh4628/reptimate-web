@@ -88,7 +88,7 @@ export const auctionEdit = async ({
   alertTime,
   extensionRule,
   birthDate,
-  stream_key,
+  streamKey,
   userAccessToken,
   fileUrl,
 }: {
@@ -110,7 +110,7 @@ export const auctionEdit = async ({
   alertTime: string;
   extensionRule: string;
   birthDate: string;
-  stream_key: string;
+  streamKey: string;
   userAccessToken: string;
   fileUrl: String;
 }) => {
@@ -133,7 +133,7 @@ export const auctionEdit = async ({
     alertTime: alertTime,
     extensionRule: extensionRule,
     birthDate: birthDate,
-    stream_key: stream_key,
+    streamKey: streamKey,
     fileUrl: fileUrl,
   };
 
