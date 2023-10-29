@@ -11,7 +11,7 @@ import {
 import { useDrag, useDrop } from "react-dnd";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import { auctionEdit, auctionWrite } from "@/api/auction/auction";
+import { auctionEdit } from "@/api/auction/auction";
 import { GetAuctionPostsView, Images } from "@/service/my/auction";
 import VideoThumbnail from "../VideoThumbnail";
 import { useSetRecoilState } from "recoil";
@@ -207,6 +207,7 @@ export default function AuctionEdit() {
   const [endTime, setEndTime] = useState("");
   const [rule, setRule] = useState("");
   const [alretTime, setAlretTime] = useState("");
+  const [streamKey, setStreamKey] = useState("");
 
   const [description, setDescription] = useState("");
 
@@ -290,6 +291,7 @@ export default function AuctionEdit() {
       setunit(post?.boardAuction.unit.toString() || "");
       setEndTime(post?.boardAuction.endTime.split(" ")[1] || "");
       setRule(post?.boardAuction.extensionRule || "");
+      setStreamKey(post?.boardAuction.streamKey || "");
       if (post && post.boardAuction && post.boardAuction.AlertTime) {
         setAlretTime(post.boardAuction.AlertTime.split(" ")[1] || "");
       }
@@ -538,6 +540,7 @@ export default function AuctionEdit() {
       alertTime: formattedTime,
       extensionRule: rule,
       birthDate: birthDate,
+      stream_key: streamKey,
       userAccessToken: userAccessToken || "",
       fileUrl: "",
     };
@@ -613,6 +616,7 @@ export default function AuctionEdit() {
               alertTime: formattedTime,
               extensionRule: rule,
               birthDate: birthDate,
+              stream_key: streamKey,
               userAccessToken: userAccessToken || "",
               fileUrl: responseData.result, // Use the response from the first server
             };

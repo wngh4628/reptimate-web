@@ -885,12 +885,14 @@ export default function AuctionPostsView() {
                   </button>
                 ) : (
                   <div>
-                    <button
-                      className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-[12px] font-bold mb-1"
-                      onClick={handleLiveClick}
-                    >
-                      방송하기
-                    </button>
+                    {isCurrentUserComment && (
+                      <button
+                        className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-[12px] font-bold mb-1"
+                        onClick={handleLiveClick}
+                      >
+                        방송하기
+                      </button>
+                    )}
                     <button
                       className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-1"
                       onClick={handleChatClick}
