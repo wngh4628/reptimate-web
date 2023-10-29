@@ -37,7 +37,10 @@ import {
 declare global {
   interface Window {
     Android: {
-      openNativeActivity: (idx: string | string[] | undefined) => void;
+      openNativeActivity: (
+        idx: string | string[] | undefined,
+        streamKey: string
+      ) => void;
       // 다른 메소드나 프로퍼티도 여기에 추가
     };
   }
@@ -544,9 +547,10 @@ export default function AuctionPostsView() {
     };
 
     const handleLiveClick = () => {
+      console.log(post.boardAuction.streamKey);
       //웹뷰에서 버튼 클릭시 안드로이드 rtmp 송신 액티비티로 이동
       if (window.Android) {
-        window.Android.openNativeActivity(idx);
+        window.Android.openNativeActivity(idx, post.boardAuction.streamKey);
       }
     };
 

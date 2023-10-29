@@ -540,7 +540,7 @@ export default function AuctionEdit() {
       alertTime: formattedTime,
       extensionRule: rule,
       birthDate: birthDate,
-      stream_key: streamKey,
+      streamKey: streamKey,
       userAccessToken: userAccessToken || "",
       fileUrl: "",
     };
@@ -616,7 +616,7 @@ export default function AuctionEdit() {
               alertTime: formattedTime,
               extensionRule: rule,
               birthDate: birthDate,
-              stream_key: streamKey,
+              streamKey: streamKey,
               userAccessToken: userAccessToken || "",
               fileUrl: responseData.result, // Use the response from the first server
             };
