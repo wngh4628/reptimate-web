@@ -11,7 +11,7 @@ import {
 import { useDrag, useDrop } from "react-dnd";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import { auctionEdit, auctionWrite } from "@/api/auction/auction";
+import { auctionEdit } from "@/api/auction/auction";
 import { GetAuctionPostsView, Images } from "@/service/my/auction";
 import VideoThumbnail from "../VideoThumbnail";
 import { useSetRecoilState } from "recoil";
@@ -207,6 +207,7 @@ export default function AuctionEdit() {
   const [endTime, setEndTime] = useState("");
   const [rule, setRule] = useState("");
   const [alretTime, setAlretTime] = useState("");
+  const [streamKey, setStreamKey] = useState("");
 
   const [description, setDescription] = useState("");
 
@@ -290,6 +291,7 @@ export default function AuctionEdit() {
       setunit(post?.boardAuction.unit.toString() || "");
       setEndTime(post?.boardAuction.endTime.split(" ")[1] || "");
       setRule(post?.boardAuction.extensionRule || "");
+      setStreamKey(post?.boardAuction.streamKey || "");
       if (post && post.boardAuction && post.boardAuction.AlertTime) {
         setAlretTime(post.boardAuction.AlertTime.split(" ")[1] || "");
       }
@@ -538,6 +540,7 @@ export default function AuctionEdit() {
       alertTime: formattedTime,
       extensionRule: rule,
       birthDate: birthDate,
+      streamKey: streamKey,
       userAccessToken: userAccessToken || "",
       fileUrl: "",
     };
@@ -613,6 +616,7 @@ export default function AuctionEdit() {
               alertTime: formattedTime,
               extensionRule: rule,
               birthDate: birthDate,
+              streamKey: streamKey,
               userAccessToken: userAccessToken || "",
               fileUrl: responseData.result, // Use the response from the first server
             };
@@ -633,6 +637,7 @@ export default function AuctionEdit() {
       // Create a list of missing fields
       const missingFields = [];
       if (title === "") missingFields.push("제목");
+      if (price === "") missingFields.push("시작 가격");
       if (variety === "") missingFields.push("품종");
       if (pattern === "") missingFields.push("모프");
       if (startPrice === "" || "null") missingFields.push("시작 가격");
@@ -642,7 +647,6 @@ export default function AuctionEdit() {
       if (birthDate === "") missingFields.push("생년월일");
       if (selectedGender === "" || "null") missingFields.push("성별");
       if (selectedSize === "" || "null") missingFields.push("크기");
-      if (price === "") missingFields.push("가격");
 
       // Create the alert message based on missing fields
       let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
@@ -730,7 +734,7 @@ export default function AuctionEdit() {
         <p className="font-bold text-xl my-2">즉시 구입가</p>
         <input
           type="number"
-          placeholder="(선택) 즉시 구입가를 입력해주세요. (원)"
+          placeholder="즉시 구입가를 입력해주세요. (원)"
           className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
           value={price}
           onChange={(e) => setPrice(e.target.value)}

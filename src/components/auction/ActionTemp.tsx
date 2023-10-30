@@ -11,7 +11,7 @@ import {
 import { useDrag, useDrop } from "react-dnd";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import { auctionEdit, auctionWrite } from "@/api/auction/auction";
+import { auctionEdit } from "@/api/auction/auction";
 import { GetAuctionPostsView, Images } from "@/service/my/auction";
 import VideoThumbnail from "../VideoThumbnail";
 import { useSetRecoilState } from "recoil";
@@ -207,6 +207,7 @@ export default function AuctionTemp() {
   const [endTime, setEndTime] = useState("");
   const [rule, setRule] = useState("");
   const [alretTime, setAlretTime] = useState("");
+  const [streamKey, setStreamKey] = useState("");
 
   const [description, setDescription] = useState("");
 
@@ -262,9 +263,33 @@ export default function AuctionTemp() {
     }
   }, []);
 
+  function makeStreamKey() {
+    let streamKey = "";
+    const len: number = 5;
+    for (let i = 1; i <= len; i++) {
+      const date = new Date();
+      const charset = Array.from(
+        "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      ) as string[];
+      charset.push(date.getTime().toString());
+      const rangeRandom = Array.from(
+        { length: 4 },
+        () => charset[Math.floor(Math.random() * charset.length)]
+      ).join("");
+      streamKey += rangeRandom;
+      if (i < len) {
+        streamKey += "-";
+      }
+    }
+
+    setStreamKey(streamKey);
+    console.log(streamKey);
+  }
+
   useEffect(() => {
     setSelling("selling");
     setRule("0");
+    makeStreamKey();
   }, []);
 
   const getData = useCallback(async () => {
@@ -491,7 +516,8 @@ export default function AuctionTemp() {
       console.log(data.data);
       console.log("============================");
       alert("경매가 등록 되었습니다.");
-      router.replace(`/auction`);
+      router.replace(`/my/auction`);
+      setIsLoading(false);
     },
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
@@ -538,6 +564,7 @@ export default function AuctionTemp() {
       alertTime: formattedTime,
       extensionRule: rule,
       birthDate: birthDate,
+      streamKey: streamKey,
       userAccessToken: userAccessToken || "",
       fileUrl: "",
     };
@@ -613,6 +640,7 @@ export default function AuctionTemp() {
               alertTime: formattedTime,
               extensionRule: rule,
               birthDate: birthDate,
+              streamKey: streamKey,
               userAccessToken: userAccessToken || "",
               fileUrl: responseData.result, // Use the response from the first server
             };
@@ -623,16 +651,19 @@ export default function AuctionTemp() {
           } else {
             console.error("Error uploading files to the first server.");
             alert("Error uploading files. Please try again later.");
+            setIsLoading(false);
           }
         } catch (error) {
           console.error("Error:", error);
           alert("An error occurred. Please try again later.");
+          setIsLoading(false);
         }
       }
     } else {
       // Create a list of missing fields
       const missingFields = [];
       if (title === "") missingFields.push("제목");
+      if (price === "") missingFields.push("시작 가격");
       if (variety === "") missingFields.push("품종");
       if (pattern === "") missingFields.push("모프");
       if (startPrice === "" || "null") missingFields.push("시작 가격");
@@ -648,8 +679,8 @@ export default function AuctionTemp() {
       alertMessage += missingFields.join(", ");
 
       alert(alertMessage);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
@@ -729,7 +760,7 @@ export default function AuctionTemp() {
         <p className="font-bold text-xl my-2">즉시 구입가</p>
         <input
           type="number"
-          placeholder="(선택) 즉시 구입가를 입력해주세요. (원)"
+          placeholder="즉시 구입가를 입력해주세요. (원)"
           className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
