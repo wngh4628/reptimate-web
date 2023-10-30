@@ -9,7 +9,7 @@ export default function CommunityMenu() {
   return (
     <div>
       <PC>
-        <div className="flex justify-between items-center pl-10">
+        <div className="flex justify-between items-center pl-4">
           <nav className="flex gap-4 font-bold">
             <Link
               href="/"
