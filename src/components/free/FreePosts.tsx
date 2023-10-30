@@ -7,6 +7,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
 import { Posts, getResponse } from "@/service/my/board";
 import PostCard from "../BoardCard";
+import BannerSlider from "../BannerSlider";
 
 export default function FreePosts() {
   const [data, setData] = useState<getResponse | null>(null);
@@ -142,6 +143,7 @@ export default function FreePosts() {
 
     return (
       <section>
+        <BannerSlider />
         <ul className="mt-5 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
             <li key={post.idx}>
