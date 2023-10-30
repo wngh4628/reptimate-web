@@ -154,10 +154,12 @@ export default function AuctionPosts() {
     return (
       <section>
         <PC>
-          <h2 className="text-2xl font-bold p-10">경매</h2>
+          <h2 className="text-2xl font-bold flex items-center justify-center">
+            경매
+          </h2>
         </PC>
         <Mobile>
-          <h2 className="text-lg font-bold pb-2 flex items-center justify-center">
+          <h2 className="text-lg font-bold flex items-center justify-center">
             경매
           </h2>
         </Mobile>

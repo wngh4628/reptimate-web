@@ -40,6 +40,7 @@ export default function ActionPage({ params: { slug } }: Props) {
   const [profilePath, setProfilePath] = useState("");
   const [nickname, setNickname] = useState("");
   const [description, setDescription] = useState("");
+  const [streamKey, setStreamKey] = useState("");
 
   const [postsData, setPostsData] = useState<GetAuctionPostsView | null>(null);
 
@@ -57,6 +58,9 @@ export default function ActionPage({ params: { slug } }: Props) {
         if (response.data.result.UserInfo) {
           setNickname(response.data.result.UserInfo.nickname);
           setProfilePath(response.data.result.UserInfo.profilePath);
+        }
+        if (response.data.result.boardAuction) {
+          setStreamKey(response.data.result.boardAuction.streamKey);
         }
       }
     } catch (error) {
@@ -77,6 +81,14 @@ export default function ActionPage({ params: { slug } }: Props) {
 
   // const macaddress = require('macaddress');
   // console.log(JSON.stringify(macaddress.networkInterfaces(), null, 2));
+  useEffect(() => {
+    if (streamKey != "") {
+      console.log(streamKey);
+      setVideoUrl(
+        `http://live.reptimate.store/stream/hls/${streamKey}/index.m3u8`
+      );
+    }
+  }, [streamKey]);
 
   useEffect(() => {
     getData();
@@ -99,18 +111,16 @@ export default function ActionPage({ params: { slug } }: Props) {
   function callback(message: acitonLiveDto): void {
     // console.log("message");
     // console.log(message);
-
     ///data = message;
     // setActionTitle(message.title);
     // setDescription(message.description);
     // setNickname(message.UserInfo.nickname);
     // setProfilePath(message.UserInfo.profilePath);
-
-    if (message.liveStream.state == 1) {
-      setVideoUrl(
-        `https://live.reptimate.store/stream/hls/${message.liveStream.streamKey}/index.m3u8`
-      );
-    }
+    // if (message.liveStream.state == 1) {
+    //   setVideoUrl(
+    //     `https://live.reptimate.store/stream/hls/${streamKey}/index.m3u8`
+    //   );
+    // }
   }
 
   return (
