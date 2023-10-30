@@ -104,7 +104,6 @@ export default function AuctionPostsView() {
   const [countdown, setCountdown] = useState("");
   const [userInfoData, setUserInfoData] = useState<userInfo[]>([]); //유저 정보 가지고 있는 리스트
 
-
   function getCookie(name: string) {
     const value = "; " + document.cookie;
     const parts = value.split("; " + name + "=");
@@ -162,8 +161,6 @@ export default function AuctionPostsView() {
       } else {
       }
     }
-
-
   }, []);
 
   const reGenerateTokenMutation = useReGenerateTokenMutation();
@@ -371,10 +368,12 @@ export default function AuctionPostsView() {
       console.log(response.data);
       console.log("============================");
       setData(response.data);
-      if(response.data.result.UserInfo.idx === userIdx) {
+      if (response.data.result.UserInfo.idx === userIdx) {
         setIsInputDisabled(true);
       }
-      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
+      setNowBid(
+        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
+      );
       setBidUnit(
         formatNumberWithCommas(response.data.result.boardAuction.unit)
       );
@@ -636,8 +635,8 @@ export default function AuctionPostsView() {
       console.log("bid message  :  ", message);
       console.log("========================");
       if (bidContainerRef.current) {
-        bidContainerRef.current.scrollTop = bidContainerRef.current.scrollHeight;
-        
+        bidContainerRef.current.scrollTop =
+          bidContainerRef.current.scrollHeight;
       }
       setNowBid(formatNumberWithCommas(message.message));
     });
@@ -695,7 +694,7 @@ export default function AuctionPostsView() {
       setchattingBidData(messages);
       if (messages.length > 0) {
         const lastMessage = messages[messages.length - 1].message;
-        setNowBid(formatNumberWithCommas(lastMessage))
+        setNowBid(formatNumberWithCommas(lastMessage));
       } else {
         console.log("메시지가 없습니다.");
       }
@@ -834,7 +833,7 @@ export default function AuctionPostsView() {
     };
 
     function chattingClose() {
-      setBidVisible(false)
+      setBidVisible(false);
     }
 
     return (
@@ -923,10 +922,7 @@ export default function AuctionPostsView() {
               <ImageSlider imageUrls={itemlist} />
               <div className="flex flex-row items-center py-3">
                 <p className="text-lg font-semibold ml-5">현재 경매가</p>
-                <p className="text-xl font-bold ml-auto mr-5">
-                  {nowBid}
-                  원
-                </p>
+                <p className="text-xl font-bold ml-auto mr-5">{nowBid}원</p>
               </div>
               <div className="flex flex-row items-center py-3">
                 <p className="text-lg font-semibold ml-5">즉시 구입가</p>
@@ -958,7 +954,7 @@ export default function AuctionPostsView() {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-row items-center justify-center">
+              <div className="flex flex-row items-center justify-center mt-1">
                 <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                   <p className="pt-1 text-lg font-bold">품종</p>
                   <p className="pb-1 text-lg">{post.boardAuction.variety}</p>
@@ -1094,23 +1090,71 @@ export default function AuctionPostsView() {
               </div>
               <ImageSlider imageUrls={itemlist} />
               <div className="flex flex-row items-center py-1">
-                <p className="font-semibold ml-2">시작가격</p>
+                <p className="font-semibold ml-2">현재 경매가</p>
+                <p className="font-bold ml-auto mr-2">{nowBid}원</p>
+              </div>
+              <div className="flex flex-row items-center py-1">
+                <p className="font-semibold ml-2">즉시 구입가</p>
                 <p className="font-bold ml-auto mr-2">
                   {post.boardAuction.startPrice.toLocaleString()}원
                 </p>
               </div>
-              <div className="mx-2 flex flex-row items-center justify-center">
+              <div className="flex flex-row items-center py-1">
+                <p className="font-semibold ml-2">마감 시간</p>
+                <p className="font-bold ml-auto mr-2">
+                  {post.boardAuction.endTime}까지
+                </p>
+              </div>
+              <div className="my-1 mx-1 flex flex-row items-center justify-center">
+                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 font-bold">시작 가격</p>
+                  <p className="pb-1 text-md">
+                    {post.boardAuction.startPrice}원
+                  </p>
+                </div>
+                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 font-bold">경매 단위</p>
+                  <p className="pb-1 text-md">{post.boardAuction.unit}원</p>
+                </div>
+                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 font-bold">마감 룰</p>
+                  <p className="pb-1 text-md">
+                    {post.boardAuction.extensionRule === 1 ? "적용" : "미적용"}
+                  </p>
+                </div>
+              </div>
+              <div className="my-1 mx-1 flex flex-row items-center justify-center">
                 <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                   <p className="pt-1 font-bold">품종</p>
-                  <p className="pb-1 text-sm">{post.boardAuction.variety}</p>
+                  <p className="pb-1 text-md">{post.boardAuction.variety}</p>
                 </div>
                 <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                   <p className="pt-1 font-bold">성별</p>
-                  <p className="pb-1 text-sm">{post.boardAuction.gender}</p>
+                  <p className="pb-1 text-md">{post.boardAuction.gender}</p>
                 </div>
                 <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                   <p className="pt-1 font-bold">크기</p>
-                  <p className="pb-1 text-sm">{post.boardAuction.size}</p>
+                  <p className="pb-1 text-md">{post.boardAuction.size}</p>
+                </div>
+              </div>
+              <div className="my-1 mx-1 flex flex-row items-center justify-center">
+                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 font-bold">모프</p>
+                  <p className="pb-1 text-md">{post.boardAuction.pattern}</p>
+                </div>
+                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 font-bold">출생</p>
+                  <p className="pb-1 text-md">{post.boardAuction.birthDate}</p>
+                </div>
+                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                  <p className="pt-1 font-bold">상태</p>
+                  {post.boardAuction.state === "reservation" ? (
+                    <p className="pb-1 text-md text-red-600">예약중</p>
+                  ) : post.boardAuction.state === "end" ? (
+                    <p className="pb-1 text-md text-gray-500">판매완료</p>
+                  ) : (
+                    <p className="pb-1 text-md text-blue-600">판매중</p>
+                  )}
                 </div>
               </div>
               <p className="mx-2 my-4">{post.description}</p>
@@ -1164,12 +1208,17 @@ export default function AuctionPostsView() {
                   bidVisible
                     ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
                     : "hidden"
-                }`}>
+                }`}
+              >
                 <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
                   <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
                     입찰
                   </p>
-                  <button className="right-0" type="button" onClick={chattingClose}>
+                  <button
+                    className="right-0"
+                    type="button"
+                    onClick={chattingClose}
+                  >
                     <img
                       className="w-[15px] h-[15px] self-center mr-[18px]"
                       src="/img/ic_x.png"
@@ -1177,63 +1226,62 @@ export default function AuctionPostsView() {
                   </button>
                 </div>
                 <span className="flex text-center self-center items-center justify-center mx-auto">
-            {countdown}
-          </span>
-              <div className="flex flex-col min-h-[10vh] max-h-[10vh] w-full text-sm bg-gray-100 border-y-[1px] border-gray-30 py-[10px] px-[5px] justify-center">
-                <div className="flex flex-row w-full mb-[5px]">
-                  <div className="flex flex-row pl-[3px] basis-1/2">
-                    <p className="text-[14px]">입찰 시작가 : </p>
-                    <p className="text-[14px] px-1 text-main-color font-semibold">
-                      {bidStartPrice}
-                    </p>
-                    <p className="text-[14px]"> 원</p>
+                  {countdown}
+                </span>
+                <div className="flex flex-col min-h-[10vh] max-h-[10vh] w-full text-sm bg-gray-100 border-y-[1px] border-gray-30 py-[10px] px-[5px] justify-center">
+                  <div className="flex flex-row w-full mb-[5px]">
+                    <div className="flex flex-row pl-[3px] basis-1/2">
+                      <p className="text-[14px]">입찰 시작가 : </p>
+                      <p className="text-[14px] px-1 text-main-color font-semibold">
+                        {bidStartPrice}
+                      </p>
+                      <p className="text-[14px]"> 원</p>
+                    </div>
+                    <div className="flex flex-row pl-[3px] basis-1/2">
+                      <p className="text-[14px]">입찰 단위 : </p>
+                      <p className="text-[14px] px-1 text-main-color font-semibold">
+                        {bidUnit}
+                      </p>
+                      <p className="text-[14px]"> 원</p>
+                    </div>
                   </div>
-                  <div className="flex flex-row pl-[3px] basis-1/2">
-                    <p className="text-[14px]">입찰 단위 : </p>
-                    <p className="text-[14px] px-1 text-main-color font-semibold">
-                      {bidUnit}
+                  <div className="flex flex-row pl-[3px] pt-[5px] basis-1/2">
+                    <p className="text-[18px]">현재 입찰 : </p>
+                    <p className="text-[18px] px-1 text-main-color font-semibold">
+                      {nowBid}
                     </p>
-                    <p className="text-[14px]"> 원</p>
+                    <p className="text-[17px]"> 원</p>
                   </div>
                 </div>
-                <div className="flex flex-row pl-[3px] pt-[5px] basis-1/2">
-                  <p className="text-[18px]">현재 입찰 : </p>
-                  <p className="text-[18px] px-1 text-main-color font-semibold">
-                    {nowBid}
-                  </p>
-                  <p className="text-[17px]"> 원</p>
-                </div>
-              </div>
 
-              <div className="flex-1 w-full border-gray-100 border-r-[1px]">
-                <div className="flex-1 h-[280px] overflow-auto bg-white pb-1">
-                  {chattingBidData.map((chattingBidData, i) => (
-                    <BidItem
-                      chatData={chattingBidData}
-                      userIdx={userIdx}
-                      userInfoData={userInfoBidData[chattingBidData.userIdx]}
-                      key={i}
-                    />
-                  ))}
+                <div className="flex-1 w-full border-gray-100 border-r-[1px]">
+                  <div className="flex-1 h-[280px] overflow-auto bg-white pb-1">
+                    {chattingBidData.map((chattingBidData, i) => (
+                      <BidItem
+                        chatData={chattingBidData}
+                        userIdx={userIdx}
+                        userInfoData={userInfoBidData[chattingBidData.userIdx]}
+                        key={i}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div className="flex border-[#A7A7A7] text-sm w-full pl-[2px] absolute bottom-0">
-                <input
-                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded"
-                  onChange={onChangeBid}
-                  value={bidMsg}
-                  placeholder=""
-                  disabled={isInputDisabled}
-                />
-                <button
-                  className="w-[20%] h-12 bg-main-color text-white rounded transition duration-300 ml-1"
-                  onClick={sendBidMsg}
-                  disabled={isInputDisabled}
-                >
-                  입찰
-                </button>
-              </div>
-
+                <div className="flex border-[#A7A7A7] text-sm w-full pl-[2px] absolute bottom-0">
+                  <input
+                    className="w-full h-12 px-4 py-2 border border-gray-300 rounded"
+                    onChange={onChangeBid}
+                    value={bidMsg}
+                    placeholder=""
+                    disabled={isInputDisabled}
+                  />
+                  <button
+                    className="w-[20%] h-12 bg-main-color text-white rounded transition duration-300 ml-1"
+                    onClick={sendBidMsg}
+                    disabled={isInputDisabled}
+                  >
+                    입찰
+                  </button>
+                </div>
               </div>
             </PC>
             <Mobile>
@@ -1288,12 +1336,17 @@ export default function AuctionPostsView() {
                   bidVisible
                     ? "bg-white w-full h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 flex flex-col shadow-md"
                     : "hidden"
-                }`}>
+                }`}
+              >
                 <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
                   <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
                     입찰
                   </p>
-                  <button className="right-0" type="button" onClick={chattingClose}>
+                  <button
+                    className="right-0"
+                    type="button"
+                    onClick={chattingClose}
+                  >
                     <img
                       className="w-[15px] h-[15px] self-center mr-[18px]"
                       src="/img/ic_x.png"
@@ -1302,62 +1355,61 @@ export default function AuctionPostsView() {
                 </div>
 
                 <span className="flex text-center self-center items-center justify-center mx-auto">
-            {countdown}
-          </span>
-              <div className="flex flex-col min-h-[10vh] max-h-[10vh] w-full text-sm bg-gray-100 border-y-[1px] border-gray-30 py-[10px] px-[5px] justify-center">
-                <div className="flex flex-row w-full mb-[5px]">
-                  <div className="flex flex-row pl-[3px] basis-1/2">
-                    <p className="text-[14px]">입찰 시작가 : </p>
-                    <p className="text-[14px] px-1 text-main-color font-semibold">
-                      {bidStartPrice}
-                    </p>
-                    <p className="text-[14px]"> 원</p>
+                  {countdown}
+                </span>
+                <div className="flex flex-col min-h-[10vh] max-h-[10vh] w-full text-sm bg-gray-100 border-y-[1px] border-gray-30 py-[10px] px-[5px] justify-center">
+                  <div className="flex flex-row w-full mb-[5px]">
+                    <div className="flex flex-row pl-[3px] basis-1/2">
+                      <p className="text-[14px]">입찰 시작가 : </p>
+                      <p className="text-[14px] px-1 text-main-color font-semibold">
+                        {bidStartPrice}
+                      </p>
+                      <p className="text-[14px]"> 원</p>
+                    </div>
+                    <div className="flex flex-row pl-[3px] basis-1/2">
+                      <p className="text-[14px]">입찰 단위 : </p>
+                      <p className="text-[14px] px-1 text-main-color font-semibold">
+                        {bidUnit}
+                      </p>
+                      <p className="text-[14px]"> 원</p>
+                    </div>
                   </div>
-                  <div className="flex flex-row pl-[3px] basis-1/2">
-                    <p className="text-[14px]">입찰 단위 : </p>
-                    <p className="text-[14px] px-1 text-main-color font-semibold">
-                      {bidUnit}
+                  <div className="flex flex-row pl-[3px] pt-[5px] basis-1/2">
+                    <p className="text-[18px]">현재 입찰 : </p>
+                    <p className="text-[18px] px-1 text-main-color font-semibold">
+                      {nowBid}
                     </p>
-                    <p className="text-[14px]"> 원</p>
+                    <p className="text-[17px]"> 원</p>
                   </div>
                 </div>
-                <div className="flex flex-row pl-[3px] pt-[5px] basis-1/2">
-                  <p className="text-[18px]">현재 입찰 : </p>
-                  <p className="text-[18px] px-1 text-main-color font-semibold">
-                    {nowBid}
-                  </p>
-                  <p className="text-[17px]"> 원</p>
+                <div className="flex-1 w-full border-gray-100 border-r-[1px]">
+                  <div className="flex-1 h-[285px] overflow-auto bg-white pb-1">
+                    {chattingBidData.map((chattingBidData, i) => (
+                      <BidItem
+                        chatData={chattingBidData}
+                        userIdx={userIdx}
+                        userInfoData={userInfoData[chattingBidData.userIdx]}
+                        key={i}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div className="flex-1 w-full border-gray-100 border-r-[1px]">
-                <div className="flex-1 h-[285px] overflow-auto bg-white pb-1">
-                  {chattingBidData.map((chattingBidData, i) => (
-                    <BidItem
-                      chatData={chattingBidData}
-                      userIdx={userIdx}
-                      userInfoData={userInfoData[chattingBidData.userIdx]}
-                      key={i}
-                    />
-                  ))}
+                <div className="flex border-[#A7A7A7] text-sm w-full pl-[2px]  absolute bottom-0">
+                  <input
+                    className="w-full h-12 px-4 py-2 border border-gray-300 rounded"
+                    onChange={onChangeBid}
+                    value={bidMsg}
+                    placeholder=""
+                    disabled={isInputDisabled}
+                  />
+                  <button
+                    className="w-[20%] h-12 bg-main-color text-white rounded transition duration-300 ml-1"
+                    onClick={sendBidMsg}
+                    disabled={isInputDisabled}
+                  >
+                    입찰
+                  </button>
                 </div>
-              </div>
-              <div className="flex border-[#A7A7A7] text-sm w-full pl-[2px]  absolute bottom-0">
-                <input
-                  className="w-full h-12 px-4 py-2 border border-gray-300 rounded"
-                  onChange={onChangeBid}
-                  value={bidMsg}
-                  placeholder=""
-                  disabled={isInputDisabled}
-                />
-                <button
-                  className="w-[20%] h-12 bg-main-color text-white rounded transition duration-300 ml-1"
-                  onClick={sendBidMsg}
-                  disabled={isInputDisabled}
-                >
-                  입찰
-                </button>
-              </div>
-
               </div>
             </Mobile>
 
