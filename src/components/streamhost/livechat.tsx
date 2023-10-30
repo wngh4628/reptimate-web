@@ -366,9 +366,9 @@ export default function HostStreamingChatView() {
           boardIdx: boardIdx,
         };
         socketRef.current.emit("user_ban", message);
-        const isUserAlreadyBanned = banList.some(user => user.idx === userIdx);
+        const isUserAlreadyBanned = banList.some(user => user.idx === banUserIdx);
         if (!isUserAlreadyBanned) {
-            const userToAdd = userInfoData.find(user => user.userIdx === userIdx);
+            const userToAdd = userInfoData.find(user => user.userIdx === banUserIdx);
             if (userToAdd) {
                 const banUser: banUserInfo = {
                     idx: userToAdd.userIdx,
@@ -437,16 +437,16 @@ export default function HostStreamingChatView() {
         console.log(message);
         socketRef.current.emit("noChat", message);
 
-        const isUserAlreadyBanned = noChatList.some(user => user.idx === userIdx);
+        const isUserAlreadyBanned = noChatList.some(user => user.idx === banUserIdx);
         if (!isUserAlreadyBanned) {
-            const userToAdd = userInfoData.find(user => user.userIdx === userIdx);
+            const userToAdd = userInfoData.find(user => user.userIdx === banUserIdx);
             if (userToAdd) {
                 const banUser: banUserInfo = {
                     idx: userToAdd.userIdx,
                     nickname: userToAdd.nickname,
                     profilePath: userToAdd.profilePath,
-                  };
-                  setNoChatList([...noChatList, banUser]);
+                };
+                setNoChatList([...noChatList, banUser]);
             }
         }
       }
@@ -468,7 +468,7 @@ export default function HostStreamingChatView() {
 
         const updatedNoChatList = [...noChatList];
         const indexToDelete = updatedNoChatList.findIndex((user) => user.idx === banUserIdx);
-        
+
         if (indexToDelete !== -1) {
             updatedNoChatList.splice(indexToDelete, 1);
             setNoChatList(updatedNoChatList);
@@ -740,14 +740,16 @@ export default function HostStreamingChatView() {
           <span className="flex text-center self-center items-center justify-center mx-auto">
             {countdown}
           </span>
+          <span className="flex text-center self-center items-center justify-center mx-auto">
+            {userInfoData.length}명 참여중
+          </span>
         </div>
         <div className="flex py-[0.5rem] text-sm bg-gray-100 w-full">
           <span
             onClick={viewChat}
             className={`${
               sideView === "chat" ? "text-main-color" : ""
-            } basis-1/3 text-center border-r border-gray-400`}
-          >
+            } basis-1/3 text-center border-r border-gray-400`}>
             실시간 채팅
           </span>
           <span

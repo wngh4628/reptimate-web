@@ -287,11 +287,6 @@ export default function Header() {
             </div>
           </Link>
           <nav className="flex gap-4 font-bold ml-auto">
-            {/* <Link href="">
-              <div className="flex w-5 my-0.5" onClick={chattingClick}>
-                <img src="/img/chat.png" />
-              </div>
-            </Link> */}
             <a onClick={chattingClick}>
               <div className="flex w-5 my-0.5">
                 <img src="/img/chat.png" />
@@ -309,11 +304,25 @@ export default function Header() {
             </Link>
           </nav>
         </div>
-        {/* <div
+        <div
           className={`${
-            isChatVisisible ? "" : "hidden"
-          }bg-black w-full h-full z-[9999] fixed bottom-0`}
-        ></div> */}
+            isChatVisisible
+              ? "bg-white w-full h-full z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 flex flex-col shadow-md"
+              : "hidden"
+          }`}>
+          <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
+            <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
+              채팅
+            </p>
+            <button className="right-0" type="button" onClick={chattingClose}>
+              <img
+                className="w-[15px] h-[15px] self-center mr-[18px]"
+                src="/img/ic_x.png"
+              />
+            </button>
+          </div>
+          <PersonalChat></PersonalChat>
+        </div>
       </Mobile>
     </header>
   );
