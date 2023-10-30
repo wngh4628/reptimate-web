@@ -94,11 +94,11 @@ export default function PersonalChat() {
 
 
   useEffect(() => {
-    console.log("*******PersonalChat : useEffect : fcmNotification**************")
-    console.log("*")
-    console.log(fcmNotification)
-    console.log("*")
-    console.log("***************************")
+    // console.log("*******PersonalChat : useEffect : fcmNotification**************")
+    // console.log("*")
+    // console.log(fcmNotification)
+    // console.log("*")
+    // console.log("***************************")
 
     if (fcmNotification.body.type == "chat") {
       updateChatRoomData(fcmNotification.body.description, fcmNotification.title);
@@ -164,7 +164,6 @@ export default function PersonalChat() {
 
   // 채팅방 리스트 불러오기
   const getChatRoomList = async (accessToken: string) => {
-    console.log("=============getChatRoomList() : personalChat.tsx================")
     setLoading(true);
     const config = {
         headers: {
@@ -197,12 +196,12 @@ export default function PersonalChat() {
         });
         await setchatRoomData(sortedArray);
         console.log("=====getChatRoomList() : personalChat.tsx : 채팅방 리스트 불러오기 성공=====")
-        console.log(response.data)
-        console.log("=============================")
+        // console.log(response.data)
+        // console.log("=============================")
         // console.log(response.data?.result)
         setENP(response.data?.result.existsNextPage);
         setPage((prevPage) => prevPage + 1);
-        console.log('getChatRoomList() : personalChat.tsx : receivedNewChat:', receivedNewChat);
+        // console.log('getChatRoomList() : personalChat.tsx : receivedNewChat:', receivedNewChat);
     } catch (error: any) {
       console.log("=========getChatRoomList() : personalChat.tsx : catch (error: any)========")
       console.log(error)

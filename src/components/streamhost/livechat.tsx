@@ -8,23 +8,32 @@ import { GetAuctionPostsView, GetAuctionPostsBid } from "@/service/my/auction";
 import ChatItem from "../chat/ChatItem";
 import BidItem from "../chat/BidItem";
 import ChatUserList from "../chat/ChatUserList";
-import BanUserList from "../chat/BanUserList";
+
 import {
   IMessage,
   connectMessage,
   Ban_Message,
   userInfo,
+
 } from "@/service/chat/chat";
+
+import {bannedUserState, noChatUserState} from "@/recoil/chatting"
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useRecoilState } from "recoil";
 
 interface UserInfoData {
-  [userIdx: string]: {
+  [userIdx: number]: {
     userIdx: number;
     nickname: string;
     profilePath: string;
   };
 }
+interface banUserInfo {
+    idx: number;
+    nickname: string;
+    profilePath: string;
+  }
 export default function HostStreamingChatView() {
   const router = useRouter();
   const params = useParams();
@@ -34,14 +43,16 @@ export default function HostStreamingChatView() {
   const [postsData, setPostsData] = useState<GetAuctionPostsView>();
   const [endTime, setEndTime] = useState("");
 
+  const socketRef = useRef<Socket | null>(null);
+  let liveRoomIdx = useRef<string>();
   const [roomEnter, setroomEnter] = useState<boolean>(false);
   const [textMsg, settextMsg] = useState("");
   const [roomName, setroomName] = useState("");
   const [chattingData, setchattingData] = useState<IMessage[]>([]);
-  const [banList, setBanList] = useState<userInfo[]>([]); // 밴 목록
-  const [noChatList, setNoChatList] = useState<userInfo[]>([]); // 채금 목록
-  const socketRef = useRef<Socket | null>(null);
-  let liveRoomIdx = useRef<string>();
+  const [banList, setBanList] = useState<banUserInfo[]>([]); // 밴 목록
+  const [noChatList, setNoChatList] = useState<banUserInfo[]>([]); // 채금 목록
+  const [bannedUserList, setbannedUserList] = useRecoilState(bannedUserState);
+  const [noChatUserList, setnoChatUserList] = useRecoilState(noChatUserState);
 
   const [bidMsg, setBidMsg] = useState("");
   const [chattingBidData, setchattingBidData] = useState<IMessage[]>([]);
@@ -57,18 +68,19 @@ export default function HostStreamingChatView() {
   const [viewerCount, setviewerCount] = useState(0);
   const [host, setHost] = useState(0); //방장 유무: 게시글 작성자의 idx로 지정
   const [boardIdx, setBoardIdx] = useState(0); //게시글 번호: 현재 하드코딩 -> 나중에 방 입장 시, props로 들고와야함
-  const [userAuth, setUserAuth] = useState("guest"); //유저 권한
+  const [userAuth, setUserAuth] = useState("host"); //유저 권한
   const [noChatState, setNoChatState] = useState<boolean>(false); //유저 권한
 
   const [accessToken, setAccessToken] = useState("");
 
   const [userInfoData, setUserInfoData] = useState<userInfo[]>([]); //유저 정보 가지고 있는 리스트
 
-  const [userIdx, setUserIdx] = useState<number>(0); // 로그인 한 유저의 userIdx 저장
+  const [userIdx, setUserIdx] = useState(0); // 로그인 한 유저의 userIdx 저장
   const [nickname, setNickname] = useState(""); // 유저의 nickname 저장
   const [profilePath, setProfilePath] = useState(""); // 유저의 profilePath 저장
 
   const [sideView, setSideView] = useState("chat");
+  const [participateView, setParticipateView] = useState("ban");
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const bidContainerRef = useRef<HTMLDivElement | null>(null);
@@ -78,6 +90,11 @@ export default function HostStreamingChatView() {
 
   useEffect(() => {
     const storedData = localStorage.getItem("recoil-persist");
+    const handleBackNavigation = (event: any) => {
+        event.preventDefault(); // 브라우저의 기본 동작을 막음
+        router.back(); // 뒤로가기 동작 실행
+      };
+    window.addEventListener('popstate', handleBackNavigation);
     if (storedData) {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken) {
@@ -88,38 +105,40 @@ export default function HostStreamingChatView() {
         setBoardIdx(parseInt(extractedNumber));
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
+
         preset().then(() => {
             getData().then(() => {
-                console.log("useEffect  :  getData  : then : getData 완료=================");
-                console.log("useEffect  :  getData  : then : 소켓 연결 시도================");
-                joinRoom();
-                joinBidRoom();
                 fetchBanList();
                 fetchNoChatList();
-                
             });
         });
       } else {
         router.replace("/");
         alert("로그인이 필요한 기능입니다.");
       }
-    }
-  }, []);
-  useEffect(() => {
 
-  }, [profilePath]);
-  const preset = async () => {
+
+    }
+
+  }, []);
+
+  const preset = useCallback(async () => {
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
-      if (userData.USER_DATA.idx) {
+      if (userData.USER_DATA.accessToken) {
         setUserIdx(userData.USER_DATA.idx);
         setNickname(userData.USER_DATA.nickname);
         setProfilePath(userData.USER_DATA.profilePath);
+      } else {
       }
     }
-    console.log("useEffect  :  preset  : ================");
-  };
+  }, []);
+
+  useEffect(() => {
+    joinRoom();
+    joinBidRoom();
+  }, [profilePath]);
 
   useEffect(() => {
     const chatContainer = bidContainerRef.current;
@@ -128,43 +147,39 @@ export default function HostStreamingChatView() {
     }
   }, [chattingBidData]);
 
+//   useEffect(() => {
+//     if (bannedUserList) {
+//       const updatedBanList = banList.filter((user: banUserInfo) =>
+//         bannedUserList.some((bannedUser: banUserInfo) => bannedUser.idx !== user.idx)
+//       );
+//       setBanList(updatedBanList);
+//     }
+//   }, [bannedUserList]);
+
+  useEffect(() => {
+    console.log("userIdx : " + userIdx + " // host  :  "+ host)
+    if (userIdx === host) {
+        setUserAuth("host");
+        console.log("당신은 이 방송의 host입니다.");
+    }
+  }, [userIdx, host]);
+
   const getData = useCallback(async () => {
-    console.log("11111getData() : 경매글 정보 불러오기==================== boardidx : ", idx);
     try {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`);
-      console.log("========getData() : 경매글 정보 불러오기==================== boardidx : ", idx);
-      console.log(response.data);
-      console.log("============================");
       setPostsData(response.data);
-      setNowBid(
-        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
-      );
-      setBidUnit(
-        formatNumberWithCommas(response.data.result.boardAuction.unit)
-      );
-      setBidStartPrice(
-        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
-      );
+
+      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
+      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
+      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice));
       setHost(response.data.result.UserInfo.idx);
-      console.log(userIdx + "   당신은 이 방송의 host입?=========" +parseInt(response.data.result.UserInfo.idx));
-      if (parseInt(response.data.result.UserInfo.idx) === userIdx) {
-        setUserAuth("host");
-        console.log("당신은 이 방송의 host입니다.======================");
-      }
-      setNowBid(
-        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
-      );
-      setBidUnit(
-        formatNumberWithCommas(response.data.result.boardAuction.unit)
-      );
-      setBidStartPrice(
-        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
-      );
+
+
+      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
+      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
+      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice));
       setEndTime(response.data.result.boardAuction.endTime);
-      console.log(response.data.result.boardAuction.endTime);
-      const endTime1 = new Date(
-        response.data.result.boardAuction.endTime
-      ).getTime();
+      const endTime1 = new Date(response.data.result.boardAuction.endTime).getTime();
       const updateCountdown = () => {
         const currentTime = new Date().getTime();
         const timeRemaining = endTime1 - currentTime;
@@ -174,20 +189,20 @@ export default function HostStreamingChatView() {
           setIsInputDisabled(true);
         } else {
           const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-          const hours = Math.floor(
-            (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-          );
-          const minutes = Math.floor(
-            (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
-          );
+          const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-          setCountdown(
-            "종료시간 : " + `${hours}시간 ${minutes}분 ${seconds}초`
-          );
+          setCountdown("종료시간 : " + `${hours}시간 ${minutes}분 ${seconds}초`);
         }
       };
-      updateCountdown(); // Initial call to set the countdown
+      updateCountdown();
       const countdownInterval = setInterval(updateCountdown, 1000);
+
+      console.log(userIdx + "   당신은 이 방송의 host?=========" + parseInt(response.data.result.UserInfo.idx));
+      if (parseInt(response.data.result.UserInfo.idx) === userIdx) {
+        setUserAuth("host");
+        console.log("당신은 이 방송의 host입니다.======================");
+      }
       return () => {
         clearInterval(countdownInterval);
       };
@@ -196,11 +211,6 @@ export default function HostStreamingChatView() {
     }
   }, []);
 
-  //입찰가 입력란
-  const onChangeBid = (event: { target: { value: string } }) => {
-    const numericInput = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-    setBidMsg(numericInput);
-  };
   // 숫자 사이에 , 기입
   function formatNumberWithCommas(input: string): string {
     // 문자열을 숫자로 변환하고 세 자리마다 쉼표를 추가
@@ -269,16 +279,19 @@ export default function HostStreamingChatView() {
     });
     //다른 참여자가 방을 나갔을 때
     socket.on("leave-user", (message: IMessage) => {
-      // console.log("message", message);
       setUserList((prevUserList) => {
         const newData: { [key: number]: any } = { ...prevUserList };
+        delete newData[message.userIdx];
+        return newData;
+      });
+      setUserInfoData((prevUserInfoData) => {
+        const newData = { ...prevUserInfoData };
         delete newData[message.userIdx];
         return newData;
       });
     });
     //채팅 금지 리스너
     socket.on("no_chat", (message: string) => {
-      // console.log("noChatIdx");
       Swal.fire({
         text: "채팅 금지를 받았습니다.",
         icon: "warning",
@@ -294,43 +307,47 @@ export default function HostStreamingChatView() {
       }
     });
     //참여자 정보를 추가하는 리스너
-    socket.on("live_participate", (message: string[]) => {
-      if (userIdx === host) {
-        setUserAuth("host");
+    socket.on("live_participate", (message: any) => {
+      if(Array.isArray(message)) {
+        const parsedDataArray =  message.map((data) => JSON.parse(data));
+        console.log("===========live_participate : =======");
+        console.log(parsedDataArray);
+        console.log(message);
+        console.log("====================================");
+        setUserList({});
+        setUserInfoData([]);
+
+        parsedDataArray.forEach((data: any) => {
+            const getUserInfo = data;
+            if (
+              getUserInfo &&
+              getUserInfo.profilePath &&
+              getUserInfo.profilePath.length > 1
+            ) {
+              setUserInfoData((prevUserInfoData) => ({
+                ...prevUserInfoData,
+                [getUserInfo.userIdx]: {
+                  userIdx: getUserInfo.userIdx,
+                  profilePath: getUserInfo.profilePath,
+                  nickname: getUserInfo.nickname,
+                },
+              }));
+              setUserList((prevsetUserList) => ({
+                ...prevsetUserList,
+                [getUserInfo.userIdx]: {
+                  userIdx: getUserInfo.userIdx,
+                  profilePath: getUserInfo.profilePath,
+                  nickname: getUserInfo.nickname,
+                },
+              }));
+            } else {
+            }
+        });
       }
-      console.log("===========live_participate : =======");
-      console.log(message);
-      console.log("====================================");
-      const messageArray = Array.isArray(message) ? message : [message];
-      messageArray.forEach((data: any) => {
-        const getUserInfo = data;
-        if (
-          getUserInfo &&
-          getUserInfo.profilePath &&
-          getUserInfo.profilePath.length > 1
-        ) {
-          setUserInfoData((prevUserInfoData) => ({
-            ...prevUserInfoData,
-            [getUserInfo.userIdx]: {
-              userIdx: getUserInfo.userIdx,
-              profilePath: getUserInfo.profilePath,
-              nickname: getUserInfo.nickname,
-            },
-          }));
-          setUserList((prevsetUserList) => ({
-            ...prevsetUserList,
-            [getUserInfo.userIdx]: {
-              userIdx: getUserInfo.userIdx,
-              profilePath: getUserInfo.profilePath,
-              nickname: getUserInfo.nickname,
-            },
-          }));
-        } else {
-        }
-      });
+
     });
     console.log(socket.connected);
-    // socket disconnect on component unmount if exists
+    // socket disconnect on component unmount if exist
     return () => {
       if (socketRef.current) {
         socketRef.current.disconnect();
@@ -349,9 +366,21 @@ export default function HostStreamingChatView() {
           boardIdx: boardIdx,
         };
         socketRef.current.emit("user_ban", message);
+        const isUserAlreadyBanned = banList.some(user => user.idx === userIdx);
+        if (!isUserAlreadyBanned) {
+            const userToAdd = userInfoData.find(user => user.userIdx === userIdx);
+            if (userToAdd) {
+                const banUser: banUserInfo = {
+                    idx: userToAdd.userIdx,
+                    nickname: userToAdd.nickname,
+                    profilePath: userToAdd.profilePath,
+                  };
+                setBanList([...banList, banUser]);
+            }
+        }
       }
     }
-  };
+  }; 
   //스트리밍 밴 목록 조회
   const fetchBanList = async () => {
     if (userAuth === "host") {
@@ -361,6 +390,7 @@ export default function HostStreamingChatView() {
         );
         const userInfoArray = response.data.result;
         setBanList(userInfoArray);
+        setbannedUserList(userInfoArray);
         console.error("setBanList  :  ");
         console.error(userInfoArray);
       } catch (error) {
@@ -376,8 +406,12 @@ export default function HostStreamingChatView() {
             const result = await axios.post(
                 `${process.env.NEXT_PUBLIC_CHAT_URL}/LiveChat/ban/${roomName}/${boardIdx}/${userIdx}/${banUserIdx}`
             );
-            console.log(`${process.env.NEXT_PUBLIC_CHAT_URL}/LiveChat/ban/${roomName}/${boardIdx}/${userIdx}/${banUserIdx}`)
-            console.log(result);
+            const updatedBanList = [...banList];
+            const indexToDelete = updatedBanList.findIndex((user) => user.idx === banUserIdx);
+            if (indexToDelete !== -1) {
+              updatedBanList.splice(indexToDelete, 1);
+              setBanList(updatedBanList);
+            }
           } catch (error) {
             console.error("Error fetching data:", error);
           }
@@ -402,6 +436,19 @@ export default function HostStreamingChatView() {
         };
         console.log(message);
         socketRef.current.emit("noChat", message);
+
+        const isUserAlreadyBanned = noChatList.some(user => user.idx === userIdx);
+        if (!isUserAlreadyBanned) {
+            const userToAdd = userInfoData.find(user => user.userIdx === userIdx);
+            if (userToAdd) {
+                const banUser: banUserInfo = {
+                    idx: userToAdd.userIdx,
+                    nickname: userToAdd.nickname,
+                    profilePath: userToAdd.profilePath,
+                  };
+                  setNoChatList([...noChatList, banUser]);
+            }
+        }
       }
     }
   };
@@ -418,8 +465,15 @@ export default function HostStreamingChatView() {
           boardIdx: boardIdx,
         };
         socketRef.current.emit("noChatDelete", message);
+
+        const updatedNoChatList = [...noChatList];
+        const indexToDelete = updatedNoChatList.findIndex((user) => user.idx === banUserIdx);
+        
+        if (indexToDelete !== -1) {
+            updatedNoChatList.splice(indexToDelete, 1);
+            setNoChatList(updatedNoChatList);
+        }
       }
-      fetchnoChatDelete(banUserIdx);
     }
   };
   //스트리밍 채금 목록 조회
@@ -432,24 +486,10 @@ export default function HostStreamingChatView() {
         );
         const userInfoArray = response.data.result;
         setNoChatList(userInfoArray);
+        setnoChatUserList(userInfoArray);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-    } else {
-      //   Swal.fire({
-      //     text: "방장이 아닙니다.",
-      //     icon: "error",
-      //     confirmButtonText: "완료", // confirm 버튼 텍스트 지정
-      //     confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      //   });
-    }
-  };
-  //스트리밍 채금 풀기 - db
-  const fetchnoChatDelete = async (banUserIdx: number) => {
-    if (userAuth === "host") {
-      await axios.post(
-        `http://localhost:3003/LiveChat/noChat/${roomName}/${boardIdx}/${userIdx}/${banUserIdx}`
-      );
     } else {
       //   Swal.fire({
       //     text: "방장이 아닙니다.",
@@ -538,7 +578,8 @@ export default function HostStreamingChatView() {
     // console.log("banList", banList);
   }, [banList]);
   useEffect(() => {
-    console.log("userList", userList);
+    console.log("userList : ", userList);
+    setUserInfoData(Object.values(userList));
   }, [userList]);
 
   /*************************************
@@ -560,14 +601,11 @@ export default function HostStreamingChatView() {
         message: bidMsg.trim(),
         room: roomName,
       };
-
       if (socketBidRef.current) {
         console.log("============경매 입찰 채팅 입장============");
-
         socketBidRef.current.emit("join-room", message);
       }
       setroomEnter(true);
-
       fetchBidData();
     });
     // 메시지 리스너
@@ -685,6 +723,16 @@ export default function HostStreamingChatView() {
       setSideView("bid");
     }
   }
+  function viewBanned() {
+    if (participateView != "ban") {
+      setParticipateView("ban");
+    }
+  }
+  function viewNoChatted() {
+    if (participateView != "noChat") {
+        setParticipateView("noChat");
+    }
+  }
   return (
     <>
       <div className="flex-col w-full right-0 h-[87%] flex bg-white">
@@ -693,7 +741,6 @@ export default function HostStreamingChatView() {
             {countdown}
           </span>
         </div>
-
         <div className="flex py-[0.5rem] text-sm bg-gray-100 w-full">
           <span
             onClick={viewChat}
@@ -779,24 +826,74 @@ export default function HostStreamingChatView() {
               </div>
             </div>
             <div className="flex items-start flex-col">
-              <div className=" w-full bg-slate-400">밴 목록</div>
-              <div className="flex h-[384px] w-full border-gray-100 border-r-[1px]">
-                <div className="flex flex-col overflow-auto bg-white mt-2 pl-5">
-                  {Object.values(banList).map((userList) => (
-                    <ChatUserList
-                      key={userList.userIdx}
-                      userList={userList}
-                      ban={ban}
-                      noChat={noChat}
-                      unBan={fetchBanDelete}
-                      unNoChat={noChatDelete}
-                      userAuth={userAuth}
-                      banList={banList}
-                      noChatList={noChatList}
-                    />
-                  ))}
+                <div className="flex py-[0.7rem] text-sm bg-gray-100 w-full">
+                    <span
+                      onClick={viewBanned}
+                      className={`${
+                        participateView === "ban" ? "text-main-color" : ""
+                      } basis-1/2 text-center border-r border-gray-400`}
+                    >
+                      밴 목록
+                    </span>
+                    <span
+                      onClick={viewNoChatted}
+                      className={`${
+                        participateView === "noChat" ? "text-main-color" : ""
+                      } basis-1/2 text-center `}
+                    >
+                      채팅금지 목록
+                    </span>
                 </div>
-              </div>
+                {participateView === "ban" ? (
+                    <div className="flex h-[384px] w-full border-gray-100 border-r-[1px]">
+                    <div className="flex flex-col overflow-auto bg-white mt-2 pl-5">
+                        {Object.values(banList).map((userList) => (
+                        <ChatUserList
+                          key={userList.idx}
+                          userList={
+                            {userIdx : userList.idx,
+                            nickname: userList.nickname,
+		                    profilePath: userList.profilePath}
+                          }
+                          ban={ban}
+                          noChat={noChat}
+                          unBan={fetchBanDelete}
+                          unNoChat={noChatDelete}
+                          userAuth={userAuth}
+                          banList={banList}
+                          noChatList={noChatList}
+                        />
+                        ))}
+                    </div>
+                </div>
+                ) : (
+                    ""
+                )}
+                {participateView === "noChat" ? (
+                    <div className="flex h-[384px] w-full border-gray-100 border-r-[1px]">
+                    <div className="flex flex-col overflow-auto bg-white mt-2 pl-5">
+                        {Object.values(noChatList).map((userList) => (
+                        <ChatUserList
+                          key={userList.idx}
+                          userList={
+                            {userIdx : userList.idx,
+                            nickname: userList.nickname,
+		                    profilePath: userList.profilePath}
+                          }
+                          ban={ban}
+                          noChat={noChat}
+                          unBan={fetchBanDelete}
+                          unNoChat={noChatDelete}
+                          userAuth={userAuth}
+                          banList={banList}
+                          noChatList={noChatList}
+                        />
+                        ))}
+                    </div>
+                </div>
+                ) : (
+                    ""
+                )}
             </div>
           </div>
         ) : (

@@ -3,7 +3,15 @@ import React, {useState,forwardRef,useRef, useEffect, useImperativeHandle} from 
 import Swal from 'sweetalert2';
 
 import { userInfo } from "@/service/chat/chat";
+import {bannedUserState, noChatUserState} from "@/recoil/chatting"
+import { useRecoilState } from 'recoil';
 
+
+interface banUserInfo {
+    idx: number;
+    nickname: string;
+    profilePath: string;
+  }
 const ChatUserList = forwardRef((props :{
 	userList: {
 		userIdx: number,
@@ -15,8 +23,8 @@ const ChatUserList = forwardRef((props :{
 	unBan: any,
 	unNoChat : any,
 	userAuth : string,
-	banList : userInfo[],
-	noChatList : userInfo[]
+	banList : banUserInfo[],
+	noChatList : banUserInfo[]
 }, ref) =>{
 	useImperativeHandle(ref, () => ({
 		
@@ -26,6 +34,9 @@ const ChatUserList = forwardRef((props :{
 
 	const [banned, setbanned] = useState(false); // 밴 여부
 	const [noChatted, setNoChatted] = useState(false); // 채금 여부
+
+	const [bannedUserList, setbannedUserList] = useRecoilState(bannedUserState);
+	const [noChatUserList, setnoChatUserList] = useRecoilState(noChatUserState);
 
 	const wrapperRef = useRef<HTMLDivElement | null>(null);
 	useEffect(()=>{
@@ -37,15 +48,15 @@ const ChatUserList = forwardRef((props :{
         }
     })
 	useEffect(() => {
-		props.noChatList.map((user: userInfo) => {
-			if (user.userIdx === props.userList.userIdx) {
+		props.noChatList.map((user: banUserInfo) => {
+			if (user.idx === props.userList.userIdx) {
 				setNoChatted(true)
 			}
 		})
 	  }, [noChatted]);
 	useEffect(() => {
-		props.banList.map((user: userInfo) => {
-			if (user.userIdx === props.userList.userIdx) {
+		props.banList.map((user: banUserInfo) => {
+			if (user.idx === props.userList.userIdx) {
 				setbanned(true)
 			}
 		})
@@ -116,16 +127,28 @@ const ChatUserList = forwardRef((props :{
 			setBoxState(false);
 		}
 	}
-
     return (
 		<div className="flex ">
 			<div className='flex' onClick={optionBoxOnOff} style={{cursor:"pointer"}}>{props.userList.nickname}</div>
 			{boxState &&
-				<div className='border-[5px] border-gray-300 bg-white' style={{position:"absolute",marginTop:"20px", backgroundColor:"#fffff", width:"100px", height:"105px"}} ref={wrapperRef}>
-					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('ban')}><h1>강퇴</h1></div>
-					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('noChat')}><h1>채금</h1></div>
-					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('unBan')}><h1>강퇴 해제</h1></div>
-					<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('unNoChat')}><h1>채금 해제</h1></div>
+				<div  ref={wrapperRef}>
+					{!banned && !noChatted && 
+						<div className='border-[5px] border-gray-300 bg-white' style={{position:"absolute",marginTop:"20px", backgroundColor:"#fffff", width:"100px", height:"60px"}}>
+							<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('ban')}><h1>강퇴</h1></div>
+							<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('noChat')}><h1>채금</h1></div>
+						</div>	
+					}
+					{banned && 
+						<div className='border-[5px] border-gray-300 bg-white' style={{position:"absolute",marginTop:"20px", backgroundColor:"#fffff", width:"100px", height:"35px"}}>
+							<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('unBan')}><h1>강퇴 해제</h1></div>
+						</div>
+					}
+					{noChatted && 
+						<div className='border-[5px] border-gray-300 bg-white' style={{position:"absolute",marginTop:"20px", backgroundColor:"#fffff", width:"100px", height:"35px"}}>
+							<div className='flex items-center justify-center font-bold' onClick={() => modalOnOff('unNoChat')}><h1>채금 해제</h1></div>
+						</div>
+						
+					}
 				</div>
 			}
         </div>

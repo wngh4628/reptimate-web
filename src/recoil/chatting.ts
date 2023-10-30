@@ -1,6 +1,10 @@
-import { atom } from "recoil";
+import { RecoilState, atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
-
+interface banUserInfo {
+    idx: number;
+    nickname: string;
+    profilePath: string;
+  }
 
 export const isNewChatState = atom({
     key: "isNewChatState",
@@ -26,5 +30,15 @@ export const chatNowInfoState = atom({
 export const receivedNewChatState = atom({
     key: "receivedNewChatState",
     default: false,
+});
+
+export const bannedUserState = atom({
+    key: "bannedUserState",
+    default: null,
+});
+
+export const noChatUserState = atom<banUserInfo[]>({
+    key: "noChatUserState",
+    default: [],
 });
 
