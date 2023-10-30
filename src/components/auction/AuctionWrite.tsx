@@ -364,9 +364,10 @@ export default function AuctionWrite() {
       console.log(data.data);
       console.log("============================");
       alert(
-        "경매가 임시 저장되었습니다.\n마이페이지의 내 경매에서 최종 등록을 하실 수 있습니다."
+        "경매가 임시 저장되었습니다.\n마이페이지 메뉴의 내 경매에서 최종 등록을 하실 수 있습니다."
       );
-      router.replace("/my/auction");
+      router.replace("/auction");
+      setIsLoading(false);
     },
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
@@ -417,7 +418,6 @@ export default function AuctionWrite() {
 
     if (
       title !== "" &&
-      price !== "" &&
       selectedGender !== "" &&
       selectedSize !== "" &&
       variety !== "" &&
@@ -480,10 +480,12 @@ export default function AuctionWrite() {
           } else {
             console.error("Error uploading files to the first server.");
             alert("Error uploading files. Please try again later.");
+            setIsLoading(false);
           }
         } catch (error) {
           console.error("Error:", error);
           alert("An error occurred. Please try again later.");
+          setIsLoading(false);
         }
       }
     } else {
@@ -506,8 +508,8 @@ export default function AuctionWrite() {
       alertMessage += missingFields.join(", ");
 
       alert(alertMessage);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
