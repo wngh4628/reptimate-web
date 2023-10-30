@@ -2,9 +2,7 @@
 import { usePathname } from "next/navigation";
 
 export default function Footer() {
-
   const pathName = usePathname() || "";
-
 
   if (pathName.startsWith("/streamhost")) return null;
   return (
