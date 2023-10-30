@@ -571,6 +571,7 @@ export default function AuctionTemp() {
 
     if (
       title !== "" &&
+      price !== "" &&
       selectedGender !== "" &&
       selectedSize !== "" &&
       variety !== "" &&
@@ -662,6 +663,7 @@ export default function AuctionTemp() {
       // Create a list of missing fields
       const missingFields = [];
       if (title === "") missingFields.push("제목");
+      if (price === "") missingFields.push("시작 가격");
       if (variety === "") missingFields.push("품종");
       if (pattern === "") missingFields.push("모프");
       if (startPrice === "" || "null") missingFields.push("시작 가격");
@@ -758,7 +760,7 @@ export default function AuctionTemp() {
         <p className="font-bold text-xl my-2">즉시 구입가</p>
         <input
           type="number"
-          placeholder="(선택) 즉시 구입가를 입력해주세요. (원)"
+          placeholder="즉시 구입가를 입력해주세요. (원)"
           className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
