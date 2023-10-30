@@ -7,6 +7,7 @@ import PostCard from "../PostCard";
 import { Mobile, PC } from "../ResponsiveLayout";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
+import BannerSlider from "../BannerSlider";
 
 export default function AdoptionPosts() {
   const [data, setData] = useState<getResponse | null>(null);
@@ -147,6 +148,7 @@ export default function AdoptionPosts() {
 
     return (
       <section>
+        <BannerSlider />
         <ul className="mt-5 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
             <li key={post.idx}>
