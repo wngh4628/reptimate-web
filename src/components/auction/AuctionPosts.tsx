@@ -156,7 +156,9 @@ export default function AuctionPosts() {
           <h2 className="text-2xl font-bold p-10">경매</h2>
         </PC>
         <Mobile>
-          <h2 className="font-bold pl-3 pt-2 pb-2">경매</h2>
+          <h2 className="text-lg font-bold pb-2 flex items-center justify-center">
+            경매
+          </h2>
         </Mobile>
         <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
