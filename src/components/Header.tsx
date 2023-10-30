@@ -88,9 +88,6 @@ export default function Header() {
       .then((currentToken) => {
         if (currentToken) {
           // 정상적으로 토큰이 발급되면 콘솔에 출력합니다.
-          console.log("===========currentToken===============");
-          console.log("currentToken  :  " + currentToken);
-          console.log("======================================");
           setfcm(currentToken);
         } else {
           console.log(

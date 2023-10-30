@@ -210,16 +210,14 @@ export default function AuctionList() {
     nickname: item.UserInfo.nickname,
     profilePath: item.UserInfo.profilePath,
     currentPrice: item.boardAuction?.currentPrice || 0,
-
-    endTime: item.boardAuction.endTime,
-    gender: item.boardAuction.gender,
-    size: item.boardAuction.size,
-    variety: item.boardAuction.variety,
-    state: item.boardAuction.state,
-    unit: item.boardAuction.unit,
-    boardIdx: item.boardAuction.boardIdx,
+    endTime: item.boardAuction?.endTime || "",
+    gender: item.boardAuction?.gender,
+    size: item.boardAuction?.size,
+    variety: item.boardAuction?.variety,
+    state: item.boardAuction?.state,
+    unit: item.boardAuction?.unit,
+    boardIdx: item.boardAuction?.boardIdx,
   }));
-
   const replyItemlist: Bid[] = (replyData?.result.items ?? []).map((item) => ({
     idx: item.idx,
     userIdx: item.userIdx,
