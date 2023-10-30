@@ -516,7 +516,8 @@ export default function AuctionTemp() {
       console.log(data.data);
       console.log("============================");
       alert("경매가 등록 되었습니다.");
-      router.replace(`/auction`);
+      router.replace(`/my/auction`);
+      setIsLoading(false);
     },
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
@@ -570,7 +571,6 @@ export default function AuctionTemp() {
 
     if (
       title !== "" &&
-      price !== "" &&
       selectedGender !== "" &&
       selectedSize !== "" &&
       variety !== "" &&
@@ -650,10 +650,12 @@ export default function AuctionTemp() {
           } else {
             console.error("Error uploading files to the first server.");
             alert("Error uploading files. Please try again later.");
+            setIsLoading(false);
           }
         } catch (error) {
           console.error("Error:", error);
           alert("An error occurred. Please try again later.");
+          setIsLoading(false);
         }
       }
     } else {
@@ -675,8 +677,8 @@ export default function AuctionTemp() {
       alertMessage += missingFields.join(", ");
 
       alert(alertMessage);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
