@@ -88,9 +88,6 @@ export default function Header() {
       .then((currentToken) => {
         if (currentToken) {
           // 정상적으로 토큰이 발급되면 콘솔에 출력합니다.
-          console.log("===========currentToken===============");
-          console.log("currentToken  :  " + currentToken);
-          console.log("======================================");
           setfcm(currentToken);
         } else {
           console.log(
@@ -184,7 +181,7 @@ export default function Header() {
     <header>
       {/* PC 화면(반응형) */}
       <PC>
-        <div className="flex justify-end pr-10 pt-5 gap-2 font-bold">
+        <div className="flex justify-end pt-5 gap-2 font-bold">
           {isLogin ? (
             <button
               className="group hover:text-main-color"
@@ -203,7 +200,7 @@ export default function Header() {
             </>
           )}
         </div>
-        <div className="flex justify-between items-center pt-3 pl-10 pb-5 pr-10">
+        <div className="flex justify-between items-center pt-3 pb-5">
           <Link href={link}>
             <div className="flex w-40">
               <img src="/img/main_logo.png" />
