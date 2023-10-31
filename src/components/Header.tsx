@@ -55,7 +55,10 @@ export default function Header() {
 
   useEffect(() => {
     handleLogin();
-    onMessageFCM();
+    if (typeof window.Android === "undefined" || window.Android === null) {
+      // 웹 브라우저인 경우에만 실행
+      onMessageFCM();
+    }
   }, [pathName]);
 
   useEffect(() => {}, []);
@@ -309,7 +312,8 @@ export default function Header() {
             isChatVisisible
               ? "bg-white w-full h-full z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 flex flex-col shadow-md"
               : "hidden"
-          }`}>
+          }`}
+        >
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
               채팅
