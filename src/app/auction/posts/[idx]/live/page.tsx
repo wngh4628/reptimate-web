@@ -85,7 +85,7 @@ export default function ActionPage({ params: { slug } }: Props) {
     if (streamKey != "") {
       console.log(streamKey);
       setVideoUrl(
-        `http://live.reptimate.store/stream/hls/${streamKey}/index.m3u8`
+        `https://live.reptimate.store/stream/hls/${streamKey}/index.m3u8`
       );
     }
   }, [streamKey]);

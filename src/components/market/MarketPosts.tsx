@@ -149,6 +149,12 @@ export default function MarketPosts() {
     return (
       <section>
         <BannerSlider />
+        <PC>
+          <h2 className="text-2xl font-bold my-4 ml-4">중고 거래</h2>
+        </PC>
+        <Mobile>
+          <h2 className="text-lg font-bold ml-2 my-2">중고 거래</h2>
+        </Mobile>
         <ul className="mt-5 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
             <li key={post.idx}>

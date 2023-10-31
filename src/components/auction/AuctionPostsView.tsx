@@ -196,7 +196,7 @@ export default function AuctionPostsView() {
       console.log(data.data);
       console.log("============================");
       alert("게시글이 삭제되었습니다.");
-      router.replace("/");
+      router.replace("/auction");
     },
   });
 
