@@ -48,8 +48,8 @@ export default function CommunityMenu() {
       </PC>
 
       <Mobile>
-        <div className="flex justify-center">
-          <nav className="flex gap-4 font-bold">
+        <div className="flex justify-center mt-2">
+          <nav className="flex gap-3 font-bold text-lg">
             <Link
               href="/"
               className={`${
