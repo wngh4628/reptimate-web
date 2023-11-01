@@ -140,7 +140,6 @@ export default function Header() {
           pathName === "/my/auction" ||
           pathName === "/my/bookmpoark" ||
           pathName.startsWith("/streamhost") ||
-          pathName.startsWith("/community/adoption/posts") ||
           pathName.startsWith("/community/market/posts") ||
           pathName.startsWith("/community/free/posts") ||
           pathName.startsWith("/community/ask/posts") ||
