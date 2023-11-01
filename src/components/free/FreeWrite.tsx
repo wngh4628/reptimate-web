@@ -39,26 +39,36 @@ export default function FreeWrite() {
 
   const [showFileLimitWarning, setShowFileLimitWarning] = useState(false);
 
-  const setUser = useSetRecoilState(userAtom);
-  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
-
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (files) {
-      const newFiles: FileItem[] = Array.from(files)
-        .slice(0, 5 - selectedFiles.length)
-        .map((file) => ({
-          file,
-          id: Date.now() + Math.random(),
-        }));
+    const file = event.target.files!![0];
 
-      if (selectedFiles.length + newFiles.length > 5) {
-        setShowFileLimitWarning(true);
-      } else {
-        setSelectedFiles((prevSelectedFiles) => [
-          ...prevSelectedFiles,
-          ...newFiles,
-        ]);
+    if (selectedFiles.length + files!!.length > 5) {
+      alert("사진 및 비디오는 최대 5개까지만 선택가능합니다.");
+      event.target.value = "";
+    } else {
+      if (file) {
+        if (file.size > 200 * 1024 * 1024) {
+          // Display an error message if the file size exceeds 200MB
+          alert(
+            "파일의 용량이 너무 큽니다. 파일은 개당 200MB까지만 업로드 가능합니다."
+          );
+          event.target.value = ""; // Clear the file input
+        } else {
+          if (files) {
+            const newFiles: FileItem[] = Array.from(files)
+              .slice(0, 5 - selectedFiles.length)
+              .map((file) => ({
+                file,
+                id: Date.now() + Math.random(),
+              }));
+
+            setSelectedFiles((prevSelectedFiles) => [
+              ...prevSelectedFiles,
+              ...newFiles,
+            ]);
+          }
+        }
       }
     }
   };
