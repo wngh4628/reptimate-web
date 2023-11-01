@@ -84,8 +84,11 @@ export default function ActionPage({ params: { slug } }: Props) {
   useEffect(() => {
     if (streamKey != "") {
       console.log(streamKey);
+      // setVideoUrl(
+      //   `https://live.reptimate.store/stream/hls/${streamKey}/index.m3u8`
+      // );
       setVideoUrl(
-        `https://live.reptimate.store/stream/hls/${streamKey}/index.m3u8`
+        `https://live.reptimate.store/stream/${streamKey}/index.m3u8`
       );
     }
   }, [streamKey]);
