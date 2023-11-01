@@ -139,29 +139,40 @@ export default function FreeEdit() {
     console.log(deletedFiles);
   }, [deletedFiles]);
 
-  const [showFileLimitWarning, setShowFileLimitWarning] = useState(false);
-
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (files) {
-      const newFiles: FileItem[] = Array.from(files)
-        .slice(0, 5 - allFiles.length)
-        .map((file, index) => ({
-          idx: 0,
-          file,
-          id: Date.now() + Math.random(),
-          url: "", // 새로 업로드할 파일의 경우 URL은 null로 설정
-          type: file.type,
-          mediaSequence: mediaSequence + index + 1, // Increment mediaSequence based on index
-        }));
+    const file = event.target.files!![0];
 
-      setMediaSequence(mediaSequence + newFiles.length);
+    if (allFiles.length + files!!.length > 5) {
+      alert("사진 및 비디오는 최대 5개까지만 선택가능합니다.");
+      event.target.value = "";
+    } else {
+      if (file) {
+        if (file.size > 200 * 1024 * 1024) {
+          // Display an error message if the file size exceeds 200MB
+          alert(
+            "파일의 용량이 너무 큽니다. 파일은 개당 200MB까지만 업로드 가능합니다."
+          );
+          event.target.value = ""; // Clear the file input
+        } else {
+          if (files) {
+            const newFiles: FileItem[] = Array.from(files)
+              .slice(0, 5 - allFiles.length)
+              .map((file, index) => ({
+                idx: 0,
+                file,
+                id: Date.now() + Math.random(),
+                url: "", // 새로 업로드할 파일의 경우 URL은 null로 설정
+                type: file.type,
+                mediaSequence: mediaSequence + index + 1, // Increment mediaSequence based on index
+              }));
 
-      if (allFiles.length + newFiles.length > 5) {
-        setShowFileLimitWarning(true);
-      } else {
-        setAllFiles((prevFiles) => [...prevFiles, ...newFiles]);
-        setAddFiles((prevFiles) => [...prevFiles, ...newFiles]);
+            setMediaSequence(mediaSequence + newFiles.length);
+
+            setAllFiles((prevFiles) => [...prevFiles, ...newFiles]);
+            setAddFiles((prevFiles) => [...prevFiles, ...newFiles]);
+          }
+        }
       }
     }
   };
