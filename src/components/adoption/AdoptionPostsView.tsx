@@ -608,35 +608,40 @@ export default function AdoptionPostsView() {
                   </button>
                   {menuOpen && (
                     <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
-                      <ul>
-                        <li
-                          onClick={() => {
-                            handleEdit();
-                            toggleMenu();
-                          }}
-                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                        >
-                          수정
-                        </li>
-                        <li
-                          onClick={() => {
-                            handleDelete();
-                            toggleMenu();
-                          }}
-                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                        >
-                          삭제
-                        </li>
-                        <li
-                          onClick={() => {
-                            handleReport();
-                            toggleMenu();
-                          }}
-                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                        >
-                          신고
-                        </li>
-                      </ul>
+                      {isCurrentUserComment ? (
+                        <ul>
+                          <li
+                            onClick={() => {
+                              handleEdit();
+                              toggleMenu();
+                            }}
+                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                          >
+                            수정
+                          </li>
+                          <li
+                            onClick={() => {
+                              handleDelete();
+                              toggleMenu();
+                            }}
+                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                          >
+                            삭제
+                          </li>
+                        </ul>
+                      ) : (
+                        <ul>
+                          <li
+                            onClick={() => {
+                              handleReport();
+                              toggleMenu();
+                            }}
+                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                          >
+                            신고
+                          </li>
+                        </ul>
+                      )}
                     </div>
                   )}
                 </div>
