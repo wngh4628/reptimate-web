@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mobile, PC } from "./ResponsiveLayout";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   isLoggedInState,
   userAtom,
@@ -48,6 +48,52 @@ export default function Header() {
 
   const [receivedNewChat, setreceivedNewChat] =
     useRecoilState(receivedNewChatState);
+
+  const setUser = useSetRecoilState(userAtom);
+  const setCookieLoggedIn = useSetRecoilState(isLoggedInState);
+
+  function getCookie(name: string) {
+    const value = "; " + document.cookie;
+    const parts = value.split("; " + name + "=");
+    if (parts.length == 2) {
+      const cookieValue = parts.pop()?.split(";").shift();
+      try {
+        const cookieObject = JSON.parse(cookieValue || "");
+        return cookieObject;
+      } catch (error) {
+        console.error("Error parsing JSON from cookie:", error);
+        return null;
+      }
+    }
+  }
+
+  useEffect(() => {
+    // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
+    const myAppCookie = getCookie("myAppCookie");
+
+    if (myAppCookie !== undefined) {
+      console.log(myAppCookie);
+      const accessToken = myAppCookie.accessToken;
+      const idx = parseInt(myAppCookie.idx || "", 10) || 0;
+      const refreshToken = myAppCookie.refreshToken;
+      const nickname = myAppCookie.nickname;
+      const profilePath = myAppCookie.profilePath;
+
+      console.log("accessToken: " + accessToken);
+      console.log("idx: " + idx);
+      console.log("refreshToken: " + refreshToken);
+      console.log("nickname: " + nickname);
+      console.log("profilePath: " + profilePath);
+      setUser({
+        accessToken: accessToken || "",
+        refreshToken: refreshToken || "",
+        idx: idx || 0,
+        profilePath: profilePath || "",
+        nickname: nickname || "",
+      });
+      setCookieLoggedIn(true);
+    }
+  }, []);
 
   const [fcm, setfcm] = useRecoilState(fcmState);
   const [fcmNotification, setfcmNotification] =
