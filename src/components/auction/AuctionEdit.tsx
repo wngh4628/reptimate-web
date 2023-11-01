@@ -285,7 +285,7 @@ export default function AuctionEdit() {
       setBirthDate(post?.boardAuction.birthDate || "연도-월-일");
       setSelectedGender(post?.boardAuction.gender || "");
       setSelectedSize(post?.boardAuction.size || "");
-      setPrice(post?.boardAuction.currentPrice || "");
+      setPrice(post?.boardAuction.buyPrice || "");
       setDescription(post?.description || "");
       setstartPrice(post?.boardAuction.startPrice.toString() || "");
       setunit(post?.boardAuction.unit.toString() || "");
