@@ -94,6 +94,32 @@ export default function Header() {
       });
       setCookieLoggedIn(true);
     }
+    if (isHidden) {
+      const myAppCookie = getCookie("myAppCookie");
+
+      if (myAppCookie !== undefined) {
+        console.log(myAppCookie);
+        const accessToken = myAppCookie.accessToken;
+        const idx = parseInt(myAppCookie.idx || "", 10) || 0;
+        const refreshToken = myAppCookie.refreshToken;
+        const nickname = myAppCookie.nickname;
+        const profilePath = myAppCookie.profilePath;
+
+        console.log("accessToken: " + accessToken);
+        console.log("idx: " + idx);
+        console.log("refreshToken: " + refreshToken);
+        console.log("nickname: " + nickname);
+        console.log("profilePath: " + profilePath);
+        setUser({
+          accessToken: accessToken || "",
+          refreshToken: refreshToken || "",
+          idx: idx || 0,
+          profilePath: profilePath || "",
+          nickname: nickname || "",
+        });
+        setCookieLoggedIn(true);
+      }
+    }
   }, []);
 
   const [fcm, setfcm] = useRecoilState(fcmState);
