@@ -209,19 +209,19 @@ export default function Header() {
 
   if (typeof window !== "undefined") {
     if (window.innerWidth <= 768) {
-      if (pathName === "/my/board") return <div> </div>;
-      if (pathName === "/my/auction") return <div> </div>;
-      if (pathName === "/my/bookmpoark") return <div> </div>;
-      if (pathName.startsWith("/streamhost")) return <div> </div>;
-      if (pathName.startsWith("/community/adoption/posts")) return <div> </div>;
-      if (pathName.startsWith("/community/market/posts")) return <div> </div>;
-      if (pathName.startsWith("/community/free/posts")) return <div> </div>;
-      if (pathName.startsWith("/community/ask/posts")) return <div> </div>;
+      if (pathName === "/my/board") return "";
+      if (pathName === "/my/auction") return "";
+      if (pathName === "/my/bookmpoark") return "";
+      if (pathName.startsWith("/streamhost")) return "";
+      if (pathName.startsWith("/community/adoption/posts")) return "";
+      if (pathName.startsWith("/community/market/posts")) return "";
+      if (pathName.startsWith("/community/free/posts")) return "";
+      if (pathName.startsWith("/community/ask/posts")) return "";
       if (
         pathName.startsWith("/auction/posts") &&
         !pathName.endsWith("/live")
       ) {
-        return <div> </div>;
+        return "";
       }
     }
   }
