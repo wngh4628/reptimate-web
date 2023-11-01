@@ -146,12 +146,10 @@ export default function Header() {
           (pathName.startsWith("/auction/posts") && !pathName.endsWith("/live"))
         ) {
           setIsHidden(true);
+        } else {
+          setIsHidden(false);
         }
-      } else {
-        setIsHidden(false);
       }
-    } else {
-      setIsHidden(false);
     }
   }, [pathName]);
 
