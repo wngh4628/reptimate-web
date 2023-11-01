@@ -37,7 +37,6 @@ export default function Header() {
   const router = useRouter();
   const [isLogin, isSetLogin] = useState(false);
   const [accessToken, setAccessToken] = useRecoilState(userAtom);
-  const [isHidden, setIsHidden] = useState(false);
 
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
 
@@ -94,32 +93,6 @@ export default function Header() {
       });
       setCookieLoggedIn(true);
     }
-    if (isHidden) {
-      const myAppCookie = getCookie("myAppCookie");
-
-      if (myAppCookie !== undefined) {
-        console.log(myAppCookie);
-        const accessToken = myAppCookie.accessToken;
-        const idx = parseInt(myAppCookie.idx || "", 10) || 0;
-        const refreshToken = myAppCookie.refreshToken;
-        const nickname = myAppCookie.nickname;
-        const profilePath = myAppCookie.profilePath;
-
-        console.log("accessToken: " + accessToken);
-        console.log("idx: " + idx);
-        console.log("refreshToken: " + refreshToken);
-        console.log("nickname: " + nickname);
-        console.log("profilePath: " + profilePath);
-        setUser({
-          accessToken: accessToken || "",
-          refreshToken: refreshToken || "",
-          idx: idx || 0,
-          profilePath: profilePath || "",
-          nickname: nickname || "",
-        });
-        setCookieLoggedIn(true);
-      }
-    }
   }, []);
 
   const [fcm, setfcm] = useRecoilState(fcmState);
@@ -131,25 +104,6 @@ export default function Header() {
     if (typeof window.Android === "undefined" || window.Android === null) {
       // 웹 브라우저인 경우에만 실행
       onMessageFCM();
-    }
-
-    if (typeof window !== "undefined") {
-      if (window.innerWidth <= 768) {
-        if (
-          pathName === "/my/board" ||
-          pathName === "/my/auction" ||
-          pathName === "/my/bookmpoark" ||
-          pathName.startsWith("/streamhost") ||
-          pathName.startsWith("/community/market/posts") ||
-          pathName.startsWith("/community/free/posts") ||
-          pathName.startsWith("/community/ask/posts") ||
-          (pathName.startsWith("/auction/posts") && !pathName.endsWith("/live"))
-        ) {
-          setIsHidden(true);
-        } else {
-          setIsHidden(false);
-        }
-      }
     }
   }, [pathName]);
 
@@ -253,158 +207,173 @@ export default function Header() {
   // Set the link based on whether it's an "auction" route or not
   const link = isAuctionRoute ? "/auction" : "/";
 
-  if (isHidden) {
-    return <header className="hidden">{/* Header content */}</header>;
-  } else {
-    return (
-      <header>
-        {/* PC 화면(반응형) */}
-        <PC>
-          <div className="flex justify-end pt-5 gap-2 font-bold">
-            {isLogin ? (
-              <button
-                className="group hover:text-main-color"
-                onClick={handleLogout}
-              >
-                로그아웃
-              </button>
-            ) : (
-              <>
-                <Link href="/login" className="group hover:text-main-color">
-                  로그인
-                </Link>
-                <Link href="/join" className="group hover:text-main-color">
-                  회원가입
-                </Link>
-              </>
-            )}
-          </div>
-          <div className="flex justify-between items-center pt-3 pb-5">
-            <Link href={link}>
-              <div className="flex w-40">
-                <img src="/img/main_logo.png" />
-              </div>
-            </Link>
-            <nav className="flex gap-4 font-bold">
-              <Link href="/" className={` group hover:text-main-color`}>
-                COMMUNITY
-              </Link>
-              <Link
-                href="/auction"
-                className={`${
-                  pathName === "/auction" ? "text-[#6D71E6]" : ""
-                } group hover:text-main-color`}
-              >
-                AUCTION
-              </Link>
-              <Link
-                href="/ai"
-                className={`${
-                  pathName === "/ai" ? "text-[#6D71E6]" : ""
-                } group hover:text-main-color`}
-              >
-                AI
-              </Link>
-              <Link
-                href="/my"
-                className={`${
-                  pathName === "/my" ? "text-[#6D71E6]" : ""
-                } group hover:text-main-color`}
-              >
-                MY
-              </Link>
-              <Link href="">
-                <div
-                  className="flex w-[23px] h-5 my-0.5  relative"
-                  onClick={chattingClick}
-                >
-                  <img src="/img/chat.png" />
-                  {receivedNewChat && (
-                    <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
-                  )}
-                </div>
-              </Link>
-              <Link href="">
-                <div className="flex w-5 my-0.5">
-                  <img src="/img/notification.png" />
-                </div>
-              </Link>
-              <Link href="">
-                <div className="flex w-5 my-0.5">
-                  <img src="/img/search.png" />
-                </div>
-              </Link>
-            </nav>
-          </div>
-          <div
-            className={`${
-              isChatVisisible
-                ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
-                : "hidden"
-            }`}
-          >
-            <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
-              <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
-                채팅
-              </p>
-              <button className="right-0" type="button" onClick={chattingClose}>
-                <img
-                  className="w-[15px] h-[15px] self-center mr-[18px]"
-                  src="/img/ic_x.png"
-                />
-              </button>
-            </div>
-            <PersonalChat></PersonalChat>
-          </div>
-        </PC>
-        {/* 모바일 화면(반응형) */}
-        <Mobile>
-          <div className="flex justify-start pt-2 pb-2 pl-5 pr-5">
-            <Link href={link}>
-              <div className="flex w-32 p1-0">
-                <img src="/img/main_logo.png" />
-              </div>
-            </Link>
-            <nav className="flex gap-4 font-bold ml-auto">
-              <a onClick={chattingClick}>
-                <div className="flex w-5 my-0.5">
-                  <img src="/img/chat.png" />
-                </div>
-              </a>
-              <Link href="">
-                <div className="flex w-5 my-0.5">
-                  <img src="/img/notification.png" />
-                </div>
-              </Link>
-              <Link href="">
-                <div className="flex w-5 my-0.5">
-                  <img src="/img/search.png" />
-                </div>
-              </Link>
-            </nav>
-          </div>
-          <div
-            className={`${
-              isChatVisisible
-                ? "bg-white w-full h-full z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 flex flex-col shadow-md"
-                : "hidden"
-            }`}
-          >
-            <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
-              <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
-                채팅
-              </p>
-              <button className="right-0" type="button" onClick={chattingClose}>
-                <img
-                  className="w-[15px] h-[15px] self-center mr-[18px]"
-                  src="/img/ic_x.png"
-                />
-              </button>
-            </div>
-            <PersonalChat></PersonalChat>
-          </div>
-        </Mobile>
-      </header>
-    );
+  if (typeof window !== "undefined") {
+    if (window.innerWidth <= 768) {
+      if (pathName === "/my/board") return null;
+      if (pathName === "/my/auction") return null;
+      if (pathName === "/my/bookmpoark") return null;
+      if (pathName.startsWith("/streamhost")) return null;
+      if (pathName.startsWith("/community/adoption/posts")) return null;
+      if (pathName.startsWith("/community/market/posts")) return null;
+      if (pathName.startsWith("/community/free/posts")) return null;
+      if (pathName.startsWith("/community/ask/posts")) return null;
+      if (
+        pathName.startsWith("/auction/posts") &&
+        !pathName.endsWith("/live")
+      ) {
+        return null;
+      }
+    }
   }
+
+  return (
+    <header>
+      {/* PC 화면(반응형) */}
+      <PC>
+        <div className="flex justify-end pt-5 gap-2 font-bold">
+          {isLogin ? (
+            <button
+              className="group hover:text-main-color"
+              onClick={handleLogout}
+            >
+              로그아웃
+            </button>
+          ) : (
+            <>
+              <Link href="/login" className="group hover:text-main-color">
+                로그인
+              </Link>
+              <Link href="/join" className="group hover:text-main-color">
+                회원가입
+              </Link>
+            </>
+          )}
+        </div>
+        <div className="flex justify-between items-center pt-3 pb-5">
+          <Link href={link}>
+            <div className="flex w-40">
+              <img src="/img/main_logo.png" />
+            </div>
+          </Link>
+          <nav className="flex gap-4 font-bold">
+            <Link href="/" className={` group hover:text-main-color`}>
+              COMMUNITY
+            </Link>
+            <Link
+              href="/auction"
+              className={`${
+                pathName === "/auction" ? "text-[#6D71E6]" : ""
+              } group hover:text-main-color`}
+            >
+              AUCTION
+            </Link>
+            <Link
+              href="/ai"
+              className={`${
+                pathName === "/ai" ? "text-[#6D71E6]" : ""
+              } group hover:text-main-color`}
+            >
+              AI
+            </Link>
+            <Link
+              href="/my"
+              className={`${
+                pathName === "/my" ? "text-[#6D71E6]" : ""
+              } group hover:text-main-color`}
+            >
+              MY
+            </Link>
+            <Link href="">
+              <div
+                className="flex w-[23px] h-5 my-0.5  relative"
+                onClick={chattingClick}
+              >
+                <img src="/img/chat.png" />
+                {receivedNewChat && (
+                  <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
+                )}
+              </div>
+            </Link>
+            <Link href="">
+              <div className="flex w-5 my-0.5">
+                <img src="/img/notification.png" />
+              </div>
+            </Link>
+            <Link href="">
+              <div className="flex w-5 my-0.5">
+                <img src="/img/search.png" />
+              </div>
+            </Link>
+          </nav>
+        </div>
+        <div
+          className={`${
+            isChatVisisible
+              ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
+              : "hidden"
+          }`}
+        >
+          <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
+            <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
+              채팅
+            </p>
+            <button className="right-0" type="button" onClick={chattingClose}>
+              <img
+                className="w-[15px] h-[15px] self-center mr-[18px]"
+                src="/img/ic_x.png"
+              />
+            </button>
+          </div>
+          <PersonalChat></PersonalChat>
+        </div>
+      </PC>
+      {/* 모바일 화면(반응형) */}
+      <Mobile>
+        <div className="flex justify-start pt-2 pb-2 pl-5 pr-5">
+          <Link href={link}>
+            <div className="flex w-32 p1-0">
+              <img src="/img/main_logo.png" />
+            </div>
+          </Link>
+          <nav className="flex gap-4 font-bold ml-auto">
+            <a onClick={chattingClick}>
+              <div className="flex w-5 my-0.5">
+                <img src="/img/chat.png" />
+              </div>
+            </a>
+            <Link href="">
+              <div className="flex w-5 my-0.5">
+                <img src="/img/notification.png" />
+              </div>
+            </Link>
+            <Link href="">
+              <div className="flex w-5 my-0.5">
+                <img src="/img/search.png" />
+              </div>
+            </Link>
+          </nav>
+        </div>
+        <div
+          className={`${
+            isChatVisisible
+              ? "bg-white w-full h-full z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 flex flex-col shadow-md"
+              : "hidden"
+          }`}
+        >
+          <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
+            <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
+              채팅
+            </p>
+            <button className="right-0" type="button" onClick={chattingClose}>
+              <img
+                className="w-[15px] h-[15px] self-center mr-[18px]"
+                src="/img/ic_x.png"
+              />
+            </button>
+          </div>
+          <PersonalChat></PersonalChat>
+        </div>
+      </Mobile>
+    </header>
+  );
 }
