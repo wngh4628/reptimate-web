@@ -209,19 +209,19 @@ export default function Header() {
 
   if (typeof window !== "undefined") {
     if (window.innerWidth <= 768) {
-      if (pathName === "/my/board") return null;
-      if (pathName === "/my/auction") return null;
-      if (pathName === "/my/bookmpoark") return null;
-      if (pathName.startsWith("/streamhost")) return null;
-      if (pathName.startsWith("/community/adoption/posts")) return null;
-      if (pathName.startsWith("/community/market/posts")) return null;
-      if (pathName.startsWith("/community/free/posts")) return null;
-      if (pathName.startsWith("/community/ask/posts")) return null;
+      if (pathName === "/my/board") return "";
+      if (pathName === "/my/auction") return "";
+      if (pathName === "/my/bookmpoark") return "";
+      if (pathName.startsWith("/streamhost")) return "";
+      if (pathName.startsWith("/community/adoption/posts")) return "";
+      if (pathName.startsWith("/community/market/posts")) return "";
+      if (pathName.startsWith("/community/free/posts")) return "";
+      if (pathName.startsWith("/community/ask/posts")) return "";
       if (
         pathName.startsWith("/auction/posts") &&
         !pathName.endsWith("/live")
       ) {
-        return null;
+        return "";
       }
     }
   }
