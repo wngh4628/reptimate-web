@@ -86,6 +86,7 @@ const patternOptions: Record<string, Option[]> = {
     { value: "기타", label: "기타" },
   ],
   "가고일 게코": [
+    { value: "", label: "모프를 선택하세요" },
     { value: "노멀", label: "노멀" },
     { value: "레드", label: "레드" },
     { value: "레티큐어 베이컨", label: "레티큐어 베이컨" },
@@ -460,6 +461,10 @@ export default function AuctionEdit() {
       alert("게시글 수정이 완료되었습니다.");
       window.history.back();
     },
+    onError: (data) => {
+      alert(data);
+      setIsLoading(false);
+    },
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -521,7 +526,8 @@ export default function AuctionEdit() {
       unit !== "" &&
       endTime !== "" &&
       rule !== "" &&
-      birthDate !== ""
+      birthDate !== "" &&
+      description !== ""
     ) {
       if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
         console.log(requestData);
@@ -592,10 +598,12 @@ export default function AuctionEdit() {
           } else {
             console.error("Error uploading files to the first server.");
             alert("Error uploading files. Please try again later.");
+            setIsLoading(false);
           }
         } catch (error) {
           console.error("Error:", error);
           alert("An error occurred. Please try again later.");
+          setIsLoading(false);
         }
       }
     } else {
@@ -603,8 +611,8 @@ export default function AuctionEdit() {
       const missingFields = [];
       if (title === "") missingFields.push("제목");
       if (price === "") missingFields.push("시작 가격");
-      if (variety === "") missingFields.push("품종");
-      if (pattern === "") missingFields.push("모프");
+      if (variety === "품종을 선택하세요") missingFields.push("품종");
+      if (pattern === "모프를 선택하세요") missingFields.push("모프");
       if (startPrice === "" || "null") missingFields.push("시작 가격");
       if (unit === "" || "null") missingFields.push("경매 단위");
       if (endTime === "" || "null") missingFields.push("마감 시간");
@@ -612,14 +620,15 @@ export default function AuctionEdit() {
       if (birthDate === "") missingFields.push("생년월일");
       if (selectedGender === "" || "null") missingFields.push("성별");
       if (selectedSize === "" || "null") missingFields.push("크기");
+      if (description === "") missingFields.push("내용");
 
       // Create the alert message based on missing fields
       let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
       alertMessage += missingFields.join(", ");
 
       alert(alertMessage);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (

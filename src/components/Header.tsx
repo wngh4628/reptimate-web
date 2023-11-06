@@ -11,6 +11,7 @@ import {
   chatVisisibleState,
   fcmState,
   fcmNotificationState,
+  notiVisisibleState,
 } from "@/recoil/user";
 import ChatModal from "@/components/chatting/ChatModal";
 import {
@@ -45,6 +46,9 @@ export default function Header() {
   const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(
     chatRoomVisisibleState
   );
+
+  const [isNotiVisisible, setIsNotiVisisible] =
+    useRecoilState(notiVisisibleState);
 
   const [receivedNewChat, setreceivedNewChat] =
     useRecoilState(receivedNewChatState);
@@ -183,6 +187,7 @@ export default function Header() {
     router.refresh();
     window.location.reload();
   };
+
   function chattingClick() {
     console.log("채팅 목록 켜기");
     setIsChatVisisible(true);
@@ -193,6 +198,14 @@ export default function Header() {
   }
   function chattingClickM() {
     setIsChatVisisible(!isChatVisisible);
+  }
+
+  function notiClick() {
+    console.log("알림 목록 켜기");
+    setIsNotiVisisible(true);
+  }
+  function notiClose() {
+    setIsNotiVisisible(false);
   }
 
   const communityPathnames = [
@@ -295,12 +308,17 @@ export default function Header() {
               </div>
             </Link>
             <Link href="">
-              <div className="flex w-5 my-0.5">
-                <img src="/img/notification.png" />
+              <div className="flex w-[23px] h-5 my-0.5  relative">
+                <div
+                  className="flex w-[23px] h-5 my-0.5  relative"
+                  onClick={notiClick}
+                >
+                  <img src="/img/notification.png" />
+                </div>
               </div>
             </Link>
             <Link href="">
-              <div className="flex w-5 my-0.5">
+              <div className="flex w-[23px] h-5 my-0.5  relative">
                 <img src="/img/search.png" />
               </div>
             </Link>
@@ -326,6 +344,26 @@ export default function Header() {
           </div>
           <PersonalChat></PersonalChat>
         </div>
+
+        <div
+          className={`${
+            isNotiVisisible
+              ? "bg-white w-[450px] h-[500px] z-[10000] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
+              : "hidden"
+          }`}
+        >
+          <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
+            <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
+              알림
+            </p>
+            <button className="right-0" type="button" onClick={notiClose}>
+              <img
+                className="w-[15px] h-[15px] self-center mr-[18px]"
+                src="/img/ic_x.png"
+              />
+            </button>
+          </div>
+        </div>
       </PC>
       {/* 모바일 화면(반응형) */}
       <Mobile>
@@ -341,11 +379,11 @@ export default function Header() {
                 <img src="/img/chat.png" />
               </div>
             </a>
-            <Link href="">
+            <a onClick={notiClick}>
               <div className="flex w-5 my-0.5">
                 <img src="/img/notification.png" />
               </div>
-            </Link>
+            </a>
             <Link href="">
               <div className="flex w-5 my-0.5">
                 <img src="/img/search.png" />
@@ -372,6 +410,25 @@ export default function Header() {
             </button>
           </div>
           <PersonalChat></PersonalChat>
+        </div>
+        <div
+          className={`${
+            isNotiVisisible
+              ? "bg-white w-full h-full z-[10000] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 flex flex-col shadow-md"
+              : "hidden"
+          }`}
+        >
+          <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
+            <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
+              알림
+            </p>
+            <button className="right-0" type="button" onClick={notiClose}>
+              <img
+                className="w-[15px] h-[15px] self-center mr-[18px]"
+                src="/img/ic_x.png"
+              />
+            </button>
+          </div>
         </div>
       </Mobile>
     </header>
