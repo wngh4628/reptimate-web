@@ -167,6 +167,10 @@ export default function FreeWrite() {
       console.log("============================");
       window.history.back();
     },
+    onError: (data) => {
+      alert(data);
+      setIsLoading(false);
+    },
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -182,7 +186,7 @@ export default function FreeWrite() {
       fileUrl: "",
     };
 
-    if (title !== "") {
+    if (title !== "" && description !== "") {
       if (selectedFiles.length === 0) {
         mutation.mutate(requestData);
       } else {
@@ -222,24 +226,27 @@ export default function FreeWrite() {
           } else {
             console.error("Error uploading files to the first server.");
             alert("Error uploading files. Please try again later.");
+            setIsLoading(false);
           }
         } catch (error) {
           console.error("Error:", error);
           alert("An error occurred. Please try again later.");
+          setIsLoading(false);
         }
       }
     } else {
       // Create a list of missing fields
       const missingFields = [];
       if (title === "") missingFields.push("제목");
+      if (description === "") missingFields.push("내용");
 
       // Create the alert message based on missing fields
       let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
       alertMessage += missingFields.join(", ");
 
       alert(alertMessage);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
