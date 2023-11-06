@@ -9,9 +9,22 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
 import BannerSlider from "../BannerSlider";
 
+interface Option {
+  value: string;
+  label: string;
+}
+
+const sortOption: Option[] = [
+  { value: "base", label: "최신순" },
+  { value: "view", label: "조회 순" },
+  { value: "value-high", label: "가격 높은 순" },
+  { value: "value-low", label: "가격 낮은 순" },
+];
+
 export default function AdoptionPosts() {
   const [data, setData] = useState<getResponse | null>(null);
   const [page, setPage] = useState(1);
+  const [sort, setSort] = useState("base");
   const [existNextPage, setENP] = useState(false);
   const [loading, setLoading] = useState(false);
   const isLogin = useRecoilValue(userAtom);
@@ -19,6 +32,11 @@ export default function AdoptionPosts() {
 
   const options = {
     threshold: 1.0,
+  };
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedSort = e.target.value;
+    setSort(selectedSort);
   };
 
   const getItems = useCallback(async () => {
@@ -50,7 +68,7 @@ export default function AdoptionPosts() {
 
   useEffect(() => {
     getItems();
-  }, []);
+  }, [sort]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -104,10 +122,40 @@ export default function AdoptionPosts() {
       <section>
         <BannerSlider />
         <PC>
-          <h2 className="text-2xl font-bold my-4 ml-4">분양글</h2>
+          <div className="flex items-center relative">
+            <h2 className="text-2xl font-bold my-4 ml-4">분양글</h2>
+            <div className="relative ml-auto">
+              <select
+                className="focus:outline-none text-sm my-4 mr-4"
+                value={sort}
+                onChange={handleSortChange}
+              >
+                {sortOption.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </PC>
         <Mobile>
-          <h2 className="text-lg font-bold ml-2 my-2">분양글</h2>
+          <div className="flex items-center relative">
+            <h2 className="text-lg font-bold ml-2 my-2">분양글</h2>
+            <div className="relative ml-auto">
+              <select
+                className="focus:outline-none text-sm my-2 mr-2"
+                value={sort}
+                onChange={handleSortChange}
+              >
+                {sortOption.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </Mobile>
         <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
