@@ -162,9 +162,7 @@ export default function Header() {
     //   console.log("this is android webview!");
     // } else {
     const permission = await Notification.requestPermission();
-    if (permission !== "granted") return;
-    //   console.log("web noti permission return!!");
-    // }
+    if (permission !== "granted") {console.log("web noti permission return!!"); return;} 
 
     // 이곳에도 아까 위에서 앱 등록할때 받은 'firebaseConfig' 값을 넣어주세요.
     const firebaseApp = initializeApp({
@@ -183,6 +181,7 @@ export default function Header() {
         if (currentToken) {
           // 정상적으로 토큰이 발급되면 콘솔에 출력합니다.
           setfcm(currentToken);
+          console.log("fcmToken  :  ",currentToken)
         } else {
           console.log(
             "No registration token available. Request permission to generate one."
