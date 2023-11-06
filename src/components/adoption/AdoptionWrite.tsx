@@ -294,7 +294,7 @@ export default function AdoptionWrite() {
       console.log(data);
       console.log(data.data);
       console.log("============================");
-      router.replace("/");
+      window.history.back();
     },
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {

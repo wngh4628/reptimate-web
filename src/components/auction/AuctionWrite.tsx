@@ -334,7 +334,7 @@ export default function AuctionWrite() {
       alert(
         "경매가 임시 저장되었습니다.\n마이페이지 메뉴의 내 경매에서 최종 등록을 하실 수 있습니다."
       );
-      router.replace("/auction");
+      window.history.back();
       setIsLoading(false);
     },
   });
