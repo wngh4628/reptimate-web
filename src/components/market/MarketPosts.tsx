@@ -126,7 +126,7 @@ export default function MarketPosts() {
             <h2 className="text-2xl font-bold my-4 ml-4">중고 거래</h2>
             <div className="relative ml-auto">
               <select
-                className="focus:outline-none text-sm my-4 mr-4"
+                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-4 mr-4"
                 value={sort}
                 onChange={handleSortChange}
               >
@@ -144,7 +144,7 @@ export default function MarketPosts() {
             <h2 className="text-lg font-bold ml-2 my-2">중고 거래</h2>
             <div className="relative ml-auto">
               <select
-                className="focus:outline-none text-sm my-2 mr-2"
+                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
                 value={sort}
                 onChange={handleSortChange}
               >
@@ -157,7 +157,7 @@ export default function MarketPosts() {
             </div>
           </div>
         </Mobile>
-        <ul className="mt-5 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
             <li key={post.idx}>
               <PostCard post={post} />

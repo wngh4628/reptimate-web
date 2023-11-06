@@ -134,7 +134,7 @@ export default function AuctionPosts() {
             <h2 className="text-2xl font-bold my-4 ml-4">경매</h2>
             <div className="relative ml-auto">
               <select
-                className="focus:outline-none text-sm my-4 mr-4"
+                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-4 mr-4"
                 value={sort}
                 onChange={handleSortChange}
               >
@@ -152,7 +152,7 @@ export default function AuctionPosts() {
             <h2 className="text-lg font-bold ml-2 my-2">경매</h2>
             <div className="relative ml-auto">
               <select
-                className="focus:outline-none text-sm my-2 mr-2"
+                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
                 value={sort}
                 onChange={handleSortChange}
               >
