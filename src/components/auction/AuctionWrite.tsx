@@ -73,6 +73,7 @@ const patternOptions: Record<string, Option[]> = {
     { value: "기타", label: "기타" },
   ],
   "가고일 게코": [
+    { value: "", label: "모프를 선택하세요" },
     { value: "노멀", label: "노멀" },
     { value: "레드", label: "레드" },
     { value: "레티큐어 베이컨", label: "레티큐어 베이컨" },
@@ -335,6 +336,9 @@ export default function AuctionWrite() {
         "경매가 임시 저장되었습니다.\n마이페이지 메뉴의 내 경매에서 최종 등록을 하실 수 있습니다."
       );
       window.history.back();
+    },
+    onError: (data) => {
+      alert(data);
       setIsLoading(false);
     },
   });
@@ -395,7 +399,8 @@ export default function AuctionWrite() {
       unit !== "" &&
       endTime !== "" &&
       rule !== "" &&
-      birthDate !== ""
+      birthDate !== "" &&
+      description !== ""
     ) {
       if (selectedFiles.length === 0) {
         console.log(requestData);
@@ -462,8 +467,8 @@ export default function AuctionWrite() {
       const missingFields = [];
       if (title === "") missingFields.push("제목");
       if (price === "") missingFields.push("시작 가격");
-      if (variety === "") missingFields.push("품종");
-      if (pattern === "") missingFields.push("모프");
+      if (variety === "품종을 선택하세요") missingFields.push("품종");
+      if (pattern === "모프를 선택하세요") missingFields.push("모프");
       if (startPrice === "" || "null") missingFields.push("시작 가격");
       if (unit === "" || "null") missingFields.push("경매 단위");
       if (endTime === "" || "null") missingFields.push("마감 시간");
@@ -471,6 +476,7 @@ export default function AuctionWrite() {
       if (birthDate === "") missingFields.push("생년월일");
       if (selectedGender === "" || "null") missingFields.push("성별");
       if (selectedSize === "" || "null") missingFields.push("크기");
+      if (description === "") missingFields.push("내용");
 
       // Create the alert message based on missing fields
       let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";

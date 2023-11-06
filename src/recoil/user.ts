@@ -62,3 +62,8 @@ export const fcmNotificationState = atom<fcm>({
     title: "",
   },
 });
+
+export const notiVisisibleState = atom({
+  key: "notiVisisibleState",
+  default: false,
+});
