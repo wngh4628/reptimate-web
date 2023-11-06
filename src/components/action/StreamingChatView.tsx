@@ -901,7 +901,7 @@ export default function StreamingChatView() {
                 </button>
               </div>
 
-              <div className="flex flex-col flex-1 space-y-2"></div>
+
             </div>
           </div>
         ) : (
