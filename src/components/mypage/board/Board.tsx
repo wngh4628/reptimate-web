@@ -202,7 +202,7 @@ export default function BoardList() {
                     <div className="w-[96%]">
                         <div className=" h-[120px]">
                             <div className="flex border-[1px] border-gray-300 h-[50%] items-center">
-                                <p className="flex font-bold text-[20px] pl-[2%]"
+                                <p className="flex font-bold text-[20px] pl-[2%] w-full"
                                 >내가 쓴 글</p>
                             </div>
                             <div className="border-x-[1px] border-b-[1px] border-gray-300 h-[50%] flex-row flex">
