@@ -54,7 +54,13 @@ export default function AuctionPostCard({
           <article className="flex flex-col items-center">
             <PC>
               <div className="relative w-[350px] h-[350px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
-                <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
+                <div
+                  className={`${
+                    state === "end"
+                      ? "bg-gray-400 bg-opacity-50"
+                      : "top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent"
+                  } absolute inset-0 z-10`}
+                ></div>
                 <img
                   className="object-cover w-full h-full"
                   src={`${coverImage}` || "/img/reptimate_logo.png"}
@@ -66,11 +72,11 @@ export default function AuctionPostCard({
                 <p
                   className={`${
                     state === "selling"
-                      ? "text-red-500"
+                      ? "text-red-500 font-bold"
                       : state === "end"
-                      ? "text-gray-400"
-                      : "text-main-color"
-                  } text-xl font-bold z-[999] relative mt-1`}
+                      ? "text-white bg-black px-1 rounded-md"
+                      : "text-main-color font-bold"
+                  } text-lg z-[999] relative`}
                 >
                   {setStateString(state)}
                 </p>
@@ -90,7 +96,14 @@ export default function AuctionPostCard({
             </PC>
             <Mobile>
               <div className="relative w-full overflow-hidden shadow-sm shadow-gray-400 hover:border-2 hover:border-main-color">
-                <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
+                <div className="absolute inset-0  z-10"></div>
+                <div
+                  className={`${
+                    state === "end"
+                      ? "bg-gray-400 bg-opacity-50"
+                      : "top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent"
+                  } absolute inset-0 z-10`}
+                ></div>
                 <div style={imgStyle}>
                   <img
                     className="object-cover absolute inset-0 w-full h-full"
@@ -118,11 +131,11 @@ export default function AuctionPostCard({
                 <p
                   className={`${
                     state === "selling"
-                      ? "text-red-500"
+                      ? "text-red-500 font-bold"
                       : state === "end"
-                      ? "text-gray-400"
-                      : "text-main-color"
-                  } text-lg font-bold z-[999] relative`}
+                      ? "text-white bg-black px-1 rounded-md"
+                      : "text-main-color font-bold"
+                  } text-lg z-[999] relative`}
                 >
                   {setStateString(state)}
                 </p>

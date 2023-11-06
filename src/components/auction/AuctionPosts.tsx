@@ -9,11 +9,24 @@ import { getResponseAuction, Auction } from "@/service/my/auction";
 import AuctionPostCard from "./AcutionPostCard";
 import BannerSlider from "../BannerSlider";
 
+interface Option {
+  value: string;
+  label: string;
+}
+
+const sortOption: Option[] = [
+  { value: "base", label: "최신순" },
+  { value: "view", label: "조회 순" },
+  { value: "value-high", label: "가격 높은 순" },
+  { value: "value-low", label: "가격 낮은 순" },
+];
+
 export default function AuctionPosts() {
   const [data, setData] = useState<getResponseAuction | null>(null);
   const [page, setPage] = useState(1);
   const [existNextPage, setENP] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [sort, setSort] = useState("base");
   const isLogin = useRecoilValue(userAtom);
   const target = useRef(null);
 
@@ -22,6 +35,11 @@ export default function AuctionPosts() {
 
   const options = {
     threshold: 1.0,
+  };
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedSort = e.target.value;
+    setSort(selectedSort);
   };
 
   const getItems = useCallback(async () => {
@@ -53,7 +71,7 @@ export default function AuctionPosts() {
 
   useEffect(() => {
     getItems();
-  }, []);
+  }, [sort]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -110,18 +128,44 @@ export default function AuctionPosts() {
 
     return (
       <section>
+        <BannerSlider />
         <PC>
-          <h2 className="text-2xl font-bold flex items-center justify-center">
-            경매
-          </h2>
+          <div className="flex items-center relative">
+            <h2 className="text-2xl font-bold my-4 ml-4">경매</h2>
+            <div className="relative ml-auto">
+              <select
+                className="focus:outline-none text-sm my-4 mr-4"
+                value={sort}
+                onChange={handleSortChange}
+              >
+                {sortOption.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </PC>
         <Mobile>
-          <h2 className="text-lg font-bold flex items-center justify-center">
-            경매
-          </h2>
+          <div className="flex items-center relative">
+            <h2 className="text-lg font-bold ml-2 my-2">경매</h2>
+            <div className="relative ml-auto">
+              <select
+                className="focus:outline-none text-sm my-2 mr-2"
+                value={sort}
+                onChange={handleSortChange}
+              >
+                {sortOption.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </Mobile>
-        <BannerSlider />
-        <ul className="mt-5 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
             <li key={post.idx}>
               <AuctionPostCard post={post} />
