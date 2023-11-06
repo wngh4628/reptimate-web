@@ -155,7 +155,7 @@ export default function AskWrite() {
       console.log(data);
       console.log(data.data);
       console.log("============================");
-      router.replace("/community/ask");
+      window.history.back();
     },
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {

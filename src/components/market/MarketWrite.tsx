@@ -294,7 +294,7 @@ export default function MarketWrite() {
       console.log(data);
       console.log(data.data);
       console.log("============================");
-      router.replace("/community/market");
+      window.history.back();
     },
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {

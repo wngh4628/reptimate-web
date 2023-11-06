@@ -165,7 +165,7 @@ export default function FreeWrite() {
       console.log(data);
       console.log(data.data);
       console.log("============================");
-      router.replace("/community/free");
+      window.history.back();
     },
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
