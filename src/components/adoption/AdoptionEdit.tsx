@@ -576,7 +576,7 @@ export default function AdoptionEdit() {
       </Mobile>
       <p className="font-bold text-sm">거래 상태</p>
       <select
-        className="focus:outline-none text-sm mb-6"
+        className="text-black bg-white focus:outline-none text-sm mb-6"
         value={selling}
         onChange={handleSellingChange}
       >
@@ -633,7 +633,7 @@ export default function AdoptionEdit() {
         />
         <p className="font-bold text-xl my-2">품종</p>
         <select
-          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          className="text-black bg-white focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
           value={variety}
           onChange={handleVarietyChange}
         >
@@ -646,7 +646,7 @@ export default function AdoptionEdit() {
         <p className="font-bold text-xl my-2">모프</p>
         {variety !== "품종을 선택하세요" && patternOptions[variety] && (
           <select
-            className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+            className="text-black bg-white focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
             value={pattern}
             onChange={(e) => setPattern(e.target.value)}
           >
@@ -661,7 +661,7 @@ export default function AdoptionEdit() {
         <input
           type="date"
           placeholder="선택해주세요."
-          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          className="text-black bg-white focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
           value={birthDate}
           onChange={handleDateChange}
         />
