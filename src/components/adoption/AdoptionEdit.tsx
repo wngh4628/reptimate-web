@@ -423,7 +423,7 @@ export default function AdoptionEdit() {
       console.log(data.data);
       console.log("============================");
       alert("게시글 수정이 완료되었습니다.");
-      router.replace(`/community/adoption/posts/${idx}`);
+      window.history.back();
     },
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
