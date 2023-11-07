@@ -103,8 +103,6 @@ export default function PersonalChatBox() {
             setotherNickname(chatNowInfo.nickname);
             setroomName(chatNowInfo.roomName);
           }
-          
-
         } else {
           router.replace("/");
           alert("로그인이 필요한 기능입니다.");
