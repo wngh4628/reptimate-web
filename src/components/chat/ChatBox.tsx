@@ -322,16 +322,6 @@ export default function PersonalChatBox() {
       
     }
   }
-  // const deleteMsg = () => {
-  //     if(socketRef.current){
-  //       const message: DMessage = {
-  //         userIdx: 1,
-  //         score: 1690283005342,
-  //         room: 3,
-  //       };
-  //       socketRef.current.emit("removeMessage", message);
-  //     }
-  // }
   const joinRoom = () => {
     console.log("============================")
     console.log("입장한 방 번호 : " + roomName)
