@@ -831,8 +831,9 @@ export default function AuctionPostsView() {
       if (window.Android) {
         window.Android.openNativeActivity(idx, post.boardAuction.streamKey);
       } else if(window.webkit) {
-        window.webkit?.messageHandlers.openNativeActivity.postMessage(idx, post.boardAuction.streamKey);
+        window.webkit?.messageHandlers.openNativeActivity.postMessage({idx: idx, streamKey: post.boardAuction.streamKey});
       }
+      
     };
 
     function chattingClose() {
