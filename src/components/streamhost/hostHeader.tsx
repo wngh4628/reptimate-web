@@ -14,10 +14,9 @@ import {
   connectMessage,
   Ban_Message,
   userInfo,
-
 } from "@/service/chat/chat";
 
-import {bannedUserState, noChatUserState} from "@/recoil/chatting"
+import { bannedUserState, noChatUserState } from "@/recoil/chatting";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useRecoilState } from "recoil";
@@ -30,10 +29,10 @@ interface UserInfoData {
   };
 }
 interface banUserInfo {
-    idx: number;
-    nickname: string;
-    profilePath: string;
-  }
+  idx: number;
+  nickname: string;
+  profilePath: string;
+}
 export default function HostStreamingInfoView() {
   const router = useRouter();
   const params = useParams();
@@ -91,10 +90,10 @@ export default function HostStreamingInfoView() {
   useEffect(() => {
     const storedData = localStorage.getItem("recoil-persist");
     const handleBackNavigation = (event: any) => {
-        event.preventDefault(); // 브라우저의 기본 동작을 막음
-        router.back(); // 뒤로가기 동작 실행
-      };
-    window.addEventListener('popstate', handleBackNavigation);
+      event.preventDefault(); // 브라우저의 기본 동작을 막음
+      router.back(); // 뒤로가기 동작 실행
+    };
+    window.addEventListener("popstate", handleBackNavigation);
     if (storedData) {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken) {
@@ -107,17 +106,13 @@ export default function HostStreamingInfoView() {
         setAccessToken(extractedAccessToken);
 
         preset().then(() => {
-            getData().then(() => {
-            });
+          getData().then(() => {});
         });
       } else {
         router.replace("/");
         alert("로그인이 필요한 기능입니다.");
       }
-
-
     }
-
   }, []);
 
   const preset = useCallback(async () => {
@@ -144,39 +139,54 @@ export default function HostStreamingInfoView() {
     }
   }, [chattingBidData]);
 
-//   useEffect(() => {
-//     if (bannedUserList) {
-//       const updatedBanList = banList.filter((user: banUserInfo) =>
-//         bannedUserList.some((bannedUser: banUserInfo) => bannedUser.idx !== user.idx)
-//       );
-//       setBanList(updatedBanList);
-//     }
-//   }, [bannedUserList]);
+  //   useEffect(() => {
+  //     if (bannedUserList) {
+  //       const updatedBanList = banList.filter((user: banUserInfo) =>
+  //         bannedUserList.some((bannedUser: banUserInfo) => bannedUser.idx !== user.idx)
+  //       );
+  //       setBanList(updatedBanList);
+  //     }
+  //   }, [bannedUserList]);
 
   useEffect(() => {
-    console.log("userIdx : " + userIdx + " // host  :  "+ host)
+    console.log("userIdx : " + userIdx + " // host  :  " + host);
     if (userIdx === host) {
-        setUserAuth("host");
-        console.log("당신은 이 방송의 host입니다.");
+      setUserAuth("host");
+      console.log("당신은 이 방송의 host입니다.");
     }
   }, [userIdx, host]);
 
   const getData = useCallback(async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`
+      );
       setPostsData(response.data);
 
-      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
-      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
-      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice));
+      setNowBid(
+        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
+      );
+      setBidUnit(
+        formatNumberWithCommas(response.data.result.boardAuction.unit)
+      );
+      setBidStartPrice(
+        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
+      );
       setHost(response.data.result.UserInfo.idx);
 
-
-      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
-      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
-      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice));
+      setNowBid(
+        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
+      );
+      setBidUnit(
+        formatNumberWithCommas(response.data.result.boardAuction.unit)
+      );
+      setBidStartPrice(
+        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
+      );
       setEndTime(response.data.result.boardAuction.endTime);
-      const endTime1 = new Date(response.data.result.boardAuction.endTime).getTime();
+      const endTime1 = new Date(
+        response.data.result.boardAuction.endTime
+      ).getTime();
       const updateCountdown = () => {
         const currentTime = new Date().getTime();
         const timeRemaining = endTime1 - currentTime;
@@ -186,16 +196,26 @@ export default function HostStreamingInfoView() {
           setIsInputDisabled(true);
         } else {
           const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+          const hours = Math.floor(
+            (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor(
+            (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
+          );
           const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-          setCountdown("종료시간 : " + `${hours}시간 ${minutes}분 ${seconds}초`);
+          setCountdown(
+            "종료시간 : " + `${hours}시간 ${minutes}분 ${seconds}초`
+          );
         }
       };
       updateCountdown();
       const countdownInterval = setInterval(updateCountdown, 1000);
 
-      console.log(userIdx + "   당신은 이 방송의 host?=========" + parseInt(response.data.result.UserInfo.idx));
+      console.log(
+        userIdx +
+          "   당신은 이 방송의 host?=========" +
+          parseInt(response.data.result.UserInfo.idx)
+      );
       if (parseInt(response.data.result.UserInfo.idx) === userIdx) {
         setUserAuth("host");
         console.log("당신은 이 방송의 host입니다.======================");
@@ -259,8 +279,8 @@ export default function HostStreamingInfoView() {
     });
     //참여자 정보를 추가하는 리스너
     socket.on("live_participate", (message: any) => {
-      if(Array.isArray(message)) {
-        const parsedDataArray =  message.map((data) => JSON.parse(data));
+      if (Array.isArray(message)) {
+        const parsedDataArray = message.map((data) => JSON.parse(data));
         console.log("===========live_participate : =======");
         console.log(parsedDataArray);
         console.log(message);
@@ -269,33 +289,32 @@ export default function HostStreamingInfoView() {
         setUserInfoData([]);
 
         parsedDataArray.forEach((data: any) => {
-            const getUserInfo = data;
-            if (
-              getUserInfo &&
-              getUserInfo.profilePath &&
-              getUserInfo.profilePath.length > 1
-            ) {
-              setUserInfoData((prevUserInfoData) => ({
-                ...prevUserInfoData,
-                [getUserInfo.userIdx]: {
-                  userIdx: getUserInfo.userIdx,
-                  profilePath: getUserInfo.profilePath,
-                  nickname: getUserInfo.nickname,
-                },
-              }));
-              setUserList((prevsetUserList) => ({
-                ...prevsetUserList,
-                [getUserInfo.userIdx]: {
-                  userIdx: getUserInfo.userIdx,
-                  profilePath: getUserInfo.profilePath,
-                  nickname: getUserInfo.nickname,
-                },
-              }));
-            } else {
-            }
+          const getUserInfo = data;
+          if (
+            getUserInfo &&
+            getUserInfo.profilePath &&
+            getUserInfo.profilePath.length > 1
+          ) {
+            setUserInfoData((prevUserInfoData) => ({
+              ...prevUserInfoData,
+              [getUserInfo.userIdx]: {
+                userIdx: getUserInfo.userIdx,
+                profilePath: getUserInfo.profilePath,
+                nickname: getUserInfo.nickname,
+              },
+            }));
+            setUserList((prevsetUserList) => ({
+              ...prevsetUserList,
+              [getUserInfo.userIdx]: {
+                userIdx: getUserInfo.userIdx,
+                profilePath: getUserInfo.profilePath,
+                nickname: getUserInfo.nickname,
+              },
+            }));
+          } else {
+          }
         });
       }
-
     });
     console.log(socket.connected);
     // socket disconnect on component unmount if exist
@@ -306,7 +325,6 @@ export default function HostStreamingInfoView() {
       }
     };
   };
-
 
   const roomOut = useCallback(() => {
     if (socketRef.current) {
@@ -359,7 +377,7 @@ export default function HostStreamingInfoView() {
     setUserInfoData(Object.values(userList));
   }, [userList]);
 
-    /*************************************
+  /*************************************
    *
    *  경매 입찰 관련
    *
@@ -458,24 +476,29 @@ export default function HostStreamingInfoView() {
     }
   };
 
-
-
   return (
     <>
-      <div className="flex-col w-full right-0 h-[87%] flex bg-transparent">
-        <div className="flex-col py-[0.5rem] text-sm bg-transparent w-full">
-        </div>
+      <div className="flex-col w-full right-0 h-[87%] flex bg-[#4E4E4E]">
         <div className="flex py-[0.5rem] text-sm bg-transparent w-full">
-        <div className="basis-1/2 flex flex-col">
-            <span className={`text-center bg-transparent`}>{userInfoData.length}</span>
-                <span className={`basis-1/2 text-center bg-transparent text-black`}>시청자</span>
-            </div>
-            <div className="basis-1/2 flex flex-col">
-                <span className={`text-center bg-transparent`}>{nowBid}</span>
-                <span className={`text-center bg-transparent`}>경매 금액</span>
-            </div>
+          <div className="basis-1/2 flex flex-col">
+            <span className={`text-center bg-transparent text-white`}>
+              {userInfoData.length}
+            </span>
+            <div className="flex-col py-[0.5rem] text-sm bg-transparent w-full"></div>
+            <span className={`basis-1/2 text-center bg-transparent text-white`}>
+              시청자
+            </span>
+          </div>
+          <div className="basis-1/2 flex flex-col">
+            <span className={`text-center bg-transparent text-white`}>
+              {nowBid}
+            </span>
+            <div className="flex-col py-[0.5rem] text-sm bg-transparent w-full"></div>
+            <span className={`text-center bg-transparent text-white`}>
+              경매 금액
+            </span>
+          </div>
         </div>
-
       </div>
     </>
   );
