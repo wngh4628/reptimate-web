@@ -835,8 +835,6 @@ export default function AuctionPostsView() {
       } else if(window.webkit) {
         window.webkit?.messageHandlers.openNativeActivity.postMessage(idx, post.boardAuction.streamKey);
       }
-
-
     };
 
     function chattingClose() {

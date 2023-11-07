@@ -86,7 +86,6 @@ export default function Header() {
       const refreshToken = myAppCookie.refreshToken;
       const nickname = myAppCookie.nickname;
       const profilePath = myAppCookie.profilePath;
-
       console.log("accessToken: " + accessToken);
       console.log("idx: " + idx);
       console.log("refreshToken: " + refreshToken);
