@@ -23,7 +23,6 @@ import PersonalChat from "@/components/chat/personalChat";
 
 import { initializeApp } from "firebase/app";
 import { getMessaging, onMessage, getToken } from "firebase/messaging";
-import Head from "next/head";
 
 // declare global {
 //   interface AndroidInterface {
@@ -37,9 +36,6 @@ export default function Header() {
   const login = false; // Set this to true or false based on your logic
   const pathName = usePathname() || "";
   const router = useRouter();
-  const params = useSearchParams();
-  const chatQueryParam = params?.get('chat') || "";
-
   const [isLogin, isSetLogin] = useState(false);
   const [accessToken, setAccessToken] = useRecoilState(userAtom);
 
@@ -91,7 +87,6 @@ export default function Header() {
       console.log("refreshToken: " + refreshToken);
       console.log("nickname: " + nickname);
       console.log("profilePath: " + profilePath);
-      
       setUser({
         accessToken: accessToken || "",
         refreshToken: refreshToken || "",
@@ -100,9 +95,6 @@ export default function Header() {
         nickname: nickname || "",
       });
       setCookieLoggedIn(true);
-    }
-    if (chatQueryParam == "1") {
-      setIsChatVisisible(true)
     }
   }, []);
 
@@ -165,6 +157,7 @@ export default function Header() {
       console.log("*");
       console.log("============================================");
       setreceivedNewChat(true);
+
       const body = payload.notification?.body;
       const title = payload.notification?.title || "";
       const result = typeof body === "string" ? JSON.parse(body) : body;
@@ -372,9 +365,6 @@ export default function Header() {
       </PC>
       {/* 모바일 화면(반응형) */}
       <Mobile>
-        <Head>
-          <meta name="viewport" content="user-scalable=no" />
-        </Head>
         <div className="flex justify-start pt-2 pb-2 pl-5 pr-5">
           <Link href={link}>
             <div className="flex w-32 p1-0">
@@ -402,7 +392,7 @@ export default function Header() {
         <div
           className={`${
             isChatVisisible
-              ? "bg-white w-full h-full z-[9999] fixed bottom-0 border-[2px] border-gray-300 flex flex-col shadow-md"
+              ? "bg-white w-full h-full z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 flex flex-col shadow-md"
               : "hidden"
           }`}
         >
