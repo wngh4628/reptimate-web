@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import "./globals.css";
 import type { Metadata } from "next";
@@ -10,7 +9,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import ReactQuery from "@/components/ReactQuery";
 import Recoil from "@/components/Recoil";
 import ChatModal from "@/components/chatting/ChatModal";
-import { Mobile } from "@/components/ResponsiveLayout";
 
 const sans = Open_Sans({ subsets: ["latin"] });
 

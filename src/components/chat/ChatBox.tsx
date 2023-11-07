@@ -103,6 +103,8 @@ export default function PersonalChatBox() {
             setotherNickname(chatNowInfo.nickname);
             setroomName(chatNowInfo.roomName);
           }
+          
+
         } else {
           router.replace("/");
           alert("로그인이 필요한 기능입니다.");
@@ -320,6 +322,16 @@ export default function PersonalChatBox() {
       
     }
   }
+  // const deleteMsg = () => {
+  //     if(socketRef.current){
+  //       const message: DMessage = {
+  //         userIdx: 1,
+  //         score: 1690283005342,
+  //         room: 3,
+  //       };
+  //       socketRef.current.emit("removeMessage", message);
+  //     }
+  // }
   const joinRoom = () => {
     console.log("============================")
     console.log("입장한 방 번호 : " + roomName)
