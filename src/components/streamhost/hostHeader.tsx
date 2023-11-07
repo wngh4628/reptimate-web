@@ -481,20 +481,22 @@ export default function HostStreamingInfoView() {
       <div className="flex-col w-full right-0 h-[87%] flex bg-[#4E4E4E]">
         <div className="flex py-[0.5rem] text-sm bg-transparent w-full">
           <div className="basis-1/2 flex flex-col">
-            <span className={`text-center bg-transparent text-white`}>
+            <span className={`text-center bg-transparent text-[#C3C3C3]`}>
               {userInfoData.length}
             </span>
             <div className="flex-col py-[0.5rem] text-sm bg-transparent w-full"></div>
-            <span className={`basis-1/2 text-center bg-transparent text-white`}>
+            <span
+              className={`basis-1/2 text-center bg-transparent text-[#C3C3C3]`}
+            >
               시청자
             </span>
           </div>
           <div className="basis-1/2 flex flex-col">
-            <span className={`text-center bg-transparent text-white`}>
+            <span className={`text-center bg-transparent text-[#C3C3C3]`}>
               {nowBid}
             </span>
             <div className="flex-col py-[0.5rem] text-sm bg-transparent w-full"></div>
-            <span className={`text-center bg-transparent text-white`}>
+            <span className={`text-center bg-transparent text-[#C3C3C3]`}>
               경매 금액
             </span>
           </div>
