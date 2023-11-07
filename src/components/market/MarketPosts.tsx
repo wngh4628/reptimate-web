@@ -15,16 +15,18 @@ interface Option {
 }
 
 const sortOption: Option[] = [
-  { value: "base", label: "최신순" },
-  { value: "view", label: "조회 순" },
-  { value: "value-high", label: "가격 높은 순" },
-  { value: "value-low", label: "가격 낮은 순" },
+  { value: "order=DESC&orderCriteria=created", label: "최신순" },
+  { value: "order=ASC&orderCriteria=created", label: "오래된 순" },
+  { value: "order=DESC&orderCriteria=view", label: "조회 높은 순" },
+  { value: "order=ASC&orderCriteria=view", label: "조회 낮은 순" },
+  { value: "order=DESC&orderCriteria=price", label: "가격 높은 순" },
+  { value: "order=ASC&orderCriteria=price", label: "가격 낮은 순" },
 ];
 
 export default function MarketPosts() {
   const [data, setData] = useState<getResponse | null>(null);
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState("base");
+  const [sort, setSort] = useState("order=DESC&orderCriteria=created");
   const [existNextPage, setENP] = useState(false);
   const [loading, setLoading] = useState(false);
   const isLogin = useRecoilValue(userAtom);
@@ -37,13 +39,15 @@ export default function MarketPosts() {
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedSort = e.target.value;
     setSort(selectedSort);
+    setPage(1);
+    setData(null);
   };
 
   const getItems = useCallback(async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board?page=${page}&size=20&order=DESC&category=market`
+        `https://reptimate.store/api/board?page=${page}&size=20&${sort}&category=market`
       );
       setData(
         (prevData) =>
@@ -57,6 +61,7 @@ export default function MarketPosts() {
             },
           } as getResponse)
       );
+      console.log(response);
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
       console.log(existNextPage);
@@ -95,68 +100,71 @@ export default function MarketPosts() {
     location.href = `market/write`;
   };
 
-  if (data !== null && data.result.items) {
-    const itemlist: Adpotion[] = data.result.items.map((item) => ({
-      idx: item.idx,
-      view: item.view,
-      userIdx: item.userIdx,
-      title: item.title,
-      category: item.category,
-      writeDate: new Date(item.writeDate),
-      coverImage:
-        item.images[0]?.category === "img"
-          ? item.images[0]?.path || ""
-          : item.images[0]?.category === "video"
-          ? item.images[0]?.coverImgPath || ""
-          : "",
-      nickname: item.UserInfo.nickname,
-      profilePath: item.UserInfo.profilePath,
-      price: item.boardCommercial.price,
-      gender: item.boardCommercial.gender,
-      size: item.boardCommercial.size,
-      variety: item.boardCommercial.variety,
-      state: item.boardCommercial.state,
-    }));
+  const itemlist: Adpotion[] =
+    data !== null && data.result.items
+      ? data.result.items.map((item) => ({
+          idx: item.idx,
+          view: item.view,
+          userIdx: item.userIdx,
+          title: item.title,
+          category: item.category,
+          writeDate: new Date(item.writeDate),
+          coverImage:
+            item.images[0]?.category === "img"
+              ? item.images[0]?.path || ""
+              : item.images[0]?.category === "video"
+              ? item.images[0]?.coverImgPath || ""
+              : "",
+          nickname: item.UserInfo.nickname,
+          profilePath: item.UserInfo.profilePath,
+          price: item.boardCommercial.price,
+          gender: item.boardCommercial.gender,
+          size: item.boardCommercial.size,
+          variety: item.boardCommercial.variety,
+          state: item.boardCommercial.state,
+        }))
+      : [];
 
-    return (
-      <section>
-        <BannerSlider />
-        <PC>
-          <div className="flex items-center relative">
-            <h2 className="text-2xl font-bold my-4 ml-4">중고 거래</h2>
-            <div className="relative ml-auto">
-              <select
-                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-4 mr-4"
-                value={sort}
-                onChange={handleSortChange}
-              >
-                {sortOption.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+  return (
+    <section>
+      <BannerSlider />
+      <PC>
+        <div className="flex items-center relative">
+          <h2 className="text-2xl font-bold my-4 ml-4">중고 거래</h2>
+          <div className="relative ml-auto">
+            <select
+              className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-4 mr-4"
+              value={sort}
+              onChange={handleSortChange}
+            >
+              {sortOption.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
-        </PC>
-        <Mobile>
-          <div className="flex items-center relative">
-            <h2 className="text-lg font-bold ml-2 my-2">중고 거래</h2>
-            <div className="relative ml-auto">
-              <select
-                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
-                value={sort}
-                onChange={handleSortChange}
-              >
-                {sortOption.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+        </div>
+      </PC>
+      <Mobile>
+        <div className="flex items-center relative">
+          <h2 className="text-lg font-bold ml-2 my-2">중고 거래</h2>
+          <div className="relative ml-auto">
+            <select
+              className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
+              value={sort}
+              onChange={handleSortChange}
+            >
+              {sortOption.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
-        </Mobile>
+        </div>
+      </Mobile>
+      {data !== null && data.result.items ? (
         <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {itemlist.map((post) => (
             <li key={post.idx}>
@@ -164,46 +172,44 @@ export default function MarketPosts() {
             </li>
           ))}
         </ul>
-        {existNextPage && (
-          <div className="flex justify-center">
-            <div
-              className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"
-              ref={target}
-            ></div>
+      ) : (
+        <div className="flex items-center justify-center h-screen">
+          <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+        </div>
+      )}
+      {existNextPage && (
+        <div className="flex justify-center">
+          <div
+            className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"
+            ref={target}
+          ></div>
+        </div>
+      )}
+
+      <PC>
+        {isLogin && (
+          <div className="fixed bottom-10 right-10 z-50">
+            <button
+              className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
+              onClick={handleWriteClick}
+            >
+              +
+            </button>
           </div>
         )}
-
-        <PC>
-          {isLogin && (
-            <div className="fixed bottom-10 right-10 z-50">
-              <button
-                className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
-                onClick={handleWriteClick}
-              >
-                +
-              </button>
-            </div>
-          )}
-        </PC>
-        <Mobile>
-          {isLogin && (
-            <div className="fixed bottom-6 right-6 z-50">
-              <button
-                className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
-                onClick={handleWriteClick}
-              >
-                +
-              </button>
-            </div>
-          )}
-        </Mobile>
-      </section>
-    );
-  } else {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+      </PC>
+      <Mobile>
+        {isLogin && (
+          <div className="fixed bottom-6 right-6 z-50">
+            <button
+              className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
+              onClick={handleWriteClick}
+            >
+              +
+            </button>
+          </div>
+        )}
+      </Mobile>
+    </section>
+  );
 }
