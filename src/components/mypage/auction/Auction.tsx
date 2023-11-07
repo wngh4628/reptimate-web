@@ -238,7 +238,7 @@ export default function AuctionList() {
         <div className="w-[96%]">
           <div className=" h-[120px]">
             <div className="flex border-[1px] border-gray-300 h-[50%] items-center">
-              <p className="flex font-bold text-[20px] pl-[2%]">내 경매</p>
+              <p className="flex font-bold text-[20px] pl-[2%] w-full">내 경매</p>
             </div>
             <div className="border-x-[1px] border-b-[1px] border-gray-300 h-[50%] flex-row flex">
               <div className="border-r-[1px] border-gray-300 w-[50%]">

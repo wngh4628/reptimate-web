@@ -47,7 +47,8 @@ declare global {
         streamKey: string
       ) => void;
       // 다른 메소드나 프로퍼티도 여기에 추가
-    };
+    },
+    webkit?: any;
   }
 }
 
@@ -829,6 +830,8 @@ export default function AuctionPostsView() {
       //웹뷰에서 버튼 클릭시 안드로이드 rtmp 송신 액티비티로 이동
       if (window.Android) {
         window.Android.openNativeActivity(idx, post.boardAuction.streamKey);
+      } else if(window.webkit) {
+        window.webkit?.messageHandlers.openNativeActivity.postMessage(idx, post.boardAuction.streamKey);
       }
     };
 
