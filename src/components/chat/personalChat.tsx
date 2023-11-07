@@ -94,12 +94,6 @@ export default function PersonalChat() {
 
 
   useEffect(() => {
-    // console.log("*******PersonalChat : useEffect : fcmNotification**************")
-    // console.log("*")
-    // console.log(fcmNotification)
-    // console.log("*")
-    // console.log("***************************")
-
     if (fcmNotification.body.type == "chat") {
       updateChatRoomData(fcmNotification.body.description, fcmNotification.title);
     }
