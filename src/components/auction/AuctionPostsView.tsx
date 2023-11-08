@@ -831,11 +831,8 @@ export default function AuctionPostsView() {
       //웹뷰에서 버튼 클릭시 안드로이드 rtmp 송신 액티비티로 이동
       if (window.Android) {
         window.Android.openNativeActivity(idx, post.boardAuction.streamKey);
-      } else if (window.webkit) {
-        window.webkit?.messageHandlers.openNativeActivity.postMessage(
-          idx,
-          post.boardAuction.streamKey
-        );
+      } else if(window.webkit) {
+        window.webkit?.messageHandlers.openNativeActivity.postMessage({idx: idx, streamKey: post.boardAuction.streamKey});
       }
     };
 
