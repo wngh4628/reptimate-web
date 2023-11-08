@@ -224,11 +224,9 @@ export default function AuctionTemp() {
     let streamKey = "";
     const len: number = 5;
     for (let i = 1; i <= len; i++) {
-      const date = new Date();
       const charset = Array.from(
         "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
       ) as string[];
-      charset.push(date.getTime().toString());
       const rangeRandom = Array.from(
         { length: 4 },
         () => charset[Math.floor(Math.random() * charset.length)]
@@ -241,6 +239,7 @@ export default function AuctionTemp() {
 
     setStreamKey(streamKey);
     console.log(streamKey);
+    console.log(streamKey.length);
   }
 
   useEffect(() => {
@@ -490,164 +489,167 @@ export default function AuctionTemp() {
   });
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (streamKey.length !== 24) {
+      alert("잘못된 스트림 키 입니다.\n새로고침 후 다시 시도해주세요.");
+    } else {
+      setIsLoading(true);
 
-    setIsLoading(true);
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷
+      const day = String(today.getDate()).padStart(2, "0"); // 일자를 2자리로 포맷
 
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷
-    const day = String(today.getDate()).padStart(2, "0"); // 일자를 2자리로 포맷
+      const formattedDate = `${year}-${month}-${day}`;
 
-    const formattedDate = `${year}-${month}-${day}`;
+      const minutesToSubtract = parseInt(alretTime, 10);
 
-    const minutesToSubtract = parseInt(alretTime, 10);
+      const newTime = new Date(today.getTime() - minutesToSubtract * 60000);
 
-    const newTime = new Date(today.getTime() - minutesToSubtract * 60000);
+      // newTime을 원하는 형식으로 포맷팅하기 (예: "2023-09-14 12:30" 형태)
+      const newYear = newTime.getFullYear();
+      const newMonth = String(newTime.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 1을 더하고 두 자리로 포맷팅
+      const newDay = String(newTime.getDate()).padStart(2, "0");
+      const hours = String(newTime.getHours()).padStart(2, "0");
+      const minutes = String(newTime.getMinutes()).padStart(2, "0");
 
-    // newTime을 원하는 형식으로 포맷팅하기 (예: "2023-09-14 12:30" 형태)
-    const newYear = newTime.getFullYear();
-    const newMonth = String(newTime.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 1을 더하고 두 자리로 포맷팅
-    const newDay = String(newTime.getDate()).padStart(2, "0");
-    const hours = String(newTime.getHours()).padStart(2, "0");
-    const minutes = String(newTime.getMinutes()).padStart(2, "0");
+      const formattedTime = `${newYear}-${newMonth}-${newDay}T${hours}:${minutes}`;
 
-    const formattedTime = `${newYear}-${newMonth}-${newDay}T${hours}:${minutes}`;
+      const requestData = {
+        auctionIdx: auctionIdx,
+        state: "selling",
+        boardIdx: idx || "",
+        userIdx: currentUserIdx?.toString() || "",
+        title: title,
+        category: "auction",
+        description: description,
+        price: price,
+        gender: selectedGender || "",
+        size: selectedSize || "",
+        variety: variety,
+        pattern: pattern,
+        startPrice: startPrice,
+        unit: unit,
+        endTime: formattedDate + "T" + endTime,
+        alertTime: formattedTime,
+        extensionRule: rule,
+        birthDate: birthDate,
+        streamKey: streamKey,
+        userAccessToken: userAccessToken || "",
+        fileUrl: "",
+      };
 
-    const requestData = {
-      auctionIdx: auctionIdx,
-      state: "selling",
-      boardIdx: idx || "",
-      userIdx: currentUserIdx?.toString() || "",
-      title: title,
-      category: "auction",
-      description: description,
-      price: price,
-      gender: selectedGender || "",
-      size: selectedSize || "",
-      variety: variety,
-      pattern: pattern,
-      startPrice: startPrice,
-      unit: unit,
-      endTime: formattedDate + "T" + endTime,
-      alertTime: formattedTime,
-      extensionRule: rule,
-      birthDate: birthDate,
-      streamKey: streamKey,
-      userAccessToken: userAccessToken || "",
-      fileUrl: "",
-    };
+      if (
+        title !== "" &&
+        price !== "" &&
+        selectedGender !== "" &&
+        selectedSize !== "" &&
+        variety !== "" &&
+        pattern !== "" &&
+        startPrice !== "" &&
+        unit !== "" &&
+        endTime !== "" &&
+        rule !== "" &&
+        birthDate !== ""
+      ) {
+        if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
+          console.log(requestData);
+          mutation.mutate(requestData);
+        } else {
+          console.log(addFiles);
 
-    if (
-      title !== "" &&
-      price !== "" &&
-      selectedGender !== "" &&
-      selectedSize !== "" &&
-      variety !== "" &&
-      pattern !== "" &&
-      startPrice !== "" &&
-      unit !== "" &&
-      endTime !== "" &&
-      rule !== "" &&
-      birthDate !== ""
-    ) {
-      if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
-        console.log(requestData);
-        mutation.mutate(requestData);
-      } else {
-        console.log(addFiles);
+          const formData = new FormData();
+          addFiles.forEach((fileItem) => {
+            formData.append("files", fileItem.file || "");
+          });
 
-        const formData = new FormData();
-        addFiles.forEach((fileItem) => {
-          formData.append("files", fileItem.file || "");
-        });
+          const modifySqenceArr = allFiles.map((item) => item.mediaSequence);
+          const deleteIdxArr = deletedFiles;
+          const FileIdx = addFiles.map((item) => item.mediaSequence);
+          // Append JSON data to the FormData object
+          formData.append("modifySqenceArr", JSON.stringify(modifySqenceArr));
+          formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
+          formData.append("FileIdx", JSON.stringify(FileIdx));
 
-        const modifySqenceArr = allFiles.map((item) => item.mediaSequence);
-        const deleteIdxArr = deletedFiles;
-        const FileIdx = addFiles.map((item) => item.mediaSequence);
-        // Append JSON data to the FormData object
-        formData.append("modifySqenceArr", JSON.stringify(modifySqenceArr));
-        formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
-        formData.append("FileIdx", JSON.stringify(FileIdx));
+          try {
+            // Send both FormData and JSON data to the server
+            const response = await axios.patch(
+              `https://www.reptimate.store/conv/board/update/${idx}`,
+              formData,
+              {
+                headers: {
+                  Authorization: `Bearer ${userAccessToken}`,
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
 
-        try {
-          // Send both FormData and JSON data to the server
-          const response = await axios.patch(
-            `https://www.reptimate.store/conv/board/update/${idx}`,
-            formData,
-            {
-              headers: {
-                Authorization: `Bearer ${userAccessToken}`,
-                "Content-Type": "multipart/form-data",
-              },
+            console.log(response.data);
+
+            if (response.status === 201) {
+              const responseData = response.data;
+
+              console.log(responseData);
+              // Now, you can send additional data to the API server
+              const requestData1 = {
+                auctionIdx: auctionIdx,
+                state: "selling",
+                boardIdx: idx,
+                userIdx: currentUserIdx?.toString() || "",
+                title: title,
+                category: "auction",
+                description: description,
+                price: price,
+                gender: selectedGender || "",
+                size: selectedSize || "",
+                variety: variety,
+                pattern: pattern,
+                startPrice: startPrice,
+                unit: unit,
+                endTime: formattedDate + "T" + endTime,
+                alertTime: formattedTime,
+                extensionRule: rule,
+                birthDate: birthDate,
+                streamKey: streamKey,
+                userAccessToken: userAccessToken || "",
+                fileUrl: responseData.result, // Use the response from the first server
+              };
+
+              console.log(requestData1);
+
+              mutation.mutate(requestData1);
+            } else {
+              console.error("Error uploading files to the first server.");
+              alert("Error uploading files. Please try again later.");
+              setIsLoading(false);
             }
-          );
-
-          console.log(response.data);
-
-          if (response.status === 201) {
-            const responseData = response.data;
-
-            console.log(responseData);
-            // Now, you can send additional data to the API server
-            const requestData1 = {
-              auctionIdx: auctionIdx,
-              state: "selling",
-              boardIdx: idx,
-              userIdx: currentUserIdx?.toString() || "",
-              title: title,
-              category: "auction",
-              description: description,
-              price: price,
-              gender: selectedGender || "",
-              size: selectedSize || "",
-              variety: variety,
-              pattern: pattern,
-              startPrice: startPrice,
-              unit: unit,
-              endTime: formattedDate + "T" + endTime,
-              alertTime: formattedTime,
-              extensionRule: rule,
-              birthDate: birthDate,
-              streamKey: streamKey,
-              userAccessToken: userAccessToken || "",
-              fileUrl: responseData.result, // Use the response from the first server
-            };
-
-            console.log(requestData1);
-
-            mutation.mutate(requestData1);
-          } else {
-            console.error("Error uploading files to the first server.");
-            alert("Error uploading files. Please try again later.");
+          } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again later.");
             setIsLoading(false);
           }
-        } catch (error) {
-          console.error("Error:", error);
-          alert("An error occurred. Please try again later.");
-          setIsLoading(false);
         }
+      } else {
+        // Create a list of missing fields
+        const missingFields = [];
+        if (title === "") missingFields.push("제목");
+        if (price === "") missingFields.push("시작 가격");
+        if (variety === "") missingFields.push("품종");
+        if (pattern === "") missingFields.push("모프");
+        if (startPrice === "" || "null") missingFields.push("시작 가격");
+        if (unit === "" || "null") missingFields.push("경매 단위");
+        if (endTime === "" || "null") missingFields.push("마감 시간");
+        if (rule === "" || "null") missingFields.push("연장 룰");
+        if (birthDate === "") missingFields.push("생년월일");
+        if (selectedGender === "" || "null") missingFields.push("성별");
+        if (selectedSize === "" || "null") missingFields.push("크기");
+
+        // Create the alert message based on missing fields
+        let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
+        alertMessage += missingFields.join(", ");
+
+        alert(alertMessage);
+        setIsLoading(false);
       }
-    } else {
-      // Create a list of missing fields
-      const missingFields = [];
-      if (title === "") missingFields.push("제목");
-      if (price === "") missingFields.push("시작 가격");
-      if (variety === "") missingFields.push("품종");
-      if (pattern === "") missingFields.push("모프");
-      if (startPrice === "" || "null") missingFields.push("시작 가격");
-      if (unit === "" || "null") missingFields.push("경매 단위");
-      if (endTime === "" || "null") missingFields.push("마감 시간");
-      if (rule === "" || "null") missingFields.push("연장 룰");
-      if (birthDate === "") missingFields.push("생년월일");
-      if (selectedGender === "" || "null") missingFields.push("성별");
-      if (selectedSize === "" || "null") missingFields.push("크기");
-
-      // Create the alert message based on missing fields
-      let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
-      alertMessage += missingFields.join(", ");
-
-      alert(alertMessage);
-      setIsLoading(false);
     }
   };
 
