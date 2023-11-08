@@ -39,6 +39,13 @@ export default function AuctionPosts() {
     threshold: 1.0,
   };
 
+  function onNativeSwipe() {
+    // Handle the button click action in your website
+    alert("Native button was clicked in the Android app.");
+    setPage(1);
+    setData(null);
+  }
+
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedSort = e.target.value;
     setSort(selectedSort);
