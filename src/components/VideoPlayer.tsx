@@ -20,7 +20,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, type }) => {
   // Change to use HLS player only when the type is 'm3u8'
   return type === "m3u8" ? (
     <div className="absolute inset-0 w-full h-full object-contain bg-black flex justify-center items-center">
-      <video ref={videoRef+"?playsinline=1"} controls playsInline></video>
+      <video ref={videoRef} controls playsInline></video>
     </div>
   ) : (
     <video src={src} controls playsInline/>
