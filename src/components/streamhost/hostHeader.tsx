@@ -478,8 +478,8 @@ export default function HostStreamingInfoView() {
 
   return (
     <>
-      <div className="flex-col w-full right-0 h-[87%] flex bg-[#4E4E4E]">
-        <div className="flex py-[0.5rem] text-sm bg-transparent w-full">
+      <div className="flex-col w-full right-0 min-h-screen h-full flex bg-[#4E4E4E]">
+        <div className="flex py-[0.5rem] text-sm bg-transparent w-full justify-center">
           <div className="basis-1/2 flex flex-col">
             <span className={`text-center bg-transparent text-[#C3C3C3]`}>
               {userInfoData.length}
