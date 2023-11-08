@@ -21,13 +21,14 @@ const CommentForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
     <div>
       <form onSubmit={handleSubmit}>
         <div className="flex w-full">
-          <input
+          <textarea
             id="comment"
             name="comment"
             placeholder="댓글을 남겨보세요."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            className="flex-grow border-2 border-gray-400 p-3 rounded-md"
+            className="flex-grow border-2 border-gray-400 p-3 rounded-md resize-none"
+            rows={2}
           />
           <button
             type="submit"

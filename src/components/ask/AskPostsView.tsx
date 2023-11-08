@@ -420,7 +420,7 @@ export default function AskPostsView() {
     const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
 
     return (
-      <div>
+      <div className="overflow-x-hidden mx-1">
         {post && (
           <div className="max-w-screen-sm mx-auto">
             <PC>
@@ -503,7 +503,7 @@ export default function AskPostsView() {
                 </div>
               </div>
               <ImageSlider imageUrls={itemlist} />
-              <p className="text-lg my-7">{post.description}</p>
+              <p className="text-lg my-7 break-all">{post.description}</p>
               <hr className="border-t border-gray-300 my-1" />
               <div className="flex flex-row items-center py-3">
                 <p className="text-lg font-semibold ml-3 mr-1">댓글</p>
@@ -609,7 +609,7 @@ export default function AskPostsView() {
                 </div>
               </div>
               <ImageSlider imageUrls={itemlist} />
-              <p className="mx-2 my-4">{post.description}</p>
+              <p className="mx-2 my-4 break-all">{post.description}</p>
               <hr className="border-t border-gray-300" />
               <div className="flex flex-row items-center py-2">
                 <p className="font-semibold ml-1 mr-1">댓글</p>

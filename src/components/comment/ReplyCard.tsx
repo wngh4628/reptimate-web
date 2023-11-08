@@ -123,9 +123,9 @@ export default function ReplyCard({
   };
 
   return (
-    <div>
+    <div className="overflow-x-hidden">
       {isDeleted ? null : (
-        <div className="mx-1 mt-2 mb-2 flex flex-col">
+        <div className="mx-1 mt-2 mb-2 flex flex-col break-all">
           <div className="flex items-center">
             <img
               className="w-10 h-10 rounded-full border-2"
