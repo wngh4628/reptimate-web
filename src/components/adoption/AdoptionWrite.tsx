@@ -224,14 +224,12 @@ export default function AdoptionWrite() {
     fileItem: { file: File; id: number };
     index: number;
   }) => {
-    const imageUrl = useMemo(
-      () => URL.createObjectURL(fileItem.file),
-      [fileItem]
-    );
-
-    const [, drag] = useDrag({
+    const [{ isDragging }, drag] = useDrag({
       type: "FILE",
       item: { index },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
     });
 
     const [, drop] = useDrop({
@@ -243,6 +241,19 @@ export default function AdoptionWrite() {
         }
       },
     });
+
+    useEffect(() => {
+      // Preload images when component mounts
+      selectedFiles.forEach((fileItem) => {
+        const img = new Image();
+        img.src = URL.createObjectURL(fileItem.file);
+      });
+    }, [selectedFiles]);
+
+    const imageUrl = useMemo(
+      () => URL.createObjectURL(fileItem.file),
+      [fileItem]
+    ); // Memoize the image URL
 
     return (
       <div ref={(node) => drag(drop(node))}>
