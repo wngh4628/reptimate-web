@@ -47,7 +47,7 @@ declare global {
         streamKey: string
       ) => void;
       // 다른 메소드나 프로퍼티도 여기에 추가
-    },
+    };
     webkit?: any;
   }
 }
@@ -823,6 +823,7 @@ export default function AuctionPostsView() {
 
     const handleViewClick = () => {
       //라이브 방송에 시청자로 참가
+
       location.href = `/auction/posts/${idx}/live`;
     };
 
@@ -833,6 +834,10 @@ export default function AuctionPostsView() {
       } else if(window.webkit) {
         window.webkit?.messageHandlers.openNativeActivity.postMessage({idx: idx, streamKey: post.boardAuction.streamKey});
       }
+    };
+
+    const handleKeyClick = () => {
+      //스트림 키를 재설정하는 코드
     };
 
     function chattingClose() {
@@ -1194,6 +1199,14 @@ export default function AuctionPostsView() {
             </Mobile>
             <PC>
               <div className="fixed bottom-10 right-10 z-50">
+                {isCurrentUserComment && (
+                  <button
+                    className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-sm font-bold mb-2"
+                    onClick={handleKeyClick}
+                  >
+                    스트림키 재설정
+                  </button>
+                )}
                 <button
                   className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-2"
                   onClick={handleViewClick}
@@ -1303,6 +1316,14 @@ export default function AuctionPostsView() {
                   </button>
                 ) : (
                   <div>
+                    {isCurrentUserComment && (
+                      <button
+                        className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-[12px] font-bold mb-1"
+                        onClick={handleKeyClick}
+                      >
+                        스트림키 재설정
+                      </button>
+                    )}
                     {isCurrentUserComment ? (
                       <button
                         className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-[12px] font-bold mb-1"
