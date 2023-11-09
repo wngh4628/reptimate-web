@@ -12,9 +12,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, type }) => {
 
   useEffect(() => {
 
-
-
-
       if (type === "m3u8" && videoRef.current) {
       // Check if it's iOS Safari
       const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -22,6 +19,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, type }) => {
       if (isSafari) {
         // Use native HLS support for iOS Safari
         videoRef.current.src = src;
+        videoRef.current.setAttribute("playsinline", "true");
       } else {
         // Use hls.js for other browsers
         const Hls = require("hls.js");
@@ -33,11 +31,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, type }) => {
       }
     }
 
-      // if (type === "m3u8" && Hls.isSupported()) {
-      //   const hls = new Hls();
-      //   hls.loadSource(src);
-      //   hls.attachMedia(videoRef.current!); // Force conversion to a definite value
-      // }
   }, [src, type]);
 
   // Change to use HLS player only when the type is 'm3u8'
@@ -50,7 +43,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, type }) => {
       </div>
     );
   } else {
-    console.log("111")
     return (
       <video src={src} controls playsInline />
     );
