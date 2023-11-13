@@ -102,32 +102,6 @@ export default function Header() {
     if (chatQueryParam == "1") {
       setIsChatVisisible(true)
     }
-  }, []);
-
-  const [fcm, setfcm] = useRecoilState(fcmState);
-  const [fcmNotification, setfcmNotification] =
-    useRecoilState(fcmNotificationState);
-
-  useEffect(() => {
-    handleLogin();
-    if (typeof window.Android === "undefined" || window.Android === null) {
-      // 웹 브라우저인 경우에만 실행
-      onMessageFCM();
-    }
-  }, [pathName]);
-
-  useEffect(() => {}, []);
-
-  useEffect(() => {}, [receivedNewChat]);
-
-  const onMessageFCM = async () => {
-    // 브라우저에 알림 권한을 요청합니다.
-    // if (typeof Android !== "undefined" && Android !== null) {
-    //   console.log("this is android webview!");
-    // } else {
-    // const permission = await Notification.requestPermission();
-    // if (permission !== "granted") {console.log("web noti permission return!!"); return;} 
-
     if ('Notification' in window) {
       if (Notification.permission === 'granted') {
         // 알림을 보낼 수 있는 상태
@@ -144,7 +118,32 @@ export default function Header() {
         // 알림 권한이 거부됨
       }
     }
-    
+  }, []);
+
+  const [fcm, setfcm] = useRecoilState(fcmState);
+  const [fcmNotification, setfcmNotification] =
+    useRecoilState(fcmNotificationState);
+
+  useEffect(() => {
+    handleLogin();
+    const user = navigator.userAgent;
+
+    if ( user.indexOf("iPhone") > -1 || user.indexOf("Android") > -1 ) {
+      onMessageFCM();
+    }
+  }, [pathName]);
+
+  useEffect(() => {}, []);
+
+  useEffect(() => {}, [receivedNewChat]);
+
+  const onMessageFCM = async () => {
+    // 브라우저에 알림 권한을 요청합니다.
+
+    // if (typeof Android !== "undefined" && Android !== null) {
+    //   console.log("this is android webview!");
+    // } else {
+
     // 이곳에도 아까 위에서 앱 등록할때 받은 'firebaseConfig' 값을 넣어주세요.
     const firebaseApp = initializeApp({
       apiKey: "AIzaSyCqNXSJVrAFHqn-Or8YgBswuoYMOxEBABY",
