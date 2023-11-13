@@ -1,7 +1,7 @@
 import { Images } from "@/service/my/auction";
 import axios, { isAxiosError } from "axios";
 import { useParams, usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { Mobile, PC } from "../ResponsiveLayout";
 import ImageSlider from "../ImageSlider";
 import { useMutation } from "@tanstack/react-query";
@@ -16,7 +16,11 @@ import CommentForm from "../comment/CommentForm";
 import { adoptionDelete } from "@/api/adoption/adoption";
 import { useRouter } from "next/navigation";
 import { GetAuctionPostsView } from "@/service/my/auction";
-import { auctionDelete } from "@/api/auction/auction";
+import {
+  auctionDelete,
+  auctionWrite,
+  streamKeyEdit,
+} from "@/api/auction/auction";
 import { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate";
 
 import { io, Socket } from "socket.io-client";
@@ -99,6 +103,7 @@ export default function AuctionPostsView() {
   const [bidVisible, setBidVisible] = useState<boolean>(false);
   const [isInputDisabled, setIsInputDisabled] = useState(false);
   const [endTime, setEndTime] = useState("");
+  const [streamKey, setStreamKey] = useState("");
 
   const [userAuth, setUserAuth] = useState("guest"); //유저 권한
   const [host, setHost] = useState(0); //방장 유무: 게시글 작성자의 idx로 지정
@@ -372,6 +377,8 @@ export default function AuctionPostsView() {
       if (response.data.result.UserInfo.idx === userIdx) {
         setIsInputDisabled(true);
       }
+      setStreamKey(response.data.result.boardAuction.streamKey);
+      console.log(response.data.result.boardAuction.streamKey);
       setNowBid(
         formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
       );
@@ -513,6 +520,55 @@ export default function AuctionPostsView() {
       }
     };
   }, [getCommentData, existNextPage, loading, options]);
+
+  const streamKeyMutation = useMutation({
+    mutationFn: streamKeyEdit,
+    onSuccess: (data) => {
+      console.log("============================");
+      console.log("Successful StreamKey resetting!");
+      console.log(data);
+      console.log(data.data);
+      console.log("============================");
+      alert("스트림키가 재생성 되었습니다.");
+      setStreamKey(data.data.result);
+    },
+    onError: (data) => {
+      alert(data);
+    },
+  });
+
+  //스트림 키를 재설정하는 코드
+  const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    let streamKey = "";
+    const len: number = 5;
+    for (let i = 1; i <= len; i++) {
+      const charset = Array.from(
+        "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      ) as string[];
+      const rangeRandom = Array.from(
+        { length: 4 },
+        () => charset[Math.floor(Math.random() * charset.length)]
+      ).join("");
+      streamKey += rangeRandom;
+      if (i < len) {
+        streamKey += "-";
+      }
+    }
+
+    console.log(streamKey);
+    console.log(streamKey.length);
+
+    const requestData = {
+      boardAuctionIdx: data?.result.boardAuction.idx || 0,
+      streamKey: streamKey,
+      userAccessToken: userAccessToken || "",
+    };
+
+    console.log(requestData);
+    streamKeyMutation.mutate(requestData);
+  };
 
   //댓글 작성 성공 시,
   const mutation = useMutation({
@@ -829,15 +885,15 @@ export default function AuctionPostsView() {
 
     const handleLiveClick = () => {
       //웹뷰에서 버튼 클릭시 안드로이드 rtmp 송신 액티비티로 이동
+      console.log(streamKey);
       if (window.Android) {
-        window.Android.openNativeActivity(idx, post.boardAuction.streamKey);
-      } else if(window.webkit) {
-        window.webkit?.messageHandlers.openNativeActivity.postMessage({idx: idx, streamKey: post.boardAuction.streamKey});
+        window.Android.openNativeActivity(idx, streamKey);
+      } else if (window.webkit) {
+        window.webkit?.messageHandlers.openNativeActivity.postMessage({
+          idx: idx,
+          streamKey: streamKey,
+        });
       }
-    };
-
-    const handleKeyClick = () => {
-      //스트림 키를 재설정하는 코드
     };
 
     function chattingClose() {
@@ -1200,12 +1256,14 @@ export default function AuctionPostsView() {
             <PC>
               <div className="fixed bottom-10 right-10 z-50">
                 {isCurrentUserComment && (
-                  <button
-                    className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-sm font-bold mb-2"
-                    onClick={handleKeyClick}
-                  >
-                    스트림키 재설정
-                  </button>
+                  <form onSubmit={onSubmitHandler}>
+                    <button
+                      className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-sm font-bold mb-2"
+                      type="submit"
+                    >
+                      스트림키 재설정
+                    </button>
+                  </form>
                 )}
                 <button
                   className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-2"
@@ -1317,12 +1375,14 @@ export default function AuctionPostsView() {
                 ) : (
                   <div>
                     {isCurrentUserComment && (
-                      <button
-                        className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-[12px] font-bold mb-1"
-                        onClick={handleKeyClick}
-                      >
-                        스트림키 재설정
-                      </button>
+                      <form onSubmit={onSubmitHandler}>
+                        <button
+                          className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-[12px] font-bold mb-1"
+                          type="submit"
+                        >
+                          스트림키 재설정
+                        </button>
+                      </form>
                     )}
                     {isCurrentUserComment ? (
                       <button

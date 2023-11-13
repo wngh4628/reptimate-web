@@ -173,3 +173,31 @@ export const auctionDelete = async ({
     throw error;
   }
 };
+
+export const streamKeyEdit = async ({
+  boardAuctionIdx,
+  streamKey,
+  userAccessToken,
+}: {
+  boardAuctionIdx: number;
+  streamKey: string;
+  userAccessToken: string;
+}) => {
+  const data = {
+    boardAuctionIdx: boardAuctionIdx,
+    streamKey: streamKey,
+  };
+
+  const headers = {
+    Authorization: `Bearer ${userAccessToken}`,
+    "Content-Type": "application/json",
+  };
+
+  const result = await instance.patch(
+    `/board/Streamkey/${boardAuctionIdx}`,
+    data,
+    { headers }
+  );
+
+  return result;
+};
