@@ -5,7 +5,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const url =
-    "https://kauth.kakao.com/oauth/authorize?client_id=007bccc864ba746734949bd87b5bc9dc&redirect_uri=http://web.reptimate.store/api/kakaologin/callback&response_type=code";
+    "https://kauth.kakao.com/oauth/authorize?client_id=007bccc864ba746734949bd87b5bc9dc&redirect_uri=https://web.reptimate.store/api/kakaologin/callback&response_type=code";
   if (req.method === "POST") {
     res.redirect(307, url);
   } else {
