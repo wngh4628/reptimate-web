@@ -129,6 +129,8 @@ export default function Header() {
     const user = navigator.userAgent;
 
     if ( user.indexOf("iPhone") > -1 || user.indexOf("Android") > -1 ) {
+      
+    } else {
       onMessageFCM();
     }
   }, [pathName]);
