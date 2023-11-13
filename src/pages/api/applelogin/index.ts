@@ -17,6 +17,6 @@ export default async function handler(
   if (req.method === "POST") {
     res.redirect(307, url);
   } else {  
-    res.redirect(307, "https://localhost:3000");
+    res.redirect(307, "https://web.reptimate.store");
   }
 }
