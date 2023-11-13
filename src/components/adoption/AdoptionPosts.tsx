@@ -47,7 +47,7 @@ export default function AdoptionPosts() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board?page=${page}&size=20&${sort}&category=adoption`
+        `${process.env.NEXT_PUBLIC_API_URL}/board?page=${page}&size=20&${sort}&category=adoption`
       );
       setData(
         (prevData) =>
@@ -61,10 +61,8 @@ export default function AdoptionPosts() {
             },
           } as getResponse)
       );
-      console.log(response);
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
-      console.log(existNextPage);
     } catch (error) {
       console.error("Error fetching data:", error);
     }

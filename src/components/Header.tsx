@@ -29,8 +29,7 @@ export default function Header() {
   const pathName = usePathname() || "";
   const router = useRouter();
   const params = useSearchParams();
-  const chatQueryParam = params?.get('chat') || "";
-  const [isLogin, isSetLogin] = useState(false);
+  const chatQueryParam = params?.get("chat") || "";
   const [accessToken, setAccessToken] = useRecoilState(userAtom);
 
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
@@ -92,13 +91,13 @@ export default function Header() {
     if (chatQueryParam == "1") {
       setIsChatVisisible(true);
     }
-    if ('Notification' in window) {
-      if (Notification.permission === 'granted') {
+    if ("Notification" in window) {
+      if (Notification.permission === "granted") {
         // 알림을 보낼 수 있는 상태
-      } else if (Notification.permission !== 'denied') {
+      } else if (Notification.permission !== "denied") {
         // 알림 권한을 요청할 수 있는 상태
-        Notification.requestPermission().then(permission => {
-          if (permission === 'granted') {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
             // 권한이 허용됨
           } else {
             // 권한이 거부됨
@@ -117,7 +116,7 @@ export default function Header() {
   useEffect(() => {
     handleLogin();
     const user = navigator.userAgent;
-    if ( user.indexOf("iPhone") > -1 || user.indexOf("Android") > -1 ) {
+    if (user.indexOf("iPhone") > -1 || user.indexOf("Android") > -1) {
     } else {
       onMessageFCM();
     }
@@ -167,13 +166,12 @@ export default function Header() {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken != null) {
         const accessToken = userData.USER_DATA.accessToken;
-        isSetLogin(true);
+        setIsLoggedIn(true);
       }
     }
   };
   const handleLogout = () => {
     localStorage.removeItem("recoil-persist");
-    isSetLogin(false);
     setIsLoggedIn(false);
     router.refresh();
     window.location.reload();
@@ -235,7 +233,7 @@ export default function Header() {
       {/* PC 화면(반응형) */}
       <PC>
         <div className="flex justify-end pt-5 gap-2 font-bold">
-          {isLogin ? (
+          {isLoggedIn ? (
             <button
               className="group hover:text-main-color"
               onClick={handleLogout}
@@ -368,7 +366,7 @@ export default function Header() {
             </div>
           </Link>
           <nav className="flex gap-4 font-bold ml-auto">
-          <Link href="">
+            <Link href="">
               <div
                 className="flex w-[23px] h-5 my-0.5  relative"
                 onClick={chattingClick}

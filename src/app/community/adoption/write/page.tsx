@@ -18,7 +18,7 @@ export default function AdoptionWritePage() {
         </DndProvider>
       </PC>
       <Mobile>
-        <DndProvider backend={TouchBackend}>
+        <DndProvider backend={HTML5Backend}>
           <AdoptionWrite />
         </DndProvider>
       </Mobile>

@@ -48,7 +48,7 @@ export default function FreePosts() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board?page=${page}&size=20&${sort}&category=free`
+        `${process.env.NEXT_PUBLIC_API_URL}/board?page=${page}&size=20&${sort}&category=free`
       );
       setData(
         (prevData) =>
@@ -64,7 +64,6 @@ export default function FreePosts() {
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
-      console.log(existNextPage);
     } catch (error) {
       console.error("Error fetching data:", error);
     }

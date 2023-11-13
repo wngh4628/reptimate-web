@@ -256,33 +256,67 @@ export default function AdoptionWrite() {
     ); // Memoize the image URL
 
     return (
-      <div ref={(node) => drag(drop(node))}>
-        <div
-          key={fileItem.id}
-          className="relative w-28 h-28 mx-2 border-2 border-gray-300 rounded-xl"
-          onClick={(e) => e.preventDefault()}
-        >
-          {fileItem.file.type.startsWith("image/") ? (
-            <img
-              src={imageUrl}
-              alt={`Image ${fileItem.id}`}
-              className="object-cover w-full h-full"
-            />
-          ) : fileItem.file.type.startsWith("video/") ? (
-            <video className="object-cover w-full h-full">
-              <source src={imageUrl} type={fileItem.file.type} />
-              현재 브라우저는 비디오 태그를 지원하지 않습니다.
-            </video>
-          ) : (
-            <p>지원하지 않는 파일 형태</p>
-          )}
-          <button
-            onClick={() => handleRemoveItem(fileItem.id)}
-            className="absolute -top-2 -right-2 transform translate-x-1/4 -translate-y-1/4 w-6 h-6 bg-red-500 text-white rounded-full"
-          >
-            X
-          </button>
-        </div>
+      <div>
+        <PC>
+          <div ref={(node) => drag(drop(node))}>
+            <div
+              key={fileItem.id}
+              className="relative w-28 h-28 mx-2 border-2 border-gray-300 rounded-xl"
+              onClick={(e) => e.preventDefault()}
+            >
+              {fileItem.file.type.startsWith("image/") ? (
+                <img
+                  src={imageUrl}
+                  alt={`Image ${fileItem.id}`}
+                  className="object-cover w-full h-full"
+                />
+              ) : fileItem.file.type.startsWith("video/") ? (
+                <video className="object-cover w-full h-full">
+                  <source src={imageUrl} type={fileItem.file.type} />
+                  현재 브라우저는 비디오 태그를 지원하지 않습니다.
+                </video>
+              ) : (
+                <p>지원하지 않는 파일 형태</p>
+              )}
+              <button
+                onClick={() => handleRemoveItem(fileItem.id)}
+                className="absolute -top-2 -right-2 transform translate-x-1/4 -translate-y-1/4 w-6 h-6 bg-red-500 text-white rounded-full"
+              >
+                X
+              </button>
+            </div>
+          </div>
+        </PC>
+        <Mobile>
+          <div ref={(node) => drag(drop(node))}>
+            <div
+              key={fileItem.id}
+              className="relative w-20 h-20 mx-1 border-2 border-gray-300 rounded-xl"
+              onClick={(e) => e.preventDefault()}
+            >
+              {fileItem.file.type.startsWith("image/") ? (
+                <img
+                  src={imageUrl}
+                  alt={`Image ${fileItem.id}`}
+                  className="object-cover w-full h-full"
+                />
+              ) : fileItem.file.type.startsWith("video/") ? (
+                <video className="object-cover w-full h-full">
+                  <source src={imageUrl} type={fileItem.file.type} />
+                  현재 브라우저는 비디오 태그를 지원하지 않습니다.
+                </video>
+              ) : (
+                <p>지원하지 않는 파일 형태</p>
+              )}
+              <button
+                onClick={() => handleRemoveItem(fileItem.id)}
+                className="absolute -top-1 -right-1 transform translate-x-1/4 -translate-y-1/4 w-5 h-5 bg-red-500 text-white text-sm rounded-full"
+              >
+                X
+              </button>
+            </div>
+          </div>
+        </Mobile>
       </div>
     );
   };
@@ -290,11 +324,6 @@ export default function AdoptionWrite() {
   const mutation = useMutation({
     mutationFn: adoptionWrite,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful writing of post!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       alert("게시글이 작성되었습니다.");
       window.history.back();
     },
@@ -303,6 +332,7 @@ export default function AdoptionWrite() {
       setIsLoading(false);
     },
   });
+
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -337,8 +367,6 @@ export default function AdoptionWrite() {
       if (selectedFiles.length === 0) {
         mutation.mutate(requestData);
       } else {
-        console.log(selectedFiles);
-
         const formData = new FormData();
         selectedFiles.forEach((fileItem) => {
           formData.append("files", fileItem.file);
@@ -355,8 +383,6 @@ export default function AdoptionWrite() {
 
           if (response.status === 201) {
             const responseData = response.data;
-
-            console.log(responseData);
             // Now, you can send additional data to the API server
             const requestData1 = {
               state: selling,
@@ -373,9 +399,6 @@ export default function AdoptionWrite() {
               userAccessToken: userAccessToken || "",
               fileUrl: responseData.result, // Use the response from the first server
             };
-
-            console.log(requestData1);
-
             mutation.mutate(requestData1);
           } else {
             console.error("Error uploading files to the first server.");
@@ -452,14 +475,26 @@ export default function AdoptionWrite() {
           className="w-auto h-auto cursor-pointer py-3"
           htmlFor="mediaInput"
         >
-          <div className="w-28 h-28 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
-            <img
-              src="/img/camera.png"
-              alt="Camera Icon"
-              className="w-16 h-16"
-            />
-            <span className="">{selectedFiles.length}/5</span>
-          </div>
+          <PC>
+            <div className="w-28 h-28 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
+              <img
+                src="/img/camera.png"
+                alt="Camera Icon"
+                className="w-16 h-16"
+              />
+              <span className="">{selectedFiles.length}/5</span>
+            </div>
+          </PC>
+          <Mobile>
+            <div className="w-20 h-20 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
+              <img
+                src="/img/camera.png"
+                alt="Camera Icon"
+                className="w-12 h-12"
+              />
+              <span className="text-sm">{selectedFiles.length}/5</span>
+            </div>
+          </Mobile>
         </label>
         <div
           className="flex items-center py-3 mx-auto"
@@ -474,7 +509,7 @@ export default function AdoptionWrite() {
           ))}
         </div>
       </div>
-      <div className="mt-4 flex flex-col">
+      <div className="flex flex-col">
         <p className="font-bold text-xl my-2">제목</p>
         <input
           type="text"

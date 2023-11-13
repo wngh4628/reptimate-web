@@ -89,11 +89,6 @@ export default function MarketPostsView() {
   const deleteMutation = useMutation({
     mutationFn: adoptionDelete,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful Deleting of market post!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       alert("게시글이 삭제되었습니다.");
       router.replace("/community/market");
     },
@@ -233,7 +228,6 @@ export default function MarketPostsView() {
   if (typeof window !== "undefined") {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
-    // console.log(storedData);
     if (storedData != null) {
       const userData = JSON.parse(storedData || "");
       currentUserIdx = userData.USER_DATA.idx;
@@ -250,7 +244,7 @@ export default function MarketPostsView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}?macAdress=`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`
       );
       // Assuming your response data has a 'result' property
       setData(response.data);
@@ -289,7 +283,7 @@ export default function MarketPostsView() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}/comment?page=${page}&size=20&order=DESC`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}/comment?page=${page}&size=20&order=DESC`
       );
       setCommentData(
         (prevData) =>
@@ -333,7 +327,6 @@ export default function MarketPostsView() {
 
   useEffect(() => {
     getCommentData();
-    console.log(data);
   }, []);
 
   useEffect(() => {
@@ -360,11 +353,6 @@ export default function MarketPostsView() {
   const mutation = useMutation({
     mutationFn: commentWrtie,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful writing of comment!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       const newComment: Comment = {
         idx: data.data.result.idx,
         createdAt: data.data.result.createdAt,
@@ -425,7 +413,7 @@ export default function MarketPostsView() {
     const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
 
     return (
-      <div className="overflow-x-hidden mx-1">
+      <div className="mx-1">
         {post && (
           <div className="max-w-screen-sm mx-auto">
             <PC>
