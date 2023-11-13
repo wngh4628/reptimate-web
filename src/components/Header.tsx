@@ -130,7 +130,7 @@ export default function Header() {
 
     if (window.Notification.permission === "granted") {
     } else if (window.Notification.permission !== "denied") {
-      Notification.requestPermission().then(function(permission) {
+      window.Notification.requestPermission().then(function(permission) {
         if (permission === "granted") {
         }
       });
