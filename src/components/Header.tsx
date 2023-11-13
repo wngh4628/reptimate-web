@@ -128,8 +128,8 @@ export default function Header() {
     // const permission = await Notification.requestPermission();
     // if (permission !== "granted") {console.log("web noti permission return!!"); return;} 
 
-    if (Notification.permission === "granted") {
-    } else if (Notification.permission !== "denied") {
+    if (window.Notification.permission === "granted") {
+    } else if (window.Notification.permission !== "denied") {
       Notification.requestPermission().then(function(permission) {
         if (permission === "granted") {
         }
