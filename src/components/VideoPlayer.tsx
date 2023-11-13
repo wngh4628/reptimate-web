@@ -11,12 +11,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, type }) => {
 
 
   useEffect(() => {
+    if(window.webkit) {
+      window.webkit?.messageHandlers.consoleLogHandler.postMessage();
+    }
 
       if (type === "m3u8" && videoRef.current) {
       // Check if it's iOS Safari
       const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      const isAppleWebKit = /^((?!chrome|android).)*AppleWebKit/i.test(navigator.userAgent);
+      
 
-      if (isSafari) {
+      if (isSafari || isAppleWebKit) {
         // Use native HLS support for iOS Safari
         videoRef.current.src = src;
         videoRef.current.setAttribute("playsinline", "true");
