@@ -1,25 +1,15 @@
 "use client";
-// import { useEffect, useRef, useState } from 'react';
-import {
-  useRouter,
-  useParams,
-  usePathname,
-  useSearchParams,
-} from "next/navigation";
 
-// import { getProduct, getProducts } from '@/service/products'
+import { useRouter, useParams } from "next/navigation";
 import React, { useCallback, useState, useEffect } from "react";
-// import { notFound } from 'next/navigation';
 import VideoPlayer from "@/components/action/video-player";
-import BottomPopup from "@/components/action/bottom-popup";
-// import ChettingOpen from '../../../../components/action/chetting-open'
 import StreamingChatView from "@/components/action/StreamingChatView";
 
 import Image from "next/image";
 import unlike_black from "../../../../../../public/img/unlike_black.png";
 import { getActionInfo } from "@/service/httpconnect/live_stream_axios";
 import acitonLiveDto from "@/service/dto/action-live-dto";
-import { GetAuctionPostsView, GetAuctionPostsBid } from "@/service/my/auction";
+import { GetAuctionPostsView } from "@/service/my/auction";
 import axios from "axios";
 
 type Props = {
