@@ -117,7 +117,6 @@ const ChatUserList = forwardRef((props :{
 		}
     }
 	const optionBoxOnOff = () => {
-		console.log("클릭한 사용자의 idx는 : "+ props.userList.userIdx);
 		if(boxState === false && props.userAuth == 'host'){
 			setBoxState(true);
 		}
