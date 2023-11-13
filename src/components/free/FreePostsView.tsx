@@ -85,11 +85,6 @@ export default function FreePostsView() {
   const deleteMutation = useMutation({
     mutationFn: freeDelete,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful Deleting of free post!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       alert("게시글이 삭제되었습니다.");
       router.replace("/community/free");
     },
@@ -229,7 +224,6 @@ export default function FreePostsView() {
   if (typeof window !== "undefined") {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
-    // console.log(storedData);
     if (storedData != null) {
       const userData = JSON.parse(storedData || "");
       currentUserIdx = userData.USER_DATA.idx;
@@ -329,7 +323,6 @@ export default function FreePostsView() {
 
   useEffect(() => {
     getCommentData();
-    console.log(data);
   }, []);
 
   useEffect(() => {
@@ -356,11 +349,6 @@ export default function FreePostsView() {
   const mutation = useMutation({
     mutationFn: commentWrtie,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful writing of comment!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       const newComment: Comment = {
         idx: data.data.result.idx,
         createdAt: data.data.result.createdAt,
@@ -421,7 +409,7 @@ export default function FreePostsView() {
     const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
 
     return (
-      <div className="overflow-x-hidden mx-1">
+      <div className="mx-1">
         {post && (
           <div className="max-w-screen-sm mx-auto">
             <PC>

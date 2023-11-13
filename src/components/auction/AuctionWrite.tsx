@@ -327,11 +327,6 @@ export default function AuctionWrite() {
   const mutation = useMutation({
     mutationFn: auctionWrite,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful writing of post!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       alert(
         "경매가 임시 저장되었습니다.\n마이페이지 메뉴의 내 경매에서 최종 등록을 하실 수 있습니다."
       );
@@ -403,11 +398,8 @@ export default function AuctionWrite() {
       description !== ""
     ) {
       if (selectedFiles.length === 0) {
-        console.log(requestData);
         mutation.mutate(requestData);
       } else {
-        console.log(selectedFiles);
-
         const formData = new FormData();
         selectedFiles.forEach((fileItem) => {
           formData.append("files", fileItem.file);
@@ -424,8 +416,6 @@ export default function AuctionWrite() {
 
           if (response.status === 201) {
             const responseData = response.data;
-
-            console.log(responseData);
             // Now, you can send additional data to the API server
             const requestData1 = {
               state: selling,
@@ -447,9 +437,6 @@ export default function AuctionWrite() {
               userAccessToken: userAccessToken || "",
               fileUrl: responseData.result, // Use the response from the first server
             };
-
-            console.log(requestData1);
-
             mutation.mutate(requestData1);
           } else {
             console.error("Error uploading files to the first server.");

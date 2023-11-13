@@ -64,10 +64,8 @@ export default function AuctionPosts() {
             },
           } as getResponseAuction)
       );
-      console.log(response);
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
-      console.log(existNextPage);
     } catch (error) {
       console.error("Error fetching data:", error);
     }

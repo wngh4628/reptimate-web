@@ -134,11 +134,6 @@ export default function CommentCard({
   const replyMutation = useMutation({
     mutationFn: replyWrite,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful Creating of reply!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       const newComment: Comment = {
         idx: data.data.result.idx,
         createdAt: data.data.result.createdAt,
@@ -180,11 +175,6 @@ export default function CommentCard({
   const mutation = useMutation({
     mutationFn: commentDelete,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful Deleting of comment!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       setIsDeleted(true);
       // alert("댓글이 삭제되었습니다.");
     },
@@ -217,11 +207,6 @@ export default function CommentCard({
   const editMutation = useMutation({
     mutationFn: commentEdit,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful Deleting of comment!");
-      console.log(data);
-      console.log(data.data.result.description);
-      console.log("============================");
       setEditedComment(data.data.result.description);
       setIsEditing(false);
     },
@@ -258,7 +243,6 @@ export default function CommentCard({
     setReplyList((prevReplyList) =>
       prevReplyList?.filter((reply) => reply.idx !== replyIdx)
     );
-    console.log(replyList);
   };
 
   return (

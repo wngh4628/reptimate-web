@@ -163,7 +163,6 @@ export default function AuctionEdit() {
   if (typeof window !== "undefined") {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
-    // console.log(storedData);
     if (storedData != null) {
       const userData = JSON.parse(storedData || "");
       currentUserIdx = userData.USER_DATA.idx;
@@ -230,7 +229,6 @@ export default function AuctionEdit() {
       );
       // Assuming your response data has a 'result' property
       setData(response.data);
-      console.log(response.data);
       const post = response.data.result;
       setAuctionIdx(post.boardAuction.idx.toString() || "");
       setSelling(post.boardAuction.state);
@@ -260,7 +258,6 @@ export default function AuctionEdit() {
           mediaSequence: item.mediaSequence,
         }))
       );
-      console.log(post.images.length);
       if (post.images.length > 0) {
         setMediaSequence(post.images.length - 1);
       }
@@ -271,16 +268,11 @@ export default function AuctionEdit() {
 
   useEffect(() => {
     getData();
-    console.log(allFiles);
   }, []);
 
-  useEffect(() => {
-    console.log(allFiles);
-  }, [allFiles]);
+  useEffect(() => {}, [allFiles]);
 
-  useEffect(() => {
-    console.log(deletedFiles);
-  }, [deletedFiles]);
+  useEffect(() => {}, [deletedFiles]);
 
   const handleVarietyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVariety = e.target.value;
@@ -453,11 +445,6 @@ export default function AuctionEdit() {
   const mutation = useMutation({
     mutationFn: auctionEdit,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful Editing of post!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       alert("게시글 수정이 완료되었습니다.");
       window.history.back();
     },
@@ -530,11 +517,8 @@ export default function AuctionEdit() {
       description !== ""
     ) {
       if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
-        console.log(requestData);
         mutation.mutate(requestData);
       } else {
-        console.log(addFiles);
-
         const formData = new FormData();
         addFiles.forEach((fileItem) => {
           formData.append("files", fileItem.file || "");
@@ -561,12 +545,8 @@ export default function AuctionEdit() {
             }
           );
 
-          console.log(response.data);
-
           if (response.status === 201) {
             const responseData = response.data;
-
-            console.log(responseData);
             // Now, you can send additional data to the API server
             const requestData1 = {
               auctionIdx: auctionIdx,
@@ -591,8 +571,6 @@ export default function AuctionEdit() {
               userAccessToken: userAccessToken || "",
               fileUrl: responseData.result, // Use the response from the first server
             };
-
-            console.log(requestData1);
 
             mutation.mutate(requestData1);
           } else {

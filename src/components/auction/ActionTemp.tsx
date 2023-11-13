@@ -162,7 +162,6 @@ export default function AuctionTemp() {
   if (typeof window !== "undefined") {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
-    // console.log(storedData);
     if (storedData != null) {
       const userData = JSON.parse(storedData || "");
       currentUserIdx = userData.USER_DATA.idx;
@@ -238,8 +237,6 @@ export default function AuctionTemp() {
     }
 
     setStreamKey(streamKey);
-    console.log(streamKey);
-    console.log(streamKey.length);
   }
 
   useEffect(() => {
@@ -255,7 +252,6 @@ export default function AuctionTemp() {
       );
       // Assuming your response data has a 'result' property
       setData(response.data);
-      console.log(response.data);
       const post = response.data.result;
       setAuctionIdx(post.boardAuction.idx.toString() || "");
       setSelling(post.boardAuction.state);
@@ -284,7 +280,6 @@ export default function AuctionTemp() {
           mediaSequence: item.mediaSequence,
         }))
       );
-      console.log(post.images.length);
       if (post.images.length > 0) {
         setMediaSequence(post.images.length - 1);
       }
@@ -295,16 +290,11 @@ export default function AuctionTemp() {
 
   useEffect(() => {
     getData();
-    console.log(allFiles);
   }, []);
 
-  useEffect(() => {
-    console.log(allFiles);
-  }, [allFiles]);
+  useEffect(() => {}, [allFiles]);
 
-  useEffect(() => {
-    console.log(deletedFiles);
-  }, [deletedFiles]);
+  useEffect(() => {}, [deletedFiles]);
 
   const handleVarietyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVariety = e.target.value;
@@ -477,11 +467,6 @@ export default function AuctionTemp() {
   const mutation = useMutation({
     mutationFn: auctionEdit,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful Editing of post!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       alert("경매가 등록 되었습니다.");
       router.replace(`/my/auction`);
       setIsLoading(false);
@@ -552,11 +537,8 @@ export default function AuctionTemp() {
         birthDate !== ""
       ) {
         if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
-          console.log(requestData);
           mutation.mutate(requestData);
         } else {
-          console.log(addFiles);
-
           const formData = new FormData();
           addFiles.forEach((fileItem) => {
             formData.append("files", fileItem.file || "");
@@ -582,13 +564,8 @@ export default function AuctionTemp() {
                 },
               }
             );
-
-            console.log(response.data);
-
             if (response.status === 201) {
               const responseData = response.data;
-
-              console.log(responseData);
               // Now, you can send additional data to the API server
               const requestData1 = {
                 auctionIdx: auctionIdx,
@@ -613,9 +590,6 @@ export default function AuctionTemp() {
                 userAccessToken: userAccessToken || "",
                 fileUrl: responseData.result, // Use the response from the first server
               };
-
-              console.log(requestData1);
-
               mutation.mutate(requestData1);
             } else {
               console.error("Error uploading files to the first server.");

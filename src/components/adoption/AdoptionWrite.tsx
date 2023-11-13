@@ -324,11 +324,6 @@ export default function AdoptionWrite() {
   const mutation = useMutation({
     mutationFn: adoptionWrite,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful writing of post!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       alert("게시글이 작성되었습니다.");
       window.history.back();
     },
@@ -372,8 +367,6 @@ export default function AdoptionWrite() {
       if (selectedFiles.length === 0) {
         mutation.mutate(requestData);
       } else {
-        console.log(selectedFiles);
-
         const formData = new FormData();
         selectedFiles.forEach((fileItem) => {
           formData.append("files", fileItem.file);
@@ -390,8 +383,6 @@ export default function AdoptionWrite() {
 
           if (response.status === 201) {
             const responseData = response.data;
-
-            console.log(responseData);
             // Now, you can send additional data to the API server
             const requestData1 = {
               state: selling,
@@ -408,9 +399,6 @@ export default function AdoptionWrite() {
               userAccessToken: userAccessToken || "",
               fileUrl: responseData.result, // Use the response from the first server
             };
-
-            console.log(requestData1);
-
             mutation.mutate(requestData1);
           } else {
             console.error("Error uploading files to the first server.");
