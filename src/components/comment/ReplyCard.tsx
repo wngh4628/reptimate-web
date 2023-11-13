@@ -61,11 +61,6 @@ export default function ReplyCard({
   const mutation = useMutation({
     mutationFn: commentDelete,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful Deleting of comment!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       setIsDeleted(true);
       // alert("댓글이 삭제되었습니다.");
       onDelete(idx);
@@ -99,11 +94,6 @@ export default function ReplyCard({
   const editMutation = useMutation({
     mutationFn: commentEdit,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful Deleting of comment!");
-      console.log(data);
-      console.log(data.data.result.description);
-      console.log("============================");
       setEditedComment(data.data.result.description);
       setIsEditing(false);
       onEdit(idx, data.data.result.description);

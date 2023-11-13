@@ -160,11 +160,6 @@ export default function FreeWrite() {
   const mutation = useMutation({
     mutationFn: freeWrite,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful writing of post!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       window.history.back();
     },
     onError: (data) => {
@@ -190,8 +185,6 @@ export default function FreeWrite() {
       if (selectedFiles.length === 0) {
         mutation.mutate(requestData);
       } else {
-        console.log(selectedFiles);
-
         const formData = new FormData();
         selectedFiles.forEach((fileItem) => {
           formData.append("files", fileItem.file);
@@ -209,7 +202,6 @@ export default function FreeWrite() {
           if (response.status === 201) {
             const responseData = response.data;
 
-            console.log(responseData);
             // Now, you can send additional data to the API server
             const requestData1 = {
               userIdx: userIdx || "",
@@ -219,8 +211,6 @@ export default function FreeWrite() {
               userAccessToken: userAccessToken || "",
               fileUrl: responseData.result, // Use the response from the first server
             };
-
-            console.log(requestData1);
 
             mutation.mutate(requestData1);
           } else {

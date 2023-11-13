@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // const host = "http://localhost:3000/";
-const host = "https://reptimate.store/api/";
+const host = `${process.env.NEXT_PUBLIC_API_URL}`;
 const token = `Bearer ${
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWR4Ijo5NywiaWF0IjoxNjkwMTY3NDQ5LCJleHAiOjE2OTEzNzcwNDl9.uEdFGztR7TJk46-YUeuG4kAE5p5UrKsdFKdP5YmXHG4" as string
 }`;
