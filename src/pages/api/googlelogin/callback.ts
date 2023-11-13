@@ -17,7 +17,7 @@ export default async function handle(
           grant_type: "authorization_code",
           client_id: `${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}`,
           client_secret: `${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET}`,
-          redirect_uri: "http://web.reptimate.store/api/googlelogin/callback",
+          redirect_uri: "https://web.reptimate.store/api/googlelogin/callback",
           code,
         },
         headers: {

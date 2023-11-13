@@ -22,7 +22,7 @@ export default async function handle(
         params: {
           grant_type: "authorization_code",
           client_id: `${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}`,
-          redirect_uri: "http://web.reptimate.store/api/kakaologin/callback",
+          redirect_uri: "https://web.reptimate.store/api/kakaologin/callback",
           code,
         },
         headers: {

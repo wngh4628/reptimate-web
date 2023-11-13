@@ -8,7 +8,7 @@ export default async function handler(
     'https://accounts.google.com/o/oauth2/v2/auth?client_id=' +
     '290736847856-24sjvjdch5cpdr5jg64qg1krj19tkfhr.apps.googleusercontent.com' +
       '&redirect_uri=' +
-      'http://web.reptimate.store/api/googlelogin/callback' +
+      'https://web.reptimate.store/api/googlelogin/callback' +
       '&response_type=code' +
       '&scope=email profile';
   if (req.method === "POST") {
