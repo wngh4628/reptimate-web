@@ -1,8 +1,7 @@
 "use client"
-import { ChangeEvent, FormEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useSetRecoilState } from "recoil";
 
 import { editAccountInfo, UserInfo, changePassword } from "@/api/my/editUserInfo";
@@ -37,9 +36,6 @@ export default function EditProfileInput() {
         "/img/reptimate_logo.png"
     );
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-
-
     const [agreeWithMarketing, setAgreeWithMarketing] = useState(false);
 
     const [isNicknameChanged, setIsNicknameChanged] = useState(false);
@@ -127,7 +123,6 @@ export default function EditProfileInput() {
     const mutationNicknameSend = useMutation({
         mutationFn: nickNameChk,
         onSuccess: (data) => {
-            console.log(data.data);
             alert("사용 가능한 닉네임입니다.");
             setIsNicknameChanged(true);
         },
@@ -251,8 +246,6 @@ export default function EditProfileInput() {
     const mutation = useMutation({
         mutationFn: editAccountInfo,
         onSuccess: (data) => {
-            console.log("정보수정 시도");
-            console.log(data.data);
             router.replace("/my");
         },
         onError: (err: { response: { status: number } }) => {
@@ -311,10 +304,7 @@ export default function EditProfileInput() {
     const mutationPwChange = useMutation({
         mutationFn: changePassword,
         onSuccess: (data) => {
-            console.log("정보수정-비밀번호 변경 시도");
-            console.log(data.data);
             if(data.data.status == 200) {
-                console.log("비밀번호 변경 성공");
                 setPrevPassword("");
                 setCechkPassword("");
                 setPassword("");

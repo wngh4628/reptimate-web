@@ -1,5 +1,5 @@
 "use client"
-import { ChangeEvent, FormEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -10,8 +10,6 @@ import { userAtom, isLoggedInState } from "@/recoil/user";
 import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
 import axios from "axios";
 
-import { getResponse, Post } from "@/service/posts";
-import { getResponseBookmarkBoard, BookmarkBoard } from "@/service/my/bookmark";
 import { getResponseBoard, Board } from "@/service/my/board";
 import { getResponseReply, Reply } from "@/service/reply";
 
@@ -50,7 +48,6 @@ export default function BoardList() {
             setReplyPage(1)
             setReplyData(null)
         }
-        console.log("myBoardType  :  "+ myBoardType);
     }
     function onMyBoardTypeChange2() {
         if (!myBoardType) {
@@ -58,7 +55,6 @@ export default function BoardList() {
             setBoardPage(1)
             setData(null)
         }
-        console.log("myBoardType  :  "+ myBoardType);
     }
 
     const getItems = useCallback(async (accessToken: any) => {
@@ -70,7 +66,6 @@ export default function BoardList() {
                 },
             };
             if(myBoardType) {
-                console.log("리스트 요청  :  게시글 목록");
                 const response = await axios.get(
                     `${process.env.NEXT_PUBLIC_API_URL}/mypage/board?page=${boardPage}&size=20&order=DESC`
                   , config);
@@ -89,7 +84,6 @@ export default function BoardList() {
                   setENP(response.data?.result.existsNextPage);
                   setBoardPage((prevPage) => prevPage + 1);
             } else {
-                console.log("리스트 요청  :  댓글 목록");
                 const response = await axios.get(
                     `${process.env.NEXT_PUBLIC_API_URL}/mypage/reply?page=${replyPage}&size=20&order=DESC`
                   , config);

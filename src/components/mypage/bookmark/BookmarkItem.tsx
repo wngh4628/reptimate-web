@@ -1,6 +1,4 @@
-import { Post } from "@/service/posts";
 import { BookmarkBoard } from "@/service/my/bookmark";
-import Image from "next/image";
 import Link from "next/link";
 
 type Props = { post: BookmarkBoard };

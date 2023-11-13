@@ -1,5 +1,4 @@
 "use client";
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import MypageMenu from "@/components/mypage/MypageMenu";
 import AuctionList from "@/components/mypage/auction/Auction";
 import { Mobile, PC } from "@/components/ResponsiveLayout";

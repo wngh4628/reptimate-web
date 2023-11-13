@@ -38,11 +38,10 @@ const ChatList = forwardRef((props :{
     const [fcmNotification, setfcmNotification] = useRecoilState(fcmNotificationState);
     // 자동으로 값을 변경하는 useEffect
     useEffect(() => {
-        console.log("useEffect : ChatList : fcmNotification")
+
         // 원하는 조건을 설정하여 자동으로 값을 변경
         if (props.chatRoomData.UserInfo.nickname === fcmNotification.title) {
-          const newRecentMessage = fcmNotification.body.description; // 변경하고자 하는 recentMessage
-          console.log("useEffect : ChatList : fcmNotification : 일치 : " + props.chatRoomData.UserInfo.nickname)
+          const newRecentMessage = fcmNotification.body; // 변경하고자 하는 recentMessage
           // PersonalChat 컴포넌트에서 전달받은 함수 호출
           props.updateChatRoomData(props.chatRoomData.UserInfo.nickname, newRecentMessage);
         }

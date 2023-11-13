@@ -21,8 +21,8 @@ export default async function handle(
       const { data } = await axios.post(url, null, {
         params: {
           grant_type: "authorization_code",
-          client_id: `007bccc864ba746734949bd87b5bc9dc`,
-          redirect_uri: "http://localhost:3000/api/kakaologin/callback",
+          client_id: `${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}`,
+          redirect_uri: "http://web.reptimate.store/api/kakaologin/callback",
           code,
         },
         headers: {

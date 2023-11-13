@@ -1,12 +1,6 @@
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
-import { useSetRecoilState } from "recoil";
-import { socialLogin } from "@/api/login/login";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/router";
-import { userAtom } from "@/recoil/user";
-import { useEffect } from "react";
 
 export default async function handle(
   req: NextApiRequest,
@@ -21,9 +15,9 @@ export default async function handle(
       const { data } = await axios.post(url, null, {
         params: {
           grant_type: "authorization_code",
-          client_id: `290736847856-24sjvjdch5cpdr5jg64qg1krj19tkfhr.apps.googleusercontent.com`,
-          client_secret: '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',
-          redirect_uri: "http://localhost:3000/api/googlelogin/callback",
+          client_id: `${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}`,
+          client_secret: `${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET}`,
+          redirect_uri: "http://web.reptimate.store/api/googlelogin/callback",
           code,
         },
         headers: {
