@@ -1,7 +1,5 @@
 'use client'
-import Image from 'next/image'
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { io, Socket } from "socket.io-client";
+import React from "react";
 
 import HostStreamingInfoView from "@/components/streamhost/hostHeader";
 

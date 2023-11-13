@@ -131,40 +131,25 @@ export default function StreamingChatView() {
       const response = await axios.get(
         `https://reptimate.store/api/board/${idx}?macAdress=`
       );
-      console.log(
-        "========getData() : 경매글 정보 불러오기===================="
-      );
-      console.log(response.data);
-      console.log("============================");
+      // console.log("========getData() : 경매글 정보 불러오기====================");
+      // console.log(response.data);
+      // console.log("============================");
       setPostsData(response.data);
-      setNowBid(
-        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
-      );
-      setBidUnit(
-        formatNumberWithCommas(response.data.result.boardAuction.unit)
-      );
-      setBidStartPrice(
-        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
-      );
+      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
+      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
+      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice));
 
       setHost(response.data.result.UserInfo.idx);
 
       if (parseInt(response.data.result.UserInfo.idx) === userIdx) {
         setUserAuth("host");
-        console.log("당신은 이 방송의 host입니다.======================");
+        // console.log("당신은 이 방송의 host입니다.======================");
       }
 
-      setNowBid(
-        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
-      );
-      setBidUnit(
-        formatNumberWithCommas(response.data.result.boardAuction.unit)
-      );
-      setBidStartPrice(
-        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
-      );
+      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
+      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
+      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice));
       setEndTime(response.data.result.boardAuction.endTime);
-      console.log(response.data.result.boardAuction.endTime);
 
       const endTime1 = new Date(
         response.data.result.boardAuction.endTime
@@ -206,7 +191,6 @@ export default function StreamingChatView() {
   }, []);
 
   useEffect(() => {
-    console.log("useEffect  :  profilePath  :  소켓 연결 시도================");
     joinRoom();
     joinBidRoom();
   }, [profilePath]);
@@ -245,16 +229,15 @@ export default function StreamingChatView() {
         nickname: nickname,
       };
       if (socketRef.current) {
-        console.log("=============실시간 채팅 입장===========");
         socketRef.current.emit("join-live", message);
       }
       setroomEnter(true);
     });
     // 메시지 리스너
     socket.on("live_message", (message: IMessage) => {
-      console.log("live_message  :  ================");
-      console.log(message);
-      console.log("=============================");
+      // console.log("live_message  :  ================");
+      // console.log(message);
+      // console.log("=============================");
       setchattingData((chattingData) => [...chattingData, message]);
     });
     //강퇴 처리
@@ -320,10 +303,10 @@ export default function StreamingChatView() {
       }
       if(Array.isArray(message)){
         const parsedDataArray =  message.map((data) => JSON.parse(data));
-        console.log("===========live_participate : =======");
-        console.log(parsedDataArray);
-        console.log(message);
-        console.log("====================================");
+        // console.log("===========live_participate : =======");
+        // console.log(parsedDataArray);
+        // console.log(message);
+        // console.log("====================================");
         
         parsedDataArray.forEach((data: any) => {
             const getUserInfo = data;
@@ -353,7 +336,7 @@ export default function StreamingChatView() {
         });
       }
     });
-    console.log(socket.connected);
+    // console.log(socket.connected);
     // socket disconnect on component unmount if exists
     return () => {
       if (socketRef.current) {
@@ -418,14 +401,14 @@ export default function StreamingChatView() {
     if (userAuth === "host") {
       // console.log(socketRef.current);
       if (socketRef.current) {
-        console.log("==========noChat : " + banUserIdx + "=========");
+        // console.log("==========noChat : " + banUserIdx + "=========");
         const message: Ban_Message = {
           userIdx: userIdx,
           banUserIdx: banUserIdx,
           room: roomName,
           boardIdx: boardIdx,
         };
-        console.log(message);
+        // console.log(message);
         socketRef.current.emit("noChat", message);
       }
     }
@@ -506,7 +489,6 @@ export default function StreamingChatView() {
         message: textMsg.trim(),
         room: roomName,
       };
-      console.log("=============실시간 채팅 발송됨===========");
       socketRef.current.emit("live_message", message);
       settextMsg("");
     }
@@ -563,7 +545,7 @@ export default function StreamingChatView() {
     // console.log("banList", banList);
   }, [banList]);
   useEffect(() => {
-    console.log("userList", userList);
+    // console.log("userList", userList);
   }, [userList]);
 
   /*************************************
@@ -587,8 +569,6 @@ export default function StreamingChatView() {
       };
 
       if (socketBidRef.current) {
-        console.log("============경매 입찰 채팅 입장============");
-
         socketBidRef.current.emit("join-room", message);
       }
       setroomEnter(true);
@@ -598,25 +578,25 @@ export default function StreamingChatView() {
     // 메시지 리스너
     socketBid.on("Auction_message", (message: IMessage) => {
       setchattingBidData((chattingData) => [...chattingData, message]);
-      console.log("======경매 입찰 채팅 수신=======");
-      console.log("bid message  :  ", message);
-      console.log("========================");
+      // console.log("======경매 입찰 채팅 수신=======");
+      // console.log("bid message  :  ", message);
+      // console.log("========================");
       if (bidContainerRef.current) {
         bidContainerRef.current.scrollTop =
           bidContainerRef.current.scrollHeight;
       }
       setNowBid(message.message);
-      console.log("bid message", message);
+      // console.log("bid message", message);
     });
     socketBid.on("Auction_End", (message: string) => {
-      console.log("======경매 입찰 채팅 : 경매 종료=======");
-      console.log("Auction_End message  :  ", message);
-      console.log("============================");
+      // console.log("======경매 입찰 채팅 : 경매 종료=======");
+      // console.log("Auction_End message  :  ", message);
+      // console.log("============================");
     });
     socketBid.on("error", (message: string) => {
-      console.log("======경매 입찰 채팅 에러 수신=======");
-      console.log("error message", message);
-      console.log("==============================");
+      // console.log("======경매 입찰 채팅 에러 수신=======");
+      // console.log("error message", message);
+      // console.log("==============================");
     });
     //경매 입찰과 동시에 입찰자 명단 정보를 추가하는 리스너
     socketBid.on("auction_participate", (message: userInfo) => {

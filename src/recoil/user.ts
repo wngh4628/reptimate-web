@@ -16,10 +16,7 @@ interface User {
   nickname: string;
 }
 interface fcm {
-  body: {
-    type: string;
-    description: string;
-  };
+  body: string;
   title: string;
 }
 
@@ -55,10 +52,7 @@ export const fcmState = atom({
 export const fcmNotificationState = atom<fcm>({
   key: "fcmNotificationState",
   default: {
-    body: {
-      type: "",
-      description: "",
-    },
+    body: "",
     title: "",
   },
 });

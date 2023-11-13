@@ -1,15 +1,10 @@
 "use client";
-
-import { useForm } from "react-hook-form";
 import {
   ChangeEvent,
   FormEvent,
-  MouseEventHandler,
-  useContext,
   useState,
 } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 
 import {
@@ -135,7 +130,6 @@ export default function JoinInput() {
   }
   function onEmailCodeValidateHandler() {
     if (emailCode == emailCodeChk) {
-      console.log("이메일 인증 코드 일치!");
     } else {
       alert("이메일 인증 코드를 다시 확인해주세요.");
     }

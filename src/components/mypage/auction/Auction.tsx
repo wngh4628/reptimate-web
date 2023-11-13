@@ -78,14 +78,12 @@ export default function AuctionList() {
     async (accessToken: any, myAuctionType: number) => {
       setLoading(true);
       try {
-        console.log("myAuctionType  :  " + myAuctionType);
         const config = {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         };
         if (myAuctionType == 0) {
-          console.log("리스트 요청  :  경매글 목록");
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_API_URL}/mypage/auction?page=${boardPage}&size=20&order=DESC&category=auction`,
             config
@@ -102,11 +100,9 @@ export default function AuctionList() {
                 },
               } as getResponseAuction)
           );
-          console.log(response.data?.result);
           setENP(response.data?.result.existsNextPage);
           setBoardPage((prevPage) => prevPage + 1);
         } else {
-          console.log("리스트 요청  :  비딩 목록");
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_API_URL}/mypage/bid?page=${replyPage}&size=20&order=DESC`,
             config

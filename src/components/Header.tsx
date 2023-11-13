@@ -14,7 +14,6 @@ import {
   fcmNotificationState,
   notiVisisibleState,
 } from "@/recoil/user";
-import ChatModal from "@/components/chatting/ChatModal";
 import {
   chatRoomState,
   chatRoomVisisibleState,
@@ -25,16 +24,8 @@ import PersonalChat from "@/components/chat/personalChat";
 import { initializeApp } from "firebase/app";
 import { getMessaging, onMessage, getToken } from "firebase/messaging";
 
-// declare global {
-//   interface AndroidInterface {
-//     requestNotificationPermission(): void;
-//   }
-
-//   const Android: AndroidInterface;
-// }
-
 export default function Header() {
-  const login = false; // Set this to true or false based on your logic
+  const login = false;
   const pathName = usePathname() || "";
   const router = useRouter();
   const params = useSearchParams();
@@ -75,7 +66,6 @@ export default function Header() {
   }
 
   useEffect(() => {
-    // 안드로이드 웹뷰를 통해 접속한 경우에만 실행됩니다.
     const myAppCookie = getCookie("myAppCookie");
 
     if (myAppCookie !== undefined) {
@@ -100,7 +90,7 @@ export default function Header() {
       setCookieLoggedIn(true);
     }
     if (chatQueryParam == "1") {
-      setIsChatVisisible(true)
+      setIsChatVisisible(true);
     }
     if ('Notification' in window) {
       if (Notification.permission === 'granted') {
@@ -127,28 +117,19 @@ export default function Header() {
   useEffect(() => {
     handleLogin();
     const user = navigator.userAgent;
-
     if ( user.indexOf("iPhone") > -1 || user.indexOf("Android") > -1 ) {
-      
     } else {
       onMessageFCM();
     }
   }, [pathName]);
 
   useEffect(() => {}, []);
-
   useEffect(() => {}, [receivedNewChat]);
 
   const onMessageFCM = async () => {
     // 브라우저에 알림 권한을 요청합니다.
-
-    // if (typeof Android !== "undefined" && Android !== null) {
-    //   console.log("this is android webview!");
-    // } else {
-
-    // 이곳에도 아까 위에서 앱 등록할때 받은 'firebaseConfig' 값을 넣어주세요.
     const firebaseApp = initializeApp({
-      apiKey: "AIzaSyCqNXSJVrAFHqn-Or8YgBswuoYMOxEBABY",
+      apiKey: process.env.NEXT_PUBLIC_FCM_API_KEY,
       authDomain: "iot-teamnova.firebaseapp.com",
       projectId: "iot-teamnova",
       storageBucket: "iot-teamnova.appspot.com",
@@ -157,17 +138,11 @@ export default function Header() {
     });
     const messaging = getMessaging(firebaseApp);
 
-    // 이곳 vapidKey 값으로 아까 토큰에서 사용한다고 했던 인증서 키 값을 넣어주세요.
     getToken(messaging, { vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY })
       .then((currentToken) => {
         if (currentToken) {
-          // 정상적으로 토큰이 발급되면 콘솔에 출력합니다.
           setfcm(currentToken);
-          console.log("fcmToken  :  ",currentToken)
         } else {
-          console.log(
-            "No registration token available. Request permission to generate one."
-          );
         }
       })
       .catch((err) => {
@@ -175,18 +150,12 @@ export default function Header() {
       });
     // 메세지가 수신되면 역시 콘솔에 출력합니다.
     onMessage(messaging, (payload) => {
-      console.log("=============fcm 메시지 수신===================");
-      console.log("*");
-      console.log("Message received. : ", payload);
-      console.log("*");
-      console.log("============================================");
       setreceivedNewChat(true);
 
-      const body = payload.notification?.body;
+      const body = payload.notification?.body || "";
       const title = payload.notification?.title || "";
-      const result = typeof body === "string" ? JSON.parse(body) : body;
       setfcmNotification({
-        body: result,
+        body: body,
         title: title,
       });
     });
@@ -399,11 +368,17 @@ export default function Header() {
             </div>
           </Link>
           <nav className="flex gap-4 font-bold ml-auto">
-            <a onClick={chattingClick}>
-              <div className="flex w-5 my-0.5">
+          <Link href="">
+              <div
+                className="flex w-[23px] h-5 my-0.5  relative"
+                onClick={chattingClick}
+              >
                 <img src="/img/chat.png" />
+                {receivedNewChat && (
+                  <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
+                )}
               </div>
-            </a>
+            </Link>
             <a onClick={notiClick}>
               <div className="flex w-5 my-0.5">
                 <img src="/img/notification.png" />

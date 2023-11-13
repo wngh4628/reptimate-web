@@ -39,12 +39,9 @@ export default function PersonalChat() {
   const target = useRef(null);
 
   const pathName = usePathname() || "";
-
-  const [move, setMove] = useState(false);
-
-  const [userIdx, setUserIdx] = useState<number>(0); // 유저의 userIdx 저장
+  const [userIdx, setUserIdx] = useState<number>(0);
   const [nickname, setNickname] = useState("");
-  const [profilePath, setProfilePath] = useState(""); // 유저의 userIdx 저장
+  const [profilePath, setProfilePath] = useState("");
   const [accessToken, setAccessToken] = useState("");
   const router = useRouter();
 
@@ -59,7 +56,6 @@ export default function PersonalChat() {
   const [receivedNewChat, setreceivedNewChat] = useRecoilState(receivedNewChatState);
 
   const [fcmNotification, setfcmNotification] = useRecoilState(fcmNotificationState);
-  // const [chatRoom, setchatRoom] = useRecoilState(chatRoomState);
 
   const options = {
     threshold: 1.0,
@@ -79,7 +75,6 @@ export default function PersonalChat() {
         setProfilePath(userData.USER_DATA.profilePath);
 
         getChatRoomList(extractedAccessToken);
-        // setchatRoomData([])
         // chatRoomData 배열의 각 요소를 확인하여 unreadCount가 0보다 큰지 확인
         const hasUnreadMessages = chatRoomData.some((chatRoom) => chatRoom.unreadCount > 0);
         if (hasUnreadMessages) {
@@ -94,14 +89,10 @@ export default function PersonalChat() {
 
 
   useEffect(() => {
-    // console.log("*******PersonalChat : useEffect : fcmNotification**************")
-    // console.log("*")
-    // console.log(fcmNotification)
-    // console.log("*")
-    // console.log("***************************")
-
-    if (fcmNotification.body.type == "chat") {
-      updateChatRoomData(fcmNotification.body.description, fcmNotification.title);
+    if (fcmNotification.body == "경매" || fcmNotification.body == "스케쥴링") {
+      
+    } else {
+      updateChatRoomData(fcmNotification.body, fcmNotification.title);
     }
   }, [fcmNotification])
 
@@ -157,11 +148,6 @@ export default function PersonalChat() {
     }
   }, [chatRoomVisisible]);
 
-  // chatRoomData가 업데이트될 때 호출되는 useEffect
-  // useEffect(() => {
-    
-  // }, [chatRoomData]);
-
   // 채팅방 리스트 불러오기
   const getChatRoomList = async (accessToken: string) => {
     setLoading(true);
@@ -195,17 +181,16 @@ export default function PersonalChat() {
           return dateB.getTime() - dateA.getTime();
         });
         await setchatRoomData(sortedArray);
-        console.log("=====getChatRoomList() : personalChat.tsx : 채팅방 리스트 불러오기 성공=====")
+        // console.log("=====getChatRoomList() : personalChat.tsx : 채팅방 리스트 불러오기 성공=====")
         // console.log(response.data)
         // console.log("=============================")
-        // console.log(response.data?.result)
         setENP(response.data?.result.existsNextPage);
         setPage((prevPage) => prevPage + 1);
         // console.log('getChatRoomList() : personalChat.tsx : receivedNewChat:', receivedNewChat);
     } catch (error: any) {
-      console.log("=========getChatRoomList() : personalChat.tsx : catch (error: any)========")
-      console.log(error)
-      console.log("======================")
+      // console.log("=========getChatRoomList() : personalChat.tsx : catch (error: any)========")
+      // console.log(error)
+      // console.log("======================")
         if(error.response && error.response.status == 401) {
             const storedData = localStorage.getItem('recoil-persist');
             if (storedData) {
@@ -217,7 +202,7 @@ export default function PersonalChat() {
                     }, {
                         onSuccess: (data) => {
                             // api call 재선언
-                            console.log("accessToken 만료로 인한 재발급")
+                            // console.log("accessToken 만료로 인한 재발급")
                             if(userData.USER_DATA.accessToken != data) {
                               getChatRoomList(data);
                             } else {
@@ -227,7 +212,7 @@ export default function PersonalChat() {
                             }
                         },
                         onError: () => {
-                          console.log("accessToken 만료로 인한 재발급 실패 : getChatRoomList() : personalChat.tsx")
+                          //console.log("accessToken 만료로 인한 재발급 실패 : getChatRoomList() : personalChat.tsx")
                             // router.replace("/");
                             // setIsLoggedIn(false)
                             // alert("로그인 만료\n다시 로그인 해주세요");
@@ -246,7 +231,6 @@ useEffect(() => {
       entries.forEach((entry) => {
           if (entry.isIntersecting && !loading && existNextPage) {
             getChatRoomList(accessToken);
-            console.log("useEffect[getChatRoomList, existNextPage, loading, options]")
           }
       });
   }, options);

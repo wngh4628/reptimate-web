@@ -1,15 +1,14 @@
 "use client";
-import axios from "axios";
-import { useSetRecoilState, useRecoilState, useRecoilValue } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { socialLogin, socialAppleLogin } from "@/api/login/login";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
-import { isLoggedInState, userAtom } from "@/recoil/user";
+import { userAtom } from "@/recoil/user";
 
 import { initializeApp } from "firebase/app";
-import { getMessaging, onMessage, getToken } from "firebase/messaging";
+import { getMessaging, getToken } from "firebase/messaging";
 
 export default function Home() {
   const router = useRouter();
@@ -46,17 +45,34 @@ export default function Home() {
   });
 
   useEffect(() => {
-    onMessageFCM();
+    if ('Notification' in window) {
+      if (Notification.permission === 'granted') {
+        // 알림을 보낼 수 있는 상태
+      } else if (Notification.permission !== 'denied') {
+        // 알림 권한을 요청할 수 있는 상태
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            // 권한이 허용됨
+          } else {
+            // 권한이 거부됨
+          }
+        });
+      } else {
+        // 알림 권한이 거부됨
+      }
+    }
+    const user = navigator.userAgent;
+    if ( user.indexOf("iPhone") > -1 || user.indexOf("Android") > -1 ) {
+    } else {
+      onMessageFCM();
+    }
   }, []);
 
   const onMessageFCM = async () => {
     // 브라우저에 알림 권한을 요청합니다.
-    const permission = await Notification.requestPermission();
-    if (permission !== "granted") return;
 
-    // 이곳에도 아까 위에서 앱 등록할때 받은 'firebaseConfig' 값을 넣어주세요.
     const firebaseApp = initializeApp({
-      apiKey: "AIzaSyCqNXSJVrAFHqn-Or8YgBswuoYMOxEBABY",
+      apiKey: process.env.NEXT_PUBLIC_FCM_API_KEY,
       authDomain: "iot-teamnova.firebaseapp.com",
       projectId: "iot-teamnova",
       storageBucket: "iot-teamnova.appspot.com",
@@ -82,8 +98,6 @@ export default function Home() {
           } else if (query && query2) {
             const qa: string = query;
             const qb: string = query2;
-
-            console.log("useEffect / socialLogin / fbToken = " + currentToken);
             mutation.mutate({
               accessToken: qa,
               socialType: qb,

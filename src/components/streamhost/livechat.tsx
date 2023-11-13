@@ -1,9 +1,8 @@
 "use client";
-import Image from "next/image";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { io, Socket } from "socket.io-client";
-import { GetAuctionPostsView, GetAuctionPostsBid } from "@/service/my/auction";
+import { GetAuctionPostsView } from "@/service/my/auction";
 
 import ChatItem from "../chat/ChatItem";
 import BidItem from "../chat/BidItem";
@@ -14,7 +13,6 @@ import {
   connectMessage,
   Ban_Message,
   userInfo,
-
 } from "@/service/chat/chat";
 
 import {bannedUserState, noChatUserState} from "@/recoil/chatting"
@@ -116,8 +114,6 @@ export default function HostStreamingChatView() {
         router.replace("/");
         alert("로그인이 필요한 기능입니다.");
       }
-
-
     }
 
   }, []);
@@ -147,20 +143,11 @@ export default function HostStreamingChatView() {
     }
   }, [chattingBidData]);
 
-//   useEffect(() => {
-//     if (bannedUserList) {
-//       const updatedBanList = banList.filter((user: banUserInfo) =>
-//         bannedUserList.some((bannedUser: banUserInfo) => bannedUser.idx !== user.idx)
-//       );
-//       setBanList(updatedBanList);
-//     }
-//   }, [bannedUserList]);
 
   useEffect(() => {
-    console.log("userIdx : " + userIdx + " // host  :  "+ host)
     if (userIdx === host) {
         setUserAuth("host");
-        console.log("당신은 이 방송의 host입니다.");
+        // console.log("당신은 이 방송의 host입니다.");
     }
   }, [userIdx, host]);
 
@@ -198,10 +185,10 @@ export default function HostStreamingChatView() {
       updateCountdown();
       const countdownInterval = setInterval(updateCountdown, 1000);
 
-      console.log(userIdx + "   당신은 이 방송의 host?=========" + parseInt(response.data.result.UserInfo.idx));
+      // console.log(userIdx + "   당신은 이 방송의 host?=========" + parseInt(response.data.result.UserInfo.idx));
       if (parseInt(response.data.result.UserInfo.idx) === userIdx) {
         setUserAuth("host");
-        console.log("당신은 이 방송의 host입니다.======================");
+        // console.log("당신은 이 방송의 host입니다.======================");
       }
       return () => {
         clearInterval(countdownInterval);
@@ -235,16 +222,15 @@ export default function HostStreamingChatView() {
         nickname: nickname,
       };
       if (socketRef.current) {
-        console.log("=============실시간 채팅 입장===========");
         socketRef.current.emit("join-live", message);
       }
       setroomEnter(true);
     });
     // 메시지 리스너
     socket.on("live_message", (message: IMessage) => {
-      console.log("live_message  :  ================");
-      console.log(message);
-      console.log("=============================");
+      // console.log("live_message  :  ================");
+      // console.log(message);
+      // console.log("=============================");
       setchattingData((chattingData) => [...chattingData, message]);
     });
     //강퇴 처리
@@ -310,10 +296,10 @@ export default function HostStreamingChatView() {
     socket.on("live_participate", (message: any) => {
       if(Array.isArray(message)) {
         const parsedDataArray =  message.map((data) => JSON.parse(data));
-        console.log("===========live_participate : =======");
-        console.log(parsedDataArray);
-        console.log(message);
-        console.log("====================================");
+        // console.log("===========live_participate : =======");
+        // console.log(parsedDataArray);
+        // console.log(message);
+        // console.log("====================================");
         setUserList({});
         setUserInfoData([]);
 
@@ -346,7 +332,7 @@ export default function HostStreamingChatView() {
       }
 
     });
-    console.log(socket.connected);
+    // console.log(socket.connected);
     // socket disconnect on component unmount if exist
     return () => {
       if (socketRef.current) {
@@ -391,8 +377,6 @@ export default function HostStreamingChatView() {
         const userInfoArray = response.data.result;
         setBanList(userInfoArray);
         setbannedUserList(userInfoArray);
-        console.error("setBanList  :  ");
-        console.error(userInfoArray);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -427,14 +411,13 @@ export default function HostStreamingChatView() {
     if (userAuth === "host") {
       // console.log(socketRef.current);
       if (socketRef.current) {
-        console.log("==========noChat : " + banUserIdx + "=========");
         const message: Ban_Message = {
           userIdx: userIdx,
           banUserIdx: banUserIdx,
           room: roomName,
           boardIdx: boardIdx,
         };
-        console.log(message);
+        // console.log(message);
         socketRef.current.emit("noChat", message);
 
         const isUserAlreadyBanned = noChatList.some(user => user.idx === banUserIdx);
@@ -521,7 +504,6 @@ export default function HostStreamingChatView() {
         message: textMsg.trim(),
         room: roomName,
       };
-      console.log("=============실시간 채팅 발송됨===========");
       socketRef.current.emit("live_message", message);
       settextMsg("");
     }
@@ -578,7 +560,6 @@ export default function HostStreamingChatView() {
     // console.log("banList", banList);
   }, [banList]);
   useEffect(() => {
-    console.log("userList : ", userList);
     setUserInfoData(Object.values(userList));
   }, [userList]);
 
@@ -602,7 +583,6 @@ export default function HostStreamingChatView() {
         room: roomName,
       };
       if (socketBidRef.current) {
-        console.log("============경매 입찰 채팅 입장============");
         socketBidRef.current.emit("join-room", message);
       }
       setroomEnter(true);
@@ -611,25 +591,24 @@ export default function HostStreamingChatView() {
     // 메시지 리스너
     socketBid.on("Auction_message", (message: IMessage) => {
       setchattingBidData((chattingData) => [...chattingData, message]);
-      console.log("======경매 입찰 채팅 수신=======");
-      console.log("bid message  :  ", message);
-      console.log("========================");
+      // console.log("======경매 입찰 채팅 수신=======");
+      // console.log("bid message  :  ", message);
+      // console.log("========================");
       if (bidContainerRef.current) {
         bidContainerRef.current.scrollTop =
           bidContainerRef.current.scrollHeight;
       }
       setNowBid(message.message);
-      console.log("bid message", message);
     });
     socketBid.on("Auction_End", (message: string) => {
-      console.log("======경매 입찰 채팅 : 경매 종료=======");
-      console.log("Auction_End message  :  ", message);
-      console.log("============================");
+      // console.log("======경매 입찰 채팅 : 경매 종료=======");
+      // console.log("Auction_End message  :  ", message);
+      // console.log("============================");
     });
     socketBid.on("error", (message: string) => {
-      console.log("======경매 입찰 채팅 에러 수신=======");
-      console.log("error message", message);
-      console.log("==============================");
+      // console.log("======경매 입찰 채팅 에러 수신=======");
+      // console.log("error message", message);
+      // console.log("==============================");
     });
     //경매 입찰과 동시에 입찰자 명단 정보를 추가하는 리스너
     socketBid.on("auction_participate", (message: userInfo) => {
