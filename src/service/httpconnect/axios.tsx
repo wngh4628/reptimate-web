@@ -1,13 +1,5 @@
 import axios from "axios";
 
-// const response: any = axios({
-//     url: 'http://localhost:3000/iotpersonal/creat_serialboard',
-//     method: 'post',
-//     headers: { // 요청 헤더
-//         'Content-Type': 'application/json',
-//         'Authorization': token
-//     },
-// })
 
 const host = "http://localhost:3000/";
 // const host = "https://www.reptimate.store/";

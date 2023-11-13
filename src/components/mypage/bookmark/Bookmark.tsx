@@ -1,21 +1,15 @@
 "use client"
-import { ChangeEvent, FormEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
-import { userAtom, isLoggedInState } from "@/recoil/user";
+import {  isLoggedInState } from "@/recoil/user";
 
 import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
 import axios from "axios";
 
-import { getResponse, Post } from "@/service/posts";
 import { getResponseBookmarkBoard, BookmarkBoard } from "@/service/my/bookmark";
-import { getResponseAuction, Auction } from "@/service/my/auction";
-import { getResponseReply, Reply } from "@/service/reply";
 import BoardItem from "./BookmarkItem";
-import AuctionItem from "../auction/AuctionItem";
 
 export default function BookmarkList() {
     const setIsLoggedIn = useSetRecoilState(isLoggedInState);

@@ -5,13 +5,12 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import axios from "axios";
 
-import ChatList from "@/components/chat/ChatList"
 import PersonalChatItem from '../chat/PersonalChatItem';
 
-import {chatRoom,connectMessage,Ban_Message,userInfo, getResponseChatList } from "@/service/chat/chat"
+import {getResponseChatList } from "@/service/chat/chat"
 
 import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
-import { userAtom, isLoggedInState } from "@/recoil/user";
+import { isLoggedInState } from "@/recoil/user";
 import { chatRoomState, chatRoomVisisibleState, chatNowInfoState, isNewChatState, isNewChatIdxState, receivedNewChatState } from "@/recoil/chatting";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
@@ -54,9 +53,9 @@ export default function PersonalChatBox() {
   const target = useRef(null);
 
 
-  const [userIdx, setUserIdx] = useState<number>(0); // 유저의 userIdx 저장
+  const [userIdx, setUserIdx] = useState<number>(0);
   const [nickname, setNickname] = useState("");
-  const [profilePath, setProfilePath] = useState(""); // 유저의 userIdx 저장
+  const [profilePath, setProfilePath] = useState("");
   const [accessToken, setAccessToken] = useState("");
   const router = useRouter();
 
@@ -163,9 +162,9 @@ export default function PersonalChatBox() {
     };
     try {
         const response = await axios.post(`${process.env.NEXT_PUBLIC_CHAT_URL}/chat`, postData, config);
-        console.log("===makeNewChatRoom() : ChatBox.tsx====");
-        console.log(response.data.result.idx);
-        console.log("================================");
+        // console.log("===makeNewChatRoom() : ChatBox.tsx====");
+        // console.log(response.data.result.idx);
+        // console.log("================================");
         // 얻어진 idx로 roomName 설정
         setroomName(response.data.result.idx);
     } catch (error: any) {
@@ -205,9 +204,9 @@ export default function PersonalChatBox() {
       };
       try {
           const response = await axios.get(`${process.env.NEXT_PUBLIC_CHAT_URL}/chat/room/`+otherIdx, config);
-          console.log("===getChatRoomNo() : ChatBox.tsx====");
-          console.log(response);
-          console.log("=======");
+          // console.log("===getChatRoomNo() : ChatBox.tsx====");
+          // console.log(response);
+          // console.log("=======");
       } catch (error: any) {
           if(error.response.data.status == 401) {
               const storedData = localStorage.getItem('recoil-persist');
@@ -246,11 +245,9 @@ export default function PersonalChatBox() {
     };
     try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_CHAT_URL}/chat/${roomName}?page=${page}&size=20&order=DESC`, config);
-        console.log("==================getChatRoomHistory===================");
         const newChattingData = [...chattingData, ...response.data.result];
         const reversedData = newChattingData.reverse();
         setchattingData(reversedData);
-        console.log(chattingData);
       //   setENP(response.data?.result.existsNextPage);
         setPage((prevPage) => prevPage + 1);
     } catch (error: any) {
@@ -304,9 +301,7 @@ export default function PersonalChatBox() {
   //채팅 발송
   const sendMsg = async () => {
     if (textMsg.trim() !== "") {
-      console.log("채팅 버튼 눌림")
       // 첫 번째 채팅인지? & 첫 채팅이 보내 졌는지?
-        console.log("이미 개설된 채팅방으로 메시지 전송")
         if(socketRef.current){
           const socketId = socketRef.current.id;
           const message: IMessage = {
@@ -333,17 +328,13 @@ export default function PersonalChatBox() {
   //     }
   // }
   const joinRoom = () => {
-    console.log("============================")
-    console.log("입장한 방 번호 : " + roomName)
-    console.log("상대방 닉네임 : " + otherNickname)
-    console.log("============================")
     const socket = io("https://socket.reptimate.store/chat", {
       path: "/socket.io",
     });
     // log socket connection
     socketRef.current = socket;
     socket.on("connect", () => {
-      console.log("SOCKET CONNECTED!", socket.id);
+      // console.log("SOCKET CONNECTED!", socket.id);
       const message: IMessage = {
         userIdx: userIdx,
         socketId: socket.id,
@@ -358,12 +349,11 @@ export default function PersonalChatBox() {
     // update chat on new message dispatched
     socket.on("message", (message: getMessage) => {
         setchattingData(prevChat => [...prevChat, message]);
-        console.log('message', message);
+        // console.log('message', message);
         setreceivedNewChat(true);
     });
-    //읽음 처리 연락 받는 기능 만들어주세요.
     socket.on("afterRead", (message: getMessage) => {
-        console.log('message', message);
+        // console.log('message', message);
     });
     socket.on("removeMessage", (message: getMessage) => {
         setchattingData(prevChat => [...prevChat, message]);
