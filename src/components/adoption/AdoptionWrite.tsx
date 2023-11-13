@@ -118,12 +118,18 @@ export default function AdoptionWrite() {
 
   let userIdx: string | null = null;
   let userAccessToken: string | null = null;
-  if (typeof window !== "undefined") {
+  if (
+    typeof window !== "undefined" &&
+    localStorage.getItem("recoil-persist") !== null
+  ) {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
     const userData = JSON.parse(storedData || "");
     userIdx = userData.USER_DATA.idx;
     userAccessToken = userData.USER_DATA.accessToken;
+  } else {
+    router.replace("/");
+    alert("로그인이 필요한 기능입니다.");
   }
 
   const [selectedFiles, setSelectedFiles] = useState<

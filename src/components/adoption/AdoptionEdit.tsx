@@ -6,7 +6,6 @@ import {
   FormEvent,
   useCallback,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 import { Mobile, PC } from "../ResponsiveLayout";
@@ -197,7 +196,10 @@ export default function AdoptionEdit() {
   let currentUserIdx: number | null = null;
   let userProfilePath: string | null = null;
   let userNickname: string | null = null;
-  if (typeof window !== "undefined") {
+  if (
+    typeof window !== "undefined" &&
+    localStorage.getItem("recoil-persist") !== null
+  ) {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
     const userData = JSON.parse(storedData || "");
@@ -205,6 +207,9 @@ export default function AdoptionEdit() {
     userAccessToken = userData.USER_DATA.accessToken;
     userProfilePath = userData.USER_DATA.profilePath;
     userNickname = userData.USER_DATA.nickname;
+  } else {
+    router.replace("/");
+    alert("로그인이 필요한 기능입니다.");
   }
 
   const getData = useCallback(async () => {
@@ -412,11 +417,6 @@ export default function AdoptionEdit() {
   const mutation = useMutation({
     mutationFn: adoptionEdit,
     onSuccess: (data) => {
-      // console.log("============================");
-      // console.log("Successful Editing of post!");
-      // console.log(data);
-      // console.log(data.data);
-      // console.log("============================");
       alert("게시글 수정이 완료되었습니다.");
       window.history.back();
     },

@@ -5,8 +5,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import PostCard from "../PostCard";
 import { Mobile, PC } from "../ResponsiveLayout";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { isLoggedInState, userAtom } from "@/recoil/user";
+import { useRecoilValue } from "recoil";
+import { userAtom } from "@/recoil/user";
 import BannerSlider from "../BannerSlider";
 
 interface Option {
