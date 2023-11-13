@@ -128,12 +128,21 @@ export default function Header() {
     // const permission = await Notification.requestPermission();
     // if (permission !== "granted") {console.log("web noti permission return!!"); return;} 
 
-    if (window.Notification.permission === "granted") {
-    } else if (window.Notification.permission !== "denied") {
-      window.Notification.requestPermission().then(function(permission) {
-        if (permission === "granted") {
-        }
-      });
+    if ('Notification' in window) {
+      if (Notification.permission === 'granted') {
+        // 알림을 보낼 수 있는 상태
+      } else if (Notification.permission !== 'denied') {
+        // 알림 권한을 요청할 수 있는 상태
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            // 권한이 허용됨
+          } else {
+            // 권한이 거부됨
+          }
+        });
+      } else {
+        // 알림 권한이 거부됨
+      }
     }
     
     // 이곳에도 아까 위에서 앱 등록할때 받은 'firebaseConfig' 값을 넣어주세요.
