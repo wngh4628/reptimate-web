@@ -48,7 +48,7 @@ export default function FreePosts() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board?page=${page}&size=20&${sort}&category=free`
+        `${process.env.NEXT_PUBLIC_API_URL}/board?page=${page}&size=20&${sort}&category=free`
       );
       setData(
         (prevData) =>
