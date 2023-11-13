@@ -130,18 +130,12 @@ export default function AuctionPostsView() {
     const myAppCookie = getCookie("myAppCookie");
 
     if (myAppCookie !== undefined) {
-      console.log(myAppCookie);
       const accessToken = myAppCookie.accessToken;
       const idx = parseInt(myAppCookie.idx || "", 10) || 0;
       const refreshToken = myAppCookie.refreshToken;
       const nickname = myAppCookie.nickname;
       const profilePath = myAppCookie.profilePath;
 
-      console.log("accessToken: " + accessToken);
-      console.log("idx: " + idx);
-      console.log("refreshToken: " + refreshToken);
-      console.log("nickname: " + nickname);
-      console.log("profilePath: " + profilePath);
       setUser({
         accessToken: accessToken || "",
         refreshToken: refreshToken || "",
@@ -196,11 +190,6 @@ export default function AuctionPostsView() {
   const deleteMutation = useMutation({
     mutationFn: auctionDelete,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful Deleting of auction post!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       alert("게시글이 삭제되었습니다.");
       router.replace("/auction");
     },
@@ -344,7 +333,6 @@ export default function AuctionPostsView() {
   if (typeof window !== "undefined") {
     // Check if running on the client side
     const storedData = localStorage.getItem("recoil-persist");
-    // console.log(storedData);
     if (storedData != null) {
       const userData = JSON.parse(storedData || "");
       currentUserIdx = userData.USER_DATA.idx;
@@ -368,17 +356,11 @@ export default function AuctionPostsView() {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}i/board/${idx}?macAdress=`
       );
-      console.log(
-        "========getData() : 경매글 정보 불러오기===================="
-      );
-      console.log(response.data);
-      console.log("============================");
       setData(response.data);
       if (response.data.result.UserInfo.idx === userIdx) {
         setIsInputDisabled(true);
       }
       setStreamKey(response.data.result.boardAuction.streamKey);
-      console.log(response.data.result.boardAuction.streamKey);
       setNowBid(
         formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
       );
@@ -393,7 +375,6 @@ export default function AuctionPostsView() {
 
       if (parseInt(response.data.result.UserInfo.idx) === userIdx) {
         setUserAuth("host");
-        console.log("당신은 이 방송의 host입니다.======================");
       }
 
       setEndTime(response.data.result.boardAuction.endTime);
@@ -439,7 +420,6 @@ export default function AuctionPostsView() {
   useEffect(() => {
     getData();
     getCommentData();
-    console.log(data);
   }, []);
 
   const post = data?.result;
@@ -524,11 +504,6 @@ export default function AuctionPostsView() {
   const streamKeyMutation = useMutation({
     mutationFn: streamKeyEdit,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful StreamKey resetting!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       alert("스트림키가 재생성 되었습니다.");
       setStreamKey(data.data.result);
     },
@@ -557,16 +532,12 @@ export default function AuctionPostsView() {
       }
     }
 
-    console.log(streamKey);
-    console.log(streamKey.length);
-
     const requestData = {
       boardAuctionIdx: data?.result.boardAuction.idx || 0,
       streamKey: streamKey,
       userAccessToken: userAccessToken || "",
     };
 
-    console.log(requestData);
     streamKeyMutation.mutate(requestData);
   };
 
@@ -574,11 +545,6 @@ export default function AuctionPostsView() {
   const mutation = useMutation({
     mutationFn: commentWrtie,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful writing of comment!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       const newComment: Comment = {
         idx: data.data.result.idx,
         createdAt: data.data.result.createdAt,
@@ -600,7 +566,6 @@ export default function AuctionPostsView() {
     },
     onError: async (error: unknown) => {
       if (isAxiosError(error) && error.response?.data.status === 401) {
-        console.log(error.response?.data.status);
         const storedData = localStorage.getItem("recoil-persist");
         if (storedData) {
           const userData = JSON.parse(storedData);
@@ -612,10 +577,7 @@ export default function AuctionPostsView() {
               },
               {
                 onSuccess: async (data1) => {
-                  console.log(data1);
                   userAccessToken = data1;
-                  console.log(userAccessToken);
-
                   // Here, we resend the comment write request after getting the new access token
                   const newAccessToken = data1.result.accessToken;
                   const requestData = {
@@ -657,7 +619,6 @@ export default function AuctionPostsView() {
   useEffect(() => {
     joinBidRoom();
     fetchBidData();
-    console.log("============:::::============", nowBid);
   }, [data]);
 
   /*************************************
@@ -680,7 +641,6 @@ export default function AuctionPostsView() {
         room: roomName,
       };
       if (socketBidRef.current) {
-        console.log("============경매 입찰 채팅 입장============", roomName);
         socketBidRef.current.emit("join-room", message);
       }
       setroomEnter(true);
@@ -688,25 +648,14 @@ export default function AuctionPostsView() {
     // 메시지 리스너
     socketBid.on("Auction_message", (message: IMessage) => {
       setchattingBidData((chattingData) => [...chattingData, message]);
-      console.log("======경매 입찰 채팅 수신=======");
-      console.log("bid message  :  ", message);
-      console.log("========================");
       if (bidContainerRef.current) {
         bidContainerRef.current.scrollTop =
           bidContainerRef.current.scrollHeight;
       }
       setNowBid(formatNumberWithCommas(message.message));
     });
-    socketBid.on("Auction_End", (message: string) => {
-      console.log("======경매 입찰 채팅 : 경매 종료=======");
-      console.log("Auction_End message  :  ", message);
-      console.log("============================");
-    });
-    socketBid.on("error", (message: string) => {
-      console.log("======경매 입찰 채팅 에러 수신=======");
-      console.log("error message", message);
-      console.log("==============================");
-    });
+    socketBid.on("Auction_End", (message: string) => {});
+    socketBid.on("error", (message: string) => {});
     //경매 입찰과 동시에 입찰자 명단 정보를 추가하는 리스너
     socketBid.on("auction_participate", (message: userInfo) => {
       setUserInfoBidData((prevUserInfoData) => ({
@@ -753,7 +702,6 @@ export default function AuctionPostsView() {
         const lastMessage = messages[messages.length - 1].message;
         setNowBid(formatNumberWithCommas(lastMessage));
       } else {
-        console.log("메시지가 없습니다.");
       }
     } catch (error) {
       // console.error("Error fetching data:", error);
@@ -885,7 +833,6 @@ export default function AuctionPostsView() {
 
     const handleLiveClick = () => {
       //웹뷰에서 버튼 클릭시 안드로이드 rtmp 송신 액티비티로 이동
-      console.log(streamKey);
       if (window.Android) {
         window.Android.openNativeActivity(idx, streamKey);
       } else if (window.webkit) {
@@ -901,7 +848,7 @@ export default function AuctionPostsView() {
     }
 
     return (
-      <div className="overflow-x-hidden mx-1">
+      <div className="mx-1">
         {post && (
           <div className="max-w-screen-sm mx-auto">
             <PC>

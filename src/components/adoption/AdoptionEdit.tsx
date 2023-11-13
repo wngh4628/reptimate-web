@@ -235,7 +235,6 @@ export default function AdoptionEdit() {
           mediaSequence: item.mediaSequence,
         }))
       );
-      console.log(post.images.length);
       if (post.images.length > 0) {
         setMediaSequence(post.images.length - 1);
       }
@@ -246,16 +245,11 @@ export default function AdoptionEdit() {
 
   useEffect(() => {
     getData();
-    console.log(allFiles);
   }, []);
 
-  useEffect(() => {
-    console.log(allFiles);
-  }, [allFiles]);
+  useEffect(() => {}, [allFiles]);
 
-  useEffect(() => {
-    console.log(deletedFiles);
-  }, [deletedFiles]);
+  useEffect(() => {}, [deletedFiles]);
 
   const handleVarietyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVariety = e.target.value;
@@ -418,11 +412,11 @@ export default function AdoptionEdit() {
   const mutation = useMutation({
     mutationFn: adoptionEdit,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful Editing of post!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
+      // console.log("============================");
+      // console.log("Successful Editing of post!");
+      // console.log(data);
+      // console.log(data.data);
+      // console.log("============================");
       alert("게시글 수정이 완료되었습니다.");
       window.history.back();
     },
@@ -465,11 +459,8 @@ export default function AdoptionEdit() {
       description !== ""
     ) {
       if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
-        console.log(requestData);
         mutation.mutate(requestData);
       } else {
-        console.log(addFiles);
-
         const formData = new FormData();
         addFiles.forEach((fileItem) => {
           formData.append("files", fileItem.file || "");
@@ -495,13 +486,8 @@ export default function AdoptionEdit() {
               },
             }
           );
-
-          console.log(response.data);
-
           if (response.status === 201) {
             const responseData = response.data;
-
-            console.log(responseData);
             // Now, you can send additional data to the API server
             const requestData1 = {
               state: selling,
@@ -520,9 +506,6 @@ export default function AdoptionEdit() {
               userAccessToken: userAccessToken || "",
               fileUrl: "",
             };
-
-            console.log(requestData1);
-
             mutation.mutate(requestData1);
           } else {
             console.error("Error uploading files to the first server.");

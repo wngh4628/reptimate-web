@@ -117,7 +117,6 @@ export default function AskEdit() {
           mediaSequence: item.mediaSequence,
         }))
       );
-      console.log(post.images.length);
       if (post.images.length > 0) {
         setMediaSequence(post.images.length - 1);
       }
@@ -128,16 +127,11 @@ export default function AskEdit() {
 
   useEffect(() => {
     getData();
-    console.log(allFiles);
   }, []);
 
-  useEffect(() => {
-    console.log(allFiles);
-  }, [allFiles]);
+  useEffect(() => {}, [allFiles]);
 
-  useEffect(() => {
-    console.log(deletedFiles);
-  }, [deletedFiles]);
+  useEffect(() => {}, [deletedFiles]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -274,11 +268,6 @@ export default function AskEdit() {
   const mutation = useMutation({
     mutationFn: freeEdit,
     onSuccess: (data) => {
-      console.log("============================");
-      console.log("Successful Editing of post!");
-      console.log(data);
-      console.log(data.data);
-      console.log("============================");
       alert("게시글 수정이 완료되었습니다.");
       window.history.back();
     },
@@ -304,11 +293,8 @@ export default function AskEdit() {
 
     if (title !== "" && description !== "") {
       if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
-        console.log(requestData);
         mutation.mutate(requestData);
       } else {
-        console.log(addFiles);
-
         const formData = new FormData();
         addFiles.forEach((fileItem) => {
           formData.append("files", fileItem.file || "");
@@ -334,13 +320,8 @@ export default function AskEdit() {
               },
             }
           );
-
-          console.log(response.data);
-
           if (response.status === 201) {
             const responseData = response.data;
-
-            console.log(responseData);
             // Now, you can send additional data to the API server
             const requestData1 = {
               boardIdx: idx,
@@ -351,9 +332,6 @@ export default function AskEdit() {
               userAccessToken: userAccessToken || "",
               fileUrl: "",
             };
-
-            console.log(requestData1);
-
             mutation.mutate(requestData1);
           } else {
             console.error("Error uploading files to the first server.");

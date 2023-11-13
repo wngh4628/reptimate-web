@@ -38,8 +38,7 @@ export default function Header() {
   const pathName = usePathname() || "";
   const router = useRouter();
   const params = useSearchParams();
-  const chatQueryParam = params?.get('chat') || "";
-  const [isLogin, isSetLogin] = useState(false);
+  const chatQueryParam = params?.get("chat") || "";
   const [accessToken, setAccessToken] = useRecoilState(userAtom);
 
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
@@ -100,7 +99,7 @@ export default function Header() {
       setCookieLoggedIn(true);
     }
     if (chatQueryParam == "1") {
-      setIsChatVisisible(true)
+      setIsChatVisisible(true);
     }
   }, []);
 
@@ -126,7 +125,10 @@ export default function Header() {
     //   console.log("this is android webview!");
     // } else {
     const permission = await Notification.requestPermission();
-    if (permission !== "granted") {console.log("web noti permission return!!"); return;} 
+    if (permission !== "granted") {
+      console.log("web noti permission return!!");
+      return;
+    }
 
     // 이곳에도 아까 위에서 앱 등록할때 받은 'firebaseConfig' 값을 넣어주세요.
     const firebaseApp = initializeApp({
@@ -145,7 +147,7 @@ export default function Header() {
         if (currentToken) {
           // 정상적으로 토큰이 발급되면 콘솔에 출력합니다.
           setfcm(currentToken);
-          console.log("fcmToken  :  ",currentToken)
+          console.log("fcmToken  :  ", currentToken);
         } else {
           console.log(
             "No registration token available. Request permission to generate one."
@@ -180,13 +182,12 @@ export default function Header() {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken != null) {
         const accessToken = userData.USER_DATA.accessToken;
-        isSetLogin(true);
+        setIsLoggedIn(true);
       }
     }
   };
   const handleLogout = () => {
     localStorage.removeItem("recoil-persist");
-    isSetLogin(false);
     setIsLoggedIn(false);
     router.refresh();
     window.location.reload();
@@ -248,7 +249,7 @@ export default function Header() {
       {/* PC 화면(반응형) */}
       <PC>
         <div className="flex justify-end pt-5 gap-2 font-bold">
-          {isLogin ? (
+          {isLoggedIn ? (
             <button
               className="group hover:text-main-color"
               onClick={handleLogout}
