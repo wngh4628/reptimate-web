@@ -48,7 +48,7 @@ export default function AskPosts() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board?page=${page}&size=20&${sort}&category=ask`
+        `${process.env.NEXT_PUBLIC_API_URL}/board?page=${page}&size=20&${sort}&category=ask`
       );
       setData(
         (prevData) =>

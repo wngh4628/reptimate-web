@@ -366,7 +366,7 @@ export default function AuctionPostsView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}?macAdress=`
+        `${process.env.NEXT_PUBLIC_API_URL}i/board/${idx}?macAdress=`
       );
       console.log(
         "========getData() : 경매글 정보 불러오기===================="
@@ -459,7 +459,7 @@ export default function AuctionPostsView() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}/comment?page=${page}&size=20&order=DESC`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}/comment?page=${page}&size=20&order=DESC`
       );
       setCommentData(
         (prevData) =>

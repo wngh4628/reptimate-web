@@ -74,7 +74,7 @@ export default function CommentCard({
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}/reply?page=${page}&size=20&order=DESC`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}/reply?page=${page}&size=20&order=DESC`
       );
       setReplyData(
         (prevData) =>

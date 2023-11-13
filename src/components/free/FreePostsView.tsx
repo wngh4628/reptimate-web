@@ -246,7 +246,7 @@ export default function FreePostsView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}?macAdress=`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`
       );
       // Assuming your response data has a 'result' property
       setData(response.data);
@@ -285,7 +285,7 @@ export default function FreePostsView() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}/comment?page=${page}&size=20&order=DESC`
+        `${process.env.NEXT_PUBLIC_API_URL}i/board/${idx}/comment?page=${page}&size=20&order=DESC`
       );
       setCommentData(
         (prevData) =>

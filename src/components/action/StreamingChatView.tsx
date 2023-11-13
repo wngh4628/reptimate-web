@@ -87,8 +87,8 @@ export default function StreamingChatView() {
       event.preventDefault(); // 브라우저의 기본 동작을 막음
       router.back(); // 뒤로가기 동작 실행
     };
-    window.addEventListener('popstate', handleBackNavigation);
-    
+    window.addEventListener("popstate", handleBackNavigation);
+
     if (storedData) {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken) {
@@ -115,7 +115,7 @@ export default function StreamingChatView() {
       }
     }
     return () => {
-      window.removeEventListener('popstate', handleBackNavigation);
+      window.removeEventListener("popstate", handleBackNavigation);
     };
   }, []);
 
@@ -129,7 +129,7 @@ export default function StreamingChatView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `https://reptimate.store/api/board/${idx}?macAdress=`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`
       );
       console.log(
         "========getData() : 경매글 정보 불러오기===================="
@@ -212,8 +212,8 @@ export default function StreamingChatView() {
   }, [profilePath]);
   useEffect(() => {
     if (userIdx === host) {
-        setUserAuth("host");
-      }
+      setUserAuth("host");
+    }
   }, [host]);
 
   //입찰가 입력란
@@ -318,38 +318,38 @@ export default function StreamingChatView() {
       if (userIdx === host) {
         setUserAuth("host");
       }
-      if(Array.isArray(message)){
-        const parsedDataArray =  message.map((data) => JSON.parse(data));
+      if (Array.isArray(message)) {
+        const parsedDataArray = message.map((data) => JSON.parse(data));
         console.log("===========live_participate : =======");
         console.log(parsedDataArray);
         console.log(message);
         console.log("====================================");
-        
+
         parsedDataArray.forEach((data: any) => {
-            const getUserInfo = data;
-            if (
-              getUserInfo &&
-              getUserInfo.profilePath &&
-              getUserInfo.profilePath.length > 1
-            ) {
-              setUserInfoData((prevUserInfoData) => ({
-                ...prevUserInfoData,
-                [getUserInfo.userIdx]: {
-                  userIdx: getUserInfo.userIdx,
-                  profilePath: getUserInfo.profilePath,
-                  nickname: getUserInfo.nickname,
-                },
-              }));
-              setUserList((prevsetUserList) => ({
-                ...prevsetUserList,
-                [getUserInfo.userIdx]: {
-                  userIdx: getUserInfo.userIdx,
-                  profilePath: getUserInfo.profilePath,
-                  nickname: getUserInfo.nickname,
-                },
-              }));
-            } else {
-            }
+          const getUserInfo = data;
+          if (
+            getUserInfo &&
+            getUserInfo.profilePath &&
+            getUserInfo.profilePath.length > 1
+          ) {
+            setUserInfoData((prevUserInfoData) => ({
+              ...prevUserInfoData,
+              [getUserInfo.userIdx]: {
+                userIdx: getUserInfo.userIdx,
+                profilePath: getUserInfo.profilePath,
+                nickname: getUserInfo.nickname,
+              },
+            }));
+            setUserList((prevsetUserList) => ({
+              ...prevsetUserList,
+              [getUserInfo.userIdx]: {
+                userIdx: getUserInfo.userIdx,
+                profilePath: getUserInfo.profilePath,
+                nickname: getUserInfo.nickname,
+              },
+            }));
+          } else {
+          }
         });
       }
     });
@@ -900,8 +900,6 @@ export default function StreamingChatView() {
                   입찰
                 </button>
               </div>
-
-
             </div>
           </div>
         ) : (
