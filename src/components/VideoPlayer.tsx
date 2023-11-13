@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
 
 interface VideoPlayerProps {
@@ -14,17 +14,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, type }) => {
       const isSafari = /^((?!chrome|android).)*safari/i.test(
         navigator.userAgent
       );
-      const isAppleWebKit = /^((?!chrome|android).)*AppleWebKit/i.test(
+      const isAppleWebKit = /^((?!chrome|android).)*iPhone/i.test(
         navigator.userAgent
       );
       if (isSafari || isAppleWebKit) {
         videoRef.current.src = src;
         videoRef.current.setAttribute("playsinline", "true");
-      }
-      if (type === "m3u8" && Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(src);
-        hls.attachMedia(videoRef.current!); // Force conversion to a definite value
+      } else {
+        if (Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(src);
+          hls.attachMedia(videoRef.current);
+        }
       }
     }
   }, [src, type]);
