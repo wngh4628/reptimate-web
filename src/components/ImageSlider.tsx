@@ -69,7 +69,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ imageUrls }) => {
       );
     } else if (currentImage.category === "video") {
       return (
-        <div className="relative w-full h-0 pb-[100%] overflow-hidden border-2 border-gray-400">
+        <div className="relative w-full h-0 pb-[100%] overflow-hidden">
           <VideoPlayer src={currentImage.path} type="m3u8" />
           <div className="absolute inset-x-0 bottom-2 flex justify-center">
             {imageUrls.map((_, index) => (
