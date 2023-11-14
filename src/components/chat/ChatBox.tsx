@@ -388,6 +388,8 @@ return (
             </div>
         </div>
     )}
+
+
       <div className="flex-1 w-full border-gray-100 border-r-[1px]">
       <PC>
         <div ref={chatDivRef}
@@ -402,7 +404,7 @@ return (
       </PC>
       <Mobile>
         <div ref={chatDivRef}
-          className="flex-1 h-[675px] overflow-auto bg-white pb-1">
+          className="flex-1 h-[425px] overflow-auto bg-white pb-1">
           {chattingData.map((chatData, i) => (
             chatData.userIdx ? (
                 // chatData의 userIdx가 현재 사용자의 userIdx와 일치하는 경우
@@ -412,6 +414,7 @@ return (
         </div>
       </Mobile>
       </div>
+
       <div className='flex h-[50px] border-[#A7A7A7] text-sm w-full pl-[2px]'>
         <input
           className="w-full h-12 px-4 py-2 border border-gray-300 rounded"
@@ -423,10 +426,8 @@ return (
             전송
         </button>
       </div>
-            
-      <div className="flex flex-col flex-1 space-y-2">
-          
-      </div>  
+
+
 
     </div>
   </div>
