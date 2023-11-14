@@ -6,7 +6,7 @@ export default async function handler(
 ) {
   const config = {
     client_id: "store.reptimate.web", // This is the service ID we created.
-    redirect_uri: "http://localhost:3000/api/applelogin/callback", // As registered along with our service ID
+    redirect_uri: "https://web.reptimate.store/api/applelogin/callback", // As registered along with our service ID
     response_type: "code id_token",
     state: "origin:web", // Any string of your choice that you may use for some logic. It's optional and you may omit it.
     scope: "name email", // To tell apple we want the user name and emails fields in the response it sends us.
@@ -17,6 +17,6 @@ export default async function handler(
   if (req.method === "POST") {
     res.redirect(307, url);
   } else {  
-    res.redirect(307, "https://localhost:3000");
+    res.redirect(307, "https://web.reptimate.store");
   }
 }

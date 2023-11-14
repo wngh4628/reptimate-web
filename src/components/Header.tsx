@@ -356,9 +356,6 @@ export default function Header() {
       </PC>
       {/* 모바일 화면(반응형) */}
       <Mobile>
-        <Head>
-          <meta name="viewport" content="user-scalable=no" />
-        </Head>
         <div className="flex justify-start pt-2 pb-2 pl-5 pr-5">
           <Link href={link}>
             <div className="flex w-32 p1-0">

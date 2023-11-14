@@ -1,8 +1,8 @@
 'use client'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
+import { Mobile, PC } from "../ResponsiveLayout";
 import axios from "axios";
 
 import PersonalChatItem from '../chat/PersonalChatItem';
@@ -374,50 +374,61 @@ export default function PersonalChatBox() {
   }
 
 return (
-    <div className="min-h-screen w-full">
-        <div className="w-full h-[40px] border-gray-100 flex flex-row">
-            <img className='ml-[5px] w-[20px] h-[20px] self-center cursor-pointer' src="/img/ic_back.png" onClick={chatRoomOut}/>
-            <div className='text-[15px] self-center text-center flex-grow pr-[25px]'>{otherNickname}</div>
-        </div>
-
-        <div className="flex items-start flex-col">
-        {loading && (
-            <div className="flex justify-center self-center">
-                <div
-                className="w-[15px] h-[15px] border-t-4 border-main-color border-solid rounded-full animate-spin" ref={target}>
-                </div>
-            </div>
-        )}
-          <div className="flex-1 w-full border-gray-100 border-r-[1px]">
-            <div ref={chatDivRef}
-            className="flex-1 h-[375px] overflow-auto bg-white pb-1">
-              {
-              chattingData.map((chatData, i) => (
-                chatData.userIdx ? (
-                    // chatData의 userIdx가 현재 사용자의 userIdx와 일치하는 경우
-                    <PersonalChatItem chatData={chatData} userIdx={userIdx} userInfoData={userInfoData} key={i} />
-                  ) : null // 일치하지 않는 경우, null을 반환하여 해당 아이템을 무시
-              ))
-              }
-            </div>
-          </div>
-          <div className='flex border-[#A7A7A7] text-sm w-full pl-[2px]'>
-            <input
-              className="w-full h-12 px-4 py-2 border border-gray-300 rounded"
-              onChange={onChangeKeyword}
-              value={textMsg} />
-            <button
-              className="w-[20%] h-12 bg-main-color text-white rounded transition duration-300 ml-1"
-              onClick={sendMsg}>
-                전송
-            </button>
-          </div>
-                
-          <div className="flex flex-col flex-1 space-y-2">
-              
-          </div>  
-
-        </div>
+  <div className="w-full">
+    <div className="w-full h-[40px] border-gray-100 flex flex-row">
+        <img className='ml-[5px] w-[20px] h-[20px] self-center cursor-pointer' src="/img/ic_back.png" onClick={chatRoomOut}/>
+        <div className='text-[15px] self-center text-center flex-grow pr-[25px]'>{otherNickname}</div>
     </div>
+
+    <div className="flex items-start flex-col">
+    {loading && (
+        <div className="flex justify-center self-center">
+            <div
+            className="w-[15px] h-[15px] border-t-4 border-main-color border-solid rounded-full animate-spin" ref={target}>
+            </div>
+        </div>
+    )}
+
+
+      <div className="flex-1 w-full border-gray-100 border-r-[1px]">
+      <PC>
+        <div ref={chatDivRef}
+          className="flex-1 h-[375px] overflow-auto bg-white pb-1">
+          {chattingData.map((chatData, i) => (
+            chatData.userIdx ? (
+                // chatData의 userIdx가 현재 사용자의 userIdx와 일치하는 경우
+                <PersonalChatItem chatData={chatData} userIdx={userIdx} userInfoData={userInfoData} key={i} />
+              ) : null // 일치하지 않는 경우, null을 반환하여 해당 아이템을 무시
+          ))}
+        </div>
+      </PC>
+      <Mobile>
+        <div ref={chatDivRef}
+          className="flex-1 h-[375px] overflow-auto bg-white pb-1">
+          {chattingData.map((chatData, i) => (
+            chatData.userIdx ? (
+                <PersonalChatItem chatData={chatData} userIdx={userIdx} userInfoData={userInfoData} key={i} />
+              ) : null
+          ))}
+        </div>
+      </Mobile>
+      </div>
+
+      <div className='flex h-[50px] border-[#A7A7A7] text-sm w-full pl-[2px]'>
+        <input
+          className="w-full h-12 px-4 py-2 border border-gray-300 rounded"
+          onChange={onChangeKeyword}
+          value={textMsg} />
+        <button
+          className="w-[20%] h-12 bg-main-color text-white rounded transition duration-300 ml-1"
+          onClick={sendMsg}>
+            전송
+        </button>
+      </div>
+
+
+
+    </div>
+  </div>
   );
 }

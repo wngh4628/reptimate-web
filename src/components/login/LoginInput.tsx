@@ -82,7 +82,7 @@ export default function LoginInput() {
   };
   const appleConfig = {
     client_id: "store.reptimate.web", // This is the service ID we created.
-    redirect_uri: "http://web.reptimate.store/api/applelogin/callback", // As registered along with our service ID
+    redirect_uri: "https://web.reptimate.store/api/applelogin/callback", // As registered along with our service ID
     response_type: "code id_token",
     state: "origin:web", // Any string of your choice that you may use for some logic. It's optional and you may omit it.
     scope: "name email", // To tell apple we want the user name and emails fields in the response it sends us.
