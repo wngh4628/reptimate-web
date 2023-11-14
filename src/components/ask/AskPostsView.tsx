@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Mobile, PC } from "../ResponsiveLayout";
 import ImageSlider from "../ImageSlider";
 import { useMutation } from "@tanstack/react-query";
-import { commentWrtie } from "@/api/comment";
+import { commentWrite } from "@/api/comment";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom, chatVisisibleState } from "@/recoil/user";
 
@@ -65,6 +65,8 @@ export default function AskPostsView() {
   const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
   const [accessToken, setAccessToken] = useState("");
   const [chatRoomData, setchatRoomData] = useState<chatRoom[]>([]);
+
+  const [commentCnt, setCommentCnt] = useState(0);
 
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
@@ -346,7 +348,7 @@ export default function AskPostsView() {
 
   //댓글 작성 성공 시,
   const mutation = useMutation({
-    mutationFn: commentWrtie,
+    mutationFn: commentWrite,
     onSuccess: (data) => {
       const newComment: Comment = {
         idx: data.data.result.idx,
@@ -366,6 +368,7 @@ export default function AskPostsView() {
         newComment,
         ...(prevCommentList || []),
       ]);
+      setCommentCnt(commentCnt + 1);
     },
   });
 
@@ -403,6 +406,25 @@ export default function AskPostsView() {
 
         alert(alertMessage);
       }
+    };
+
+    const handleCommentDelete = (commentIdx: number) => {
+      // Filter out the deleted comment
+      const updatedCommentList = commentList?.filter(
+        (comment) => comment.idx !== commentIdx
+      );
+
+      // Update the comment list in the parent component
+      setCommentList(updatedCommentList);
+      setCommentCnt(commentCnt - 1);
+    };
+
+    const handleReplyWrite = () => {
+      setCommentCnt(commentCnt + 1);
+    };
+
+    const handleReplyDelete = () => {
+      setCommentCnt(commentCnt - 1);
     };
 
     const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
@@ -628,7 +650,12 @@ export default function AskPostsView() {
               {commentList !== null && commentList ? (
                 commentList.map((comment) => (
                   <li key={comment.idx}>
-                    <CommentCard comment={comment} />
+                    <CommentCard
+                      comment={comment}
+                      onDelete={handleCommentDelete}
+                      onReplyWrite={handleReplyWrite}
+                      onReplyDelete={handleReplyDelete}
+                    />
                   </li>
                 ))
               ) : (

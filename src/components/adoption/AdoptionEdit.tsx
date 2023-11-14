@@ -220,28 +220,34 @@ export default function AdoptionEdit() {
       // Assuming your response data has a 'result' property
       setData(response.data);
       const post = response.data.result;
-      setSelling(post.boardCommercial.state);
-      setTitle(post?.title || "");
-      setVariety(post?.boardCommercial.variety || "품종을 선택하세요");
-      setPattern(post?.boardCommercial.pattern || "모프를 선택하세요");
-      setBirthDate(post?.boardCommercial.birthDate || "연도-월-일");
-      setSelectedGender(post?.boardCommercial.gender || "");
-      setSelectedSize(post?.boardCommercial.size || "");
-      setPrice(post?.boardCommercial.price.toString() || "");
-      setDescription(post?.description || "");
-      setBoardCommercialIdx(post?.boardCommercial.idx || "");
-      setAllFiles(
-        post.images.map((item: Images) => ({
-          idx: item.idx,
-          id: Date.now() + Math.random(),
-          url: item.path,
-          type: item.category,
-          file: null,
-          mediaSequence: item.mediaSequence,
-        }))
-      );
-      if (post.images.length > 0) {
-        setMediaSequence(post.images.length - 1);
+      const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
+      if (!isCurrentUserComment) {
+        window.history.back();
+        alert("잘못된 접근입니다.");
+      } else {
+        setSelling(post.boardCommercial.state);
+        setTitle(post?.title || "");
+        setVariety(post?.boardCommercial.variety || "품종을 선택하세요");
+        setPattern(post?.boardCommercial.pattern || "모프를 선택하세요");
+        setBirthDate(post?.boardCommercial.birthDate || "연도-월-일");
+        setSelectedGender(post?.boardCommercial.gender || "");
+        setSelectedSize(post?.boardCommercial.size || "");
+        setPrice(post?.boardCommercial.price.toString() || "");
+        setDescription(post?.description || "");
+        setBoardCommercialIdx(post?.boardCommercial.idx || "");
+        setAllFiles(
+          post.images.map((item: Images) => ({
+            idx: item.idx,
+            id: Date.now() + Math.random(),
+            url: item.path,
+            type: item.category,
+            file: null,
+            mediaSequence: item.mediaSequence,
+          }))
+        );
+        if (post.images.length > 0) {
+          setMediaSequence(post.images.length - 1);
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
