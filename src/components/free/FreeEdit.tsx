@@ -142,10 +142,10 @@ export default function FreeEdit() {
       event.target.value = "";
     } else {
       if (file) {
-        if (file.size > 200 * 1024 * 1024) {
+        if (file.size > 50 * 1024 * 1024) {
           // Display an error message if the file size exceeds 200MB
           alert(
-            "파일의 용량이 너무 큽니다. 파일은 개당 200MB까지만 업로드 가능합니다."
+            "파일의 용량이 너무 큽니다. 파일은 개당 50MB까지만 업로드 가능합니다."
           );
           event.target.value = ""; // Clear the file input
         } else {
