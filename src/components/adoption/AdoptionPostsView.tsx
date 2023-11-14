@@ -9,7 +9,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Mobile, PC } from "../ResponsiveLayout";
 import ImageSlider from "../ImageSlider";
 import { useMutation } from "@tanstack/react-query";
-import { commentWrtie } from "@/api/comment";
+import { commentWrite } from "@/api/comment";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom, chatVisisibleState } from "@/recoil/user";
 import { Comment, getCommentResponse } from "@/service/comment";
@@ -71,6 +71,8 @@ export default function AdoptionPostsView() {
   const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
   const [accessToken, setAccessToken] = useState("");
   const [chatRoomData, setchatRoomData] = useState<chatRoom[]>([]);
+
+  const [commentCnt, setCommentCnt] = useState(0);
 
   function BackButton() {
     const handleGoBack = () => {
@@ -247,6 +249,7 @@ export default function AdoptionPostsView() {
       );
       // Assuming your response data has a 'result' property
       setData(response.data);
+      setCommentCnt(response.data.result.commentCnt);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -341,7 +344,7 @@ export default function AdoptionPostsView() {
 
   //댓글 작성 성공 시,
   const mutation = useMutation({
-    mutationFn: commentWrtie,
+    mutationFn: commentWrite,
     onSuccess: (data) => {
       const newComment: Comment = {
         idx: data.data.result.idx,
@@ -361,6 +364,7 @@ export default function AdoptionPostsView() {
         newComment,
         ...(prevCommentList || []),
       ]);
+      setCommentCnt(commentCnt + 1);
     },
   });
 
@@ -398,6 +402,25 @@ export default function AdoptionPostsView() {
 
         alert(alertMessage);
       }
+    };
+
+    const handleCommentDelete = (commentIdx: number) => {
+      // Filter out the deleted comment
+      const updatedCommentList = commentList?.filter(
+        (comment) => comment.idx !== commentIdx
+      );
+
+      // Update the comment list in the parent component
+      setCommentList(updatedCommentList);
+      setCommentCnt(commentCnt - 1);
+    };
+
+    const handleReplyWrite = () => {
+      setCommentCnt(commentCnt + 1);
+    };
+
+    const handleReplyDelete = () => {
+      setCommentCnt(commentCnt - 1);
     };
 
     const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
@@ -532,9 +555,7 @@ export default function AdoptionPostsView() {
               <hr className="border-t border-gray-300 my-1" />
               <div className="flex flex-row items-center py-3">
                 <p className="text-lg font-semibold ml-3 mr-1">댓글</p>
-                <p className="text-lg font-semibold mr-2">
-                  {post.commentCnt}개
-                </p>
+                <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
               </div>
               {userAccessToken ? (
                 <div>
@@ -658,9 +679,7 @@ export default function AdoptionPostsView() {
               <hr className="border-t border-gray-300" />
               <div className="flex flex-row items-center py-2">
                 <p className="font-semibold ml-1 mr-1">댓글</p>
-                <p className="text-lg font-semibold mr-2">
-                  {post.commentCnt}개
-                </p>
+                <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
               </div>
               {userAccessToken ? (
                 <div>
@@ -685,7 +704,12 @@ export default function AdoptionPostsView() {
               {commentList !== null && commentList ? (
                 commentList.map((comment) => (
                   <li key={comment.idx}>
-                    <CommentCard comment={comment} />
+                    <CommentCard
+                      comment={comment}
+                      onDelete={handleCommentDelete}
+                      onReplyWrite={handleReplyWrite}
+                      onReplyDelete={handleReplyDelete}
+                    />
                   </li>
                 ))
               ) : (

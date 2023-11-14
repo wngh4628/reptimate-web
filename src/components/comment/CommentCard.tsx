@@ -8,9 +8,19 @@ import CommentEditForm from "./CommentEditForm";
 import axios from "axios";
 import ReplyCard from "./ReplyCard";
 
-type Props = { comment: Comment };
+type Props = {
+  comment: Comment;
+  onDelete: (commentIdx: number) => void;
+  onReplyWrite: () => void;
+  onReplyDelete: () => void;
+};
 export default function CommentCard({
-  comment: {
+  comment,
+  onDelete,
+  onReplyWrite,
+  onReplyDelete,
+}: Props) {
+  const {
     idx,
     createdAt,
     updatedAt,
@@ -23,8 +33,8 @@ export default function CommentCard({
     replyCnt,
     nickname,
     profilePath,
-  },
-}: Props) {
+  } = comment;
+
   let userAccessToken: string | null = null;
   let currentUserIdx: number | null = null;
   let userProfilePath: string | null = null;
@@ -62,8 +72,6 @@ export default function CommentCard({
   const [isReplyWrtie, setIsReplyWrtie] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
   const [commentFormValue, setCommentFormValue] = useState<string>("");
-
-  const [isDeleted, setIsDeleted] = useState(false);
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(description);
@@ -150,6 +158,7 @@ export default function CommentCard({
       };
       setReplyList((prevReplyList) => [newComment, ...(prevReplyList || [])]);
       setIsReplyWrtie((prevIsReplyWrtie) => !prevIsReplyWrtie);
+      onReplyWrite();
     },
   });
 
@@ -175,7 +184,7 @@ export default function CommentCard({
   const mutation = useMutation({
     mutationFn: commentDelete,
     onSuccess: (data) => {
-      setIsDeleted(true);
+      onDelete(idx);
       // alert("댓글이 삭제되었습니다.");
     },
   });
@@ -243,109 +252,108 @@ export default function CommentCard({
     setReplyList((prevReplyList) =>
       prevReplyList?.filter((reply) => reply.idx !== replyIdx)
     );
+    onReplyDelete();
   };
 
   return (
     <div className="overflow-x-hidden">
-      {isDeleted ? null : (
-        <div className="mx-1 mt-2 mb-6 flex flex-col break-all">
-          <div className="flex items-center">
-            <img
-              className="w-10 h-10 rounded-full border-2"
-              src={profilePath || "/img/reptimate_logo.png"}
-              alt=""
+      <div className="mx-1 mt-2 mb-6 flex flex-col break-all">
+        <div className="flex items-center">
+          <img
+            className="w-10 h-10 rounded-full border-2"
+            src={profilePath || "/img/reptimate_logo.png"}
+            alt=""
+          />
+          <p className="text-xl font-bold ml-1">{nickname}</p>
+        </div>
+        {isEditing ? (
+          <div className="ml-10">
+            <CommentEditForm
+              value={editedComment} // 전달할 댓글 폼의 값을 설정합니다.
+              onSubmit={handleEditCommentSubmit}
+              onChange={(value: string) => setEditedComment(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
             />
-            <p className="text-xl font-bold ml-1">{nickname}</p>
+            <p
+              className="cursor-pointer text-xs font-bold text-gray-500 ml-1 mt-1"
+              onClick={CancleEdit}
+            >
+              취소
+            </p>
           </div>
-          {isEditing ? (
-            <div className="ml-10">
-              <CommentEditForm
-                value={editedComment} // 전달할 댓글 폼의 값을 설정합니다.
-                onSubmit={handleEditCommentSubmit}
-                onChange={(value: string) => setEditedComment(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
-              />
-              <p
-                className="cursor-pointer text-xs font-bold text-gray-500 ml-1 mt-1"
-                onClick={CancleEdit}
-              >
-                취소
-              </p>
-            </div>
-          ) : (
-            <div>
-              <p className="ml-10">{editedComment}</p>
-              <div className="flex items-center my-1 text-sm ml-10">
-                <p className="text-gray-500">{postWriteDate}</p>
-                <p className="ml-1 text-gray-500">{postWriteTime}</p>
-                {userAccessToken && (
-                  <p
-                    className="ml-2 text-gray-500 cursor-pointer"
-                    onClick={handleReplyWriteClick}
-                  >
-                    답글 달기
-                  </p>
-                )}
-                {isCurrentUserComment && (
-                  <>
-                    <p
-                      className="ml-2 text-gray-500 cursor-pointer"
-                      onClick={handleEditClick}
-                    >
-                      수정
-                    </p>
-                    <p
-                      className="ml-2 text-gray-500 cursor-pointer"
-                      onClick={handleDeleteClick}
-                    >
-                      삭제
-                    </p>
-                  </>
-                )}
-              </div>
-              {isReplyWrtie && (
-                <div className="ml-10 -2">
-                  {!isEditing ? (
-                    <ReplyForm
-                      value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
-                      onSubmit={handleCommentSubmit}
-                      onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              )}
-              {replyList && replyList.length > 0 && (
+        ) : (
+          <div>
+            <p className="ml-10">{editedComment}</p>
+            <div className="flex items-center my-1 text-sm ml-10">
+              <p className="text-gray-500">{postWriteDate}</p>
+              <p className="ml-1 text-gray-500">{postWriteTime}</p>
+              {userAccessToken && (
                 <p
-                  className="ml-10 text-sm text-gray-500 cursor-pointer"
-                  onClick={handleReplyClick}
+                  className="ml-2 text-gray-500 cursor-pointer"
+                  onClick={handleReplyWriteClick}
                 >
-                  ㅡ 답글 {replyList?.length}개
+                  답글 달기
                 </p>
               )}
+              {isCurrentUserComment && (
+                <>
+                  <p
+                    className="ml-2 text-gray-500 cursor-pointer"
+                    onClick={handleEditClick}
+                  >
+                    수정
+                  </p>
+                  <p
+                    className="ml-2 text-gray-500 cursor-pointer"
+                    onClick={handleDeleteClick}
+                  >
+                    삭제
+                  </p>
+                </>
+              )}
             </div>
-          )}
-          {isReplying && (
-            <div className="ml-10 my-2">
-              <ul>
-                {replyList !== null && replyList ? (
-                  replyList.map((reply) => (
-                    <li key={reply.idx}>
-                      <ReplyCard
-                        comment={reply}
-                        onEdit={handleEditReply}
-                        onDelete={handleDeleteReply}
-                      />
-                    </li>
-                  ))
+            {isReplyWrtie && (
+              <div className="ml-10 -2">
+                {!isEditing ? (
+                  <ReplyForm
+                    value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
+                    onSubmit={handleCommentSubmit}
+                    onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
+                  />
                 ) : (
-                  <li></li>
+                  <></>
                 )}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
+              </div>
+            )}
+            {replyList && replyList.length > 0 && (
+              <p
+                className="ml-10 text-sm text-gray-500 cursor-pointer"
+                onClick={handleReplyClick}
+              >
+                ㅡ 답글 {replyList?.length}개
+              </p>
+            )}
+          </div>
+        )}
+        {isReplying && (
+          <div className="ml-10 my-2">
+            <ul>
+              {replyList !== null && replyList ? (
+                replyList.map((reply) => (
+                  <li key={reply.idx}>
+                    <ReplyCard
+                      comment={reply}
+                      onEdit={handleEditReply}
+                      onDelete={handleDeleteReply}
+                    />
+                  </li>
+                ))
+              ) : (
+                <li></li>
+              )}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

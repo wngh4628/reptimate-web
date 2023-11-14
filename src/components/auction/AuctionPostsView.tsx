@@ -5,7 +5,7 @@ import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { Mobile, PC } from "../ResponsiveLayout";
 import ImageSlider from "../ImageSlider";
 import { useMutation } from "@tanstack/react-query";
-import { commentWrtie } from "@/api/comment";
+import { commentWrite } from "@/api/comment";
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom, chatVisisibleState } from "@/recoil/user";
@@ -109,6 +109,8 @@ export default function AuctionPostsView() {
   const [host, setHost] = useState(0); //방장 유무: 게시글 작성자의 idx로 지정
   const [countdown, setCountdown] = useState("");
   const [userInfoData, setUserInfoData] = useState<userInfo[]>([]); //유저 정보 가지고 있는 리스트
+
+  const [commentCnt, setCommentCnt] = useState(0);
 
   function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -354,7 +356,7 @@ export default function AuctionPostsView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}i/board/${idx}?macAdress=`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`
       );
       setData(response.data);
       if (response.data.result.UserInfo.idx === userIdx) {
@@ -543,7 +545,7 @@ export default function AuctionPostsView() {
 
   //댓글 작성 성공 시,
   const mutation = useMutation({
-    mutationFn: commentWrtie,
+    mutationFn: commentWrite,
     onSuccess: (data) => {
       const newComment: Comment = {
         idx: data.data.result.idx,
@@ -563,6 +565,7 @@ export default function AuctionPostsView() {
         newComment,
         ...(prevCommentList || []),
       ]);
+      setCommentCnt(commentCnt + 1);
     },
     onError: async (error: unknown) => {
       if (isAxiosError(error) && error.response?.data.status === 401) {
@@ -812,6 +815,25 @@ export default function AuctionPostsView() {
 
         alert(alertMessage);
       }
+    };
+
+    const handleCommentDelete = (commentIdx: number) => {
+      // Filter out the deleted comment
+      const updatedCommentList = commentList?.filter(
+        (comment) => comment.idx !== commentIdx
+      );
+
+      // Update the comment list in the parent component
+      setCommentList(updatedCommentList);
+      setCommentCnt(commentCnt - 1);
+    };
+
+    const handleReplyWrite = () => {
+      setCommentCnt(commentCnt + 1);
+    };
+
+    const handleReplyDelete = () => {
+      setCommentCnt(commentCnt - 1);
     };
 
     const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
@@ -1453,7 +1475,12 @@ export default function AuctionPostsView() {
               {commentList !== null && commentList ? (
                 commentList.map((comment) => (
                   <li key={comment.idx}>
-                    <CommentCard comment={comment} />
+                    <CommentCard
+                      comment={comment}
+                      onDelete={handleCommentDelete}
+                      onReplyWrite={handleReplyWrite}
+                      onReplyDelete={handleReplyDelete}
+                    />
                   </li>
                 ))
               ) : (
