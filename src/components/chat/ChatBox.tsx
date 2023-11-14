@@ -417,7 +417,7 @@ return (
 
       <div className='flex h-[50px] border-[#A7A7A7] text-sm w-full pl-[2px]' id='inputArea'>
         <input
-          className="w-full h-12 px-4 py-2 border border-gray-300 rounded"
+          className="w-full h-12 px-4 py-2 border border-gray-300 rounded focus:outline-none !text-base"
           onChange={onChangeKeyword}
           value={textMsg} />
         <button
