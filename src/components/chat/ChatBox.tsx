@@ -384,7 +384,7 @@ return (
         <div className='text-[15px] self-center text-center flex-grow pr-[25px]'>{otherNickname}</div>
     </div>
 
-    <div className="flex-1 flex-col min-h-screen" id=''>
+    <div className="flex-1 flex-col">
       {loading && (
       <div className="flex justify-center self-center">
           <div className="w-[15px] h-[15px] border-t-4 border-main-color border-solid rounded-full animate-spin" ref={target}></div>

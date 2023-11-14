@@ -389,7 +389,7 @@ export default function Header() {
         <div
           className={`${
             isChatVisisible
-              ? "bg-white w-full h-[500px] z-[9999] fixed bottom-0 border-[2px] border-gray-300 flex flex-col shadow-md"
+              ? "bg-white w-full h-[510px] z-[9999] fixed top-0 border-[2px] border-gray-300 flex flex-col shadow-md"
               : "hidden"
           }`}
         >
@@ -400,8 +400,7 @@ export default function Header() {
             <button className="right-0" type="button" onClick={chattingClose}>
               <img
                 className="w-[15px] h-[15px] self-center mr-[18px]"
-                src="/img/ic_x.png"
-              />
+                src="/img/ic_x.png"/>
             </button>
           </div>
           <PersonalChat></PersonalChat>
