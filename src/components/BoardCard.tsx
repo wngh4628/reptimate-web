@@ -30,7 +30,7 @@ export default function PostCard({
         >
           <article className="flex flex-col items-center">
             <PC>
-              <div className="relative w-[350px] h-[350px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
+              <div className="relative w-[290px] h-[290px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
                 <img
                   className="object-cover w-full h-full"
@@ -41,7 +41,7 @@ export default function PostCard({
               </div>
               <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
-                  className="ml-6 w-10 h-10 rounded-full border-2"
+                  className="ml-4 w-10 h-10 rounded-full border-2"
                   src={
                     profilePath !== null
                       ? profilePath
@@ -84,8 +84,8 @@ export default function PostCard({
       </div>
       <div className=" mx-1 mt-2 mb-6 flex flex-col">
         <PC>
-          <h3 className="font-bold ml-4 text-xl mx-1">{title}</h3>
-          <div className="flex items-center ml-5">
+          <h3 className="font-bold ml-2 text-lg mx-1">{title}</h3>
+          <div className="flex items-center ml-2">
             <img className="flex w-5 mr-1" src="/img/eye.png" />
             <p className="">{view}</p>
             <img className="flex w-4 mx-1" src="/img/clock.png" />
