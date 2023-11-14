@@ -404,7 +404,7 @@ return (
       </PC>
       <Mobile>
         <div ref={chatDivRef}
-          className="flex-1 h-[400px] overflow-auto bg-white pb-1">
+          className="flex-1 h-[375px] overflow-auto bg-white pb-1">
           {chattingData.map((chatData, i) => (
             chatData.userIdx ? (
                 <PersonalChatItem chatData={chatData} userIdx={userIdx} userInfoData={userInfoData} key={i} />
