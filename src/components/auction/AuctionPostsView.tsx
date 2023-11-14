@@ -356,7 +356,7 @@ export default function AuctionPostsView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${currentUserIdx}`
       );
       setData(response.data);
       if (response.data.result.UserInfo.idx === userIdx) {

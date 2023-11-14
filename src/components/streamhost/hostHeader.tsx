@@ -4,11 +4,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { io, Socket } from "socket.io-client";
 import { GetAuctionPostsView } from "@/service/my/auction";
 
-import {
-  IMessage,
-  connectMessage,
-  userInfo,
-} from "@/service/chat/chat";
+import { IMessage, connectMessage, userInfo } from "@/service/chat/chat";
 
 import { bannedUserState, noChatUserState } from "@/recoil/chatting";
 import axios from "axios";
@@ -146,14 +142,26 @@ export default function HostStreamingInfoView() {
       );
       setPostsData(response.data);
 
-      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
-      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
-      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice));
+      setNowBid(
+        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
+      );
+      setBidUnit(
+        formatNumberWithCommas(response.data.result.boardAuction.unit)
+      );
+      setBidStartPrice(
+        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
+      );
       setHost(response.data.result.UserInfo.idx);
 
-      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
-      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
-      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice));
+      setNowBid(
+        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
+      );
+      setBidUnit(
+        formatNumberWithCommas(response.data.result.boardAuction.unit)
+      );
+      setBidStartPrice(
+        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
+      );
       setEndTime(response.data.result.boardAuction.endTime);
       const endTime1 = new Date(
         response.data.result.boardAuction.endTime

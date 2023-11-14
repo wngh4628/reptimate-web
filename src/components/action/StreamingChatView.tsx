@@ -135,9 +135,15 @@ export default function StreamingChatView() {
       // console.log(response.data);
       // console.log("============================");
       setPostsData(response.data);
-      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
-      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
-      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice));
+      setNowBid(
+        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
+      );
+      setBidUnit(
+        formatNumberWithCommas(response.data.result.boardAuction.unit)
+      );
+      setBidStartPrice(
+        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
+      );
 
       setHost(response.data.result.UserInfo.idx);
 
@@ -146,9 +152,15 @@ export default function StreamingChatView() {
         // console.log("당신은 이 방송의 host입니다.======================");
       }
 
-      setNowBid(formatNumberWithCommas(response.data.result.boardAuction.currentPrice));
-      setBidUnit(formatNumberWithCommas(response.data.result.boardAuction.unit));
-      setBidStartPrice(formatNumberWithCommas(response.data.result.boardAuction.startPrice));
+      setNowBid(
+        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
+      );
+      setBidUnit(
+        formatNumberWithCommas(response.data.result.boardAuction.unit)
+      );
+      setBidStartPrice(
+        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
+      );
       setEndTime(response.data.result.boardAuction.endTime);
 
       const endTime1 = new Date(
@@ -301,8 +313,8 @@ export default function StreamingChatView() {
       if (userIdx === host) {
         setUserAuth("host");
       }
-      if(Array.isArray(message)){
-        const parsedDataArray =  message.map((data) => JSON.parse(data));
+      if (Array.isArray(message)) {
+        const parsedDataArray = message.map((data) => JSON.parse(data));
         // console.log("===========live_participate : =======");
         // console.log(parsedDataArray);
         // console.log(message);
