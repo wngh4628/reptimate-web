@@ -374,7 +374,7 @@ export default function PersonalChatBox() {
   }
 
 return (
-  <div className="min-h-screen w-full">
+  <div className="w-full">
     <div className="w-full h-[40px] border-gray-100 flex flex-row">
         <img className='ml-[5px] w-[20px] h-[20px] self-center cursor-pointer' src="/img/ic_back.png" onClick={chatRoomOut}/>
         <div className='text-[15px] self-center text-center flex-grow pr-[25px]'>{otherNickname}</div>
@@ -404,12 +404,11 @@ return (
       </PC>
       <Mobile>
         <div ref={chatDivRef}
-          className="flex-1 h-[425px] overflow-auto bg-white pb-1">
+          className="flex-1 h-[400px] overflow-auto bg-white pb-1">
           {chattingData.map((chatData, i) => (
             chatData.userIdx ? (
-                // chatData의 userIdx가 현재 사용자의 userIdx와 일치하는 경우
                 <PersonalChatItem chatData={chatData} userIdx={userIdx} userInfoData={userInfoData} key={i} />
-              ) : null // 일치하지 않는 경우, null을 반환하여 해당 아이템을 무시
+              ) : null
           ))}
         </div>
       </Mobile>
