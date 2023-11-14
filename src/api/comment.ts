@@ -1,6 +1,6 @@
 import instance from "@/api/index";
 
-export const commentWrtie = async ({
+export const commentWrite = async ({
   boardIdx,
   category,
   description,
