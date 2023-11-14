@@ -32,8 +32,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, type }) => {
 
   if (type === "m3u8") {
     return (
-      <div className="absolute inset-0 w-full h-full object-contain bg-black flex justify-center items-center">
-        <video ref={videoRef} controls playsInline></video>
+      <div>
+        <video
+          className="absolute inset-0 w-full h-full object-contain bg-black"
+          ref={videoRef}
+          controls
+          playsInline
+        ></video>
       </div>
     );
   } else {
