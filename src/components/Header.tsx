@@ -389,7 +389,7 @@ export default function Header() {
         <div
           className={`${
             isChatVisisible
-              ? "bg-white w-full h-full z-[9999] fixed bottom-0 border-[2px] border-gray-300 flex flex-col shadow-md"
+              ? "bg-white w-full h-[500px] z-[9999] fixed bottom-0 border-[2px] border-gray-300 flex flex-col shadow-md"
               : "hidden"
           }`}
         >
