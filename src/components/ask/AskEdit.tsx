@@ -223,44 +223,89 @@ export default function AskEdit() {
     });
 
     return (
-      <div ref={(node) => drag(drop(node))}>
-        <div
-          key={fileItem.id}
-          className="relative w-28 h-28 mx-2 border-2 border-gray-200"
-          onClick={(e) => e.preventDefault()}
-        >
-          {fileItem.file?.type.startsWith("image/") ? (
-            <img
-              src={URL.createObjectURL(fileItem.file)}
-              alt={`Image ${fileItem.id}`}
-              className="object-cover w-full h-full"
-            />
-          ) : fileItem.file?.type.startsWith("video/") ? (
-            <video className="object-cover w-full h-full">
-              <source
-                src={URL.createObjectURL(fileItem.file)}
-                type={fileItem.file.type}
-              />
-              현재 브라우저는 비디오 태그를 지원하지 않습니다.
-            </video>
-          ) : fileItem.type == "img" ? (
-            <img
-              src={fileItem.url || ""}
-              alt={`Image ${fileItem.id}`}
-              className="object-cover w-full h-full"
-            />
-          ) : fileItem.type == "video" ? (
-            <VideoThumbnail src={fileItem.url || ""} type="m3u8" />
-          ) : (
-            <p>지원하지 않는 파일 형태</p>
-          )}
-          <button
-            onClick={() => handleRemoveItem(fileItem.id, fileItem.idx)}
-            className="absolute -top-2 -right-2 transform translate-x-1/4 -translate-y-1/4 w-6 h-6 bg-red-500 text-white rounded-full"
-          >
-            X
-          </button>
-        </div>
+      <div>
+        <PC>
+          <div ref={(node) => drag(drop(node))}>
+            <div
+              key={fileItem.id}
+              className="relative w-28 h-28 mx-2 border-2 border-gray-200"
+              onClick={(e) => e.preventDefault()}
+            >
+              {fileItem.file?.type.startsWith("image/") ? (
+                <img
+                  src={URL.createObjectURL(fileItem.file)}
+                  alt={`Image ${fileItem.id}`}
+                  className="object-cover w-full h-full"
+                />
+              ) : fileItem.file?.type.startsWith("video/") ? (
+                <video className="object-cover w-full h-full">
+                  <source
+                    src={URL.createObjectURL(fileItem.file)}
+                    type={fileItem.file.type}
+                  />
+                  현재 브라우저는 비디오 태그를 지원하지 않습니다.
+                </video>
+              ) : fileItem.type == "img" ? (
+                <img
+                  src={fileItem.url || ""}
+                  alt={`Image ${fileItem.id}`}
+                  className="object-cover w-full h-full"
+                />
+              ) : fileItem.type == "video" ? (
+                <VideoThumbnail src={fileItem.url || ""} type="m3u8" />
+              ) : (
+                <p>지원하지 않는 파일 형태</p>
+              )}
+              <button
+                onClick={() => handleRemoveItem(fileItem.id, fileItem.idx)}
+                className="absolute -top-2 -right-2 transform translate-x-1/4 -translate-y-1/4 w-6 h-6 bg-red-500 text-white rounded-full"
+              >
+                X
+              </button>
+            </div>
+          </div>
+        </PC>
+        <Mobile>
+          <div ref={(node) => drag(drop(node))}>
+            <div
+              key={fileItem.id}
+              className="relative w-20 h-20 mx-1 border-2 border-gray-300 rounded-xl"
+              onClick={(e) => e.preventDefault()}
+            >
+              {fileItem.file?.type.startsWith("image/") ? (
+                <img
+                  src={URL.createObjectURL(fileItem.file)}
+                  alt={`Image ${fileItem.id}`}
+                  className="object-cover w-full h-full"
+                />
+              ) : fileItem.file?.type.startsWith("video/") ? (
+                <video className="object-cover w-full h-full">
+                  <source
+                    src={URL.createObjectURL(fileItem.file)}
+                    type={fileItem.file.type}
+                  />
+                  현재 브라우저는 비디오 태그를 지원하지 않습니다.
+                </video>
+              ) : fileItem.type == "img" ? (
+                <img
+                  src={fileItem.url || ""}
+                  alt={`Image ${fileItem.id}`}
+                  className="object-cover w-full h-full rounded-xl"
+                />
+              ) : fileItem.type == "video" ? (
+                <VideoThumbnail src={fileItem.url || ""} type="m3u8" />
+              ) : (
+                <p>지원하지 않는 파일 형태</p>
+              )}
+              <button
+                onClick={() => handleRemoveItem(fileItem.id, fileItem.idx)}
+                className="absolute -top-1 -right-1 transform translate-x-1/4 -translate-y-1/4 w-5 h-5 bg-red-500 text-white text-sm rounded-full"
+              >
+                X
+              </button>
+            </div>
+          </div>
+        </Mobile>
       </div>
     );
   };
@@ -391,14 +436,26 @@ export default function AskEdit() {
           className="w-auto h-auto cursor-pointer py-3"
           htmlFor="mediaInput"
         >
-          <div className="w-28 h-28 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
-            <img
-              src="/img/camera.png"
-              alt="Camera Icon"
-              className="w-16 h-16"
-            />
-            <span className="">{allFiles.length}/5</span>
-          </div>
+          <PC>
+            <div className="w-28 h-28 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
+              <img
+                src="/img/camera.png"
+                alt="Camera Icon"
+                className="w-16 h-16"
+              />
+              <span className="">{allFiles.length}/5</span>
+            </div>
+          </PC>
+          <Mobile>
+            <div className="w-20 h-20 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
+              <img
+                src="/img/camera.png"
+                alt="Camera Icon"
+                className="w-12 h-12"
+              />
+              <span className="text-sm">{allFiles.length}/5</span>
+            </div>
+          </Mobile>
         </label>
         <div
           className="flex items-center py-3 mx-auto"
