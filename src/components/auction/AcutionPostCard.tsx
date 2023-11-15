@@ -53,7 +53,7 @@ export default function AuctionPostCard({
         <Link href={`/auction/posts/${idx}`}>
           <article className="flex flex-col items-center">
             <PC>
-              <div className="relative w-[350px] h-[350px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
+              <div className="relative w-[290px] h-[290px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                 <div
                   className={`${
                     state === "end"
@@ -68,13 +68,13 @@ export default function AuctionPostCard({
                   style={{ zIndex: 1 }}
                 />
               </div>
-              <div className="absolute right-6 mt-2 flex items-center z-[999]">
+              <div className="absolute right-3 mt-1 flex items-center z-[999]">
                 <p
                   className={`${
                     state === "selling"
                       ? "text-red-500 font-bold"
                       : state === "end"
-                      ? "text-white bg-black px-1 rounded-md"
+                      ? "text-white bg-black px-1 rounded-md mt-1"
                       : "text-main-color font-bold"
                   } text-lg z-[999] relative`}
                 >
@@ -83,7 +83,7 @@ export default function AuctionPostCard({
               </div>
               <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
-                  className="ml-6 w-10 h-10 rounded-full border-2"
+                  className="ml-4 w-10 h-10 rounded-full border-2"
                   src={
                     profilePath !== null
                       ? profilePath
@@ -147,9 +147,9 @@ export default function AuctionPostCard({
 
       <div className=" mx-1 mt-2 mb-6 flex flex-col">
         <PC>
-          <h3 className="font-bold ml-4 text-xl mx-1">{title}</h3>
+          <h3 className="font-bold ml-2 text-lg mx-1">{title}</h3>
           <div className="w-full flex flex-row items-center">
-            <p className="text-sm ml-4 mr-1">
+            <p className="text-sm ml-2 mr-1">
               {state === "selling" ? "현재 입찰가 : " : "낙찰가 : "}
             </p>
             <p className="font-bold text-lg">
@@ -157,7 +157,7 @@ export default function AuctionPostCard({
             </p>
             <p className="text-sm ml-1">원</p>
           </div>
-          <div className="flex ml-3 items-center">
+          <div className="flex ml-1 items-center">
             <p
               className={`text-xs mx-1 text-white p-1 rounded font-bold ${
                 gender === "수컷"
@@ -173,7 +173,7 @@ export default function AuctionPostCard({
               {size}
             </p>
           </div>
-          <div className="flex items-center ml-4">
+          <div className="flex items-center ml-1">
             <img className="flex w-[15px] mx-1" src="/img/clock.png" />
             <p className="text-gray-500 text-[15px]">
               {formatDateToCustomString(createdAt)}

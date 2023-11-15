@@ -245,7 +245,7 @@ export default function AdoptionPostsView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${currentUserIdx}`
       );
       // Assuming your response data has a 'result' property
       setData(response.data);
