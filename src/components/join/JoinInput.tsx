@@ -283,7 +283,7 @@ export default function JoinInput() {
                       </span>
                     </label>
                     <a
-                      href="#"
+                      href="https://foremost-hub-705.notion.site/c3a95741989f4efcb0b8b85efd1cc62d?pvs=4"
                       className="absolute top-[2px] right-0 text-[12px] leading-[20px] tracking-[-.18px] text-[rgba(34,34,34,.5)]"
                     >
                       {" "}
@@ -323,7 +323,7 @@ export default function JoinInput() {
                       </span>
                     </label>
                     <a
-                      href="#"
+                      href="https://foremost-hub-705.notion.site/ec25d9a0f4014962adc3298f98d53e72?pvs=4"
                       className="absolute top-[2px] right-0 text-[12px] leading-[20px] tracking-[-.18px] text-[rgba(34,34,34,.5)]"
                     >
                       {" "}
@@ -362,13 +362,6 @@ export default function JoinInput() {
                         [선택] 광고성 정보 수신에 모두 동의합니다.
                       </span>
                     </label>
-                    <a
-                      href="#"
-                      className="absolute top-[2px] right-0 text-[12px] leading-[20px] tracking-[-.18px] text-[rgba(34,34,34,.5)]"
-                    >
-                      {" "}
-                      내용 보기{" "}
-                    </a>
                   </div>
                 </div>
               </div>
