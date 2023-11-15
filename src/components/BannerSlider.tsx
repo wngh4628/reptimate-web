@@ -13,7 +13,7 @@ const BannerSlider: React.FC = () => {
             showThumbs={false}
             autoPlay={true}
             stopOnHover={false}
-            interval={2000}
+            interval={3000}
             infiniteLoop={true}
             showStatus={false}
             className="h-[700px]"
@@ -48,7 +48,7 @@ const BannerSlider: React.FC = () => {
           showThumbs={false}
           autoPlay={true}
           stopOnHover={false}
-          interval={2000}
+          interval={3000}
           infiniteLoop={true}
           showStatus={false}
           className="mt-3"

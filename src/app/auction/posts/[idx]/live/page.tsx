@@ -78,7 +78,7 @@ export default function ActionPage({ params: { slug } }: Props) {
       //   `https://live.reptimate.store/stream/hls/${streamKey}/index.m3u8`
       // );
       setVideoUrl(
-        `https://live.reptimate.store/stream/${streamKey}/index.m3u8`
+        `https://live.reptimate.store/stream/hls/${streamKey}/index.m3u8`
       );
     }
   }, [streamKey]);
