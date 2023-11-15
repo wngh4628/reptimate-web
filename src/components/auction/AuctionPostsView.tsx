@@ -1230,7 +1230,7 @@ export default function AuctionPostsView() {
                       className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-sm font-bold mb-2"
                       type="submit"
                     >
-                      스트림키 재설정
+                      스트림키{"\n"}재설정
                     </button>
                   </form>
                 )}
@@ -1349,7 +1349,7 @@ export default function AuctionPostsView() {
                           className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-[12px] font-bold mb-1"
                           type="submit"
                         >
-                          스트림키 재설정
+                          스트림키{"\n"}재설정
                         </button>
                       </form>
                     )}
