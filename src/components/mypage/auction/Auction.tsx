@@ -202,7 +202,12 @@ export default function AuctionList() {
     title: item.title,
     category: item.category,
     createdAt: new Date(item.writeDate),
-    coverImage: item.images[0]?.coverImgPath || "",
+    coverImage:
+    item.images[0]?.category === "img"
+      ? item.images[0]?.path || ""
+      : item.images[0]?.category === "video"
+      ? item.images[0]?.coverImgPath || ""
+      : "",
     nickname: item.UserInfo.nickname,
     profilePath: item.UserInfo.profilePath,
     currentPrice: item.boardAuction?.currentPrice || 0,
