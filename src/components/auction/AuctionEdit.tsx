@@ -243,7 +243,7 @@ export default function AuctionEdit() {
       setstartPrice(post?.boardAuction.startPrice.toString() || "");
       setunit(post?.boardAuction.unit.toString() || "");
       setEndTime(post?.boardAuction.endTime.split(" ")[1] || "");
-      setRule(post?.boardAuction.extensionRule || "");
+      setRule(post?.boardAuction.extensionRule || "0");
       setStreamKey(post?.boardAuction.streamKey || "");
       if (post && post.boardAuction && post.boardAuction.AlertTime) {
         setAlretTime(post.boardAuction.AlertTime.split(" ")[1] || "");

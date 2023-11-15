@@ -50,7 +50,11 @@ export default function AuctionItem({
   return (
     <div>
       <div className="ml-0.5 mr-0.5 relative">
-        <Link href={`/auction/posts/${idx}`}>
+        <Link
+          href={`${
+            state === "temp" ? `/auction/temp/${idx}` : `/auction/posts/${idx}`
+          }`}
+        >
           <article className="flex flex-col items-center">
             <PC>
               <div className="relative w-[350px] h-[350px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
