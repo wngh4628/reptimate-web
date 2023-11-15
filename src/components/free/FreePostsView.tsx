@@ -245,6 +245,7 @@ export default function FreePostsView() {
         `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${currentUserIdx}`
       );
       // Assuming your response data has a 'result' property
+      setCommentCnt(response.data.result.commentCnt);
       setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -518,9 +519,7 @@ export default function FreePostsView() {
               <hr className="border-t border-gray-300 my-1" />
               <div className="flex flex-row items-center py-3">
                 <p className="text-lg font-semibold ml-3 mr-1">댓글</p>
-                <p className="text-lg font-semibold mr-2">
-                  {post.commentCnt}개
-                </p>
+                <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
               </div>
               {userAccessToken ? (
                 <div>
@@ -624,9 +623,7 @@ export default function FreePostsView() {
               <hr className="border-t border-gray-300" />
               <div className="flex flex-row items-center py-2">
                 <p className="font-semibold ml-1 mr-1">댓글</p>
-                <p className="text-lg font-semibold mr-2">
-                  {post.commentCnt}개
-                </p>
+                <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
               </div>
               {userAccessToken ? (
                 <div>

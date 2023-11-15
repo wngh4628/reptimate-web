@@ -358,6 +358,7 @@ export default function AuctionPostsView() {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${currentUserIdx}`
       );
+      setCommentCnt(response.data.result.commentCnt);
       setData(response.data);
       if (response.data.result.UserInfo.idx === userIdx) {
         setIsInputDisabled(true);
@@ -1025,9 +1026,7 @@ export default function AuctionPostsView() {
               <hr className="border-t border-gray-300 my-1" />
               <div className="flex flex-row items-center py-3">
                 <p className="text-lg font-semibold ml-3 mr-2">댓글</p>
-                <p className="text-lg font-semibold mr-2">
-                  {post.commentCnt}개
-                </p>
+                <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
               </div>
               {userAccessToken ? (
                 <div>
@@ -1199,9 +1198,7 @@ export default function AuctionPostsView() {
               <hr className="border-t border-gray-300" />
               <div className="flex flex-row items-center py-2">
                 <p className="font-semibold ml-1 mr-1">댓글</p>
-                <p className="text-lg font-semibold mr-2">
-                  {post.commentCnt}개
-                </p>
+                <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
               </div>
               {userAccessToken ? (
                 <div>
