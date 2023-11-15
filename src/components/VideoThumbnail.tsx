@@ -19,7 +19,7 @@ const VideoThumbnail: React.FC<VideoPlayerProps> = ({ src, type }) => {
 
   // Change to use HLS player only when the type is 'm3u8'
   return type === "m3u8" ? (
-    <video ref={videoRef} className="object-cover w-full h-full" />
+    <video ref={videoRef} className="object-cover w-full h-full rounded-xl" />
   ) : (
     <video src={src} />
   );

@@ -268,10 +268,10 @@ export default function MarketWrite() {
                 <img
                   src={imageUrl}
                   alt={`Image ${fileItem.id}`}
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full rounded-xl"
                 />
               ) : fileItem.file.type.startsWith("video/") ? (
-                <video className="object-cover w-full h-full">
+                <video className="object-cover w-full h-full rounded-xl">
                   <source src={imageUrl} type={fileItem.file.type} />
                   현재 브라우저는 비디오 태그를 지원하지 않습니다.
                 </video>
@@ -298,10 +298,10 @@ export default function MarketWrite() {
                 <img
                   src={imageUrl}
                   alt={`Image ${fileItem.id}`}
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full rounded-xl"
                 />
               ) : fileItem.file.type.startsWith("video/") ? (
-                <video className="object-cover w-full h-full">
+                <video className="object-cover w-full h-full rounded-xl">
                   <source src={imageUrl} type={fileItem.file.type} />
                   현재 브라우저는 비디오 태그를 지원하지 않습니다.
                 </video>
@@ -484,7 +484,7 @@ export default function MarketWrite() {
             </div>
           </PC>
           <Mobile>
-            <div className="w-20 h-20 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
+            <div className="mx-1 w-20 h-20 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
               <img
                 src="/img/camera.png"
                 alt="Camera Icon"
@@ -507,7 +507,7 @@ export default function MarketWrite() {
           ))}
         </div>
       </div>
-      <div className="mt-4 flex flex-col">
+      <div className="mx-1 mt-4 flex flex-col">
         <p className="font-bold text-xl my-2">제목</p>
         <input
           type="text"
