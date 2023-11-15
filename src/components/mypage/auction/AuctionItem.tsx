@@ -1,7 +1,7 @@
 import { Auction } from "@/service/my/auction";
 import Image from "next/image";
 import Link from "next/link";
-import { Mobile, PC } from "@/components/ResponsiveLayout";
+import { Mobile, PC } from "../../ResponsiveLayout";
 
 type Props = { post: Auction };
 export default function AuctionItem({
@@ -17,8 +17,6 @@ export default function AuctionItem({
     state,
     title,
     coverImage,
-    profilePath,
-    nickname,
   },
 }: Props) {
   function formatDateToCustomString(date: Date): string {
@@ -43,6 +41,7 @@ export default function AuctionItem({
     }
     return str;
   }
+
   const imgStyle = {
     paddingBottom: "100%",
     position: "relative" as "relative",
@@ -72,7 +71,7 @@ export default function AuctionItem({
                   style={{ zIndex: 1 }}
                 />
               </div>
-              <div className="absolute right-6 mt-2 flex items-center z-[999]">
+              <div className="absolute right-4 mt-2 flex items-center z-[999]">
                 <p
                   className={`${
                     state === "selling"
@@ -85,22 +84,9 @@ export default function AuctionItem({
                   {setStateString(state)}
                 </p>
               </div>
-              <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
-                <img
-                  className="ml-6 w-10 h-10 rounded-full border-2"
-                  src={
-                    profilePath !== null
-                      ? profilePath
-                      : "/img/reptimate_logo.png"
-                  }
-                  alt={""}
-                />
-                <p className="text-white font-semibold ml-1">{nickname}</p>
-              </div>
             </PC>
             <Mobile>
               <div className="relative w-full overflow-hidden shadow-sm shadow-gray-400 hover:border-2 hover:border-main-color">
-                <div className="absolute inset-0  z-10"></div>
                 <div
                   className={`${
                     state === "end"
@@ -116,20 +102,6 @@ export default function AuctionItem({
                     style={{ zIndex: 1 }}
                   />
                 </div>
-              </div>
-              <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
-                <img
-                  className="ml-2 w-8 h-8 rounded-full border-2"
-                  src={
-                    profilePath !== null
-                      ? profilePath
-                      : "/img/reptimate_logo.png"
-                  }
-                  alt={""}
-                />
-                <p className="text-white font-semibold ml-1 text-sm">
-                  {nickname}
-                </p>
               </div>
               <div className="absolute right-2 mt-2 flex items-center z-[999]">
                 <p
