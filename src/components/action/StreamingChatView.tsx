@@ -484,6 +484,19 @@ export default function StreamingChatView() {
     if (textMsg.trim() === "") {
       return;
     }
+    const storedData = localStorage.getItem("recoil-persist");
+    if (storedData) {
+      const userData = JSON.parse(storedData);
+      if (userData.USER_DATA.accessToken) {
+        Swal.fire({
+          text: "로그인이 필요합니다.",
+          icon: "warning",
+          confirmButtonText: "완료", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
+        return;
+      }
+    }
     if (noChatState === true) {
       Swal.fire({
         text: "채팅 금지 상태입니다.",
