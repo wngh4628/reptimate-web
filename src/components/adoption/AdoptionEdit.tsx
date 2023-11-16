@@ -383,17 +383,17 @@ export default function AdoptionEdit() {
           <div ref={(node) => drag(drop(node))}>
             <div
               key={fileItem.id}
-              className="relative w-28 h-28 mx-2 border-2 border-gray-200"
+              className="relative w-28 h-28 mx-2 border-2 border-gray-200 rounded-xl"
               onClick={(e) => e.preventDefault()}
             >
               {fileItem.file?.type.startsWith("image/") ? (
                 <img
                   src={URL.createObjectURL(fileItem.file)}
                   alt={`Image ${fileItem.id}`}
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full rounded-xl"
                 />
               ) : fileItem.file?.type.startsWith("video/") ? (
-                <video className="object-cover w-full h-full">
+                <video className="object-cover w-full h-full rounded-xl">
                   <source
                     src={URL.createObjectURL(fileItem.file)}
                     type={fileItem.file.type}
@@ -404,7 +404,7 @@ export default function AdoptionEdit() {
                 <img
                   src={fileItem.url || ""}
                   alt={`Image ${fileItem.id}`}
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full rounded-xl"
                 />
               ) : fileItem.type == "video" ? (
                 <VideoThumbnail src={fileItem.url || ""} type="m3u8" />
@@ -431,10 +431,10 @@ export default function AdoptionEdit() {
                 <img
                   src={URL.createObjectURL(fileItem.file)}
                   alt={`Image ${fileItem.id}`}
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full rounded-xl"
                 />
               ) : fileItem.file?.type.startsWith("video/") ? (
-                <video className="object-cover w-full h-full">
+                <video className="object-cover w-full h-full rounded-xl">
                   <source
                     src={URL.createObjectURL(fileItem.file)}
                     type={fileItem.file.type}
@@ -645,7 +645,7 @@ export default function AdoptionEdit() {
             </div>
           </PC>
           <Mobile>
-            <div className="w-20 h-20 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
+            <div className="mx-1 w-20 h-20 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
               <img
                 src="/img/camera.png"
                 alt="Camera Icon"
@@ -668,7 +668,7 @@ export default function AdoptionEdit() {
           ))}
         </div>
       </div>
-      <div className="mt-4 flex flex-col">
+      <div className="mx-1 mt-4 flex flex-col">
         <p className="font-bold text-xl my-2">제목</p>
         <input
           type="text"
