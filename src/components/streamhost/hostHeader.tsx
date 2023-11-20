@@ -256,7 +256,7 @@ export default function HostStreamingInfoView() {
         // console.log("====================================");
         setUserList({});
         setUserInfoData([]);
-
+        console.log(userInfoData);
         parsedDataArray.forEach((data: any) => {
           const getUserInfo = data;
           if (
@@ -280,6 +280,8 @@ export default function HostStreamingInfoView() {
                 nickname: getUserInfo.nickname,
               },
             }));
+
+
           } else {
           }
         });
