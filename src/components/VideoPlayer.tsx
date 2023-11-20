@@ -38,6 +38,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, type }) => {
           ref={videoRef}
           controls
           playsInline
+          poster={src}
         ></video>
       </div>
     );

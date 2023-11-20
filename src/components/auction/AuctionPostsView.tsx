@@ -519,29 +519,35 @@ export default function AuctionPostsView() {
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let streamKey = "";
-    const len: number = 5;
-    for (let i = 1; i <= len; i++) {
-      const charset = Array.from(
-        "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-      ) as string[];
-      const rangeRandom = Array.from(
-        { length: 4 },
-        () => charset[Math.floor(Math.random() * charset.length)]
-      ).join("");
-      streamKey += rangeRandom;
-      if (i < len) {
-        streamKey += "-";
+    const confirmation = window.confirm(
+      "스트림키는 방송을 고유하게 식별하는 데 사용되는 키값입니다.\n각 게시물마다 고유한 스트림키 값이 존재하며, 작성자는 보안을 위해 언제든지 스트림키를 재설정 할 수 있습니다.\n스트림키를 재설정 하시겠습니까?"
+    );
+
+    if (confirmation) {
+      let streamKey = "";
+      const len: number = 5;
+      for (let i = 1; i <= len; i++) {
+        const charset = Array.from(
+          "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        ) as string[];
+        const rangeRandom = Array.from(
+          { length: 4 },
+          () => charset[Math.floor(Math.random() * charset.length)]
+        ).join("");
+        streamKey += rangeRandom;
+        if (i < len) {
+          streamKey += "-";
+        }
       }
+
+      const requestData = {
+        boardAuctionIdx: data?.result.boardAuction.idx || 0,
+        streamKey: streamKey,
+        userAccessToken: userAccessToken || "",
+      };
+
+      streamKeyMutation.mutate(requestData);
     }
-
-    const requestData = {
-      boardAuctionIdx: data?.result.boardAuction.idx || 0,
-      streamKey: streamKey,
-      userAccessToken: userAccessToken || "",
-    };
-
-    streamKeyMutation.mutate(requestData);
   };
 
   //댓글 작성 성공 시,
