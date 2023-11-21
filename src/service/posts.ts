@@ -33,16 +33,3 @@ export interface getResponse {
     }>;
   };
 }
-
-export type Post = {
-  idx: number;
-  view: number;
-  userIdx: number;
-  title: string;
-  category: string;
-  description: string;
-  writeDate: Date;
-  coverImage: String;
-  nickname: string;
-  profilePath: string;
-};

@@ -1,6 +1,4 @@
-import { Post } from "@/service/posts";
 import { Board } from "@/service/my/board";
-import Image from "next/image";
 import Link from "next/link";
 
 type Props = { post: Board };
