@@ -16,7 +16,7 @@ export default function AuctionItem({
     variety,
     state,
     title,
-    coverImage,
+    thumbnail,
   },
 }: Props) {
   function formatDateToCustomString(date: Date): string {
@@ -66,7 +66,9 @@ export default function AuctionItem({
                 ></div>
                 <img
                   className="object-cover w-full h-full"
-                  src={`${coverImage}` || "/img/reptimate_logo.png"}
+                  src={
+                    thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
+                  }
                   alt={""}
                   style={{ zIndex: 1 }}
                 />
@@ -97,7 +99,9 @@ export default function AuctionItem({
                 <div style={imgStyle}>
                   <img
                     className="object-cover absolute inset-0 w-full h-full"
-                    src={`${coverImage || "/img/reptimate_logo.png"}`}
+                    src={
+                      thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
+                    }
                     alt=""
                     style={{ zIndex: 1 }}
                   />
