@@ -537,6 +537,8 @@ export default function AdoptionEdit() {
               },
             }
           );
+
+          console.log(response);
           if (response.status === 201) {
             const responseData = response.data;
             // Now, you can send additional data to the API server
@@ -558,6 +560,7 @@ export default function AdoptionEdit() {
               fileUrl: "",
             };
             mutation.mutate(requestData1);
+            console.log(requestData1);
           } else {
             console.error("Error uploading files to the first server.");
             alert("Error uploading files. Please try again later.");

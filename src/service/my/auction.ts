@@ -14,6 +14,7 @@ export interface getResponseAuction {
       category: string;
       description: string;
       writeDate: string;
+      thumbnail: string;
       images: Array<{
         idx: number;
         createdAt: string;
@@ -67,7 +68,7 @@ export type Auction = {
   state: string;
   boardIdx: number;
   title: string;
-  coverImage: string;
+  thumbnail: string;
   profilePath: string;
   nickname: string;
 };

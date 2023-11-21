@@ -42,6 +42,7 @@ export interface getResponse {
       category: string;
       description: string;
       writeDate: string;
+      thumbnail: string;
       images: Array<{
         idx: number;
         createdAt: string;
@@ -68,8 +69,8 @@ export type Posts = {
   userIdx: number;
   title: string;
   category: string;
+  thumbnail: string;
   writeDate: Date;
-  coverImage: String;
   nickname: string;
   profilePath: string;
 };

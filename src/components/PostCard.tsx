@@ -12,7 +12,7 @@ export default function PostCard({
     title,
     category,
     writeDate,
-    coverImage,
+    thumbnail,
     nickname,
     profilePath,
     price,
@@ -39,7 +39,9 @@ export default function PostCard({
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
                 <img
                   className="object-cover w-full h-full"
-                  src={`${coverImage}` || "/img/reptimate_logo.png"}
+                  src={
+                    thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
+                  }
                   alt={""}
                   style={{ zIndex: 1 }}
                 />
@@ -63,7 +65,9 @@ export default function PostCard({
                 <div style={imgStyle}>
                   <img
                     className="object-cover absolute inset-0 w-full h-full"
-                    src={`${coverImage || "/img/reptimate_logo.png"}`}
+                    src={
+                      thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
+                    }
                     alt=""
                     style={{ zIndex: 1 }}
                   />

@@ -14,6 +14,7 @@ export interface getResponse {
       category: string;
       description: string;
       writeDate: string;
+      thumbnail: string;
       images: Array<{
         idx: number;
         createdAt: string;
@@ -53,7 +54,6 @@ export type Adpotion = {
   title: string;
   category: string;
   writeDate: Date;
-  coverImage: String;
   nickname: string;
   profilePath: string;
   price: number;
@@ -61,6 +61,7 @@ export type Adpotion = {
   size: string;
   variety: string;
   state: string;
+  thumbnail: string;
 };
 
 export interface GetAdoptionPostsView {
