@@ -16,7 +16,7 @@ export default function AuctionPostCard({
     variety,
     state,
     title,
-    coverImage,
+    thumbnail,
     profilePath,
     nickname,
   },
@@ -63,7 +63,9 @@ export default function AuctionPostCard({
                 ></div>
                 <img
                   className="object-cover w-full h-full"
-                  src={`${coverImage}` || "/img/reptimate_logo.png"}
+                  src={
+                    thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
+                  }
                   alt={""}
                   style={{ zIndex: 1 }}
                 />
@@ -107,7 +109,9 @@ export default function AuctionPostCard({
                 <div style={imgStyle}>
                   <img
                     className="object-cover absolute inset-0 w-full h-full"
-                    src={`${coverImage || "/img/reptimate_logo.png"}`}
+                    src={
+                      thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
+                    }
                     alt=""
                     style={{ zIndex: 1 }}
                   />

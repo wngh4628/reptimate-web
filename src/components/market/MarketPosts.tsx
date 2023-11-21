@@ -107,12 +107,7 @@ export default function MarketPosts() {
           title: item.title,
           category: item.category,
           writeDate: new Date(item.writeDate),
-          coverImage:
-            item.images[0]?.category === "img"
-              ? item.images[0]?.path || ""
-              : item.images[0]?.category === "video"
-              ? item.images[0]?.coverImgPath || ""
-              : "",
+          thumbnail: item.thumbnail,
           nickname: item.UserInfo.nickname,
           profilePath: item.UserInfo.profilePath,
           price: item.boardCommercial.price,
