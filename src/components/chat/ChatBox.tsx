@@ -318,6 +318,7 @@ export default function PersonalChatBox() {
             room: roomName,
             oppositeIdx: userInfoData.idx,
           };
+          console.log("message send  :  ",message);
           socketRef.current.emit("message", message);
           settextMsg("");
         }
@@ -358,7 +359,7 @@ export default function PersonalChatBox() {
     // update chat on new message dispatched
     socket.on("message", (message: getMessage) => {
         setchattingData(prevChat => [...prevChat, message]);
-        // console.log('message', message);
+        console.log('receive message  :  ', message);
         setreceivedNewChat(true);
     });
     socket.on("afterRead", (message: getMessage) => {
