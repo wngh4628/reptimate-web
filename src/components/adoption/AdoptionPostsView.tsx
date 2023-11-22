@@ -166,10 +166,10 @@ export default function AdoptionPostsView() {
                   checkChatRoom();
                 },
                 onError: () => {
-                  router.replace("/");
-                  setIsLoggedIn(false);
                   //
                   alert("로그인 만료\n다시 로그인 해주세요");
+                  router.replace("/");
+                  setIsLoggedIn(false);
                 },
               }
             );
