@@ -106,12 +106,14 @@ export default function FreePostsView() {
     checkChatRoom();
   };
   function intoChatting(
+    idx: number,
     nickname: string,
     roomName: number,
     profilePath: string
   ) {
     setchatRoomVisisibleState(true);
     setchatNowInfo({
+      idx: idx,
       nickname: nickname,
       roomName: roomName,
       profilePath: profilePath,
@@ -136,6 +138,7 @@ export default function FreePostsView() {
         post?.UserInfo.profilePath
       ) {
         intoChatting(
+          post.UserInfo.idx,
           post.UserInfo.nickname,
           response.data.result,
           post.UserInfo.profilePath
@@ -177,7 +180,7 @@ export default function FreePostsView() {
           setisNewChatState(true);
           if (post?.UserInfo.idx) {
             setisNewChatIdx(post?.UserInfo.idx);
-            intoChatting(post.UserInfo.nickname, 0, post.UserInfo.profilePath);
+            intoChatting(post.UserInfo.idx, post.UserInfo.nickname, 0, post.UserInfo.profilePath);
           } else {
             console.error(
               "Error : setisNewChatIdx(post?.UserInfo.idx); : Some values are undefined"
