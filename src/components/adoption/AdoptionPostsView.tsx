@@ -74,6 +74,8 @@ export default function AdoptionPostsView() {
 
   const [commentCnt, setCommentCnt] = useState(0);
 
+
+
   function BackButton() {
     const handleGoBack = () => {
       window.history.back(); // Go back to the previous page using window.history
@@ -259,6 +261,15 @@ export default function AdoptionPostsView() {
   }, []);
 
   useEffect(() => {
+    const storedData = localStorage.getItem("recoil-persist");
+    if (storedData) {
+      const userData = JSON.parse(storedData);
+      if (userData.USER_DATA.accessToken) {
+        const extractedAccessToken = userData.USER_DATA.accessToken;
+        setAccessToken(extractedAccessToken);
+      } else {
+      }
+    }
     getData();
   }, []);
 
