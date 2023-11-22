@@ -8,6 +8,7 @@ import {
   editAccountInfo,
   UserInfo,
   changePassword,
+  deleteUser,
 } from "@/api/my/editUserInfo";
 import { userAtom, isLoggedInState } from "@/recoil/user";
 
@@ -20,6 +21,7 @@ import {
 } from "../join/JoinExp";
 import { emailSend, nickNameChk } from "@/api/join/join";
 import axios from "axios";
+import PasswordPromptModal from "../UserDeleteModal";
 
 export default function EditProfileInput() {
   const setUser = useSetRecoilState(userAtom);
@@ -52,6 +54,7 @@ export default function EditProfileInput() {
   const [emailCode, setEmailCode] = useState("");
   const [emailCodeChk, setEmailCodeChk] = useState("");
   const [checkPassword, setCechkPassword] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [userInfo, setUserInfo] = useState(UserInfo);
   const pathName = usePathname() || "";
@@ -309,6 +312,23 @@ export default function EditProfileInput() {
       }
     },
   });
+
+  const userDelmutation = useMutation({
+    mutationFn: deleteUser,
+    onSuccess: (data) => {
+      console.log(data);
+      alert("회원 탈퇴가 완료되었습니다.");
+      router.replace("/");
+      setIsLoggedIn(false);
+    },
+    onError: (err: {
+      response: { status: number; data: { message: string } };
+    }) => {
+      console.log(err.response.data.message);
+      alert(err.response.data.message);
+    },
+  });
+
   const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // 리프레시 막기
 
@@ -394,6 +414,26 @@ export default function EditProfileInput() {
       });
     } else {
       alert("입력란을 확인 후 다시 시도해주세요.");
+    }
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleConfirmPassword = (password: string) => {
+    if (password) {
+      userDelmutation.mutate({
+        accessToken: accessToken,
+        password: password,
+      });
+    }
+    if (password == "") {
+      alert("비밀번호를 입력해주세요.");
     }
   };
 
@@ -648,6 +688,19 @@ export default function EditProfileInput() {
           </div>
         </form>
       )}
+      <div className="w-full items-center inline-flex justify-center text-center align-middle mt-10 mb-5">
+        <button
+          className="cursor-pointer text-red-600 tracking-[-.16px] font-semibold"
+          onClick={handleOpenModal}
+        >
+          회원탈퇴{" "}
+        </button>
+      </div>
+      <PasswordPromptModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmPassword}
+      />
     </div>
   );
 }
