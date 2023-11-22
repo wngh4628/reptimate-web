@@ -103,7 +103,8 @@ export default function FreePostsView() {
   const handleChat = () => {
     //1:1채팅 코드
     setIsChatVisisible(true);
-    checkChatRoom();
+    checkChatRoom(accessToken);
+    console.log("accesscode? : ", accessToken);
   };
   function intoChatting(
     idx: number,
@@ -119,7 +120,7 @@ export default function FreePostsView() {
       profilePath: profilePath,
     });
   }
-  const checkChatRoom = async () => {
+  const checkChatRoom = async (accessToken: string) => {
     const config = {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -161,7 +162,7 @@ export default function FreePostsView() {
               {
                 onSuccess: (data) => {
                   // api call 재선언
-                  checkChatRoom();
+                  checkChatRoom(accessToken);
                 },
                 onError: () => {
                   router.replace("/");

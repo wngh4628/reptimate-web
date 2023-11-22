@@ -105,7 +105,7 @@ export default function AdoptionPostsView() {
   const handleChat = () => {
     //1:1채팅 코드
     setIsChatVisisible(true);
-    checkChatRoom();
+    checkChatRoom(accessToken);
   };
   function intoChatting(
     idx: number,
@@ -121,7 +121,7 @@ export default function AdoptionPostsView() {
       profilePath: profilePath,
     });
   }
-  const checkChatRoom = async () => {
+  const checkChatRoom = async (accessToken: string) => {
     const config = {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -163,7 +163,7 @@ export default function AdoptionPostsView() {
               {
                 onSuccess: (data) => {
                   // api call 재선언
-                  checkChatRoom();
+                  checkChatRoom(accessToken);
                 },
                 onError: () => {
                   //
