@@ -76,6 +76,19 @@ export default function MarketPostsView() {
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
 
+  useEffect(() => {
+    const storedData = localStorage.getItem("recoil-persist");
+    if (storedData) {
+      const userData = JSON.parse(storedData);
+      if (userData.USER_DATA.accessToken) {
+        const extractedAccessToken = userData.USER_DATA.accessToken;
+        setAccessToken(extractedAccessToken);
+      } else {
+      }
+    }
+    getData();
+  }, []);
+
   function BackButton() {
     const handleGoBack = () => {
       window.history.back(); // Go back to the previous page using window.history
@@ -107,7 +120,7 @@ export default function MarketPostsView() {
   const handleChat = () => {
     //1:1채팅 코드
     setIsChatVisisible(true);
-    checkChatRoom();
+    checkChatRoom(accessToken);
   };
   function intoChatting(
     idx: number,
@@ -123,7 +136,7 @@ export default function MarketPostsView() {
       profilePath: profilePath,
     });
   }
-  const checkChatRoom = async () => {
+  const checkChatRoom = async (accessToken: string) => {
     const config = {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -165,7 +178,7 @@ export default function MarketPostsView() {
               {
                 onSuccess: (data) => {
                   // api call 재선언
-                  checkChatRoom();
+                  checkChatRoom(accessToken);
                 },
                 onError: () => {
                   router.replace("/");
@@ -259,18 +272,7 @@ export default function MarketPostsView() {
     }
   }, []);
 
-  useEffect(() => {
-    const storedData = localStorage.getItem("recoil-persist");
-    if (storedData) {
-      const userData = JSON.parse(storedData);
-      if (userData.USER_DATA.accessToken) {
-        const extractedAccessToken = userData.USER_DATA.accessToken;
-        setAccessToken(extractedAccessToken);
-      } else {
-      }
-    }
-    getData();
-  }, []);
+
 
   const post = data?.result;
 

@@ -112,6 +112,18 @@ export default function AuctionPostsView() {
 
   const [commentCnt, setCommentCnt] = useState(0);
 
+  const reGenerateTokenMutation = useReGenerateTokenMutation();
+  const [isChatVisisible, setIsChatVisisible] =
+    useRecoilState(chatVisisibleState);
+  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(
+    chatRoomVisisibleState
+  );
+  const [isNewChat, setisNewChatState] = useRecoilState(isNewChatState);
+  const [isNewChatIdx, setisNewChatIdx] = useRecoilState(isNewChatIdxState);
+  const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
+  const [accessToken, setAccessToken] = useState("");
+  const [chatRoomData, setchatRoomData] = useState<chatRoom[]>([]);
+
   function getCookie(name: string) {
     const value = "; " + document.cookie;
     const parts = value.split("; " + name + "=");
@@ -165,17 +177,7 @@ export default function AuctionPostsView() {
     }
   }, []);
 
-  const reGenerateTokenMutation = useReGenerateTokenMutation();
-  const [isChatVisisible, setIsChatVisisible] =
-    useRecoilState(chatVisisibleState);
-  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(
-    chatRoomVisisibleState
-  );
-  const [isNewChat, setisNewChatState] = useRecoilState(isNewChatState);
-  const [isNewChatIdx, setisNewChatIdx] = useRecoilState(isNewChatIdxState);
-  const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
-  const [accessToken, setAccessToken] = useState("");
-  const [chatRoomData, setchatRoomData] = useState<chatRoom[]>([]);
+
 
   function BackButton() {
     const handleGoBack = () => {
@@ -212,7 +214,8 @@ export default function AuctionPostsView() {
   const handleChat = () => {
     //1:1채팅 코드
     setIsChatVisisible(true);
-    checkChatRoom();
+    checkChatRoom(accessToken);
+    console.log("accesscode? : ", accessToken);
   };
   function intoChatting(
     idx: number,
@@ -228,7 +231,7 @@ export default function AuctionPostsView() {
       profilePath: profilePath,
     });
   }
-  const checkChatRoom = async () => {
+  const checkChatRoom = async (accessToken: string) => {
     const config = {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -270,7 +273,7 @@ export default function AuctionPostsView() {
               {
                 onSuccess: (data) => {
                   // api call 재선언
-                  checkChatRoom();
+                  checkChatRoom(accessToken);
                 },
                 onError: () => {
                   router.replace("/");
