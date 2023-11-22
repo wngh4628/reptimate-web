@@ -249,7 +249,7 @@ function intoChatting(clickedChatRoomData: chatRoom) {
   setchatRoomData([])
   setchatRoomVisisibleState(true)
   setchatRoomData([])
-  setchatNowInfo({ nickname: clickedChatRoomData.UserInfo.nickname, roomName: clickedChatRoomData.chatRoomIdx, profilePath: clickedChatRoomData.UserInfo.profilePath });
+  setchatNowInfo({ idx: clickedChatRoomData.UserInfo.idx, nickname: clickedChatRoomData.UserInfo.nickname, roomName: clickedChatRoomData.chatRoomIdx, profilePath: clickedChatRoomData.UserInfo.profilePath });
   console.log(clickedChatRoomData);
 }
 
