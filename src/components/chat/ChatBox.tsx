@@ -19,6 +19,7 @@ interface IMessage {
   socketId: string;
   message: string;
   room: number;
+  oppositeIdx: number;
 }
 interface getMessage {
     userIdx: number;
@@ -34,6 +35,7 @@ interface DMessage {
   room: number;
 }
 interface other {
+    idx: number;
     nickname: string;
     profilePath: string;
 }
@@ -45,7 +47,7 @@ export default function PersonalChatBox() {
   const [roomName, setroomName] = useState<number>(0);
   const [data, setData] = useState<getResponseChatList | null>(null);
   const [chattingData, setchattingData] = useState<getMessage[]>([]);
-  const [userInfoData, setUserInfoData] = useState<other>({nickname: "", profilePath: ""});//유저 정보 가지고 있는 리스트
+  const [userInfoData, setUserInfoData] = useState<other>({idx: 0, nickname: "", profilePath: ""});//채팅 상대 유저 정보 
   const [existNextPage, setENP] = useState(false);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -125,7 +127,7 @@ export default function PersonalChatBox() {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken) {
         const extractedAccessToken = userData.USER_DATA.accessToken;
-        setUserInfoData({nickname: chatNowInfo.nickname, profilePath: chatNowInfo.profilePath})
+        setUserInfoData({nickname: chatNowInfo.nickname, profilePath: chatNowInfo.profilePath, idx: chatNowInfo.idx})
         
         // 이전 채팅이 이루어 지지 않은 상대의 경우 채팅방은 첫 채팅 전송시 이루어 지도록
         if (isNewChat) {
@@ -306,6 +308,7 @@ export default function PersonalChatBox() {
   const sendMsg = async () => {
     if (textMsg.trim() !== "") {
       // 첫 번째 채팅인지? & 첫 채팅이 보내 졌는지?
+      // oppositeIdx 추가 요망
         if(socketRef.current){
           const socketId = socketRef.current.id;
           const message: IMessage = {
@@ -313,6 +316,7 @@ export default function PersonalChatBox() {
             socketId: socketId,
             message: textMsg.trim(),
             room: roomName,
+            oppositeIdx: userInfoData.idx,
           };
           socketRef.current.emit("message", message);
           settextMsg("");
@@ -344,6 +348,7 @@ export default function PersonalChatBox() {
         socketId: socket.id,
         message: textMsg.trim(),
         room: roomName,
+        oppositeIdx: chatNowInfo.idx,
       };
       if(socketRef.current){
         socketRef.current.emit("join-room", message);
@@ -372,7 +377,7 @@ export default function PersonalChatBox() {
   }
   function chatRoomOut() {
     setchatRoomVisisibleState(false)
-    setchatNowInfo({nickname: "", roomName: 0, profilePath: ""});
+    setchatNowInfo({nickname: "", roomName: 0, profilePath: "", idx: 0});
     setisNewChatIdx(0);
     setisNewChatState(false);
   }
