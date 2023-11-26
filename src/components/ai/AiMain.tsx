@@ -13,7 +13,7 @@ export default function AiMain() {
     <div className="flex flex-wrap mb-10 justify-center">
       <div className="mt-10 ml-10 mr-10 relative">
         <h3 className="font-bold mb-2 text-xl mx-1">모프 가치 판단</h3>
-        <Link href={`/`}>
+        <Link href={`/ai/value`}>
           <article className="flex flex-col items-center">
             <div className="relative w-[500px] h-[300px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
               <img
@@ -32,7 +32,7 @@ export default function AiMain() {
         <h3 className="font-bold mb-2 text-xl mx-1">
           인공지능 브리딩 라인 추천
         </h3>
-        <Link href={`/`}>
+        <Link href={`/ai/linebreeding`}>
           <article className="flex flex-col items-center">
             <div className="relative w-[500px] h-[300px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
               <img
@@ -49,7 +49,7 @@ export default function AiMain() {
 
       <div className="mt-10 ml-10 mr-10 relative">
         <h3 className="font-bold mb-2 text-xl mx-1">암수 구분 기능</h3>
-        <Link href={`/`}>
+        <Link href={`/ai/gender`}>
           <article className="flex flex-col items-center">
             <div className="relative w-[500px] h-[300px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
               <img
@@ -66,7 +66,7 @@ export default function AiMain() {
 
       <div className="mt-10 ml-10 mr-10 relative">
         <h3 className="font-bold mb-2 text-xl mx-1">가상 브리딩</h3>
-        <Link href={`/`}>
+        <Link href={`/ai/virtualbreeding`}>
           <article className="flex flex-col items-center">
             <div className="relative w-[500px] h-[300px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
               <img
