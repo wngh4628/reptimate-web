@@ -58,7 +58,7 @@ export default function Header() {
         const cookieObject = JSON.parse(cookieValue || "");
         return cookieObject;
       } catch (error) {
-        console.error("Error parsing JSON from cookie:", error);
+        // console.error("Error parsing JSON from cookie:", error);
         return null;
       }
     }
@@ -145,16 +145,16 @@ export default function Header() {
         }
       })
       .catch((err) => {
-        console.log("An error occurred while retrieving token. ", err);
+        // console.log("An error occurred while retrieving token. ", err);
       });
     // 메세지가 수신되면 역시 콘솔에 출력합니다.
     onMessage(messaging, (payload) => {
       setreceivedNewChat(true);
-      console.log("messaging================");
-      console.log("*");
-      console.log(payload);
-      console.log("*");
-      console.log("==================");
+      // console.log("messaging================");
+      // console.log("*");
+      // console.log(payload);
+      // console.log("*");
+      // console.log("==================");
       const body = payload.notification?.body || "";
       const title = payload.notification?.title || "";
       setfcmNotification({

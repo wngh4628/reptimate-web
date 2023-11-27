@@ -148,7 +148,7 @@ export default function AdoptionPostsView() {
           post.UserInfo.profilePath
         );
       } else {
-        console.error("Error: Some values are undefined");
+        // console.error("Error: Some values are undefined");
       }
     } catch (error: any) {
       console.error("Error fetching data:", error);
