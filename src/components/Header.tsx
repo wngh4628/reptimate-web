@@ -238,10 +238,10 @@ export default function Header() {
   }
 
   return (
-    <header>
+    <header className="w-full mx-auto max-w-screen-xl">
       {/* PC 화면(반응형) */}
       <PC>
-        <div className="flex justify-end pt-5 gap-2 font-bold">
+        <div className="flex justify-end pt-2 gap-2 font-bold text-sm">
           {isLoggedIn ? (
             <button
               className="group hover:text-main-color"
@@ -260,10 +260,10 @@ export default function Header() {
             </>
           )}
         </div>
-        <div className="flex justify-between items-center pt-3 pb-5">
+        <div className="flex justify-between items-center pt-1 pb-2">
           <Link href={link}>
-            <div className="flex w-40">
-              <img src="/img/main_logo.png" />
+            <div className="flex w-[170px]">
+              <img src="/img/main_logo2.png" />
             </div>
           </Link>
           <nav className="flex gap-4 font-bold">
@@ -365,10 +365,10 @@ export default function Header() {
       </PC>
       {/* 모바일 화면(반응형) */}
       <Mobile>
-        <div className="flex justify-start pt-2 pb-2 pl-5 pr-5">
+        <div className="flex justify-start pt-2 pl-3 pr-3">
           <Link href={link}>
             <div className="flex w-32 p1-0">
-              <img src="/img/main_logo.png" />
+              <img src="/img/main_logo2.png" />
             </div>
           </Link>
           <nav className="flex gap-4 font-bold ml-auto">
@@ -409,7 +409,8 @@ export default function Header() {
             <button className="right-0" type="button" onClick={chattingClose}>
               <img
                 className="w-[15px] h-[15px] self-center mr-[18px]"
-                src="/img/ic_x.png"/>
+                src="/img/ic_x.png"
+              />
             </button>
           </div>
           <PersonalChat></PersonalChat>

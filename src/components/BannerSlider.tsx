@@ -7,7 +7,7 @@ const BannerSlider: React.FC = () => {
   return (
     <div>
       <PC>
-        <div className="relative w-full h-[600px] mt-4">
+        <div className="mt-2">
           <Carousel
             showArrows={true}
             showThumbs={false}
@@ -16,27 +16,27 @@ const BannerSlider: React.FC = () => {
             interval={3000}
             infiniteLoop={true}
             showStatus={false}
-            className="h-[600px]"
+            className=""
           >
             <div className="object-cover">
               <img
                 src="/img/reptimate_banner01.png"
                 alt="First Image"
-                className="w-full h-[600px]"
+                className="w-full h-full object-cover"
               />
             </div>
             <div>
               <img
                 src="/img/sample_banner2.png"
                 alt="Second Image"
-                className="w-full h-[600px]"
+                className="w-full h-full object-cover"
               />
             </div>
             <div>
               <img
                 src="/img/sample_banner3.jpg"
                 alt="Third Image"
-                className="w-full h-[600px]"
+                className="w-full h-full object-cover"
               />
             </div>
           </Carousel>

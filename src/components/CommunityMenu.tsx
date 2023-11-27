@@ -7,9 +7,9 @@ import { Mobile, PC } from "./ResponsiveLayout";
 export default function CommunityMenu() {
   const pathName = usePathname();
   return (
-    <div>
+    <div className="w-full mx-auto max-w-screen-xl">
       <PC>
-        <div className="flex justify-between items-center pl-4">
+        <div className="flex justify-between items-center pl-1">
           <nav className="flex gap-4 font-bold">
             <Link
               href="/"
@@ -48,8 +48,8 @@ export default function CommunityMenu() {
       </PC>
 
       <Mobile>
-        <div className="flex justify-center mt-2">
-          <nav className="flex gap-4 font-bold text-lg">
+        <div className="flex justify-center">
+          <nav className="flex gap-5 font-bold text-lg">
             <Link
               href="/"
               className={`${
