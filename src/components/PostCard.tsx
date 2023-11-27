@@ -35,7 +35,7 @@ export default function PostCard({
         >
           <article className="flex flex-col items-center">
             <PC>
-              <div className="relative w-[290px] h-[290px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
+              <div className="relative w-[250px] h-[250px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-sm">
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
                 <img
                   className="object-cover w-full h-full"
@@ -48,7 +48,7 @@ export default function PostCard({
               </div>
               <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
-                  className="ml-4 w-10 h-10 rounded-full border-2"
+                  className="ml-2 w-8 h-8 rounded-full border-2"
                   src={
                     profilePath !== null
                       ? profilePath
@@ -91,13 +91,15 @@ export default function PostCard({
           </article>
         </Link>
       </div>
-      <div className=" mx-1 mt-2 mb-6 flex flex-col">
+      <div className="mt-1 mb-6 flex flex-col">
         <PC>
-          <h3 className="font-bold ml-2 text-lg mx-1">{title}</h3>
-          <div className="flex ml-1 items-center">
-            <p className="font-bold text-md ml-1">{price.toLocaleString()}원</p>
+          <h3 className="font-bold text-[17px] mx-1">{title}</h3>
+          <div className="flex items-center">
+            <p className="font-semibold text-[15px] ml-1">
+              {price.toLocaleString()}원
+            </p>
             <p
-              className={`text-xs mx-1 text-white p-1 rounded font-bold ${
+              className={`text-xs ml-1 text-white p-1 rounded font-bold ${
                 gender === "수컷"
                   ? "bg-gender-male-color"
                   : gender === "암컷"

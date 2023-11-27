@@ -58,7 +58,7 @@ export default function Header() {
         const cookieObject = JSON.parse(cookieValue || "");
         return cookieObject;
       } catch (error) {
-        console.error("Error parsing JSON from cookie:", error);
+        // console.error("Error parsing JSON from cookie:", error);
         return null;
       }
     }
@@ -145,12 +145,16 @@ export default function Header() {
         }
       })
       .catch((err) => {
-        console.log("An error occurred while retrieving token. ", err);
+        // console.log("An error occurred while retrieving token. ", err);
       });
     // 메세지가 수신되면 역시 콘솔에 출력합니다.
     onMessage(messaging, (payload) => {
       setreceivedNewChat(true);
-
+      // console.log("messaging================");
+      // console.log("*");
+      // console.log(payload);
+      // console.log("*");
+      // console.log("==================");
       const body = payload.notification?.body || "";
       const title = payload.notification?.title || "";
       setfcmNotification({
@@ -178,8 +182,10 @@ export default function Header() {
   };
 
   function chattingClick() {
-    console.log("채팅 목록 켜기");
-    setIsChatVisisible(true);
+    if (isLoggedIn) {
+      // console.log("채팅 목록 켜기");
+      setIsChatVisisible(true);
+    }
   }
   function chattingClose() {
     setIsChatVisisible(false);
@@ -190,8 +196,10 @@ export default function Header() {
   }
 
   function notiClick() {
-    console.log("알림 목록 켜기");
-    setIsNotiVisisible(true);
+    if (isLoggedIn) {
+      // console.log("알림 목록 켜기");
+      setIsNotiVisisible(true);
+    }
   }
   function notiClose() {
     setIsNotiVisisible(false);
@@ -229,10 +237,10 @@ export default function Header() {
   }
 
   return (
-    <header>
+    <header className="w-full mx-auto max-w-screen-xl">
       {/* PC 화면(반응형) */}
       <PC>
-        <div className="flex justify-end pt-5 gap-2 font-bold">
+        <div className="flex justify-end pt-2 gap-2 font-bold text-sm">
           {isLoggedIn ? (
             <button
               className="group hover:text-main-color"
@@ -251,10 +259,10 @@ export default function Header() {
             </>
           )}
         </div>
-        <div className="flex justify-between items-center pt-3 pb-5">
+        <div className="flex justify-between items-center pt-1 pb-2">
           <Link href={link}>
-            <div className="flex w-40">
-              <img src="/img/main_logo.png" />
+            <div className="flex w-[170px]">
+              <img src="/img/main_logo2.png" />
             </div>
           </Link>
           <nav className="flex gap-4 font-bold">
@@ -297,7 +305,7 @@ export default function Header() {
               </div>
             </Link>
             <Link href="">
-              <div className="flex w-[23px] h-5 my-0.5  relative">
+              <div className="flex w-[23px] h-5 mb-0.5  relative">
                 <div
                   className="flex w-[23px] h-5 my-0.5  relative"
                   onClick={notiClick}
@@ -356,16 +364,16 @@ export default function Header() {
       </PC>
       {/* 모바일 화면(반응형) */}
       <Mobile>
-        <div className="flex justify-start pt-2 pb-2 pl-5 pr-5">
+        <div className="flex justify-start pt-2 pl-3 pr-3">
           <Link href={link}>
             <div className="flex w-32 p1-0">
-              <img src="/img/main_logo.png" />
+              <img src="/img/main_logo2.png" />
             </div>
           </Link>
           <nav className="flex gap-4 font-bold ml-auto">
             <Link href="">
               <div
-                className="flex w-[23px] h-5 my-0.5  relative"
+                className="flex w-[23px] h-5 my-0.5 relative"
                 onClick={chattingClick}
               >
                 <img src="/img/chat.png" />
@@ -375,7 +383,7 @@ export default function Header() {
               </div>
             </Link>
             <a onClick={notiClick}>
-              <div className="flex w-5 my-0.5">
+              <div className="flex gap-4 w-5 my-0.5">
                 <img src="/img/notification.png" />
               </div>
             </a>
@@ -400,7 +408,8 @@ export default function Header() {
             <button className="right-0" type="button" onClick={chattingClose}>
               <img
                 className="w-[15px] h-[15px] self-center mr-[18px]"
-                src="/img/ic_x.png"/>
+                src="/img/ic_x.png"
+              />
             </button>
           </div>
           <PersonalChat></PersonalChat>

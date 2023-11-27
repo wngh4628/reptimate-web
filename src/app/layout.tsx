@@ -37,11 +37,13 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
         />
       </head>
-      <body className="flex flex-col w-full max-w-screen-2xl mx-auto">
+      <body className="flex flex-col w-full mx-auto">
         <Recoil>
           <ReactQuery>
             <Header />
-            <main className="grow white">{children}</main>
+            <main className="grow white w-full mx-auto max-w-screen-xl">
+              {children}
+            </main>
             <Footer />
           </ReactQuery>
         </Recoil>

@@ -123,10 +123,10 @@ export default function MarketPosts() {
       <BannerSlider />
       <PC>
         <div className="flex items-center relative">
-          <h2 className="text-2xl font-bold my-4 ml-4">중고 거래</h2>
+          <h2 className="text-xl font-bold ml-1">중고 거래</h2>
           <div className="relative ml-auto">
             <select
-              className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-4 mr-4"
+              className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
               value={sort}
               onChange={handleSortChange}
             >
