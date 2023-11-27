@@ -13,6 +13,7 @@ import {
   validateNickname,
 } from "../join/JoinExp";
 import { register, emailSend } from "@/api/join/join";
+import Swal from "sweetalert2";
 
 export default function JoinInput() {
   const router = useRouter();
@@ -123,6 +124,11 @@ export default function JoinInput() {
   });
   function onEmailSendHandler() {
     if (validateEmail(email)) {
+      Swal.fire({
+        text: "이메일이 전송 되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       mutationEmailSend.mutate({ email: email, type: "NEWUSER" });
     } else {
       alert("이메일 형식에 맞게 작성해 주세요.");
