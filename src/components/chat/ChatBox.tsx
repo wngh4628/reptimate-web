@@ -19,7 +19,7 @@ interface IMessage {
   socketId: string;
   message: string;
   room: number;
-  // oppositeIdx: number;
+  oppositeIdx: number;
 }
 interface getMessage {
     userIdx: number;
@@ -77,6 +77,7 @@ export default function PersonalChatBox() {
   // const [chatRoom, setchatRoom] = useRecoilState(chatRoomState);
 
   const chatDivRef = useRef(null);
+  const chatRoomRef = useRef(null);
 
   const options = {
     threshold: 1.0,
@@ -316,7 +317,7 @@ export default function PersonalChatBox() {
             socketId: socketId,
             message: textMsg.trim(),
             room: roomName,
-            // oppositeIdx: userInfoData.idx,
+            oppositeIdx: userInfoData.idx,
           };
           // console.log("message send  :  ",message);
           socketRef.current.emit("message", message);
@@ -349,7 +350,7 @@ export default function PersonalChatBox() {
         socketId: socket.id,
         message: textMsg.trim(),
         room: roomName,
-        // oppositeIdx: chatNowInfo.idx,
+        oppositeIdx: chatNowInfo.idx,
       };
       if(socketRef.current){
         socketRef.current.emit("join-room", message);
@@ -381,10 +382,41 @@ export default function PersonalChatBox() {
     setchatNowInfo({nickname: "", roomName: 0, profilePath: "", idx: 0});
     setisNewChatIdx(0);
     setisNewChatState(false);
+    if (socketRef.current) {
+      socketRef.current.emit("leave-room", {
+        userIdx: userIdx,
+        roomIdx: roomName,
+      });
+      socketRef.current.disconnect();
+      socketRef.current = null;
+    }
   }
 
+  useEffect(() => {
+    if (chatRoomRef.current) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) {
+              chatRoomOut(); // 컴포넌트가 화면에 보이지 않을 때 함수 실행
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+
+      observer.observe(chatRoomRef.current);
+
+      return () => {
+        if (chatRoomRef.current) {
+          observer.unobserve(chatRoomRef.current);
+        }
+      };
+    }
+  }, []);
+
 return (
-  <div className="h-full w-full flex-col">
+  <div className="h-full w-full flex-col" ref={chatRoomRef}>
     <div className="w-full h-[40px] border-gray-100 flex flex-row">
         <img className='ml-[5px] w-[20px] h-[20px] self-center cursor-pointer' src="/img/ic_back.png" onClick={chatRoomOut}/>
         <div className='text-[15px] self-center text-center flex-grow pr-[25px]'>{otherNickname}</div>
