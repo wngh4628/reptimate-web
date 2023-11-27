@@ -19,7 +19,7 @@ interface IMessage {
   socketId: string;
   message: string;
   room: number;
-  oppositeIdx: number;
+  // oppositeIdx: number;
 }
 interface getMessage {
     userIdx: number;
@@ -316,9 +316,9 @@ export default function PersonalChatBox() {
             socketId: socketId,
             message: textMsg.trim(),
             room: roomName,
-            oppositeIdx: userInfoData.idx,
+            // oppositeIdx: userInfoData.idx,
           };
-          console.log("message send  :  ",message);
+          // console.log("message send  :  ",message);
           socketRef.current.emit("message", message);
           settextMsg("");
         }
@@ -349,7 +349,7 @@ export default function PersonalChatBox() {
         socketId: socket.id,
         message: textMsg.trim(),
         room: roomName,
-        oppositeIdx: chatNowInfo.idx,
+        // oppositeIdx: chatNowInfo.idx,
       };
       if(socketRef.current){
         socketRef.current.emit("join-room", message);
@@ -359,7 +359,7 @@ export default function PersonalChatBox() {
     // update chat on new message dispatched
     socket.on("message", (message: getMessage) => {
         setchattingData(prevChat => [...prevChat, message]);
-        console.log('receive message  :  ', message);
+        // console.log('receive message  :  ', message);
         setreceivedNewChat(true);
     });
     socket.on("afterRead", (message: getMessage) => {
