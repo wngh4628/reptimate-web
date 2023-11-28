@@ -12,9 +12,9 @@ export default function CommunityMenu() {
         <div className="flex justify-between items-center pl-4">
           <nav className="flex gap-4 font-bold">
             <Link
-              href="/ai/value"
+              href="/ai/valueanalysis"
               className={`${
-                pathName === "/ai/value" ? "text-[#6D71E6]" : ""
+                pathName === "/ai/valueanalysis" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
             >
               모프 가치 판단
@@ -51,7 +51,7 @@ export default function CommunityMenu() {
         <div className="flex justify-center mt-2">
           <nav className="flex gap-4 font-bold text-lg">
             <Link
-              href="/ai/value"
+              href="/ai/valueanalysis"
               className={`${
                 pathName === "/" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
