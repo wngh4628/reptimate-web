@@ -15,7 +15,7 @@ export default function CommunityMenu() {
               href="/"
               className={`${
                 pathName === "/" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color`}
+              } group hover:text-main-color pt-6 pb-3`}
             >
               분양글
             </Link>
@@ -23,7 +23,7 @@ export default function CommunityMenu() {
               href="/community/market"
               className={`${
                 pathName === "/community/market" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color`}
+              } group hover:text-main-color pt-6 pb-3`}
             >
               중고 거래
             </Link>
@@ -31,7 +31,7 @@ export default function CommunityMenu() {
               href="/community/free"
               className={`${
                 pathName === "/community/free" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color`}
+              } group hover:text-main-color pt-6 pb-3`}
             >
               자유 게시판
             </Link>
@@ -39,7 +39,7 @@ export default function CommunityMenu() {
               href="/community/ask"
               className={`${
                 pathName === "/community/ask" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color`}
+              } group hover:text-main-color pt-6 pb-3`}
             >
               질문 게시판
             </Link>
@@ -48,7 +48,7 @@ export default function CommunityMenu() {
       </PC>
 
       <Mobile>
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-12">
           <nav className="flex gap-5 font-bold text-lg">
             <Link
               href="/"

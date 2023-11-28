@@ -125,7 +125,7 @@ export default function ActionPage({ params: { slug } }: Props) {
                     console.log(`script loaded correctly, window.FB has been populated`)
                 }
             /> */}
-      <div className="flex flex-col lg:flex-row">
+      <div className="flex flex-col lg:flex-row mt-14">
         <div className="flex-auto flex-col">
           <div className="bg-black w-full">
             <VideoPlayer src={videoUrl}></VideoPlayer>

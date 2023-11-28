@@ -35,7 +35,7 @@ export default function PostCard({
         >
           <article className="flex flex-col items-center">
             <PC>
-              <div className="relative w-[250px] h-[250px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-sm">
+              <div className="relative w-[250px] h-[250px] overflow-hidden hover:border-2 hover:border-main-color rounded-sm">
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10"></div>
                 <img
                   className="object-cover w-full h-full"
@@ -113,7 +113,7 @@ export default function PostCard({
               {size}
             </p>
           </div>
-          <div className="flex items-center ml-2">
+          <div className="flex items-center ml-1">
             <img className="flex w-5 mr-1" src="/img/eye.png" />
             <p className="">{view}</p>
             <img className="flex w-4 mx-1" src="/img/clock.png" />

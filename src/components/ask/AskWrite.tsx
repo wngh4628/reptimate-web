@@ -264,7 +264,7 @@ export default function AskWrite() {
   return (
     <div className="max-w-screen-md mx-auto">
       {isLoading && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-75">
+        <div className="fixed inset-0 flex items-center justify-center z-[10000] bg-gray-800 bg-opacity-75">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-main-color"></div>
         </div>
       )}
@@ -274,7 +274,7 @@ export default function AskWrite() {
         </h2>
       </PC>
       <Mobile>
-        <h2 className="flex flex-col items-center justify-center text-xl font-bold p-10">
+        <h2 className="flex flex-col items-center justify-center text-xl font-bold p-10 mt-14">
           질문 게시글
         </h2>
       </Mobile>

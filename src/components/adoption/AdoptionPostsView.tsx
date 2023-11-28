@@ -74,8 +74,6 @@ export default function AdoptionPostsView() {
 
   const [commentCnt, setCommentCnt] = useState(0);
 
-
-
   function BackButton() {
     const handleGoBack = () => {
       window.history.back(); // Go back to the previous page using window.history
@@ -185,7 +183,12 @@ export default function AdoptionPostsView() {
           setisNewChatState(true);
           if (post?.UserInfo.idx) {
             setisNewChatIdx(post?.UserInfo.idx);
-            intoChatting(post.UserInfo.idx, post.UserInfo.nickname, 0, post.UserInfo.profilePath);
+            intoChatting(
+              post.UserInfo.idx,
+              post.UserInfo.nickname,
+              0,
+              post.UserInfo.profilePath
+            );
           } else {
             console.error(
               "Error : setisNewChatIdx(post?.UserInfo.idx); : Some values are undefined"
@@ -524,8 +527,8 @@ export default function AdoptionPostsView() {
               </div>
               <ImageSlider imageUrls={itemlist} />
               <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-5">판매가격</p>
-                <p className="text-xl font-bold ml-auto mr-5">
+                <p className="text-lg font-semibold ml-1">판매가격</p>
+                <p className="text-xl font-bold ml-auto mr-1">
                   {post.boardCommercial.price.toLocaleString()}원
                 </p>
               </div>
@@ -565,10 +568,10 @@ export default function AdoptionPostsView() {
                   )}
                 </div>
               </div>
-              <p className="text-lg my-7 break-all">{post.description}</p>
-              <hr className="border-t border-gray-300 my-1" />
-              <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-3 mr-1">댓글</p>
+              <p className="text-lg my-2 break-all">{post.description}</p>
+              <hr className="border-t border-gray-300" />
+              <div className="flex flex-row items-center py-2">
+                <p className="text-lg font-semibold mr-1">댓글</p>
                 <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
               </div>
               {userAccessToken ? (
