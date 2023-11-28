@@ -161,7 +161,6 @@ export default function Header() {
         body: body,
         title: title,
       });
-      
     });
   };
 
@@ -238,10 +237,10 @@ export default function Header() {
   }
 
   return (
-    <header className="w-full mx-auto max-w-screen-xl">
+    <header className="w-full fixed top-0 bg-white shadow-md z-[9999]">
       {/* PC 화면(반응형) */}
       <PC>
-        <div className="flex justify-end pt-2 gap-2 font-bold text-sm">
+        <div className="flex justify-end pt-2 gap-2 text-sm max-w-screen-xl mx-auto">
           {isLoggedIn ? (
             <button
               className="group hover:text-main-color"
@@ -260,7 +259,7 @@ export default function Header() {
             </>
           )}
         </div>
-        <div className="flex justify-between items-center pt-1 pb-2">
+        <div className="flex justify-between items-center py-4 max-w-screen-xl mx-auto">
           <Link href={link}>
             <div className="flex w-[170px]">
               <img src="/img/main_logo2.png" />
@@ -365,7 +364,7 @@ export default function Header() {
       </PC>
       {/* 모바일 화면(반응형) */}
       <Mobile>
-        <div className="flex justify-start pt-2 pl-3 pr-3">
+        <div className="flex justify-start pt-2 pl-3 pr-3 pb-2">
           <Link href={link}>
             <div className="flex w-32 p1-0">
               <img src="/img/main_logo2.png" />

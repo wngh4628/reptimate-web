@@ -7,7 +7,7 @@ const BannerSlider: React.FC = () => {
   return (
     <div>
       <PC>
-        <div className="mt-2">
+        <div className="">
           <Carousel
             showArrows={true}
             showThumbs={false}

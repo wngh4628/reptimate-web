@@ -1,14 +1,14 @@
+"use client";
+
 import Header from "@/components/Header";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import Footer from "@/components/Footer";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import ReactQuery from "@/components/ReactQuery";
 import Recoil from "@/components/Recoil";
-import ChatModal from "@/components/chatting/ChatModal";
+import { Mobile, PC } from "@/components/ResponsiveLayout";
 
 const sans = Open_Sans({ subsets: ["latin"] });
 
@@ -41,9 +41,16 @@ export default function RootLayout({
         <Recoil>
           <ReactQuery>
             <Header />
-            <main className="grow white w-full mx-auto max-w-screen-xl">
-              {children}
-            </main>
+            <PC>
+              <main className="grow white w-full mx-auto max-w-screen-xl mt-20">
+                {children}
+              </main>
+            </PC>
+            <Mobile>
+              <main className="grow white w-full mx-auto max-w-screen-xl">
+                {children}
+              </main>
+            </Mobile>
             <Footer />
           </ReactQuery>
         </Recoil>

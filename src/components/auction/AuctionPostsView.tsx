@@ -177,8 +177,6 @@ export default function AuctionPostsView() {
     }
   }, []);
 
-
-
   function BackButton() {
     const handleGoBack = () => {
       window.history.back(); // Go back to the previous page using window.history
@@ -292,7 +290,12 @@ export default function AuctionPostsView() {
           setisNewChatState(true);
           if (post?.UserInfo.idx) {
             setisNewChatIdx(post?.UserInfo.idx);
-            intoChatting(post.UserInfo.idx, post.UserInfo.nickname, 0, post.UserInfo.profilePath);
+            intoChatting(
+              post.UserInfo.idx,
+              post.UserInfo.nickname,
+              0,
+              post.UserInfo.profilePath
+            );
           } else {
             console.error(
               "Error : setisNewChatIdx(post?.UserInfo.idx); : Some values are undefined"
