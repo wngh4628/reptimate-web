@@ -64,7 +64,7 @@ export default function ValueAnalysisResult(props:any) {
 
     // 모프 이름 작성여부 확인
     if(petName.length === 0){
-      alert('모프의 이름을 작성해주세요');
+      alert('개체의 이름을 작성해주세요');
     } else{
 
       setShowModal(false);

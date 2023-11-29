@@ -11,7 +11,8 @@ export default function LineBreedingPage() {
   const [lineBreedingResult, setLineBreedingResult] = useState(null);
   const [morphInfo, setMorphInfo] = useState(null);
 
-  
+  const setFunctionList = [setValueAnalysisResult, setLineBreedingResult, setMorphInfo];
+
   return (
     /*
     valueAnalysisResult가 null이 아니면 <ValueAnalysisResult />만 보여주고,
@@ -20,7 +21,8 @@ export default function LineBreedingPage() {
       lineBreedingResult가 null이 아니면 <ValueAnalysisResult />만 보여준다.
     */
     <div>
-      <AiMenu />
+      <AiMenu setFunctionList={setFunctionList}/>
+
       {valueAnalysisResult ? (
         <ValueAnalysisResult valueAnalysisResult={valueAnalysisResult} />
       ) : (

@@ -4,7 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mobile, PC } from "./ResponsiveLayout";
 
-export default function CommunityMenu() {
+export default function AiMenu(props:any) {
+
+  const setFunctionList:((state:null) => void)[] = props.setFunctionList;
+
+  const resetState = () => {
+    setFunctionList.forEach(func => func(null));
+    
+  }
+
   const pathName = usePathname();
   return (
     <div>
@@ -14,8 +22,10 @@ export default function CommunityMenu() {
             <Link
               href="/ai/valueanalysis"
               className={`${
-                pathName === "/ai/valueanalysis" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color`}
+                  pathName === "/ai/valueanalysis" ? "text-[#6D71E6]" : ""
+                } group hover:text-main-color`
+              }
+              onClick={resetState}
             >
               모프 가치 판단
             </Link>
@@ -24,6 +34,7 @@ export default function CommunityMenu() {
               className={`${
                 pathName === "/ai/linebreeding" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
+              onClick={resetState}
             >
               인공지능 브리딩 라인 추천
             </Link>
