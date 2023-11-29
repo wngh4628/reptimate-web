@@ -26,6 +26,7 @@ const morphOption: Option[] = [
 ];
 
 const genderOption: Option[] = [
+  { value: "미구분", label: "미구분" },
   { value: "암컷", label: "암컷" },
   { value: "수컷", label: "수컷" },
 ];

@@ -149,7 +149,7 @@ export default function ValueAnalysisResult(props:any) {
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-75" onClick={() => setShowModal(false)}>
           <div className="bg-white p-8 rounded-md w-80" onClick={(e) => e.stopPropagation()}>
             <div className="relative flex justify-center items-center">
-              <p><strong>모프의 이름을 작성해주세요</strong></p>
+              <p><strong>개체의 이름을 작성해주세요</strong></p>
               <button className="absolute text-gray-700 right-0" onClick={() => setShowModal(false)}>
                 <svg
                   className="w-6 h-6"
