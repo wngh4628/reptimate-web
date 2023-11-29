@@ -67,7 +67,7 @@ export default function MorphCard(props:any) {
 
           <PC>
             <img 
-              className={`max-w-full max-h-full ${imageType.length === 0 ? "w-full h-full shadow-md shadow-gray-400 rounded-lg" : ""}`}
+              className={`max-w-full max-h-full ${imageType.length === 0 || type === 'result'? "w-full h-full shadow-md shadow-gray-400 rounded-lg" : ""}`}
               src = {imagePath}
               style={{ zIndex: 1 }}
               id={type}

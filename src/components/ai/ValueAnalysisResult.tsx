@@ -4,32 +4,38 @@ import MorphCard from "../MorphCard";
 import ProgressBar from "./ProgressBar";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate";
+import { useSetRecoilState } from "recoil";
+import { userAtom, isLoggedInState } from "@/recoil/user";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function ValueAnalysisResult(props:any) {
-
+  const router = useRouter();
+  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
   const [accessToken, setAccessToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [petName, setPetName] = useState("");
   const [userIdx, setUserIdx] = useState("")
+  const reGenerateTokenMutation = useReGenerateTokenMutation();
   
-  const analysisResultData =  props.analysisResult.data;
+  const valueAnalysisResultData =  props.valueAnalysisResult.data;
 
-  const morph = analysisResultData.morph;
-  const gender = analysisResultData.gender;
+  const morph = valueAnalysisResultData.morph;
+  const gender = valueAnalysisResultData.gender;
 
-  const head_score = analysisResultData.head_score;
-  const dorsal_score = analysisResultData.dorsal_score;
-  const tail_score = analysisResultData.tail_score;
-  const total_score = analysisResultData.total_score;
+  const head_score = valueAnalysisResultData.head_score;
+  const dorsal_score = valueAnalysisResultData.dorsal_score;
+  const tail_score = valueAnalysisResultData.tail_score;
+  const total_score = valueAnalysisResultData.total_score;
 
-  const left_info = JSON.parse(analysisResultData.left_info);
+  const left_info = JSON.parse(valueAnalysisResultData.left_info);
   const left_score = left_info.score;
   const left_SecondPercent = left_info.SecondPercent;
   const left_ThirdPercent = left_info.ThirdPercent;
   const left_rgb = left_info.RGB;
 
-  const right_info = JSON.parse(analysisResultData.right_info);
+  const right_info = JSON.parse(valueAnalysisResultData.right_info);
   const right_score = right_info.score;
   const right_SecondPercent = right_info.SecondPercent;
   const right_ThirdPercent = right_info.ThirdPercent;
@@ -37,9 +43,9 @@ export default function ValueAnalysisResult(props:any) {
 
   const defult_rgb = [102, 153, 102];
 
-  const idx = analysisResultData.idx;
+  const idx = valueAnalysisResultData.idx;
 
-  console.log(analysisResultData)
+  console.log(valueAnalysisResultData)
 
   useEffect(() => {
     const storedData = localStorage.getItem("recoil-persist");
@@ -54,8 +60,9 @@ export default function ValueAnalysisResult(props:any) {
   }, []);
 
   // 결과 저장 요청
-  const handleSave = () => {
+  const handleSave = async () => {
 
+    // 모프 이름 작성여부 확인
     if(petName.length === 0){
       alert('모프의 이름을 작성해주세요');
     } else{
@@ -63,7 +70,8 @@ export default function ValueAnalysisResult(props:any) {
       setShowModal(false);
       setIsLoading(true);  
 
-      axios({
+      // 저장 요청
+      const response = await axios({
         method:'post',
         url:`${process.env.NEXT_PUBLIC_AI_URL}/analyzer_save`,
         params: {
@@ -74,22 +82,55 @@ export default function ValueAnalysisResult(props:any) {
         headers: { // 요청 헤더
           Authorization: `Bearer ${accessToken as string}`,
           'Content-Type': 'multipart/form-data',
-        },
-          })
-          .then((result)=>{console.log('요청성공')
-          console.log(result)
-          alert('저장이 완료되었습니다')
-          setIsLoading(false);            
-      
-        })
-          .catch((error)=>{console.log('요청실패')
-          console.log(error)  
-          setIsLoading(false);
-          alert('요청에 실패했습니다. 다시 시도해주세요.')
+        }})      
 
-      })
+      // 로딩바 제거
+      setIsLoading(false);  
+
+      // 200 응답시 처리
+      if(response.status === 200){
+        console.log(`statusText: ${response.statusText}`)
+        console.log(`response 객체: ${JSON.stringify(response)}`)
+        alert('저장이 완료되었습니다');
+
+      // 401(토큰만료) 응답시 처리
+      } else if (response.status === 401){
+
+        const storedData = localStorage.getItem("recoil-persist");
+        if (storedData) {
+          const userData = JSON.parse(storedData);
+          if (userData.USER_DATA.accessToken) {
+            const extractedARefreshToken = userData.USER_DATA.refreshToken;
+            reGenerateTokenMutation.mutate(
+              {
+                refreshToken: extractedARefreshToken,
+              },
+              {
+                onSuccess: (regeneratedAccessToken) => {
+                  // api call 재선언
+                  userData.USER_DATA.accessToken = regeneratedAccessToken;
+                  setAccessToken(regeneratedAccessToken);
+                  handleSave();
+                },
+                onError: () => {
+                  router.replace("/");
+                  setIsLoggedIn(false);
+                  alert("로그인 만료\n다시 로그인 해주세요");
+                },
+              }
+            );
+          } else {
+            router.replace("/");
+            alert("로그인이 필요한 기능입니다.");
+          }
+        }
+      // 201과 401이 아닌 모든 응답에 대한 처리
+      } else {
+        console.log(`statusText: ${response.statusText}`)
+        console.log(`response 객체: ${JSON.stringify(response)}`)
+        alert('요청에 실패했습니다. 다시 시도해주세요.');
+      }
     }
-
   }
 
 
@@ -148,9 +189,9 @@ export default function ValueAnalysisResult(props:any) {
       )}
 
         {/* 가치 판단 결과 */}
-        <div className="max-w-screen-lg mx-auto">
+        <div className="max-w-screen-lg mx-auto mt-10">
         
-        <h2 className="text-3xl font-bold mt-5">가치 판단 결과</h2>
+        <h2 className="text-3xl font-bold">가치 판단 결과</h2>
 
         <div className="flex mb-24">
           {/* 이미지 */}
@@ -158,21 +199,21 @@ export default function ValueAnalysisResult(props:any) {
             <div>
               <h3 className="text-2xl font-bold">{'윗면'}</h3>
               <div className="flex mt-5">
-                <MorphCard imgPath={analysisResultData.top_img} type="result"/>
+                <MorphCard imgPath={valueAnalysisResultData.top_img} type="result"/>
               </div>
             </div>
                 
             <div className="mt-10">
               <h3 className="text-2xl font-bold">{'왼쪽 옆부분'}</h3>
               <div className="flex mt-5">
-                <MorphCard imgPath={analysisResultData.left_img} type="result"/>
+                <MorphCard imgPath={valueAnalysisResultData.left_img} type="result"/>
               </div>
             </div>
 
             <div className="mt-10">
               <h3 className="text-2xl font-bold">{'오른쪽 옆부분'}</h3>
               <div className="flex mt-5">
-                <MorphCard imgPath={analysisResultData.right_img} type="result"/>
+                <MorphCard imgPath={valueAnalysisResultData.right_img} type="result"/>
               </div>
             </div>
           </div>

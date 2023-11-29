@@ -7,15 +7,15 @@ import { useState } from "react";
 
 export default function ValueAnalysisPage() {
 
-  const [analysisResult, setAnalysisResult] = useState(null);
+  const [valueAnalysisResult, setValueAnalysisResult] = useState(null);
 
   return (
     <div>
       <AiMenu />
-      {analysisResult ? (
-        <ValueAnalysisResult analysisResult={analysisResult}/>
+      {valueAnalysisResult ? (
+        <ValueAnalysisResult valueAnalysisResult={valueAnalysisResult}/>
       ) : (
-        <MorphInfo analysisPurpose="valueAnalysis" setAnalysisResult={setAnalysisResult} />
+        <MorphInfo analysisPurpose="valueAnalysis" setValueAnalysisResult={setValueAnalysisResult}/>
       )}
     </div>
   );

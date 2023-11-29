@@ -40,7 +40,8 @@ export default function MorphInfo(props:any) {
   const [morph, setMorph] = useState('');
   const [gender, setGender] = useState('');
 
-  const setAnalysisResult = props.setAnalysisResult;
+  let setMorphInfo:(morphInfo:{})=>{};
+  let setResult:(result:{})=>{};
   let analysisPurpose = props.analysisPurpose;
   let title = ''
   let endpoint = '';
@@ -49,11 +50,14 @@ export default function MorphInfo(props:any) {
     case 'valueAnalysis':
         title = '모프 가치 판단'   
         endpoint = 'value_analyzer'
+        setResult = props.setValueAnalysisResult;
         break;
   
     case 'lineBreeding':
         title = '라인브리딩 서비스'
         endpoint = 'linebreeding_recommend'
+        setResult = props.setLineBreedingResult;
+        setMorphInfo = props.setMorphInfo;
         break;
   }
   
@@ -86,7 +90,6 @@ export default function MorphInfo(props:any) {
       formData.append('files', imgRight);
       setIsLoading(true);
 
-
       axios({
         method:'post',
         url:`${process.env.NEXT_PUBLIC_AI_URL}/${endpoint}`,
@@ -96,14 +99,21 @@ export default function MorphInfo(props:any) {
           gender: gender,
         },
         headers: { // 요청 헤더
-          Authorization: `Bearer ${userAccessToken as string}`,
           'Content-Type': 'multipart/form-data',
         },
           })
           .then((result)=>{console.log('요청성공')
           console.log(result)
           setIsLoading(false);  
-          setAnalysisResult(result);
+          setResult(result);
+          if(analysisPurpose === 'lineBreeding'){
+            setMorphInfo({
+              morph,
+              gender,
+              formData
+            })
+          }
+          
       
         })
           .catch((error)=>{console.log('요청실패')
@@ -129,12 +139,18 @@ export default function MorphInfo(props:any) {
   
   return (
 
-      <div className="max-w-screen-sm mx-auto">
-      {isLoading && (
+    <div>
+
+      {/* 모달창 */}
+        {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-75">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-main-color"></div>
         </div>
       )}
+
+      {/* 모프 정보 */}
+      <div className="max-w-screen-sm mx-auto mt-5">
+
         <h2 className="text-3xl font-bold pt-5">{title}</h2>
 
         <div className="flex mt-10 ">
@@ -249,6 +265,6 @@ export default function MorphInfo(props:any) {
         
 
       </div>
-      
+    </div>
   );
 }
