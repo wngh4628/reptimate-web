@@ -66,6 +66,7 @@ export default function AiMenu(props:any) {
               className={`${
                 pathName === "/" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
+              onClick={resetState}
             >
               모프 가치 판단
             </Link>
@@ -82,6 +83,7 @@ export default function AiMenu(props:any) {
               className={`${
                 pathName === "/community/free" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
+              onClick={resetState}
             >
               암수 구분
             </Link>
