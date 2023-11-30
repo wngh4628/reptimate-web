@@ -141,7 +141,7 @@ export default function MorphInfo(props:any) {
   return (
 
     <div>
-
+      <PC>
       {/* 모달창 */}
         {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-75">
@@ -266,6 +266,129 @@ export default function MorphInfo(props:any) {
         
 
       </div>
+    </PC>
+
+    <Mobile>
+      {/* 모달창 */}
+        {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-75">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-main-color"></div>
+        </div>
+      )}
+
+      {/* 모프 정보 */}
+      <div className="flex flex-col p-4 mt-4 ml-1">
+          <h2 className="text-2xl font-bold">{title}</h2>
+
+          <div className="flex mt-8">
+            <div className="flex-auto">
+              <h3 className="text-xl font-bold">{'모프'}</h3>
+
+              <select
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mt-3"
+                value={morph}
+                onChange={(e) => {setMorph(e.target.value)}}
+              >
+
+                <option value="" disabled hidden>모프를 선택해주세요.</option>
+                
+                
+                {morphOption.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+
+            </div>
+
+            <div className="flex-auto">
+              <h3 className="text-xl font-bold">{'성별'}</h3>
+
+              <select
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mt-3"
+                value={gender}
+                onChange={(e) => {setGender(e.target.value)}}
+              >
+
+                <option value="" disabled hidden>성별을 선택해주세요.</option>
+
+                {genderOption.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <h3 className="text-xl font-bold">{'윗면'}</h3>
+            <p className="mt-3">머리를 왼쪽에 두고 위에서 촬영된 이미지를 선택해주세요.</p>
+            
+            <div className="flex mt-2.5">
+
+              <div className="flex-auto">
+                <MorphCard imgPath="/img/morph_top.png" type="example" />
+              </div>
+                
+              <div className="flex-auto">
+                <MorphCard imgPath="/img/file_upload.png" type="imgTop" handleFileChange={handleFileChange} setImgFile={setImgFileTop} />
+              </div>
+
+            </div>
+          </div>
+
+
+          <div className="mt-8">
+
+            <h3 className="text-xl font-bold">{'왼쪽 옆부분'}</h3>
+            <p className="mt-3">머리를 왼쪽으로 두고 옆부분을 쵤영한 이미지를 선택해주세요.</p>
+
+            <div className="flex mt-2.5">
+
+              <div className="flex-auto">
+                <MorphCard imgPath="/img/morph_left.png" type="example"/>
+              </div>
+                
+              <div className="flex-auto">
+                <MorphCard imgPath="/img/file_upload.png" type="imgLeft" handleFileChange={handleFileChange} setImgFile={setImgFileLeft}/>
+              </div>
+
+            </div>
+          </div>
+
+
+          <div className="mt-8">
+
+            <h3 className="text-xl font-bold">{'오른쪽 옆부분'}</h3>
+            <p className="mt-3">머리를 오른쪽으로 두고 옆부분을 쵤영한 이미지를 선택해주세요.</p>
+            
+            <div className="flex mt-2.5">
+
+              <div className="flex-auto">
+                <MorphCard imgPath="/img/morph_right.png" type="example"/>
+              </div>
+                
+              <div className="flex-auto">
+                <MorphCard imgPath="/img/file_upload.png" type="imgRight" handleFileChange={handleFileChange} setImgFile={setImgFileRight}/>
+              </div>
+
+            </div>
+          </div>
+          
+                  
+          <div className="mt-8 mb-4 flex justify-center">
+            <button 
+            className=" bg-main-color text-white font-bold py-2 px-4 rounded w-1/2"
+            onClick={handleUpload}>
+              실행
+              </button>
+          </div>
+        
+      </div>
+    </Mobile>
     </div>
   );
 }

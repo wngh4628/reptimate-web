@@ -51,7 +51,7 @@ export default function CommunityMenu() {
         <div className="flex justify-center mt-2">
           <nav className="flex gap-4 font-bold text-lg">
             <Link
-              href="/"
+              href="/ai"
               className={`${
                 pathName === "/" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}

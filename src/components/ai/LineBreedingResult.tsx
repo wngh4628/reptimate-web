@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import MorphCard from "../MorphCard";
+import { Mobile, PC } from "../ResponsiveLayout";
 
 
 export default function LineBreedingResult(props:any) {
@@ -52,52 +53,109 @@ export default function LineBreedingResult(props:any) {
     };
 
     return(
-        
         <div>
-            {/* 로딩바 */}
-            {isLoading && (
-            <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-75">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-main-color"></div>
-            </div>
-            )}
+            <PC>
+                <div>
+                    {/* 로딩바 */}
+                    {isLoading && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-75">
+                        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-main-color"></div>
+                    </div>
+                    )}
 
-            <div className="max-w-4xl mx-auto mb-10">
+                    <div className="max-w-4xl mx-auto mb-10">
 
-                <h2 className="text-3xl font-bold mt-10">라인브리딩 서비스 결과</h2>
+                        <h2 className="text-3xl font-bold mt-10">라인브리딩 서비스 결과</h2>
 
-                <div className="mt-10">
-                    <span className="text-2xl font-bold dark:text-white">추천 개체</span>
+                        <div className="mt-10">
+                            <span className="text-2xl font-bold dark:text-white">추천 개체</span>
 
-                    <div className="flex mt-2.5">
-                        <div className="flex-auto">
-                            <MorphCard imgPath={topImgPath} type="result"/>
+                            <div className="flex mt-2.5">
+                                <div className="flex-auto">
+                                    <MorphCard imgPath={topImgPath} type="result"/>
+                                </div>
+                                <div className="flex-auto">
+                                    <MorphCard imgPath={leftImgPath} type="result"/>
+                                </div>
+                                <div className="flex-auto">
+                                    <MorphCard imgPath={rightImgPath} type="result"/>
+                                </div>
+                                
+                                
+                            </div>
                         </div>
-                        <div className="flex-auto">
-                            <MorphCard imgPath={leftImgPath} type="result"/>
+
+                        <div className="mt-10">
+                            <span className="text-2xl font-bold dark:text-white mt-5">교배 추천 개체</span>
+                            <p className="mt-2.5">{morphRecommendList}</p>
                         </div>
-                        <div className="flex-auto">
-                            <MorphCard imgPath={rightImgPath} type="result"/>
+
+                        <div className="mt-10">
+                            <span className="text-2xl font-bold dark:text-white">분석 설명</span>
+                            <p className="mt-2.5">{explanation}</p>
                         </div>
                         
+                        <div className="flex justify-center mt-10">
+                        <button className="bg-main-color text-white font-bold py-2 px-4 rounded ml-1" onClick={handleUpload}>가치판단 결과 보기</button>
+                        </div>
                         
                     </div>
                 </div>
+            </PC>
+            <Mobile>
+                <div>
+                    {/* 로딩바 */}
+                    {isLoading && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-75">
+                        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-main-color"></div>
+                    </div>
+                    )}
 
-                <div className="mt-10">
-                    <span className="text-2xl font-bold dark:text-white mt-5">교배 추천 개체</span>
-                    <p className="mt-2.5">{morphRecommendList}</p>
-                </div>
+                    <div className="p-4">
 
-                <div className="mt-10">
-                    <span className="text-2xl font-bold dark:text-white">분석 설명</span>
-                    <p className="mt-2.5">{explanation}</p>
+                        <h2 className="text-2xl font-bold mt-4">라인브리딩 서비스 결과</h2>
+
+                        <div className="mt-8">
+                            <span className="text-xl font-bold dark:text-white">추천 개체</span>
+
+                            <div className="flex mt-2.5">
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    overflowX: 'auto',
+                                }}
+                                >
+                                <div className="flex-auto">
+                                    <MorphCard imgPath={topImgPath} type="result" />
+                                </div>
+                                <div className="flex-auto">
+                                    <MorphCard imgPath={leftImgPath} type="result" />
+                                </div>
+                                <div className="flex-auto">
+                                    <MorphCard imgPath={rightImgPath} type="result" />
+                                </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        <div className="mt-10">
+                            <span className="text-xl font-bold dark:text-white mt-5">교배 추천 개체</span>
+                            <p className="mt-2.5">{morphRecommendList}</p>
+                        </div>
+
+                        <div className="mt-10">
+                            <span className="text-xl font-bold dark:text-white">분석 설명</span>
+                            <p className="mt-2.5">{explanation}</p>
+                        </div>
+                        
+                        <div className="flex justify-center mt-10">
+                        <button className="bg-main-color text-white font-bold py-2 px-4 rounded ml-1" onClick={handleUpload}>가치판단 결과 보기</button>
+                        </div>
+                        
+                    </div>
                 </div>
-                
-                <div className="flex justify-center mt-10">
-                <button className="bg-main-color text-white font-bold py-2 px-4 rounded ml-1" onClick={handleUpload}>가치판단 결과 보기</button>
-                </div>
-                
-            </div>
+            </Mobile>
         </div>
     );
 }

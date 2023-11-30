@@ -36,7 +36,7 @@ export default function AiMenu(props:any) {
               } group hover:text-main-color`}
               onClick={resetState}
             >
-              인공지능 브리딩 라인 추천
+              브리딩 라인 추천
             </Link>
             <Link
               href="/ai/gender"
@@ -59,13 +59,14 @@ export default function AiMenu(props:any) {
       </PC>
 
       <Mobile>
-        <div className="flex justify-center mt-2">
-          <nav className="flex gap-4 font-bold text-lg">
+        <div className="flex justify mt-2 px-4 py-2 bg-gray-300">
+          <nav className="flex gap-2 flex-col font-bold text-mg flex-auto">
             <Link
               href="/ai/valueanalysis"
               className={`${
-                pathName === "/" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color`}
+                  pathName === "/ai/valueanalysis" ? "text-[#6D71E6]" : ""
+                } group hover:text-main-color`
+              }
               onClick={resetState}
             >
               모프 가치 판단
@@ -73,30 +74,33 @@ export default function AiMenu(props:any) {
             <Link
               href="/ai/linebreeding"
               className={`${
-                pathName === "/community/market" ? "text-[#6D71E6]" : ""
+                pathName === "/ai/linebreeding" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
+              onClick={resetState}
             >
-              인공지능 브리딩 라인 추천
+              브리딩 라인 추천
             </Link>
+          </nav>
+          <nav className="flex gap-2 flex-col font-bold text-mg flex-auto">
             <Link
               href="/ai/gender"
               className={`${
-                pathName === "/community/free" ? "text-[#6D71E6]" : ""
+                pathName === "/ai/gender" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
-              onClick={resetState}
             >
               암수 구분
             </Link>
             <Link
               href="/ai/virtualbreeding"
               className={`${
-                pathName === "/community/ask" ? "text-[#6D71E6]" : ""
+                pathName === "/ai/virtualbreeding" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
             >
               가상 브리딩
             </Link>
           </nav>
         </div>
+
       </Mobile>
     </div>
   );

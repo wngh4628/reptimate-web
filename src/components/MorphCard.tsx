@@ -63,9 +63,10 @@ export default function MorphCard(props:any) {
       }
 
     <label htmlFor={type !== 'example' && type !== 'result' ? type : undefined}>
-      <div className={`flex flex-col justify-center items-center w-[290px] h-[290px] shadow-md shadow-gray-400 rounded-lg bg-gray-100 ${type !== 'example' && type !== 'result' ? 'hover:border-2 hover:border-main-color rounded-lg cursor-pointer' : ''}`}>
+      
 
           <PC>
+          <div className={`flex flex-col justify-center items-center w-[290px] h-[290px] shadow-md shadow-gray-400 rounded-lg bg-gray-100 ${type !== 'example' && type !== 'result' ? 'hover:border-2 hover:border-main-color rounded-lg cursor-pointer' : ''}`}>
             <img 
               className={`max-w-full max-h-full ${imageType.length === 0 || type === 'result'? "object-cover w-full h-full shadow-md shadow-gray-400 rounded-lg" : ""}`}
               src = {imagePath}
@@ -76,11 +77,11 @@ export default function MorphCard(props:any) {
             <p className="text-lg absolute bottom-0 mb-5">
               <strong>{imageType}</strong>
             </p>
-
+          </div>
           </PC>
           
           <Mobile>
-
+          <div className={`flex flex-col justify-center items-center w-[165px] h-[165px] shadow-md shadow-gray-400 rounded-lg bg-gray-100 ${type !== 'example' && type !== 'result' ? 'hover:border-2 hover:border-main-color rounded-lg cursor-pointer' : ''}`}>
               <img 
                 className={`max-w-full max-h-full ${imageType.length === 0 || type === 'result'? "object-cover w-full h-full shadow-md shadow-gray-400 rounded-lg" : ""}`}
                 src = {imagePath}
@@ -88,13 +89,12 @@ export default function MorphCard(props:any) {
                 id={type}
               />
             
-              <p className="text-lg absolute bottom-0 mb-5">
+              <p className="text-mg absolute bottom-0 mb-1.5">
                 <strong>{imageType}</strong>
               </p>
-
+            </div>
           </Mobile>
 
-        </div>
     </label>
   </div>
   );
