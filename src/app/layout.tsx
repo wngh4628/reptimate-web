@@ -1,5 +1,3 @@
-"use client";
-
 import Header from "@/components/Header";
 import "./globals.css";
 import type { Metadata } from "next";
@@ -41,16 +39,9 @@ export default function RootLayout({
         <Recoil>
           <ReactQuery>
             <Header />
-            <PC>
-              <main className="grow white w-full mx-auto max-w-screen-xl mt-20">
-                {children}
-              </main>
-            </PC>
-            <Mobile>
               <main className="grow white w-full mx-auto max-w-screen-xl">
                 {children}
               </main>
-            </Mobile>
             <Footer />
           </ReactQuery>
         </Recoil>
