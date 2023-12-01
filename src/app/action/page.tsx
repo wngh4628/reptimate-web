@@ -3,11 +3,6 @@ import Link from 'next/link';
 import React from 'react'
 type Props = {}
 
-export const metadata = {
-    title: 'ACTION',
-    description: 'ACTION app',
-}
-
 // const products = ['아잔틱', '릴리 화이트', '카푸치노', '프라푸치노', '릴잔틱'];
 
 
