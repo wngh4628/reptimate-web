@@ -211,7 +211,7 @@ export default function MorphInfo(props:any) {
             </div>
               
             <div className="flex-auto">
-              <MorphCard imgPath="/img/file_upload.png" type="imgTop" handleFileChange={handleFileChange} setImgFile={setImgFileTop} />
+              <MorphCard imgPath="/img/file_upload.png" type="imgTop" handleFileChange={handleFileChange} setImgFile={setImgFileTop} imgFile={imgTop} />
             </div>
 
           </div>
@@ -230,7 +230,7 @@ export default function MorphInfo(props:any) {
             </div>
               
             <div className="flex-auto">
-              <MorphCard imgPath="/img/file_upload.png" type="imgLeft" handleFileChange={handleFileChange} setImgFile={setImgFileLeft}/>
+              <MorphCard imgPath="/img/file_upload.png" type="imgLeft" handleFileChange={handleFileChange} setImgFile={setImgFileLeft} imgFile={imgLeft}/>
             </div>
 
           </div>
@@ -249,7 +249,7 @@ export default function MorphInfo(props:any) {
             </div>
               
             <div className="flex-auto">
-              <MorphCard imgPath="/img/file_upload.png" type="imgRight" handleFileChange={handleFileChange} setImgFile={setImgFileRight}/>
+              <MorphCard imgPath="/img/file_upload.png" type="imgRight" handleFileChange={handleFileChange} setImgFile={setImgFileRight} imgFile={imgRight}/>
             </div>
 
           </div>
@@ -334,7 +334,7 @@ export default function MorphInfo(props:any) {
               </div>
                 
               <div className="flex-auto">
-                <MorphCard imgPath="/img/file_upload.png" type="imgTop" handleFileChange={handleFileChange} setImgFile={setImgFileTop} />
+                <MorphCard imgPath="/img/file_upload.png" type="imgTop" handleFileChange={handleFileChange} setImgFile={setImgFileTop} imgFile={imgTop} />
               </div>
 
             </div>
@@ -353,7 +353,7 @@ export default function MorphInfo(props:any) {
               </div>
                 
               <div className="flex-auto">
-                <MorphCard imgPath="/img/file_upload.png" type="imgLeft" handleFileChange={handleFileChange} setImgFile={setImgFileLeft}/>
+                <MorphCard imgPath="/img/file_upload.png" type="imgLeft" handleFileChange={handleFileChange} setImgFile={setImgFileLeft} imgFile={imgLeft}/>
               </div>
 
             </div>
@@ -372,7 +372,7 @@ export default function MorphInfo(props:any) {
               </div>
                 
               <div className="flex-auto">
-                <MorphCard imgPath="/img/file_upload.png" type="imgRight" handleFileChange={handleFileChange} setImgFile={setImgFileRight}/>
+                <MorphCard imgPath="/img/file_upload.png" type="imgRight" handleFileChange={handleFileChange} setImgFile={setImgFileRight} imgFile={imgRight}/>
               </div>
 
             </div>
