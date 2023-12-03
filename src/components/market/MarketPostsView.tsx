@@ -197,7 +197,12 @@ export default function MarketPostsView() {
           setisNewChatState(true);
           if (post?.UserInfo.idx) {
             setisNewChatIdx(post?.UserInfo.idx);
-            intoChatting(post.UserInfo.idx, post.UserInfo.nickname, 0, post.UserInfo.profilePath);
+            intoChatting(
+              post.UserInfo.idx,
+              post.UserInfo.nickname,
+              0,
+              post.UserInfo.profilePath
+            );
           } else {
             console.error(
               "Error : setisNewChatIdx(post?.UserInfo.idx); : Some values are undefined"
@@ -271,8 +276,6 @@ export default function MarketPostsView() {
       console.error("Error fetching data:", error);
     }
   }, []);
-
-
 
   const post = data?.result;
 
@@ -441,7 +444,7 @@ export default function MarketPostsView() {
     const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
 
     return (
-      <div className="mx-1">
+      <div className="mx-1 mt-20">
         {post && (
           <div className="max-w-screen-sm mx-auto">
             <PC>

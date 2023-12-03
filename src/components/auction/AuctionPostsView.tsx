@@ -886,7 +886,7 @@ export default function AuctionPostsView() {
     }
 
     return (
-      <div className="mx-1">
+      <div className="mx-1 mt-20">
         {post && (
           <div className="max-w-screen-sm mx-auto">
             <PC>

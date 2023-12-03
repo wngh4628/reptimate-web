@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div>
       <PC>
-        <div className="flex mt-[50px] w-[90%] m-auto justify-center content-center">
+        <div className="flex mt-[150px] w-[90%] m-auto justify-center content-center">
           <MypageMenu />
           <BoardList />
         </div>

@@ -126,26 +126,29 @@ export default function AuctionPosts() {
 
   return (
     <section>
-      <BannerSlider />
       <PC>
-        <div className="flex items-center relative">
-          <h2 className="text-2xl font-bold my-4 ml-4">경매</h2>
-          <div className="relative ml-auto">
-            <select
-              className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-4 mr-4"
-              value={sort}
-              onChange={handleSortChange}
-            >
-              {sortOption.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+        <div className="mt-24">
+          <BannerSlider />
+          <div className="flex items-center relative">
+            <h2 className="text-xl font-bold ml-1">경매</h2>
+            <div className="relative ml-auto">
+              <select
+                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
+                value={sort}
+                onChange={handleSortChange}
+              >
+                {sortOption.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </PC>
       <Mobile>
+        <BannerSlider />
         <div className="flex items-center relative">
           <h2 className="text-lg font-bold ml-2 my-2">경매</h2>
           <div className="relative ml-auto">
