@@ -20,7 +20,7 @@ export default function AiMain() {
                 <div className="relative w-[500px] h-[300px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                   <img
                     className="object-cover w-full h-full"
-                    src={"/img/reptimate_logo.png"}
+                    src={"/img/value_analysis.png"}
                   />
                 </div>
               </article>
@@ -37,7 +37,7 @@ export default function AiMain() {
                 <div className="relative w-[500px] h-[300px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                   <img
                     className="object-cover w-full h-full"
-                    src={"/img/reptimate_logo.png"}
+                    src={"/img/line_breeding.png"}
                   />
                 </div>
               </article>
@@ -54,7 +54,7 @@ export default function AiMain() {
                 <div className="relative w-[500px] h-[300px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                   <img
                     className="object-cover w-full h-full"
-                    src={"/img/reptimate_logo.png"}
+                    src={"/img/gender.jpeg"}
                   />
                 </div>
               </article>

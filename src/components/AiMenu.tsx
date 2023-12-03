@@ -56,7 +56,7 @@ export default function AiMenu(props: any) {
       </PC>
 
       <Mobile>
-        <div className="flex justify mt-2 px-4 py-2 bg-gray-300">
+        <div className="flex justify mt-10 px-4 py-2 bg-gray-300">
           <nav className="flex gap-2 flex-col font-bold text-mg flex-auto">
             <Link
               href="/ai/valueanalysis"
@@ -96,6 +96,7 @@ export default function AiMenu(props: any) {
             </Link>
           </nav>
         </div>
+
       </Mobile>
     </div>
   );
