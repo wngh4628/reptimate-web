@@ -159,7 +159,7 @@ export default function MorphInfo(props:any) {
             <h3 className="text-2xl font-bold">{'모프'}</h3>
 
             <select
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mt-3"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5  mt-3"
               value={morph}
               onChange={(e) => {setMorph(e.target.value)}}
             >
@@ -180,7 +180,7 @@ export default function MorphInfo(props:any) {
             <h3 className="text-2xl font-bold">{'성별'}</h3>
 
             <select
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mt-3"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5  mt-3"
               value={gender}
               onChange={(e) => {setGender(e.target.value)}}
             >
@@ -285,7 +285,7 @@ export default function MorphInfo(props:any) {
               <h3 className="text-xl font-bold">{'모프'}</h3>
 
               <select
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mt-3"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 mt-3"
                 value={morph}
                 onChange={(e) => {setMorph(e.target.value)}}
               >
@@ -306,7 +306,7 @@ export default function MorphInfo(props:any) {
               <h3 className="text-xl font-bold">{'성별'}</h3>
 
               <select
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mt-3"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5  mt-3"
                 value={gender}
                 onChange={(e) => {setGender(e.target.value)}}
               >
