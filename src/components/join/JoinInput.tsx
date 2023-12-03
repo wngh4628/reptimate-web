@@ -1,9 +1,5 @@
 "use client";
-import {
-  ChangeEvent,
-  FormEvent,
-  useState,
-} from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 
@@ -143,7 +139,7 @@ export default function JoinInput() {
 
   return (
     <form onSubmit={onSubmitHandler}>
-      <div className="">
+      <div className="mt-20">
         <div className=" ml-auto mr-auto max-xl:pl-[40px] max-xl:pr-[40px] max-w-7xl">
           <div className="m-auto pt-[48px] pb-[160px] w-[400px] max-[374px]:w-full max-[374px]:pt-[23px] max-[374px]:pb-[40px]">
             <h2 className="text-[32px] tracking-[-.48px] pb-[46px] text-center">

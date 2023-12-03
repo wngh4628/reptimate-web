@@ -39,9 +39,9 @@ export default function RootLayout({
         <Recoil>
           <ReactQuery>
             <Header />
-              <main className="grow white w-full mx-auto max-w-screen-xl">
-                {children}
-              </main>
+            <main className="grow white w-full mx-auto max-w-screen-xl">
+              {children}
+            </main>
             <Footer />
           </ReactQuery>
         </Recoil>

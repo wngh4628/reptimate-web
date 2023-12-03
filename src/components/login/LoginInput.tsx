@@ -94,7 +94,7 @@ export default function LoginInput() {
   const url = `https://appleid.apple.com/auth/authorize?${queryString}`;
 
   return (
-    <div className="m-o m-auto pt-16 px-0 pb-40 w-[400px]">
+    <div className="m-o m-auto pt-16 px-0 pb-40 w-[400px] mt-20">
       <form onSubmit={onSubmitHandler}>
         <div className="relative pt-2.5 pb-3.5">
           <h3 className="text-lg tracking-thighter">이메일</h3>
