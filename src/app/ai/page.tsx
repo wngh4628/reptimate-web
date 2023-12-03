@@ -1,9 +1,7 @@
 import AiMain from "@/components/ai/AiMain";
 
-export default function AuctionPage() {
+export default function VirtualBreedingPage() {
   return (
-    <div>
-      <AiMain />
-    </div>
+    <AiMain />
   );
 }
