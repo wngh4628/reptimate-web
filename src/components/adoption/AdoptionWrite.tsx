@@ -5,8 +5,6 @@ import { useDrag, useDrop } from "react-dnd";
 import { adoptionWrite } from "@/api/adoption/adoption";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { useSetRecoilState } from "recoil";
-import { isLoggedInState, userAtom } from "@/recoil/user";
 
 interface FileItem {
   file: File;

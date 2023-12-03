@@ -443,11 +443,11 @@ export default function AdoptionPostsView() {
     const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
 
     return (
-      <div className="mx-1 mt-20">
+      <div className="mx-1">
         {post && (
           <div className="max-w-screen-sm mx-auto">
             <PC>
-              <h2 className="text-4xl font-bold pt-10">{post.title}</h2>
+              <h2 className="text-4xl font-bold pt-10 mt-20">{post.title}</h2>
               <div className="flex items-center my-2 relative">
                 <img
                   className="w-10 h-10 rounded-full border-2 cursor-pointer"
