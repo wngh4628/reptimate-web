@@ -261,6 +261,8 @@ export default function AdoptionWrite() {
       [fileItem]
     ); // Memoize the image URL
 
+    console.log("리렌더링 되네요");
+
     return (
       <div>
         <PC>
@@ -435,6 +437,15 @@ export default function AdoptionWrite() {
 
       alert(alertMessage);
       setIsLoading(false);
+    }
+  };
+
+  const handlePriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+
+    // Check if the input is a valid positive number
+    if (/^\d*\.?\d+$/.test(inputValue) || inputValue === "") {
+      setPrice(inputValue);
     }
   };
 
@@ -645,7 +656,7 @@ export default function AdoptionWrite() {
           placeholder="가격을 입력해주세요. (원)"
           className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
           value={price}
-          onChange={(e) => setPrice(e.target.value)}
+          onChange={handlePriceChange}
         />
         <div className="flex items-center">
           <p className="font-bold text-xl my-2">내용</p>
