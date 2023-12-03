@@ -221,7 +221,7 @@ export default function Header() {
     if (window.innerWidth <= 768) {
       if (pathName === "/my/board") return null;
       if (pathName === "/my/auction") return null;
-      if (pathName === "/my/bookmpoark") return null;
+      if (pathName === "/my/bookmark") return null;
       if (pathName.startsWith("/streamhost")) return null;
       if (pathName.startsWith("/community/adoption/posts")) return null;
       if (pathName.startsWith("/community/market/posts")) return null;
