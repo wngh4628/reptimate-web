@@ -128,9 +128,9 @@ export default function Gender(props:any) {
       <div className="flex flex-col p-4 mt-4 ml-1">
           <h2 className="text-2xl font-bold">암수 구분</h2>
 
-          <div className="mt-10">
+          <div className="mt-8">
 
-          <h3 className="text-2xl font-bold">천공 사진</h3>
+          <h3 className="text-xl font-bold">천공 사진</h3>
           <p className="mt-3">도마뱀 천공 사진을 예제 사진과 같이 확대해서 올려주세요.</p>
 
           <div className="flex mt-5">
