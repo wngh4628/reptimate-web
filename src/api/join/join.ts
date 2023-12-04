@@ -35,6 +35,30 @@ export const emailSend = async ({ email, type}:  {
   return result;
 };
 
+export const findPassWordEmail = async ({ email }:  {
+  email: string;
+}) => {
+  const data = {
+      'email' : email
+    };
+const result = await instance.post("/users/find-password", data);
+
+return result;
+};
+
+export const patchPassWord = async ({ currentPassword, newPassword}:  {
+  currentPassword: string;
+  newPassword: string;
+}) => {
+  const data = {
+      'currentPassword' : currentPassword,
+      'newPassword' : newPassword
+    };
+const result = await instance.patch("/users/password", data);
+
+return result;
+};
+
 export const nickNameChk = async ({ nickname, accessToken }:  {
     nickname: string;
     accessToken: string
