@@ -49,6 +49,10 @@ export default function Header() {
   const setUser = useSetRecoilState(userAtom);
   const setCookieLoggedIn = useSetRecoilState(isLoggedInState);
 
+
+
+  const [moblieView, setMoblieView] = useState(false);
+
   function getCookie(name: string) {
     const value = "; " + document.cookie;
     const parts = value.split("; " + name + "=");
@@ -216,28 +220,10 @@ export default function Header() {
 
   // Set the link based on whether it's an "auction" route or not
   const link = isAuctionRoute ? "/auction" : "/";
-
-  if (typeof window !== "undefined") {
-    if (window.innerWidth <= 768) {
-      if (pathName === "/my/board") return null;
-      if (pathName === "/my/auction") return null;
-      if (pathName === "/my/bookmark") return null;
-      if (pathName.startsWith("/streamhost")) return null;
-      if (pathName.startsWith("/community/adoption/posts")) return null;
-      if (pathName.startsWith("/community/market/posts")) return null;
-      if (pathName.startsWith("/community/free/posts")) return null;
-      if (pathName.startsWith("/community/ask/posts")) return null;
-      if (
-        pathName.startsWith("/auction/posts") &&
-        !pathName.endsWith("/live")
-      ) {
-        return null;
-      }
-    }
-  }
-
+  
   return (
-    <header className="w-full fixed top-0 bg-white shadow-md z-[9999]">
+      <header className="w-full fixed top-0 bg-white shadow-md z-[9999]">
+
       {/* PC 화면(반응형) */}
       <PC>
         <div className="flex justify-end pt-2 gap-2 text-sm max-w-screen-xl mx-auto">
@@ -370,7 +356,9 @@ export default function Header() {
               <img src="/img/main_logo2.png" />
             </div>
           </Link>
-          <nav className="flex gap-4 font-bold ml-auto">
+          <nav className={`${
+                window.innerWidth <= 768 ? "" : "gap-4"
+                } flex font-bold ml-auto`}>
             <Link href="">
               <div
                 className="flex w-[23px] h-5 my-0.5 relative"
@@ -383,12 +371,16 @@ export default function Header() {
               </div>
             </Link>
             <a onClick={notiClick}>
-              <div className="flex gap-4 w-5 my-0.5">
+              <div className={`${
+                window.innerWidth <= 768 ? "hidden" : "flex gap-4 w-5 my-0.5"
+                }`}>
                 <img src="/img/notification.png" />
               </div>
             </a>
             <Link href="">
-              <div className="flex w-5 my-0.5">
+            <div className={`${
+                window.innerWidth <= 768 ? "hidden" : "flex w-5 my-0.5"
+                }`}>
                 <img src="/img/search.png" />
               </div>
             </Link>
@@ -419,8 +411,7 @@ export default function Header() {
             isNotiVisisible
               ? "bg-white w-full h-full z-[10000] fixed bottom-0 border-[2px] border-gray-300 flex flex-col shadow-md"
               : "hidden"
-          }`}
-        >
+          }`}>
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
               알림
