@@ -114,7 +114,7 @@ export default function GenderResult(props:any) {
                         <div className="mt-10 text-center mr-5">
                             <p className={`mt-2.5 text-xl font-bold`}>
                                 {sentences[0]}
-                                {' '}
+                                <br />
                                 <span className={genderDetected === maleText ? 'text-blue-500' : genderDetected === femaleText ? 'text-pink-500' : ''}>
                                     {genderDetected}
                                 </span>
