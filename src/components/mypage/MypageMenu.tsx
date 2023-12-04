@@ -91,7 +91,7 @@ export default function MypageMenu() {
       </PC>
 
       <Mobile>
-        <div className="flex mb-[25px] drop-shadow-md items-center justify-center content-center m-auto w-full border-[1px]">
+        <div className="flex mb-[25px] drop-shadow-md items-center justify-center content-center m-auto w-full border-[1px] mt-12">
           <nav className="flex font-bold w-full">
             <Link
               href="/my/board"
