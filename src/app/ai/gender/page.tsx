@@ -1,12 +1,26 @@
+"use client";
 import AiMenu from "@/components/AiMenu";
+import Gender from "@/components/ai/Gender";
+import GenderResult from "@/components/ai/GenderResult";
+import { useState } from "react";
 
 export default function GenderDiscriminationPage() {
+
+  const [genderResult, setGenderResult] = useState(null);
+
+  const setFunctionList = [setGenderResult]
+  
   return (
     <div>
-      <AiMenu />
-      <div className="max-w-screen-sm mx-auto mt-20">
-        <h2 className="text-3xl font-bold pt-5">{"암수 구분"}</h2>
-      </div>
+
+      <AiMenu setFunctionList={setFunctionList}/>
+
+      {genderResult ? (
+        <GenderResult genderResult={genderResult} setGenderResult={setGenderResult}/>
+      ) : (
+        <Gender setGenderResult={setGenderResult}/>
+      )}
+      
     </div>
   );
 }

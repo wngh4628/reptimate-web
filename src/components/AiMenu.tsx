@@ -40,6 +40,7 @@ export default function AiMenu(props: any) {
               className={`${
                 pathName === "/ai/gender" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
+              onClick={resetState}
             >
               암수 구분
             </Link>
