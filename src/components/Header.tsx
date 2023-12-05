@@ -293,13 +293,13 @@ export default function Header() {
               AI
             </Link>
             {isLoggedIn ?
-            <div>
+            <div className="flex">
               <Link
                 href="/my"
                 className={`${
                   pathName === "/my" ? "font-bold" : ""
                 } font-normal`}
-                style={{fontSize:18, color:"#222222"}}
+                style={{fontSize:18, color:"#222222", marginLeft:15}}
               >
                 MY
               </Link>
@@ -307,6 +307,7 @@ export default function Header() {
                 <div
                   className="flex w-[23px] h-5 my-0.5  relative"
                   onClick={chattingClick}
+                  style={{marginLeft:14}}
                 >
                   <img src="/img/chat.png" />
                   {receivedNewChat && (
@@ -319,6 +320,7 @@ export default function Header() {
                   <div
                     className="flex w-[23px] h-5 my-0.5  relative"
                     onClick={notiClick}
+                    style={{paddingTop:1}}
                   >
                     <img src="/img/notification.png" />
                   </div>
