@@ -122,8 +122,8 @@ export default function Header() {
     }
   }, [pathName]);
 
-  useEffect(() => {}, []);
-  useEffect(() => {}, [receivedNewChat]);
+  useEffect(() => { }, []);
+  useEffect(() => { }, [receivedNewChat]);
 
   const onMessageFCM = async () => {
     // 브라우저에 알림 권한을 요청합니다.
@@ -204,6 +204,12 @@ export default function Header() {
   function notiClose() {
     setIsNotiVisisible(false);
   }
+  function pageReload() {
+    // router.refresh();
+    // router.push("/")
+    window.location.href = "/"
+    // window.location.reload();
+  }
 
   const communityPathnames = [
     "/",
@@ -260,36 +266,36 @@ export default function Header() {
           )}
         </div>
         <div className="flex justify-between items-center py-4 max-w-screen-xl mx-auto">
-          <Link href={link}>
+          <Link href={link} onClick={pageReload}>
             <div className="flex w-[170px]">
               <img src="/img/main_logo2.png" />
             </div>
           </Link>
           <nav className="flex gap-4 font-bold">
-            <Link href="/" className={` group hover:text-main-color`}>
+            <Link href="/"
+              className={`${pathName === "/" ? "text-[#6D71E6]" : ""
+                } group hover:text-main-color`}
+            >
               COMMUNITY
             </Link>
             <Link
               href="/auction"
-              className={`${
-                pathName === "/auction" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color`}
+              className={`${pathName === "/auction" ? "text-[#6D71E6]" : ""
+                } group hover:text-main-color`}
             >
               AUCTION
             </Link>
             <Link
               href="/ai"
-              className={`${
-                pathName === "/ai" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color`}
+              className={`${pathName === "/ai" ? "text-[#6D71E6]" : ""
+                } group hover:text-main-color`}
             >
               AI
             </Link>
             <Link
               href="/my"
-              className={`${
-                pathName === "/my" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color`}
+              className={`${pathName === "/my" ? "text-[#6D71E6]" : ""
+                } group hover:text-main-color`}
             >
               MY
             </Link>
@@ -322,11 +328,10 @@ export default function Header() {
           </nav>
         </div>
         <div
-          className={`${
-            isChatVisisible
-              ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
-              : "hidden"
-          }`}
+          className={`${isChatVisisible
+            ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
+            : "hidden"
+            }`}
         >
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
@@ -343,11 +348,10 @@ export default function Header() {
         </div>
 
         <div
-          className={`${
-            isNotiVisisible
-              ? "bg-white w-[450px] h-[500px] z-[10000] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
-              : "hidden"
-          }`}
+          className={`${isNotiVisisible
+            ? "bg-white w-[450px] h-[500px] z-[10000] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
+            : "hidden"
+            }`}
         >
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
@@ -395,11 +399,10 @@ export default function Header() {
           </nav>
         </div>
         <div
-          className={`${
-            isChatVisisible
-              ? "bg-white w-full h-[460px] z-[9999] fixed top-0 border-[2px] border-gray-300 flex flex-col shadow-md"
-              : "hidden"
-          }`}
+          className={`${isChatVisisible
+            ? "bg-white w-full h-[460px] z-[9999] fixed top-0 border-[2px] border-gray-300 flex flex-col shadow-md"
+            : "hidden"
+            }`}
         >
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
@@ -415,11 +418,10 @@ export default function Header() {
           <PersonalChat></PersonalChat>
         </div>
         <div
-          className={`${
-            isNotiVisisible
-              ? "bg-white w-full h-full z-[10000] fixed bottom-0 border-[2px] border-gray-300 flex flex-col shadow-md"
-              : "hidden"
-          }`}
+          className={`${isNotiVisisible
+            ? "bg-white w-full h-full z-[10000] fixed bottom-0 border-[2px] border-gray-300 flex flex-col shadow-md"
+            : "hidden"
+            }`}
         >
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
