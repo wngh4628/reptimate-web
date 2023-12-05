@@ -43,7 +43,7 @@ export default function AiMain() {
               </article>
             </Link>
             <p className="mt-2 text-lg ml-1 break-words">
-              보유하고 있는 크레스티드 게코의 모프 가치를 판단
+              보유하고 있는 크레스티드 게코의 브리딩 라인을 추천
             </p>
           </div>
 
@@ -65,8 +65,8 @@ export default function AiMain() {
           </div>
 
           <div className="mt-10 ml-10 mr-10 relative">
-            <h3 className="font-bold mb-2 text-xl mx-1">가상 브리딩</h3>
-            <Link href={`/ai/virtualbreeding`}>
+            <h3 className="font-bold mb-2 text-xl mx-1">개인 사육사 챗봇</h3>
+            <Link href={`/ai/aibreeder`}>
               <article className="flex flex-col items-center">
                 <div className="relative w-[500px] h-[300px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                   <img
@@ -77,7 +77,7 @@ export default function AiMain() {
               </article>
             </Link>
             <p className="mt-2 text-lg ml-1 break-words">
-              도마뱀 암수 사진을 올리면 나올 수 있는 자손 사진을 생성
+              크레스티드 개코에 대한 질문에 답변을 해주는 AI사육사
             </p>
           </div>
         </div>
@@ -115,7 +115,7 @@ export default function AiMain() {
               </article>
             </Link>
             <p className="mt-2 text-mg ml-1 break-words">
-              보유하고 있는 크레스티드 게코의 모프 가치를 판단
+              보유하고 있는 크레스티드 게코의 브리딩 라인을 추천
             </p>
           </div>
 
@@ -137,8 +137,8 @@ export default function AiMain() {
           </div>
 
           <div className="p-2">
-            <h3 className="font-bold mb-2 text-xl">가상 브리딩</h3>
-            <Link href={`/ai/virtualbreeding`}>
+            <h3 className="font-bold mb-2 text-xl">개인 사육사 챗봇</h3>
+            <Link href={`/ai/aibreeder`}>
               <article className="flex flex-col items-center">
                 <div className="relative w-full h-full overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                   <img
@@ -149,7 +149,7 @@ export default function AiMain() {
               </article>
             </Link>
             <p className="mt-2 text-mg ml-1 break-words">
-              도마뱀 암수 사진을 올리면 나올 수 있는 자손 사진을 생성
+              크레스티드 개코에 대한 질문에 답변을 해주는 AI사육사
             </p>
           </div>
         </div>

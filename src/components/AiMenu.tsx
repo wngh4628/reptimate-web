@@ -45,12 +45,12 @@ export default function AiMenu(props: any) {
               암수 구분
             </Link>
             <Link
-              href="/ai/virtualbreeding"
+              href="/ai/aibreeder"
               className={`${
-                pathName === "/ai/virtualbreeding" ? "text-[#6D71E6]" : ""
+                pathName === "/ai/aibreeder" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
             >
-              가상 브리딩
+              개인 사육사 챗봇
             </Link>
           </nav>
         </div>

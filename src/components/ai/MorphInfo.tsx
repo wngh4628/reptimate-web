@@ -93,7 +93,7 @@ export default function MorphInfo(props:any) {
 
       axios({
         method:'post',
-        url:`${process.env.NEXT_PUBLIC_AI_URL}/${endpoint}`,
+        url:`${process.env.NEXT_PUBLIC_AI_URL}/image_ai/${endpoint}`,
         data: formData,
         params: {
           morph: morph,

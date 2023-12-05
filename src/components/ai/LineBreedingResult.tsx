@@ -27,7 +27,7 @@ export default function LineBreedingResult(props:any) {
 
         axios({
             method:'post',
-            url:`${process.env.NEXT_PUBLIC_AI_URL}/value_analyzer`,
+            url:`${process.env.NEXT_PUBLIC_AI_URL}/image_ai/value_analyzer`,
             data: morphInfo.formData,
             params: {
             morph: morphInfo.morph,

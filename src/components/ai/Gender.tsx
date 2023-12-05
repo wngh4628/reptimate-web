@@ -22,7 +22,7 @@ export default function Gender(props:any) {
 
       axios({
         method:'post',
-        url:`${process.env.NEXT_PUBLIC_AI_URL}/gender_discrimination`,
+        url:`${process.env.NEXT_PUBLIC_AI_URL}/image_ai/gender_discrimination`,
         data: formData,
         headers: { // 요청 헤더
           'Content-Type': 'multipart/form-data',
