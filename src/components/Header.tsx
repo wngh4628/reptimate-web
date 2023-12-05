@@ -52,6 +52,7 @@ export default function Header() {
 
 
   const [moblieView, setMoblieView] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -111,6 +112,12 @@ export default function Header() {
         // 알림 권한이 거부됨
       }
     }
+    function handleResize() {
+      setIsMobile(window.innerWidth <= 768);
+    }
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const [fcm, setfcm] = useRecoilState(fcmState);
@@ -363,7 +370,7 @@ export default function Header() {
             </div>
           </Link>
           <nav className={`${
-                window.innerWidth <= 768 ? "" : "gap-4"
+                isMobile ? "" : "gap-4"
                 } flex font-bold ml-auto`}>
             <Link href="">
               <div
@@ -378,16 +385,16 @@ export default function Header() {
             </Link>
             <a onClick={notiClick}>
               <div className={`${
-                window.innerWidth <= 768 ? "hidden" : "flex gap-4 w-5 my-0.5"
+                isMobile ? "hidden" : "flex gap-4 w-5 my-0.5"
                 }`}>
                 <img src="/img/notification.png" />
               </div>
             </a>
             <Link href="">
-            <div className={`${
-                window.innerWidth <= 768 ? "hidden" : "flex w-5 my-0.5"
-                }`}>
-                <img src="/img/search.png" />
+              <div className={`${
+                  isMobile ? "hidden" : "flex w-5 my-0.5"
+                  }`}>
+                  <img src="/img/search.png" />
               </div>
             </Link>
           </nav>
