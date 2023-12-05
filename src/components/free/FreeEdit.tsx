@@ -77,7 +77,10 @@ export default function FreeEdit() {
     };
 
     return (
-      <button onClick={handleGoBack} className="cursor-poiter px-2 font-bold">
+      <button
+        onClick={handleGoBack}
+        className="cursor-poiter px-2 font-bold mt-12"
+      >
         &lt; 뒤로가기
       </button>
     );
@@ -404,6 +407,13 @@ export default function FreeEdit() {
     }
   };
 
+  const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const inputValue = e.target.value;
+    if (inputValue.length <= 600) {
+      setDescription(inputValue);
+    }
+  };
+
   return (
     <div className="max-w-screen-md mx-auto">
       {isLoading && (
@@ -479,12 +489,15 @@ export default function FreeEdit() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <p className="font-bold text-xl my-2">내용</p>
+        <div className="flex items-center">
+          <p className="font-bold text-xl my-2">내용</p>
+          <span className="text-sm ml-auto">{description.length}/600</span>
+        </div>
         <textarea
           placeholder="내용을 입력해주세요."
           className="focus:outline-none px-2 py-2 border-gray-400 border-2 text-17px w-full"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={handleDescriptionChange}
           rows={10} // 세로 행의 개수를 조절합니다.
         />
       </div>

@@ -259,8 +259,6 @@ export default function AdoptionWrite() {
       [fileItem]
     ); // Memoize the image URL
 
-    console.log("리렌더링 되네요");
-
     return (
       <div>
         <PC>

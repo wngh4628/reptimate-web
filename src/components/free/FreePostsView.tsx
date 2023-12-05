@@ -78,7 +78,10 @@ export default function FreePostsView() {
     };
 
     return (
-      <button onClick={handleGoBack} className="cursor-poiter px-2 font-bold">
+      <button
+        onClick={handleGoBack}
+        className="cursor-poiter px-2 font-bold mt-12"
+      >
         &lt; 뒤로가기
       </button>
     );

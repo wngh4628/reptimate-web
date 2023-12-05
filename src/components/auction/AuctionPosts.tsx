@@ -148,21 +148,23 @@ export default function AuctionPosts() {
         </div>
       </PC>
       <Mobile>
-        <BannerSlider />
-        <div className="flex items-center relative">
-          <h2 className="text-lg font-bold ml-2 my-2">경매</h2>
-          <div className="relative ml-auto">
-            <select
-              className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
-              value={sort}
-              onChange={handleSortChange}
-            >
-              {sortOption.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+        <div className="mt-11">
+          <BannerSlider />
+          <div className="flex items-center relative">
+            <h2 className="text-lg font-bold ml-2 my-2">경매</h2>
+            <div className="relative ml-auto">
+              <select
+                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
+                value={sort}
+                onChange={handleSortChange}
+              >
+                {sortOption.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </Mobile>

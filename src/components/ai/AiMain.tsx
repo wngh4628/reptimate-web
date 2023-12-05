@@ -84,7 +84,7 @@ export default function AiMain() {
       </PC>
 
       <Mobile>
-        <div className="grid grid-cols-2 justify-center mt-5">
+        <div className="grid grid-cols-2 justify-center mt-12">
           <div className="p-2">
             <h3 className="font-bold mb-2 text-xl">모프 가치 판단</h3>
             <Link href={`/ai/valueanalysis`}>
