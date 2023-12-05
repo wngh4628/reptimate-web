@@ -6,7 +6,6 @@ import AskPosts from "@/components/ask/AskPosts";
 export default function AskHome() {
   return (
     <div>
-      <CommunityMenu />
       <AskPosts />
     </div>
   );
