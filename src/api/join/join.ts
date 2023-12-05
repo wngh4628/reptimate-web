@@ -39,22 +39,23 @@ export const findPassWordEmail = async ({ email }:  {
   email: string;
 }) => {
   const data = {
-      'email' : email
+      'email' : email,
+      'type' : "OLDUSER"
     };
-const result = await instance.post("/users/find-password", data);
+const result = await instance.post("/users/email-verify", data);
 
 return result;
 };
 
-export const patchPassWord = async ({ currentPassword, newPassword}:  {
-  currentPassword: string;
-  newPassword: string;
+export const patchPassWord = async ({ email, password }:  {
+  email: string;
+  password: string;
 }) => {
   const data = {
-      'currentPassword' : currentPassword,
-      'newPassword' : newPassword
+      'email' : email,
+      'password' : password
     };
-const result = await instance.patch("/users/password", data);
+const result = await instance.post("/users/find-password", data);
 
 return result;
 };
