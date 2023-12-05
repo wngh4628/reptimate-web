@@ -1,5 +1,5 @@
 "use client";
-import AiMenu from "@/components/AiMenu";
+import AiMenu from "@/components/ai/AiMenu";
 import MorphCard from "@/components/MorphCard";
 import { Mobile, PC } from "@/components/ResponsiveLayout";
 import { useEffect, useState } from "react";

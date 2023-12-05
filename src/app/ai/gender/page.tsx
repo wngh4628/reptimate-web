@@ -1,5 +1,5 @@
 "use client";
-import AiMenu from "@/components/AiMenu";
+import AiMenu from "@/components/ai/AiMenu";
 import Gender from "@/components/ai/Gender";
 import GenderResult from "@/components/ai/GenderResult";
 import { useState } from "react";

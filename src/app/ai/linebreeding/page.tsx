@@ -1,5 +1,5 @@
 "use client"
-import AiMenu from "@/components/AiMenu";
+import AiMenu from "@/components/ai/AiMenu";
 import LineBreedingResult from "@/components/ai/LineBreedingResult";
 import MorphInfo from "@/components/ai/MorphInfo";
 import ValueAnalysisResult from "@/components/ai/ValueAnalysisResult";

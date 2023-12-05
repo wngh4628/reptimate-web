@@ -1,6 +1,4 @@
 "use client";
-import AiMenu from "@/components/AiMenu";
-import MorphCard from "@/components/MorphCard";
 import { Mobile, PC } from "@/components/ResponsiveLayout";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import axios from "axios";
