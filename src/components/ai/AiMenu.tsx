@@ -8,7 +8,9 @@ export default function AiMenu(props: any) {
   const setFunctionList: ((state: null) => void)[] = props.setFunctionList;
 
   const resetState = () => {
-    setFunctionList.forEach((func) => func(null));
+    if(setFunctionList){
+      setFunctionList.forEach((func) => func(null));
+    }
   };
 
   const pathName = usePathname();

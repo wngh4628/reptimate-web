@@ -13,9 +13,11 @@ export default function AiBreeder(props:any) {
   const [inputValue, setInputValue] = useState('');
   const [chattingData, setchattingData] = useState<getMessage[]>([]);
   const [loading, setLoading] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef_PC = useRef<HTMLInputElement>(null);
+  const inputRef_Mobile = useRef<HTMLInputElement>(null);  
   const btnRef = useRef<HTMLButtonElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const recommendKeywordContainerRef = useRef<HTMLDivElement>(null);
   
 
   // 입장하자마자 챗봇이 인사
@@ -43,7 +45,7 @@ export default function AiBreeder(props:any) {
 
     if(inputValue.length === 0){
       
-      if (inputRef.current && btnRef.current) {
+      if (btnRef.current) {
         btnRef.current.classList.remove('bg-main-color');
         btnRef.current.classList.add('bg-gray-400');
         btnRef.current.style.cursor = 'not-allowed'; // 커서를 변경하여 비활성화된 상태를 강조
@@ -51,7 +53,7 @@ export default function AiBreeder(props:any) {
       
     } else{
 
-      if (inputRef.current && btnRef.current) {
+      if (btnRef.current) {
           btnRef.current.classList.remove('bg-gray-400');
           btnRef.current.classList.add('bg-main-color');
           btnRef.current.style.cursor = 'pointer';
@@ -73,12 +75,20 @@ export default function AiBreeder(props:any) {
       setLoading(true);
       setInputValue('');
       // 응답 올때까지 추가적인 질문 못하도록 막기
-      if (inputRef.current && btnRef.current) {
-        inputRef.current.disabled = true;
-
+      if(inputRef_PC.current){
+        inputRef_PC.current.disabled = true;
+      }
+      if(inputRef_Mobile.current){
+        inputRef_Mobile.current.disabled = true;
+      }
+      if (btnRef.current && recommendKeywordContainerRef.current) {
+        
         btnRef.current.classList.remove('bg-main-color');
         btnRef.current.classList.add('bg-gray-400');
         btnRef.current.style.cursor = 'not-allowed'; // 커서를 변경하여 비활성화된 상태를 강조
+
+        recommendKeywordContainerRef.current.classList.add('hidden');
+
       }
 
       const requestChat = {
@@ -112,11 +122,18 @@ export default function AiBreeder(props:any) {
           const ChattingData_responseChatAdded = [...ChattingData_requestChatAdded, responseChat];
           setchattingData(ChattingData_responseChatAdded)
           setLoading(false);
-          if (inputRef.current && btnRef.current) {
-            inputRef.current.disabled = false;
-            inputRef.current.focus()
+
+          if(inputRef_PC.current){
+            inputRef_PC.current.disabled = false;
+            inputRef_PC.current.focus();
           }
-          
+          if(inputRef_Mobile.current){
+            inputRef_Mobile.current.disabled = false;
+          }
+          if (recommendKeywordContainerRef.current && btnRef.current) {
+            recommendKeywordContainerRef.current.classList.remove('hidden');
+            btnRef.current.disabled = false;
+          }
         })
           .catch((error)=>{console.log('요청실패')
           console.log(error)  
@@ -129,9 +146,15 @@ export default function AiBreeder(props:any) {
           const ChattingData_responseChatAdded = [...ChattingData_requestChatAdded, responseChat];
           setchattingData(ChattingData_responseChatAdded)
           setLoading(false);
-          if (inputRef.current && btnRef.current) {
-            inputRef.current.disabled = false;
-            inputRef.current.focus()
+          if(inputRef_PC.current){
+            inputRef_PC.current.disabled = false; 
+          }
+          if(inputRef_Mobile.current){
+            inputRef_Mobile.current.disabled = false; 
+          }
+          if (recommendKeywordContainerRef.current && btnRef.current) {
+            recommendKeywordContainerRef.current.classList.remove('hidden');
+            btnRef.current.disabled = false;
           }
   
       })
@@ -170,7 +193,9 @@ export default function AiBreeder(props:any) {
           {/* 질문 */}
           <div className="border border-gray-300 h-1/2 p-3 ">
             {/* 추천 질문 */}
-            <div className="flex justify-center text-main-color text-base">
+            <div 
+              className="flex justify-center text-main-color text-base mb-3"
+              ref={recommendKeywordContainerRef}>
               <div className="border border-main-color bord rounded-2xl py-2.5 px-12 hover:cursor-pointer mx-auto" onClick={() => {handleSend('크레 수분')}}>
                 크레 수분
               </div>
@@ -190,13 +215,13 @@ export default function AiBreeder(props:any) {
                 onSubmit={(e) => {
                   e.preventDefault(); // 폼의 기본 동작(새로고침) 방지
                 }} 
-                className="flex px-3 mt-3">
+                className="flex px-3">
                 <input 
                   type="text"
                   className="border border-gray-300 rounded-2xl px-3 py-2.5 flex-auto"
                   value={inputValue}
                   onChange={handleInputChange}
-                  ref={inputRef}
+                  ref={inputRef_PC}
                   placeholder="AI 사육사에게 질문해주세요."
                   />
                 <button 
@@ -217,38 +242,81 @@ export default function AiBreeder(props:any) {
     </PC>
 
     <Mobile>
+      <div className="max-w-screen-md mx-auto mt-4 p-4">
+        <h2 className="text-2xl font-bold">개인 사육사 챗봇</h2>
 
-      {/* 모프 정보 */}
-      <div className="flex flex-col p-4 mt-4 ml-1">
-          <h2 className="text-2xl font-bold">암수 구분</h2>
+        {/* 채팅창 */}
+        <div className="mt-10">
 
-          <div className="mt-8">
-
-          <h3 className="text-xl font-bold">천공 사진</h3>
-          <p className="mt-3">도마뱀 천공 사진을 예제 사진과 같이 확대해서 올려주세요.</p>
-
-          <div className="flex mt-5">
-
+          {/* 채팅 내용 */}
           <div
-            className={`relative flex flex-col items-center w-[165px] h-[165px] shadow-md shadow-gray-400 rounded-lg bg-gray-100`}
-          >
-            <img
-              className={`max-w-full max-h-full object-cover w-full h-full shadow-md shadow-gray-400 rounded-lg`}
-              src={'/img/perforation.jpeg'}
-              style={{ zIndex: 1 }}
-            />
+            className="border-t border-r border-l border-gray-300 h-96 p-3 overflow-y-auto"
+            ref={chatContainerRef}
+            >
+            {chattingData.map((chatData, i) => (
+                  <AiChatItem chatData={chatData} key={i} />
+            ))}
 
-            <p className="text-lg absolute bottom-0 mb-5 z-10">
-              <strong>예제 사진</strong>
-            </p>
-          </div>
-
-              
+            {loading && (
+              <div className="w-[30px] h-[30px] border-t-4 border-main-color border-solid rounded-full animate-spin mx-auto mt-5"></div>
+            )}
+            
 
           </div>
-          </div>
 
-        
+          {/* 질문 */}
+          <div className="border border-gray-300 h-1/2 p-3 ">
+            {/* 추천 질문 */}
+            <div 
+              className="flex text-main-color text-base mb-3"
+              style={{
+                  overflowX: 'auto',
+                  maxWidth: '100%',
+                  scrollSnapType: 'x mandatory',
+                }}
+                ref={recommendKeywordContainerRef}
+                >
+                <div className="border border-main-color bord rounded-2xl py-2.5 px-6 hover:cursor-pointer mr-2" onClick={() => {handleSend('크레 수분')}} style={{ flex: '0 0 auto' }}>
+                  크레 수분
+                </div>
+                <div className="border border-main-color bord rounded-2xl py-2.5 px-6 hover:cursor-pointer mr-2" onClick={() => {handleSend('크레 먹이')}} style={{ flex: '0 0 auto' }}>
+                  크레 먹이
+                </div>
+                <div className="border border-main-color bord rounded-2xl py-2.5 px-6 hover:cursor-pointer mr-2" onClick={() => {handleSend('크레 온도')}} style={{ flex: '0 0 auto' }}>
+                  크레 온도
+                </div>
+                <div className="border border-main-color bord rounded-2xl py-2.5 px-6 hover:cursor-pointer mr-2" onClick={() => {handleSend('크레 사육장')}} style={{ flex: '0 0 auto' }}>
+                  크레 사육장
+                </div>
+            </div>
+            
+            {/* 질문 작성 */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault(); // 폼의 기본 동작(새로고침) 방지
+                }} 
+                className="flex">
+                <input 
+                  type="text"
+                  className="border border-gray-300 rounded-2xl px-3 py-2.5 flex-auto"
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  ref={inputRef_Mobile}
+                  placeholder="AI 사육사에게 질문해주세요."
+                  />
+                <button 
+                  className="bg-gray-400 text-white font-bold py-2.5 px-4 rounded ml-3"
+                  onClick={() => {handleSend(inputValue)}}
+                  ref={btnRef}
+                  style={{ cursor: 'not-allowed' }}
+                  >
+                  전송
+                </button>
+              </form>
+
+          </div>
+        </div>
+
       </div>
     </Mobile>
     </div>
