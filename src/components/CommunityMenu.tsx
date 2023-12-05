@@ -7,39 +7,43 @@ import { Mobile, PC } from "./ResponsiveLayout";
 export default function CommunityMenu() {
   const pathName = usePathname();
   return (
-    <div className="w-full mx-auto max-w-screen-xl">
+    <div className="w-full mx-auto max-w-screen-xl" style={{paddingLeft:40}}>
       <PC>
-        <div className="flex justify-between items-center pl-1 mt-20">
-          <nav className="flex gap-4 font-bold">
+        <div className="flex justify-between items-center" style={{paddingTop:15, }}>
+          <nav className="flex gap-4">
             <Link
               href="/"
               className={`${
-                pathName === "/" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color pt-6 pb-3`}
+                pathName === "/" ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+              } group hover:text-main-color`}
+              style={{paddingBottom:6, }}
             >
               분양글
             </Link>
             <Link
               href="/community/market"
               className={`${
-                pathName === "/community/market" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color pt-6 pb-3`}
+                pathName === "/community/market" ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+              } group hover:text-main-color`}
+              style={{paddingBottom:6, }}
             >
               중고 거래
             </Link>
             <Link
               href="/community/free"
               className={`${
-                pathName === "/community/free" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color pt-6 pb-3`}
+                pathName === "/community/free" ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+              } group hover:text-main-color`}
+              style={{paddingBottom:6, }}
             >
               자유 게시판
             </Link>
             <Link
               href="/community/ask"
               className={`${
-                pathName === "/community/ask" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color pt-6 pb-3`}
+                pathName === "/community/ask" ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+              } group hover:text-main-color `}
+              style={{paddingBottom:6, }}
             >
               질문 게시판
             </Link>

@@ -30,9 +30,6 @@ export default function AskPosts() {
   const isLogin = useRecoilValue(userAtom);
   const target = useRef(null);
 
-  const setUser = useSetRecoilState(userAtom);
-  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
-
   const options = {
     threshold: 1.0,
   };
@@ -118,11 +115,11 @@ export default function AskPosts() {
     <section>
       <BannerSlider />
       <PC>
-        <div className="flex items-center relative">
+        <div className="flex items-center relative" style={{marginLeft:40, marginRight:40}}>
           <h2 className="text-xl font-bold ml-1">질문 게시판</h2>
           <div className="relative ml-auto">
             <select
-              className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
+               className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 "
               value={sort}
               onChange={handleSortChange}
             >
@@ -153,27 +150,53 @@ export default function AskPosts() {
           </div>
         </div>
       </Mobile>
-      {data !== null && data.result.items ? (
-        <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5">
-          {itemlist.map((post) => (
-            <li key={post.idx}>
-              <PostCard post={post} />
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className="flex items-center justify-center h-screen">
-          <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
-        </div>
-      )}
-      {existNextPage && (
-        <div className="flex justify-center">
-          <div
-            className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"
-            ref={target}
-          ></div>
-        </div>
-      )}
+      <PC>
+        {data !== null && data.result.items ? (
+          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5"  style={{marginLeft:40,marginRight:40}}>
+            {itemlist.map((post) => (
+              <li key={post.idx}>
+                <PostCard post={post} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="flex items-center justify-center h-screen">
+            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          </div>
+        )}
+        {existNextPage && (
+          <div className="flex justify-center">
+            <div
+              className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"
+              ref={target}
+            ></div>
+          </div>
+        )}
+      </PC>
+      <Mobile>
+        {data !== null && data.result.items ? (
+          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5">
+            {itemlist.map((post) => (
+              <li key={post.idx}>
+                <PostCard post={post} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="flex items-center justify-center h-screen">
+            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          </div>
+        )}
+        {existNextPage && (
+          <div className="flex justify-center">
+            <div
+              className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"
+              ref={target}
+            ></div>
+          </div>
+        )}
+      </Mobile>
+     
       <PC>
         {isLogin && (
           <div className="fixed bottom-10 right-10 z-50">
