@@ -80,6 +80,14 @@ export default function FindPWInput() {
           setJoinTry(true);
         }
       } else if(err.response.status == 400) {
+        if (err.response.data.errorCode == "CANNOT_UPDATE_SOCIAL_USER") {
+            Swal.fire({
+                text: "소셜 회원은 비밀번호를 변경할 수 없습니다.",
+                confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+              });
+          } else {
+          }
         
       }
     },
