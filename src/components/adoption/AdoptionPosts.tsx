@@ -120,7 +120,9 @@ export default function AdoptionPosts() {
 
   return (
     <section>
+      {/* 광고 배너 */}
       <BannerSlider />
+       {/* 솔트링 콤보 박스 PC */}
       <PC>
         <div className="flex items-center relative" style={{marginLeft:40, marginRight:40}}>
           <p className="font-bold text-[20px]">분양글</p>
@@ -139,12 +141,13 @@ export default function AdoptionPosts() {
           </div>
         </div>
       </PC>
+      {/* 솔트링 콤보 박스 모바일 - 모바일은 마진 좌우 값이 없음 */}
       <Mobile>
-        <div className="flex items-center relative">
-          <h2 className="text-lg font-bold ml-2 my-2">분양글</h2>
+        <div className="flex items-center relative" style={{marginLeft:16, marginRight:16}}>
+          <h2 className="text-lg font-bold my-2">분양글</h2>
           <div className="relative ml-auto">
             <select
-              className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
+              className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 "
               value={sort}
               onChange={handleSortChange}
             >
@@ -157,6 +160,7 @@ export default function AdoptionPosts() {
           </div>
         </div>
       </Mobile>
+      {/* 게시글 목록 PC */}
       <PC>
         {data !== null && data.result.items ? (
           <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5" style={{marginLeft:40,marginRight:40}}>
@@ -172,13 +176,12 @@ export default function AdoptionPosts() {
           </div>
         )}
       </PC>
+       {/* 게시글 목록 모바일  - 모바일은 마진 좌우 값이 없음 */}
       <Mobile>
         {data !== null && data.result.items ? (
-            <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5">
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-4" style={{paddingLeft:16, paddingRight: 16}}>
               {itemlist.map((post) => (
-                <li key={post.idx}>
-                  <PostCard post={post} />
-                </li>
+                  <PostCard  key={post.idx} post={post} />
               ))}
             </ul>
           ) : (

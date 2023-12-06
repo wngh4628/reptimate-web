@@ -102,38 +102,29 @@ const BannerSlider: React.FC = () => {
         </div>
       </PC>
       <Mobile>
-        <Carousel
-          showArrows={false}
-          showThumbs={false}
-          autoPlay={true}
-          stopOnHover={false}
-          interval={3000}
-          infiniteLoop={true}
-          showStatus={false}
-          className="mt-3"
-        >
-          <div>
-            <img
-              src="/img/reptimate_banner01.png"
-              alt="First Image"
-              className="absolute inset-0 w-full h-full object-contain bg-white"
-            />
+        <div style={{display:"flex", width:412, height:231, marginTop:41}}>
+          <div className="" style={{position: 'relative',width:412, height:231}}>
+            <div
+                className="object-cover"
+                style={{
+                  width: 412,
+                  height: 231,
+                  cursor: 'pointer',
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+              >
+             <Image
+                  src="/img/reptimate_banner0111.png"
+                  alt="First Image"
+                  layout="fill"
+                  objectFit="cover"
+                  style={{ transition: 'transform 0.3s' }} // 트랜지션 효과 추가
+                  className="transform hover:scale-105" // hover 시 확대 효과 클래스 추가
+                />
+              </div>
+            </div>
           </div>
-          <div>
-            <img
-              src="/img/reptimate_banner03.jpg"
-              alt="Second Image"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div>
-            <img
-              src="/img/sample_banner3.jpg"
-              alt="Third Image"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </Carousel>
       </Mobile>
     </div>
   );
