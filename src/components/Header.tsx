@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mobile, PC } from "./ResponsiveLayout";
 import { useEffect, useState } from "react";
-import Head from "next/head";
+import Image from "next/image";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import CommunityMenu from "@/components/CommunityMenu";
 import {
@@ -293,38 +293,34 @@ export default function Header() {
               AI
             </Link>
             {isLoggedIn ?
-            <div className="flex">
+            <div className="flex justify-between items-center "  style={{width: 100}} >
               <Link
                 href="/my"
                 className={`${
                   pathName === "/my" ? "font-bold" : ""
                 } font-normal`}
-                style={{fontSize:18, color:"#222222", marginLeft:15}}
+                style={{fontSize:18, color:"#222222",}}
+                onClick={chattingClick}
               >
                 MY
               </Link>
               <Link href="">
-                <div
-                  className="flex w-[23px] h-5 my-0.5  relative"
-                  onClick={chattingClick}
-                  style={{marginLeft:14}}
-                >
-                  <img src="/img/chat.png" />
+                  <Image src="/img/chat.png" 
+                    width={18}
+                    height={18}  
+                    alt="chat-icon"
+                    onClick={notiClick}
+                  />
                   {receivedNewChat && (
                     <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
                   )}
-                </div>
               </Link>
               <Link href="">
-                <div className="flex w-[23px] h-5 mb-0.5  relative">
-                  <div
-                    className="flex w-[23px] h-5 my-0.5  relative"
-                    onClick={notiClick}
-                    style={{paddingTop:1}}
-                  >
-                    <img src="/img/notification.png" />
-                  </div>
-                </div>
+                  <Image src="/img/notification.png" 
+                    width={18}
+                    height={18} 
+                    alt="alert-icon"
+                   />
               </Link> 
             </div>: ""}
             <Link href="">
