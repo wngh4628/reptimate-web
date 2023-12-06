@@ -8,12 +8,17 @@ import { commentWrite } from "@/api/comment";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom, chatVisisibleState } from "@/recoil/user";
 
+import unlike_black from "../../../public/img/unlike_black.png";
+import like_maincolor from "../../../public/img/like_maincolor.png";
+import Image from "next/image";
+
 import { Comment, getCommentResponse } from "@/service/comment";
 import CommentCard from "../comment/CommentCard";
 import CommentForm from "../comment/CommentForm";
 import { useRouter } from "next/navigation";
 import { GetPostsView, Images } from "@/service/my/board";
 import { freeDelete } from "@/api/free/freeBoard";
+import { boardRegisterBookmark, boardDeleteBookmark } from "@/api/board/board"
 
 import {
   chatRoomState,
@@ -64,12 +69,59 @@ export default function AskPostsView() {
   const [isNewChatIdx, setisNewChatIdx] = useRecoilState(isNewChatIdxState);
   const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
   const [accessToken, setAccessToken] = useState("");
+  const [userIdx, setUserIdx] = useState(0);
   const [chatRoomData, setchatRoomData] = useState<chatRoom[]>([]);
 
   const [commentCnt, setCommentCnt] = useState(0);
+  const [bookmarkCnt, setBookmarkCnt] = useState(0);
+  const [bookmarked, setBookmarked] = useState(false);
+
 
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+
+  /*********************
+   *
+   *       북마크
+   *
+   ********************/
+  const bookmarkClick = () => {
+    if (bookmarked) {
+      setBookmarked(false);
+      setBookmarkCnt(bookmarkCnt-1);
+      boardDeleteMutation.mutate({
+        userAccessToken: accessToken,
+        boardIdx: data!.result.idx,
+      });
+    } else {
+      setBookmarked(true);
+      setBookmarkCnt(bookmarkCnt+1);
+      boardRegisterMutation.mutate({
+        userAccessToken: accessToken,
+        boardIdx: data!.result.idx,
+        userIdx: userIdx
+      });
+    }
+  };
+  // 북마크 등록
+  const boardRegisterMutation = useMutation({
+    mutationFn: boardRegisterBookmark,
+    onSuccess: (data) => {
+      console.log("===auctionRegisterMutation====");
+      console.log(data);
+      console.log("==============================");
+    },
+  });
+  // 북마크 삭제
+  const boardDeleteMutation = useMutation({
+    mutationFn: boardDeleteBookmark,
+    onSuccess: (data) => {
+      console.log("===auctionDeleteMutation====");
+      console.log(data);
+      console.log("============================");
+    },
+  });
+
 
   function BackButton() {
     const handleGoBack = () => {
@@ -269,6 +321,7 @@ export default function AskPostsView() {
       if (userData.USER_DATA.accessToken) {
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
+        setUserIdx(userData.USER_DATA.idx);
       } else {
       }
     }
@@ -631,9 +684,35 @@ export default function AskPostsView() {
               <ImageSlider imageUrls={itemlist} />
               <p className="mx-2 my-4 break-all">{post.description}</p>
               <hr className="border-t border-gray-300" />
-              <div className="flex flex-row items-center py-2">
-                <p className="font-semibold ml-1 mr-1">댓글</p>
-                <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
+              <div className="flex flex-row justify-between items-center py-3">
+                <div className="flex flex-row items-center py-3">
+                  <p className="text-lg font-semibold ml-1 mr-2">댓글</p>
+                  <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
+                </div>
+                <div className="flex flex-row items-center py-3">
+                {bookmarked ? (
+                  <a onClick={bookmarkClick}>
+                    <Image
+                      src={like_maincolor}
+                      width={20}
+                      height={20}
+                      alt="북마크"
+                      className="like_btn m-auto mr-1"
+                    />
+                  </a>
+                  ) : (
+                    <a onClick={bookmarkClick}>
+                      <Image
+                        src={unlike_black}
+                        width={20}
+                        height={20}
+                        alt="북마크"
+                        className="like_btn m-auto mr-1"
+                      />
+                    </a>
+                  )}
+                  <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
+                </div>
               </div>
               {userAccessToken ? (
                 <div>

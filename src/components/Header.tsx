@@ -387,19 +387,21 @@ export default function Header() {
             </div>
           </Link>
           <nav className={`${
-                isMobile ? "" : "gap-4"
-                } flex font-bold ml-auto`}>
-            <Link href="">
-              <div
-                className="flex w-[23px] h-5 my-0.5 relative"
-                onClick={chattingClick}
-              >
-                <img src="/img/chat.png" />
-                {receivedNewChat && (
-                  <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
-                )}
-              </div>
-            </Link>
+            isMobile ? "" : "gap-4"
+            } flex font-bold ml-auto`}>
+            { isLoggedIn ? 
+              <Link href="">
+                <div
+                  className="flex w-[23px] h-5 my-0.5 relative"
+                  onClick={chattingClick} >
+                  <img src="/img/chat.png" />
+                  {receivedNewChat && (
+                    <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
+                  )}
+                </div>
+              </Link>  
+            : ""}
+            
             <a onClick={notiClick}>
               <div className={`${
                 isMobile ? "hidden" : "flex gap-4 w-5 my-0.5"

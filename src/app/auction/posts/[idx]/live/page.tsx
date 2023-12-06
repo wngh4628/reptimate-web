@@ -2,15 +2,20 @@
 
 import { useRouter, useParams } from "next/navigation";
 import React, { useCallback, useState, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+
 import VideoPlayer from "@/components/action/video-player";
 import StreamingChatView from "@/components/action/StreamingChatView";
 
 import Image from "next/image";
 import unlike_black from "../../../../../../public/img/unlike_black.png";
+import like_maincolor from "../../../public/img/like_maincolor.png";
 import { getActionInfo } from "@/service/httpconnect/live_stream_axios";
 import acitonLiveDto from "@/service/dto/action-live-dto";
 import { GetAuctionPostsView } from "@/service/my/auction";
 import axios from "axios";
+
+import { auctionDeleteBookmark, auctionRegisterBookmark } from "@/api/auction/auction";
 
 type Props = {
   params: {
@@ -32,7 +37,26 @@ export default function ActionPage({ params: { slug } }: Props) {
   const [description, setDescription] = useState("");
   const [streamKey, setStreamKey] = useState("");
 
+  const [bookmarkCnt, setBookmarkCnt] = useState(0);
+  const [bookmarked, setBookmarked] = useState(false);
+
   const [postsData, setPostsData] = useState<GetAuctionPostsView | null>(null);
+  const [accessToken, setAccessToken] = useState("");
+  const [userIdx, setUserIdx] = useState<number>(0); // 로그인 한 유저의 userIdx 저장
+
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("recoil-persist");
+    if (storedData) {
+      const userData = JSON.parse(storedData);
+      if (userData.USER_DATA.accessToken) {
+        const extractedAccessToken = userData.USER_DATA.accessToken;
+        setAccessToken(extractedAccessToken);
+        setUserIdx(userData.USER_DATA.idx);
+      } else {
+      }
+    }
+  }, []);
 
   const getData = useCallback(async () => {
     try {
@@ -58,25 +82,51 @@ export default function ActionPage({ params: { slug } }: Props) {
     }
   }, []);
 
-  // const [value1, setValue1]:use = useState()
-  // const [count, setCount] = useState(0);
-  // const count2 = useRef(0);
+    /*********************
+   *
+   *       북마크
+   *
+   ********************/
+    const bookmarkClick = () => {
+      if (bookmarked) {
+        setBookmarked(false);
+        setBookmarkCnt(bookmarkCnt-1);
+        auctionDeleteMutation.mutate({
+          userAccessToken: accessToken,
+          boardIdx: postsData!.result.boardAuction.boardIdx
+        });
+      } else {
+        setBookmarked(true);
+        setBookmarkCnt(bookmarkCnt+1);
+        auctionRegisterMutation.mutate({
+          userAccessToken: accessToken,
+          boardIdx: postsData!.result.boardAuction.boardIdx,
+          userIdx: userIdx
+        });
+      }
+    };
+    // 북마크 등록
+    const auctionRegisterMutation = useMutation({
+      mutationFn: auctionRegisterBookmark,
+      onSuccess: (data) => {
+        console.log("===auctionRegisterMutation====");
+        console.log(data);
+        console.log("==============================");
+      },
+    });
+    // 북마크 삭제
+    const auctionDeleteMutation = useMutation({
+      mutationFn: auctionDeleteBookmark,
+      onSuccess: (data) => {
+        console.log("===auctionDeleteMutation====");
+        console.log(data);
+        console.log("============================");
+      },
+    });
 
-  // const product = await getProduct(slug);
-  // const newvideoUrl: string =
-  //     'https://live.reptimate.store/stream/hls/TGRT-LmGf-wfVX-x8Ax-7jPw/index.m3u8';
-  // if (!product) {
-  //     notFound();
-  // }
-
-  // const macaddress = require('macaddress');
-  // console.log(JSON.stringify(macaddress.networkInterfaces(), null, 2));
   useEffect(() => {
     if (streamKey != "") {
       console.log(streamKey);
-      // setVideoUrl(
-      //   `https://live.reptimate.store/stream/hls/${streamKey}/index.m3u8`
-      // );
       setVideoUrl(
         `https://live.reptimate.store/stream/hls/${streamKey}/index.m3u8`
       );
@@ -144,17 +194,28 @@ export default function ActionPage({ params: { slug } }: Props) {
               </div>
 
               <div className="flex basis-1/2 flex-row-reverse text-center">
-                <span className="py-[1rem]">22</span>
-                <span className="py-[1rem] text-right">
-                  <Image
-                    src={unlike_black}
-                    width={25}
-                    height={25}
-                    alt="Picture of the author"
-                    className="like_btn m-auto"
-                  />
-                </span>
-                <span className="py-[1rem] pe-[1rem]">공유</span>
+              {bookmarked ? (
+                  <a onClick={bookmarkClick}>
+                    <Image
+                      src={like_maincolor}
+                      width={20}
+                      height={20}
+                      alt="북마크"
+                      className="like_btn m-auto mr-1"
+                    />
+                  </a>
+                  ) : (
+                    <a onClick={bookmarkClick}>
+                      <Image
+                        src={unlike_black}
+                        width={20}
+                        height={20}
+                        alt="북마크"
+                        className="like_btn m-auto mr-1"
+                      />
+                    </a>
+                  )}
+                  <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
               </div>
             </div>
           </div>
