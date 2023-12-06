@@ -56,6 +56,7 @@ export default function FindPWInput() {
   const onCheckPasswordHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target as any;
     setCechkPassword(value);
+    
   };
 
   const mutation = useMutation({
@@ -174,11 +175,6 @@ export default function FindPWInput() {
                   올바른 형식의 이메일을 작성해 주세요.
                 </p>
               )}
-              {!validateEmail(email) && isJoinTry && (
-                <p className="block absolute leading-[16px] text-xs text-main-color">
-                  이미 가입한 이메일입니다.
-                </p>
-              )}
               {/* <p className=" text-[11px] text-[#f15746]"> 에러메시지 </p> */}
             </div>
             <div className="pb-[32px] relative">
@@ -232,6 +228,11 @@ export default function FindPWInput() {
                                 onChange={onCheckPasswordHandler}
                                 className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full" />
                         </div>
+                        {checkPassword != password && (
+                          <p className="text-xs text-main-color">
+                            비밀번호가 일치하지 않습니다.
+                          </p>
+                        )}
                     </div>
                     </>
             )}

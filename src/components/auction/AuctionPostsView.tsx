@@ -24,6 +24,8 @@ import {
   auctionDelete,
   auctionWrite,
   streamKeyEdit,
+  auctionDeleteBookmark,
+  auctionRegisterBookmark,
 } from "@/api/auction/auction";
 import { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate";
 
@@ -183,26 +185,52 @@ export default function AuctionPostsView() {
     }
   }, []);
 
-  function BackButton() {
-    const handleGoBack = () => {
-      window.history.back(); // Go back to the previous page using window.history
-    };
-
-    return (
-      <button
-        onClick={handleGoBack}
-        className="cursor-poiter px-2 font-bold mt-12"
-      >
-        &lt; 뒤로가기
-      </button>
-    );
-  }
-
   const deleteMutation = useMutation({
     mutationFn: auctionDelete,
     onSuccess: (data) => {
       alert("게시글이 삭제되었습니다.");
       router.replace("/auction");
+    },
+  });
+  /*********************
+   *
+   *       북마크
+   *
+   ********************/
+  const bookmarkClick = () => {
+    if (bookmarked) {
+      setBookmarked(false);
+      setBookmarkCnt(bookmarkCnt-1);
+      auctionDeleteMutation.mutate({
+        userAccessToken: accessToken,
+        boardIdx: data!.result.boardAuction.boardIdx
+      });
+    } else {
+      setBookmarked(true);
+      setBookmarkCnt(bookmarkCnt+1);
+      auctionRegisterMutation.mutate({
+        userAccessToken: accessToken,
+        boardIdx: data!.result.boardAuction.boardIdx,
+        userIdx: userIdx
+      });
+    }
+  };
+  // 북마크 등록
+  const auctionRegisterMutation = useMutation({
+    mutationFn: auctionRegisterBookmark,
+    onSuccess: (data) => {
+      console.log("===auctionRegisterMutation====");
+      console.log(data);
+      console.log("==============================");
+    },
+  });
+  // 북마크 삭제
+  const auctionDeleteMutation = useMutation({
+    mutationFn: auctionDeleteBookmark,
+    onSuccess: (data) => {
+      console.log("===auctionDeleteMutation====");
+      console.log(data);
+      console.log("============================");
     },
   });
 
@@ -329,7 +357,6 @@ export default function AuctionPostsView() {
         boardIdx: idx,
         userAccessToken: userAccessToken || "",
       };
-
       deleteMutation.mutate(requestData);
     }
   };
@@ -347,7 +374,7 @@ export default function AuctionPostsView() {
   };
 
   let userAccessToken: string | null = null;
-  let currentUserIdx: number | null = null;
+  let currentUserIdx: number | null = 0;
   let userProfilePath: string | null = null;
   let userNickname: string | null = null;
   if (typeof window !== "undefined") {
@@ -377,8 +404,9 @@ export default function AuctionPostsView() {
         `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${currentUserIdx}`
       );
       setCommentCnt(response.data.result.commentCnt);
-      setBookmarkCnt(response.data.result.bookmarkCnt);
-      setBookmarked(response.data.result.bookmarked);
+      setBookmarkCnt(response.data.result.bookmarkCounts);
+      setBookmarked(response.data.result.hasBookmarked);
+
       setData(response.data);
       console.log("==========getData : view.tsx===========");
       console.log("*");
@@ -884,16 +912,6 @@ export default function AuctionPostsView() {
       location.href = `/auction/posts/${idx}/live`;
     };
 
-    const bookmarkClick = () => {
-      if (bookmarked) {
-        setBookmarked(false);
-        setBookmarkCnt(bookmarkCnt-1);
-      } else {
-        setBookmarked(true);
-        setBookmarkCnt(bookmarkCnt+1);
-      }
-    };
-
 
 
     const handleLiveClick = () => {
@@ -912,6 +930,19 @@ export default function AuctionPostsView() {
       setBidVisible(false);
     }
 
+    function BackButton() {
+      const handleGoBack = () => {
+        window.history.back(); // Go back to the previous page using window.history
+      };
+      return (
+        <button
+          onClick={handleGoBack}
+          className="cursor-poiter px-2 font-bold mt-12"
+        >
+          &lt; 뒤로가기
+        </button>
+      );
+    }
     return (
       <div className="mx-1">
         {post && (

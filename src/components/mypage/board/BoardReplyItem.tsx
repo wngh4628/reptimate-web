@@ -36,7 +36,7 @@ export default function BoardReplyItem({
               {category == "reply" ? (
                 <p className="ml-[6px] text-gray-400 text-xl">답글</p>
               ) : (
-                <p className="ml-[6px] text-gray-400 text-xl">답글</p>
+                <p className="ml-[6px] text-gray-400 text-xl">댓글</p>
               )}
             </div>
             {/* 작성일 */}

@@ -201,3 +201,44 @@ export const streamKeyEdit = async ({
 
   return result;
 };
+
+export const auctionRegisterBookmark = async ({
+  userAccessToken,
+  boardIdx, 
+  userIdx,
+}: {
+  userAccessToken: string;
+  boardIdx: number;
+  userIdx: number;
+}) => {
+  const data = {
+    boardIdx: boardIdx,
+    userIdx: userIdx,
+    category: "auction",
+  };
+
+  const headers = {
+    Authorization: `Bearer ${userAccessToken}`,
+    "Content-Type": "application/json",
+  };
+
+  const result = await instance.post(`/board/${boardIdx}/Bookmark/auction`, data, { headers });
+  return result;
+};
+
+export const auctionDeleteBookmark = async ({
+  userAccessToken,
+  boardIdx, 
+}: {
+  userAccessToken: string;
+  boardIdx: number;
+}) => {
+
+  const headers = {
+    Authorization: `Bearer ${userAccessToken}`,
+    "Content-Type": "application/json",
+  };
+
+  const result = await instance.delete(`/board/${boardIdx}/Bookmark`, { headers });
+  return result;
+};
