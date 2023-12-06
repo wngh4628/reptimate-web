@@ -10,9 +10,6 @@ import Image from "next/image";
 
 import unlike_black from "../../../public/img/unlike_black.png";
 import like_maincolor from "../../../public/img/like_maincolor.png";
-import Image from "next/image";
-
-import unlike_black from "../../../public/img/unlike_black.png";
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom, chatVisisibleState } from "@/recoil/user";
