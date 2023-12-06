@@ -236,12 +236,7 @@ export default function Header() {
   }
 
   return (
-<<<<<<< HEAD
     <header className="w-full fixed top-0 bg-white z-[9999]" style={{ boxShadow: '0 1px 0 0 rgba(0, 0, 0, 0.1)' }}>
-=======
-      <header className="w-full fixed top-0 bg-white shadow-md z-[9999]">
-
->>>>>>> 823a513 (fix: 스트리밍 모바일 페이지 헤더 조정)
       {/* PC 화면(반응형) */}
       <PC>
         <div className="flex justify-end pt-2 gap-2 max-w-screen-xl mx-auto" style={{paddingRight:40}}>
@@ -388,7 +383,6 @@ export default function Header() {
             </div>
           </Link>
           <nav className={`${
-<<<<<<< HEAD
             isMobile ? "" : "gap-4"
             } flex font-bold ml-auto`}>
             { isLoggedIn ? 
@@ -407,40 +401,15 @@ export default function Header() {
             <a onClick={notiClick}>
               <div className={`${
                 isMobile ? "hidden" : "flex gap-4 w-5 my-0.5"
-=======
-                window.innerWidth <= 768 ? "" : "gap-4"
-                } flex font-bold ml-auto`}>
-            <Link href="">
-              <div
-                className="flex w-[23px] h-5 my-0.5 relative"
-                onClick={chattingClick}
-              >
-                <img src="/img/chat.png" />
-                {receivedNewChat && (
-                  <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
-                )}
-              </div>
-            </Link>
-            <a onClick={notiClick}>
-              <div className={`${
-                window.innerWidth <= 768 ? "hidden" : "flex gap-4 w-5 my-0.5"
->>>>>>> 823a513 (fix: 스트리밍 모바일 페이지 헤더 조정)
                 }`}>
                 <img src="/img/notification.png" />
               </div>
             </a>
             <Link href="">
-<<<<<<< HEAD
               <div className={`${
                   isMobile ? "hidden" : "flex w-5 my-0.5"
                   }`}>
                   <img src="/img/search.png" />
-=======
-            <div className={`${
-                window.innerWidth <= 768 ? "hidden" : "flex w-5 my-0.5"
-                }`}>
-                <img src="/img/search.png" />
->>>>>>> 823a513 (fix: 스트리밍 모바일 페이지 헤더 조정)
               </div>
             </Link>
           </nav>
