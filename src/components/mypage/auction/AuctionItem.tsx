@@ -56,7 +56,7 @@ export default function AuctionItem({
         >
           <article className="flex flex-col items-center">
             <PC>
-              <div className="relative w-[350px] h-[350px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
+              <div className="relative w-full overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                 <div
                   className={`${
                     state === "end"
@@ -64,14 +64,17 @@ export default function AuctionItem({
                       : "top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent"
                   } absolute inset-0 z-10`}
                 ></div>
+                <div style={imgStyle}>
                 <img
-                  className="object-cover w-full h-full"
+                  className="object-cover absolute w-full h-full inset-0"
                   src={
                     thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
                   }
                   alt={""}
                   style={{ zIndex: 1 }}
                 />
+                </div>
+                
               </div>
               <div className="absolute right-4 mt-2 flex items-center z-[999]">
                 <p

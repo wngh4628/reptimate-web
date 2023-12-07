@@ -13,6 +13,7 @@ import  { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate"
 import { isLoggedInState } from "@/recoil/user";
 import { chatRoomState, chatRoomVisisibleState, chatNowInfoState, isNewChatState, isNewChatIdxState, receivedNewChatState } from "@/recoil/chatting";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import Swal from "sweetalert2";
 
 interface IMessage {
   userIdx: number;
@@ -109,7 +110,11 @@ export default function PersonalChatBox() {
 
         } else {
           router.replace("/");
-          alert("로그인이 필요한 기능입니다.");
+          Swal.fire({
+            text: "로그인이 필요한 기능입니다.",
+            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+            confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+          });
         }
       }
     };
@@ -192,7 +197,11 @@ export default function PersonalChatBox() {
                             router.replace("/");
                             setIsLoggedIn(false)
                             // 
-                            alert("로그인 만료\n다시 로그인 해주세요");
+                            Swal.fire({
+                              text: "로그인 만료\n다시 로그인 해주세요",
+                              confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                              confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                            });
                         }
                     });
                 } else {
@@ -232,7 +241,11 @@ export default function PersonalChatBox() {
                               router.replace("/");
                               setIsLoggedIn(false)
                               // 
-                              alert("로그인 만료\n다시 로그인 해주세요");
+                              Swal.fire({
+                                text: "로그인 만료\n다시 로그인 해주세요",
+                                confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                                confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                              });
                           }
                       });
                   } else {
@@ -274,12 +287,20 @@ export default function PersonalChatBox() {
                         onError: () => {
                             router.replace("/");
                             // 
-                            alert("로그인 만료\n다시 로그인 해주세요");
+                            Swal.fire({
+                              text: "로그인 만료\n다시 로그인 해주세요",
+                              confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                              confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                            });
                         }
                     });
                 } else {
                     router.replace("/");
-                    alert("로그인이 필요한 기능입니다.");
+                    Swal.fire({
+                      text: "로그인이 필요한 기능입니다.",
+                      confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                      confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                    });
                 }
             }
         }

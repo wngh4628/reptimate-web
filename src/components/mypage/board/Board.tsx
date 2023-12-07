@@ -15,6 +15,7 @@ import { getResponseReply, Reply } from "@/service/reply";
 
 import BoardItem from "./BoardItem";
 import BoardReplyItem from "./BoardReplyItem";
+import Swal from "sweetalert2";
 
 export default function BoardList() {
     const setIsLoggedIn = useSetRecoilState(isLoggedInState);
@@ -83,6 +84,7 @@ export default function BoardList() {
                   );
                   setENP(response.data?.result.existsNextPage);
                   setBoardPage((prevPage) => prevPage + 1);
+                //   console.log(replyData);
             } else {
                 const response = await axios.get(
                     `${process.env.NEXT_PUBLIC_API_URL}/mypage/reply?page=${replyPage}&size=20&order=DESC`
@@ -101,10 +103,12 @@ export default function BoardList() {
                   );
                   setENP(response.data?.result.existsNextPage);
                   setReplyPage((prevPage) => prevPage + 1);
+                //   console.log(data);
+
             }
         } catch (error: any) {
             // 에러가 발생하면 여기에서 처리할 수 있습니다.
-            console.error('Error fetching user data:', error.response.data);
+            // console.error('Error fetching user data:', error.response.data);
             if(error.response.data.status == 401) {
                 const storedData = localStorage.getItem('recoil-persist');
                 if (storedData) {
@@ -121,19 +125,26 @@ export default function BoardList() {
                             onError: () => {
                                 router.replace("/");
                                 setIsLoggedIn(false);
-                                alert("로그인 만료\n다시 로그인 해주세요");
+                                Swal.fire({
+                                    text: "로그인 만료\n다시 로그인 해주세요",
+                                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                                  });
                             }
                         });
                     } else {
                         router.replace("/");
-                        alert("로그인이 필요한 기능입니다.");
+                        Swal.fire({
+                            text: "로그인이 필요한 기능입니다.",
+                            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                            confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                          });
                     }
                 }
             }
         }
         setLoading(false);
-    }, [replyPage,boardPage]);
-
+    }, [replyPage,boardPage, myBoardType]);
 
     useEffect(() => {
         const storedData = localStorage.getItem('recoil-persist');
@@ -146,7 +157,11 @@ export default function BoardList() {
                 getItems(extractedAccessToken);
             } else {
                 router.replace("/");
-                alert("로그인이 필요한 기능입니다.");
+                Swal.fire({
+                    text: "로그인이 필요한 기능입니다.",
+                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                  });
             }
         }
     }, [myBoardType])
@@ -188,6 +203,7 @@ export default function BoardList() {
         category: item.category,
         createdAt: new Date(item.createdAt),
         filePath: item.filePath,
+        boardCategory: item.boardCategory,
     }));
 
     return (

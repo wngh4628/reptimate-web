@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import unlike_black from "../../../public/img/unlike_black.png";
 import like_maincolor from "../../../public/img/like_maincolor.png";
 import Image from "next/image";
+import Swal from "sweetalert2";
 
 import {
   chatRoomState,
@@ -110,18 +111,12 @@ export default function AdoptionPostsView() {
   const boardRegisterMutation = useMutation({
     mutationFn: boardRegisterBookmark,
     onSuccess: (data) => {
-      console.log("===auctionRegisterMutation====");
-      console.log(data);
-      console.log("==============================");
     },
   });
   // 북마크 삭제
   const boardDeleteMutation = useMutation({
     mutationFn: boardDeleteBookmark,
     onSuccess: (data) => {
-      console.log("===auctionDeleteMutation====");
-      console.log(data);
-      console.log("============================");
     },
   });
 
@@ -144,7 +139,11 @@ export default function AdoptionPostsView() {
   const deleteMutation = useMutation({
     mutationFn: adoptionDelete,
     onSuccess: (data) => {
-      alert("게시글이 삭제되었습니다.");
+      Swal.fire({
+        text: "게시글이 삭제되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       router.replace("/");
     },
   });
@@ -204,7 +203,7 @@ export default function AdoptionPostsView() {
         // console.error("Error: Some values are undefined");
       }
     } catch (error: any) {
-      console.error("Error fetching data:", error);
+      // console.error("Error fetching data:", error);
       if (error.response.data.status == 401) {
         const storedData = localStorage.getItem("recoil-persist");
         if (storedData) {
@@ -222,7 +221,11 @@ export default function AdoptionPostsView() {
                 },
                 onError: () => {
                   //
-                  alert("로그인 만료\n다시 로그인 해주세요");
+                  Swal.fire({
+                    text: "로그인 만료\n다시 로그인 해주세요",
+                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                  });
                   router.replace("/");
                   setIsLoggedIn(false);
                 },
@@ -245,9 +248,9 @@ export default function AdoptionPostsView() {
               post.UserInfo.profilePath
             );
           } else {
-            console.error(
-              "Error : setisNewChatIdx(post?.UserInfo.idx); : Some values are undefined"
-            );
+            // console.error(
+            //   "Error : setisNewChatIdx(post?.UserInfo.idx); : Some values are undefined"
+            // );
           }
         }
       }
@@ -314,7 +317,7 @@ export default function AdoptionPostsView() {
       setData(response.data);
       setCommentCnt(response.data.result.commentCnt);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      // console.error("Error fetching data:", error);
     }
   }, []);
 
@@ -327,6 +330,7 @@ export default function AdoptionPostsView() {
         setAccessToken(extractedAccessToken);
         setUserIdx(userData.USER_DATA.idx);
       } else {
+        setIsLoggedIn(false);
       }
     }
     getData();
@@ -386,7 +390,7 @@ export default function AdoptionPostsView() {
         ...newComments,
       ]);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      // console.error("Error fetching data:", error);
     }
     setLoading(false);
   }, [page]);
@@ -473,7 +477,11 @@ export default function AdoptionPostsView() {
         // Create the alert message based on missing fields
         let alertMessage = "오류입니다. :\n 다시 시도해주세요.";
 
-        alert(alertMessage);
+        Swal.fire({
+          text: alertMessage,
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
     };
 

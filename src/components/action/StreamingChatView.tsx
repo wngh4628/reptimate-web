@@ -4,10 +4,12 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { io, Socket } from "socket.io-client";
 import { GetAuctionPostsView, GetAuctionPostsBid } from "@/service/my/auction";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 import ChatItem from "../chat/ChatItem";
 import BidItem from "../chat/BidItem";
 import ChatUserList from "../chat/ChatUserList";
+import { isLoggedInState } from "@/recoil/user";
 
 import {
   IMessage,
@@ -79,6 +81,8 @@ export default function StreamingChatView() {
   const bidContainerRef = useRef<HTMLDivElement | null>(null);
   const [countdown, setCountdown] = useState("");
 
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+
   const [isInputDisabled, setIsInputDisabled] = useState(false); // 채팅 입력란 입력 가능여부
 
   useEffect(() => {
@@ -111,7 +115,12 @@ export default function StreamingChatView() {
         fetchNoChatList();
       } else {
         router.replace("/");
-        alert("로그인이 필요한 기능입니다.");
+        Swal.fire({
+          text: "로그인이 필요한 기능입니다.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
+        setIsLoggedIn(false);
       }
     }
     return () => {
