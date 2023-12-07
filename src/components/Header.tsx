@@ -64,7 +64,6 @@ export default function Header() {
         const cookieObject = JSON.parse(cookieValue || "");
         return cookieObject;
       } catch (error) {
-        // console.error("Error parsing JSON from cookie:", error);
         return null;
       }
     }

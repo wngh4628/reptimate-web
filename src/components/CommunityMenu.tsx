@@ -6,6 +6,7 @@ import { Mobile, PC } from "./ResponsiveLayout";
 
 export default function CommunityMenu() {
   const pathName = usePathname();
+  
   return (
     <div className="w-full mx-auto max-w-screen-xl" style={{paddingLeft:40}}>
       <PC>
@@ -14,7 +15,7 @@ export default function CommunityMenu() {
             <Link
               href="/"
               className={`${
-                pathName === "/" ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+                pathName === null || pathName === "/" || pathName.startsWith("/community/adoption") ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
               } group hover:text-main-color`}
               style={{paddingBottom:6, }}
             >
@@ -57,7 +58,7 @@ export default function CommunityMenu() {
             <Link
               href="/ai"
               className={`${
-                pathName === "/" ? "text-[#6D71E6]" : ""
+                (pathName === null || pathName === "/" || pathName.startsWith("/community/adoption")) ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
             >
               분양글

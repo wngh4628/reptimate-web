@@ -141,9 +141,9 @@ export default function AdoptionPosts() {
           </div>
         </div>
       </PC>
-      {/* 솔트링 콤보 박스 모바일 - 모바일은 마진 좌우 값이 없음 */}
+      {/* 솔트링 콤보 박스 모바일 */}
       <Mobile>
-        <div className="flex items-center relative" style={{marginLeft:16, marginRight:16}}>
+        <div className="flex items-center relative  ml-[16px] mr-[16px]">
           <h2 className="text-lg font-bold my-2">분양글</h2>
           <div className="relative ml-auto">
             <select
@@ -176,7 +176,7 @@ export default function AdoptionPosts() {
           </div>
         )}
       </PC>
-       {/* 게시글 목록 모바일  - 모바일은 마진 좌우 값이 없음 */}
+       {/* 게시글 목록 모바일 */}
       <Mobile>
         {data !== null && data.result.items ? (
             <ul className="grid grid-cols-2 gap-x-4 gap-y-4" style={{paddingLeft:16, paddingRight: 16}}>
@@ -190,6 +190,7 @@ export default function AdoptionPosts() {
             </div>
           )}
       </Mobile>
+
       {existNextPage && (
         <div className="flex justify-center">
           <div
@@ -214,7 +215,7 @@ export default function AdoptionPosts() {
         {isLogin && (
           <div className="fixed bottom-6 right-6 z-50">
             <button
-              className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
+              className="w-12 h-12 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
               onClick={handleWriteClick}
             >
               +
