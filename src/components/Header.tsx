@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mobile, PC } from "./ResponsiveLayout";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import CommunityMenu from "@/components/CommunityMenu";
@@ -14,6 +14,7 @@ import {
   fcmState,
   fcmNotificationState,
   notiVisisibleState,
+  recentSearchKeywordssAtom,
 } from "@/recoil/user";
 import {
   chatRoomState,
@@ -24,6 +25,7 @@ import PersonalChat from "@/components/chat/personalChat";
 
 import { initializeApp } from "firebase/app";
 import { getMessaging, onMessage, getToken } from "firebase/messaging";
+import Search from "./Search";
 
 export default function Header() {
   const login = false;
@@ -50,10 +52,12 @@ export default function Header() {
   const setUser = useSetRecoilState(userAtom);
   const setCookieLoggedIn = useSetRecoilState(isLoggedInState);
 
-
+  const headerRef = useRef<HTMLHeadElement>(null);
 
   const [moblieView, setMoblieView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isSearchModalHidden, setIsSearchModalHidden] = useState(true);
+
 
   function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -131,9 +135,20 @@ export default function Header() {
     } else {
       onMessageFCM();
     }
+
+    setIsSearchModalHidden(true);
   }, [pathName]);
 
-  useEffect(() => {}, []);
+
+  useEffect(() => {
+    if(isSearchModalHidden){
+      document.body.style.overflow = 'auto';
+    }else{
+      document.body.style.overflow = 'hidden';
+    }
+
+  }, [isSearchModalHidden]);
+
   useEffect(() => {}, [receivedNewChat]);
 
   const onMessageFCM = async () => {
@@ -179,7 +194,7 @@ export default function Header() {
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
-      if (userData.USER_DATA.accessToken != null) {
+      if (userData.USER_DATA && userData.USER_DATA.accessToken) {
         const accessToken = userData.USER_DATA.accessToken;
         setIsLoggedIn(true);
       }
@@ -216,6 +231,14 @@ export default function Header() {
     setIsNotiVisisible(false);
   }
 
+  function showSearchModal(){
+
+    setIsSearchModalHidden(false);
+    
+  }
+
+  
+
   const communityPathnames = [
     "/",
     "/community/market",
@@ -235,10 +258,16 @@ export default function Header() {
   }
 
   return (
-    <header className="w-full fixed top-0 bg-white z-[9999]" style={{ boxShadow: '0 1px 0 0 rgba(0, 0, 0, 0.1)' }}>
+    <header
+      className="w-full fixed top-0 bg-white z-[9999]" style={{ boxShadow: '0 1px 0 0 rgba(0, 0, 0, 0.1)' }} 
+      >
       {/* PC 화면(반응형) */}
       <PC>
-        <div className="flex justify-end pt-2 gap-2 max-w-screen-xl mx-auto" style={{paddingRight:40}}>
+
+        {/* 검색 모달 */}
+        <Search isHidden={isSearchModalHidden} setHidden={setIsSearchModalHidden} />
+
+        <div className="flex justify-end pt-2 gap-2 max-w-screen-xl mx-auto " style={{paddingRight:40}}>
           {isLoggedIn ? (
             <button
               className="group hover:text-main-color"
@@ -322,11 +351,11 @@ export default function Header() {
                    />
               </Link> 
             </div>: ""}
-            <Link href="">
-              <div className="flex w-[20px] h-[20+px] h-5 my-0.5  relative " style={{paddingTop:4}}>
-                <img src="/img/search.png" />
+
+              <div className="flex w-[20px] h-[20+px] h-5 my-0.5 relative hover:cursor-pointer " style={{paddingTop:4}} onClick={() => showSearchModal()}>
+                <img src="/img/search.png"/>
               </div>
-            </Link>
+
           </nav>
         </div>
         <div>
@@ -375,10 +404,12 @@ export default function Header() {
       </PC>
       {/* 모바일 화면(반응형) */}
       <Mobile>
+
+        <Search isHidden={isSearchModalHidden} setHidden={setIsSearchModalHidden} />
         <div className="flex justify-start pt-2 pl-3 pr-3 pb-2">
           <Link href={link}>
             <div className="flex w-32 p1-0">
-              <img src="/img/main_logo2.png" />
+              <img src="/img/main_logo2.png"/>
             </div>
           </Link>
           <nav className={`${
@@ -404,13 +435,13 @@ export default function Header() {
                 <img src="/img/notification.png" />
               </div>
             </a>
-            <Link href="">
+
               <div className={`${
-                  isMobile ? "hidden" : "flex w-5 my-0.5"
+                  isMobile ? "hidden" : "flex w-5 my-0.5 hover:cursor-pointer"
                   }`}>
                   <img src="/img/search.png" />
               </div>
-            </Link>
+
           </nav>
         </div>
         <div
