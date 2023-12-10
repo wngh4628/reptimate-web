@@ -55,7 +55,7 @@ export default function MorphInfo(props:any) {
         break;
   
     case 'lineBreeding':
-        title = '라인브리딩 서비스'
+        title = '브리딩 추천 서비스'
         endpoint = 'linebreeding_recommend'
         setResult = props.setLineBreedingResult;
         setMorphInfo = props.setMorphInfo;
@@ -150,7 +150,7 @@ export default function MorphInfo(props:any) {
       )}
 
       {/* 모프 정보 */}
-      <div className="max-w-screen-sm mx-auto mt-5">
+      <div className="max-w-screen-sm mx-auto mt-[130px]">
 
         <h2 className="text-3xl font-bold pt-5">{title}</h2>
 
