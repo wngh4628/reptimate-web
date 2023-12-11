@@ -23,8 +23,8 @@ const BannerSlider: React.FC = () => {
              <img
                   src="/img/reptimate_banner0111.png"
                   alt="First Image"
-                  layout="fill"
-                  objectFit="cover"
+                  // layout="fill"
+                  // objectFit="cover"
                   style={{ transition: 'transform 0.3s' }} // 트랜지션 효과 추가
                   className="transform hover:scale-105" // hover 시 확대 효과 클래스 추가
                 />
@@ -87,8 +87,8 @@ const BannerSlider: React.FC = () => {
             <img
               src={`/img/reptimate_banner0${index}.png`} // 이미지 경로에 따라 수정
               alt={`Image ${index}`}
-              layout="fill"
-              objectFit="cover"
+              // layout="fill"
+              // objectFit="cover"
               style={{
                 transform: 'scale(1)',
                 transition: 'transform 0.3s', // 트랜지션 효과 추가
@@ -114,7 +114,7 @@ const BannerSlider: React.FC = () => {
                   overflow: 'hidden',
                 }}
               >
-             <img
+             <Image
                   src="/img/reptimate_banner0111.png"
                   alt="First Image"
                   layout="fill"

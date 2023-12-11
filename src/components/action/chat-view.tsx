@@ -41,7 +41,7 @@ export default function ChatView(props: Props) {
                 <span className='flex w-full bg-[#4E4E4E] border border-[#4E4E4E] rounded-2xl h-[6rem]'>
                     <textarea className='flex-auto placeholder:italic placeholder:text-slate-400 block bg-[#4E4E4E] border border-[#4E4E4E] rounded-2xl pl-2 py-2 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 foweffwefcus:ring-1 sm:text-sm text-white resize-none' placeholder="메세지 보내기..." ></textarea>
                     <div className='rounded-full bg-white w-9 h-9 mx-2 mt-12'>
-                        <img
+                        <Image
                             src={message_send}
                             width={25}
                             height={25}
