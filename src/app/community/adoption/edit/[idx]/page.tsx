@@ -1,5 +1,6 @@
 "use client";
 
+import CommunityMenu from "@/components/CommunityMenu";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import React from "react";
@@ -10,16 +11,8 @@ import { Mobile, PC } from "@/components/ResponsiveLayout";
 export default function AdoptionEditPage() {
   return (
     <div>
-      <PC>
-        <DndProvider backend={HTML5Backend}>
-          <AdoptionEdit />
-        </DndProvider>
-      </PC>
-      <Mobile>
-        <DndProvider backend={TouchBackend}>
-          <AdoptionEdit />
-        </DndProvider>
-      </Mobile>
+      <CommunityMenu />
+      <AdoptionEdit />
     </div>
   );
 }

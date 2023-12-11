@@ -17,7 +17,10 @@ import { GetPostsView, Images } from "@/service/my/board";
 import { freeEdit } from "@/api/free/freeBoard";
 import { useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
-
+import ImageSelecterEdit from "../ImageSelecterEdit";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { TouchBackend } from "react-dnd-touch-backend";
 interface FileItem {
   idx: number;
   file: File;
@@ -132,9 +135,9 @@ export default function FreeEdit() {
     getData();
   }, []);
 
-  useEffect(() => {}, [allFiles]);
+  useEffect(() => { }, [allFiles]);
 
-  useEffect(() => {}, [deletedFiles]);
+  useEffect(() => { }, [deletedFiles]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -194,124 +197,124 @@ export default function FreeEdit() {
     setAllFiles(updatedFiles);
   };
 
-  const FileItem = ({
-    fileItem,
-    index,
-  }: {
-    fileItem: {
-      idx: number;
-      file: File | null;
-      url: string | null;
-      id: number;
-      type: string;
-    };
-    index: number;
-  }) => {
-    const [{ isDragging }, drag] = useDrag({
-      type: "FILE",
-      item: { index },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-    });
+  // const FileItem = ({
+  //   fileItem,
+  //   index,
+  // }: {
+  //   fileItem: {
+  //     idx: number;
+  //     file: File | null;
+  //     url: string | null;
+  //     id: number;
+  //     type: string;
+  //   };
+  //   index: number;
+  // }) => {
+  //   const [{ isDragging }, drag] = useDrag({
+  //     type: "FILE",
+  //     item: { index },
+  //     collect: (monitor) => ({
+  //       isDragging: monitor.isDragging(),
+  //     }),
+  //   });
 
-    const [, drop] = useDrop({
-      accept: "FILE",
-      hover: (item: { index: number }) => {
-        if (item.index !== index) {
-          moveFile(item.index, index);
-          item.index = index;
-        }
-      },
-    });
+  //   const [, drop] = useDrop({
+  //     accept: "FILE",
+  //     hover: (item: { index: number }) => {
+  //       if (item.index !== index) {
+  //         moveFile(item.index, index);
+  //         item.index = index;
+  //       }
+  //     },
+  //   });
 
-    return (
-      <div>
-        <PC>
-          <div ref={(node) => drag(drop(node))}>
-            <div
-              key={fileItem.id}
-              className="relative w-28 h-28 mx-2 border-2 border-gray-200 rounded-xl"
-              onClick={(e) => e.preventDefault()}
-            >
-              {fileItem.file?.type.startsWith("image/") ? (
-                <img
-                  src={URL.createObjectURL(fileItem.file)}
-                  alt={`Image ${fileItem.id}`}
-                  className="object-cover w-full h-full rounded-xl"
-                />
-              ) : fileItem.file?.type.startsWith("video/") ? (
-                <video className="object-cover w-full h-full rounded-xl">
-                  <source
-                    src={URL.createObjectURL(fileItem.file)}
-                    type={fileItem.file.type}
-                  />
-                  현재 브라우저는 비디오 태그를 지원하지 않습니다.
-                </video>
-              ) : fileItem.type == "img" ? (
-                <img
-                  src={fileItem.url || ""}
-                  alt={`Image ${fileItem.id}`}
-                  className="object-cover w-full h-full rounded-xl"
-                />
-              ) : fileItem.type == "video" ? (
-                <VideoThumbnail src={fileItem.url || ""} type="m3u8" />
-              ) : (
-                <p>지원하지 않는 파일 형태</p>
-              )}
-              <button
-                onClick={() => handleRemoveItem(fileItem.id, fileItem.idx)}
-                className="absolute -top-2 -right-2 transform translate-x-1/4 -translate-y-1/4 w-6 h-6 bg-red-500 text-white rounded-full"
-              >
-                X
-              </button>
-            </div>
-          </div>
-        </PC>
-        <Mobile>
-          <div ref={(node) => drag(drop(node))}>
-            <div
-              key={fileItem.id}
-              className="relative w-20 h-20 mx-1 border-2 border-gray-300 rounded-xl"
-              onClick={(e) => e.preventDefault()}
-            >
-              {fileItem.file?.type.startsWith("image/") ? (
-                <img
-                  src={URL.createObjectURL(fileItem.file)}
-                  alt={`Image ${fileItem.id}`}
-                  className="object-cover w-full h-full rounded-xl"
-                />
-              ) : fileItem.file?.type.startsWith("video/") ? (
-                <video className="object-cover w-full h-full rounded-xl">
-                  <source
-                    src={URL.createObjectURL(fileItem.file)}
-                    type={fileItem.file.type}
-                  />
-                  현재 브라우저는 비디오 태그를 지원하지 않습니다.
-                </video>
-              ) : fileItem.type == "img" ? (
-                <img
-                  src={fileItem.url || ""}
-                  alt={`Image ${fileItem.id}`}
-                  className="object-cover w-full h-full rounded-xl"
-                />
-              ) : fileItem.type == "video" ? (
-                <VideoThumbnail src={fileItem.url || ""} type="m3u8" />
-              ) : (
-                <p>지원하지 않는 파일 형태</p>
-              )}
-              <button
-                onClick={() => handleRemoveItem(fileItem.id, fileItem.idx)}
-                className="absolute -top-1 -right-1 transform translate-x-1/4 -translate-y-1/4 w-5 h-5 bg-red-500 text-white text-sm rounded-full"
-              >
-                X
-              </button>
-            </div>
-          </div>
-        </Mobile>
-      </div>
-    );
-  };
+  //   return (
+  //     <div>
+  //       <PC>
+  //         <div ref={(node) => drag(drop(node))}>
+  //           <div
+  //             key={fileItem.id}
+  //             className="relative w-28 h-28 mx-2 border-2 border-gray-200 rounded-xl"
+  //             onClick={(e) => e.preventDefault()}
+  //           >
+  //             {fileItem.file?.type.startsWith("image/") ? (
+  //               <img
+  //                 src={URL.createObjectURL(fileItem.file)}
+  //                 alt={`Image ${fileItem.id}`}
+  //                 className="object-cover w-full h-full rounded-xl"
+  //               />
+  //             ) : fileItem.file?.type.startsWith("video/") ? (
+  //               <video className="object-cover w-full h-full rounded-xl">
+  //                 <source
+  //                   src={URL.createObjectURL(fileItem.file)}
+  //                   type={fileItem.file.type}
+  //                 />
+  //                 현재 브라우저는 비디오 태그를 지원하지 않습니다.
+  //               </video>
+  //             ) : fileItem.type == "img" ? (
+  //               <img
+  //                 src={fileItem.url || ""}
+  //                 alt={`Image ${fileItem.id}`}
+  //                 className="object-cover w-full h-full rounded-xl"
+  //               />
+  //             ) : fileItem.type == "video" ? (
+  //               <VideoThumbnail src={fileItem.url || ""} type="m3u8" />
+  //             ) : (
+  //               <p>지원하지 않는 파일 형태</p>
+  //             )}
+  //             <button
+  //               onClick={() => handleRemoveItem(fileItem.id, fileItem.idx)}
+  //               className="absolute -top-2 -right-2 transform translate-x-1/4 -translate-y-1/4 w-6 h-6 bg-red-500 text-white rounded-full"
+  //             >
+  //               X
+  //             </button>
+  //           </div>
+  //         </div>
+  //       </PC>
+  //       <Mobile>
+  //         <div ref={(node) => drag(drop(node))}>
+  //           <div
+  //             key={fileItem.id}
+  //             className="relative w-20 h-20 mx-1 border-2 border-gray-300 rounded-xl"
+  //             onClick={(e) => e.preventDefault()}
+  //           >
+  //             {fileItem.file?.type.startsWith("image/") ? (
+  //               <img
+  //                 src={URL.createObjectURL(fileItem.file)}
+  //                 alt={`Image ${fileItem.id}`}
+  //                 className="object-cover w-full h-full rounded-xl"
+  //               />
+  //             ) : fileItem.file?.type.startsWith("video/") ? (
+  //               <video className="object-cover w-full h-full rounded-xl">
+  //                 <source
+  //                   src={URL.createObjectURL(fileItem.file)}
+  //                   type={fileItem.file.type}
+  //                 />
+  //                 현재 브라우저는 비디오 태그를 지원하지 않습니다.
+  //               </video>
+  //             ) : fileItem.type == "img" ? (
+  //               <img
+  //                 src={fileItem.url || ""}
+  //                 alt={`Image ${fileItem.id}`}
+  //                 className="object-cover w-full h-full rounded-xl"
+  //               />
+  //             ) : fileItem.type == "video" ? (
+  //               <VideoThumbnail src={fileItem.url || ""} type="m3u8" />
+  //             ) : (
+  //               <p>지원하지 않는 파일 형태</p>
+  //             )}
+  //             <button
+  //               onClick={() => handleRemoveItem(fileItem.id, fileItem.idx)}
+  //               className="absolute -top-1 -right-1 transform translate-x-1/4 -translate-y-1/4 w-5 h-5 bg-red-500 text-white text-sm rounded-full"
+  //             >
+  //               X
+  //             </button>
+  //           </div>
+  //         </div>
+  //       </Mobile>
+  //     </div>
+  //   );
+  // };
 
   const mutation = useMutation({
     mutationFn: freeEdit,
@@ -413,9 +416,17 @@ export default function FreeEdit() {
       setDescription(inputValue);
     }
   };
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+
+    // console.log(inputValue.length);
+    if (inputValue.length <= 40) {
+      setTitle(inputValue);
+    }
+  };
 
   return (
-    <div className="max-w-screen-md mx-auto">
+    <div className="max-w-screen-md mx-auto mt-20 px-7">
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center z-[10000] bg-gray-800 bg-opacity-75">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-main-color"></div>
@@ -432,74 +443,51 @@ export default function FreeEdit() {
           자유 게시글
         </h2>
       </Mobile>
-      <div className="flex flex-row">
-        <input
-          type="file"
-          accept="image/*, video/*"
-          multiple
-          onChange={handleFileSelect}
-          className="hidden"
-          id="mediaInput"
-          max="5"
-        />
-        <label
-          className="w-auto h-auto cursor-pointer py-3"
-          htmlFor="mediaInput"
-        >
-          <PC>
-            <div className="w-28 h-28 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
-              <img
-                src="/img/camera.png"
-                alt="Camera Icon"
-                className="w-16 h-16"
-              />
-              <span className="">{allFiles.length}/5</span>
-            </div>
-          </PC>
-          <Mobile>
-            <div className="mx-1 w-20 h-20 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
-              <img
-                src="/img/camera.png"
-                alt="Camera Icon"
-                className="w-12 h-12"
-              />
-              <span className="text-sm">{allFiles.length}/5</span>
-            </div>
-          </Mobile>
-        </label>
-        <div
-          className="flex items-center py-3 mx-auto"
-          style={{
-            width: "100%", // 화면 넓이보다 넓도록 설정
-            overflowX: "auto", // 가로 스크롤 허용
-            whiteSpace: "nowrap", // 텍스트 줄 바꿈 방지
-          }}
-        >
-          {allFiles.map((fileItem, index) => (
-            <FileItem key={fileItem.id} fileItem={fileItem} index={index} />
-          ))}
-        </div>
-      </div>
+
+      <PC>
+        <DndProvider backend={HTML5Backend}>
+          <ImageSelecterEdit handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} allFiles={allFiles} moveFile={moveFile}></ImageSelecterEdit>
+        </DndProvider>
+      </PC>
+      <Mobile>
+        <DndProvider backend={TouchBackend}>
+          <ImageSelecterEdit handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} allFiles={allFiles} moveFile={moveFile}></ImageSelecterEdit>
+        </DndProvider>
+      </Mobile>
+
+
       <div className="mx-1 mt-4 flex flex-col">
-        <p className="font-bold text-xl my-2">제목</p>
-        <input
-          type="text"
-          placeholder="제목을 입력해주세요."
-          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <div className="flex items-center">
-          <p className="font-bold text-xl my-2">내용</p>
-          <span className="text-sm ml-auto">{description.length}/600</span>
+        <div className="mb-4">
+          <p className="font-bold text-xl my-2">제목</p>
+          <div className="flex">
+            <input
+              type="text"
+              placeholder="제목을 입력해주세요."
+              className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+              value={title}
+              onChange={handleTitleChange}
+            />
+            <div className="flex items-center">
+              <span className="text-sm mx-6">{title.length}/40</span>
+            </div>
+          </div>
         </div>
-        <textarea
-          placeholder="내용을 입력해주세요."
-          className="focus:outline-none px-2 py-2 border-gray-400 border-2 text-17px w-full"
-          value={description}
-          onChange={handleDescriptionChange}
-          rows={10} // 세로 행의 개수를 조절합니다.
-        />
+
+        <div>
+          <div className="flex items-center my-2">
+            <p className="font-bold text-xl">내용</p>
+            <span className="text-sm ml-auto">{description.length}/600</span>
+          </div>
+          <textarea
+            placeholder="생물의 상태 (건강 상태, 특이점 유무, 식사 방식) 등을 입력해 주세요.
+            서로가 믿고 거래할 수 있도록, 자세한 정보와 다양한 각도의 상품 사진을 올려주세요."
+            className="focus:outline-none px-2 py-2 border-gray-B7B7B7 border text-17px w-full"
+            value={description}
+            onChange={handleDescriptionChange}
+            rows={10} // 세로 행의 개수를 조절합니다.
+            style={{ resize: 'none' }}
+          />
+        </div>
       </div>
       {!isLoading ? (
         <form onSubmit={onSubmitHandler}>

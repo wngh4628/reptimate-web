@@ -1,19 +1,34 @@
 import { useMutation } from "@tanstack/react-query";
 import { Mobile, PC } from "../ResponsiveLayout";
-import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import { auctionWrite } from "@/api/auction/auction";
+import { auctionEdit } from "@/api/auction/auction";
+import { GetAuctionPostsView, Images } from "@/service/my/auction";
+// import VideoThumbnail from "../VideoThumbnail";
 import { useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
-import ImageSelecterWrite from "../ImageSelecterWrite";
+import ImageSelecterEdit from "../ImageSelecterEdit";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
+
 interface FileItem {
+  idx: number;
   file: File;
+  url: string;
   id: number;
+  type: string;
+  mediaSequence: number;
 }
 
 interface Option {
@@ -76,7 +91,6 @@ const patternOptions: Record<string, Option[]> = {
     { value: "기타", label: "기타" },
   ],
   "가고일 게코": [
-    { value: "", label: "모프를 선택하세요" },
     { value: "노멀", label: "노멀" },
     { value: "레드", label: "레드" },
     { value: "레티큐어 베이컨", label: "레티큐어 베이컨" },
@@ -129,44 +143,10 @@ const alret_time: Option[] = [
   { value: "60", label: "1시간" },
 ];
 
-export default function AuctionWrite() {
+export default function AuctionTemp() {
   const router = useRouter();
-
-  let userIdx: string | null = null;
-  let userAccessToken: string | null = null;
-  if (typeof window !== "undefined") {
-    // Check if running on the client side
-    const storedData = localStorage.getItem("recoil-persist");
-    const userData = JSON.parse(storedData || "");
-    userIdx = userData.USER_DATA.idx;
-    userAccessToken = userData.USER_DATA.accessToken;
-  }
-
-  const [selectedFiles, setSelectedFiles] = useState<
-    Array<{ file: File; id: number }>
-  >([]);
-  const [selectedGender, setSelectedGender] = useState<string | null>(null);
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [birthDate, setBirthDate] = useState<string>("");
-
-  const [title, setTitle] = useState("");
-  const [price, setPrice] = useState("");
-  const [startPrice, setstartPrice] = useState("");
-  const [unit, setunit] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [rule, setRule] = useState("");
-  const [alretTime, setAlretTime] = useState("");
-
-  const [description, setDescription] = useState("");
-
-  const [selling, setSelling] = useState<string>("selling");
-  const [variety, setVariety] = useState<string>("품종을 선택하세요");
-  const [pattern, setPattern] = useState<string>("모프를 선택하세요");
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  const setUser = useSetRecoilState(userAtom);
-  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+  const params = useParams();
+  const idx = params?.idx;
 
   function BackButton() {
     const handleGoBack = () => {
@@ -183,10 +163,146 @@ export default function AuctionWrite() {
     );
   }
 
+  let userAccessToken: string | null = null;
+  let currentUserIdx: number | null = null;
+  let userProfilePath: string | null = null;
+  let userNickname: string | null = null;
+  if (typeof window !== "undefined") {
+    // Check if running on the client side
+    const storedData = localStorage.getItem("recoil-persist");
+    if (storedData != null) {
+      const userData = JSON.parse(storedData || "");
+      currentUserIdx = userData.USER_DATA.idx;
+      userAccessToken = userData.USER_DATA.accessToken;
+      userProfilePath = userData.USER_DATA.profilePath;
+      userNickname = userData.USER_DATA.nickname;
+    }
+  }
+
+  const [data, setData] = useState<GetAuctionPostsView | null>(null);
+  const [allFiles, setAllFiles] = useState<
+    Array<{
+      idx: number;
+      file: File | null;
+      url: string | null;
+      id: number;
+      type: string;
+      mediaSequence: number;
+    }>
+  >([]);
+  const [addFiles, setAddFiles] = useState<
+    Array<{
+      idx: number;
+      file: File | null;
+      url: string | null;
+      id: number;
+      type: string;
+      mediaSequence: number;
+    }>
+  >([]);
+  const [deletedFiles, setDeletedFiles] = useState<Array<number>>([]);
+  const [mediaSequence, setMediaSequence] = useState<number>(-1);
+  const [selectedGender, setSelectedGender] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [birthDate, setBirthDate] = useState<string>("");
+  const [auctionIdx, setAuctionIdx] = useState<string>("");
+  const [title, setTitle] = useState("");
+  const [price, setPrice] = useState("");
+  const [startPrice, setstartPrice] = useState("");
+  const [unit, setunit] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [rule, setRule] = useState("");
+  const [alretTime, setAlretTime] = useState("");
+  const [streamKey, setStreamKey] = useState("");
+
+  const [description, setDescription] = useState("");
+
+  const [selling, setSelling] = useState<string>("selling");
+  const [variety, setVariety] = useState<string>("품종을 선택하세요");
+  const [pattern, setPattern] = useState<string>("모프를 선택하세요");
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const setUser = useSetRecoilState(userAtom);
+  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+
+  function makeStreamKey() {
+    let streamKey = "";
+    const len: number = 5;
+    for (let i = 1; i <= len; i++) {
+      const charset = Array.from(
+        "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      ) as string[];
+      const rangeRandom = Array.from(
+        { length: 4 },
+        () => charset[Math.floor(Math.random() * charset.length)]
+      ).join("");
+      streamKey += rangeRandom;
+      if (i < len) {
+        streamKey += "-";
+      }
+    }
+
+    setStreamKey(streamKey);
+  }
+
   useEffect(() => {
     setSelling("selling");
     setRule("0");
+    makeStreamKey();
   }, []);
+
+  const getData = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${currentUserIdx}`
+      );
+      // Assuming your response data has a 'result' property
+      setData(response.data);
+      const post = response.data.result;
+      setAuctionIdx(post.boardAuction.idx.toString() || "");
+      setSelling(post.boardAuction.state);
+      setTitle(post?.title || "");
+      setVariety(post?.boardAuction.variety || "품종을 선택하세요");
+      setPattern(post?.boardAuction.pattern || "모프를 선택하세요");
+      setBirthDate(post?.boardAuction.birthDate || "연도-월-일");
+      setSelectedGender(post?.boardAuction.gender || "");
+      setSelectedSize(post?.boardAuction.size || "");
+
+      setPrice(handleCommaReplace(post?.boardAuction.buyPrice.toString()) || "");
+      setDescription(post?.description || "");
+      setstartPrice(handleCommaReplace(post?.boardAuction.startPrice.toString()) || "");
+      setunit(handleCommaReplace(post?.boardAuction.unit.toString()) || "");
+      setEndTime(post?.boardAuction.endTime.split(" ")[1] || "");
+      setRule(post?.boardAuction.extensionRule.toString() || "");
+      if (post && post.boardAuction && post.boardAuction.AlertTime) {
+        setAlretTime(post.boardAuction.AlertTime.split(" ")[1] || "");
+      }
+      setAllFiles(
+        post.images.map((item: Images) => ({
+          idx: item.idx,
+          id: Date.now() + Math.random(),
+          url: item.path,
+          type: item.category,
+          file: null,
+          mediaSequence: item.mediaSequence,
+        }))
+      );
+      if (post.images.length > 0) {
+        setMediaSequence(post.images.length - 1);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  useEffect(() => { }, [allFiles]);
+
+  useEffect(() => { }, [deletedFiles]);
 
   const handleVarietyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVariety = e.target.value;
@@ -228,7 +344,7 @@ export default function AuctionWrite() {
     const files = event.target.files;
     const file = event.target.files!![0];
 
-    if (selectedFiles.length + files!!.length > 5) {
+    if (allFiles.length + files!!.length > 5) {
       alert("사진 및 비디오는 최대 5개까지만 선택가능합니다.");
       event.target.value = "";
     } else {
@@ -242,41 +358,57 @@ export default function AuctionWrite() {
         } else {
           if (files) {
             const newFiles: FileItem[] = Array.from(files)
-              .slice(0, 5 - selectedFiles.length)
-              .map((file) => ({
+              .slice(0, 5 - allFiles.length)
+              .map((file, index) => ({
+                idx: 0,
                 file,
                 id: Date.now() + Math.random(),
+                url: "", // 새로 업로드할 파일의 경우 URL은 null로 설정
+                type: file.type,
+                mediaSequence: mediaSequence + index + 1, // Increment mediaSequence based on index
               }));
 
-            setSelectedFiles((prevSelectedFiles) => [
-              ...prevSelectedFiles,
-              ...newFiles,
-            ]);
+            setMediaSequence(mediaSequence + newFiles.length);
+
+            setAllFiles((prevFiles) => [...prevFiles, ...newFiles]);
+            setAddFiles((prevFiles) => [...prevFiles, ...newFiles]);
           }
         }
       }
     }
   };
 
-  const handleRemoveItem = (id: number) => {
-    setSelectedFiles((prevSelectedFiles) =>
-      prevSelectedFiles.filter((item) => item.id !== id)
+  const handleRemoveItem = (id: number, idx: number) => {
+    setAllFiles((prevUrlImages) =>
+      prevUrlImages.filter((item) => item.id !== id)
     );
+    setAddFiles((prevUrlImages) =>
+      prevUrlImages.filter((item) => item.id !== id)
+    );
+    if (idx !== 0) {
+      setDeletedFiles((prevDeletedFiles) => [...prevDeletedFiles, idx]);
+    }
   };
 
   const moveFile = (dragIndex: number, hoverIndex: number) => {
-    const draggedFile = selectedFiles[dragIndex];
-    const updatedFiles = [...selectedFiles];
+    const draggedFile = allFiles[dragIndex];
+    const updatedFiles = [...allFiles];
     updatedFiles.splice(dragIndex, 1);
     updatedFiles.splice(hoverIndex, 0, draggedFile);
-    setSelectedFiles(updatedFiles);
+    setAllFiles(updatedFiles);
   };
 
   // const FileItem = ({
   //   fileItem,
   //   index,
   // }: {
-  //   fileItem: { file: File; id: number };
+  //   fileItem: {
+  //     idx: number;
+  //     file: File | null;
+  //     url: string | null;
+  //     id: number;
+  //     type: string;
+  //   };
   //   index: number;
   // }) => {
   //   const [{ isDragging }, drag] = useDrag({
@@ -297,44 +429,42 @@ export default function AuctionWrite() {
   //     },
   //   });
 
-  //   useEffect(() => {
-  //     // Preload images when component mounts
-  //     selectedFiles.forEach((fileItem) => {
-  //       const img = new Image();
-  //       img.src = URL.createObjectURL(fileItem.file);
-  //     });
-  //   }, [selectedFiles]);
-
-  //   const imageUrl = useMemo(
-  //     () => URL.createObjectURL(fileItem.file),
-  //     [fileItem]
-  //   ); // Memoize the image URL
-
   //   return (
   //     <div>
   //       <PC>
   //         <div ref={(node) => drag(drop(node))}>
   //           <div
   //             key={fileItem.id}
-  //             className="relative w-28 h-28 mx-2 border-2 border-gray-300 rounded-xl"
+  //             className="relative w-28 h-28 mx-2 border-2 border-gray-200 rounded-xl"
   //             onClick={(e) => e.preventDefault()}
   //           >
-  //             {fileItem.file.type.startsWith("image/") ? (
+  //             {fileItem.file?.type.startsWith("image/") ? (
   //               <img
-  //                 src={imageUrl}
+  //                 src={URL.createObjectURL(fileItem.file)}
   //                 alt={`Image ${fileItem.id}`}
   //                 className="object-cover w-full h-full rounded-xl"
   //               />
-  //             ) : fileItem.file.type.startsWith("video/") ? (
+  //             ) : fileItem.file?.type.startsWith("video/") ? (
   //               <video className="object-cover w-full h-full rounded-xl">
-  //                 <source src={imageUrl} type={fileItem.file.type} />
+  //                 <source
+  //                   src={URL.createObjectURL(fileItem.file)}
+  //                   type={fileItem.file.type}
+  //                 />
   //                 현재 브라우저는 비디오 태그를 지원하지 않습니다.
   //               </video>
+  //             ) : fileItem.type == "img" ? (
+  //               <img
+  //                 src={fileItem.url || ""}
+  //                 alt={`Image ${fileItem.id}`}
+  //                 className="object-cover w-full h-full rounded-xl"
+  //               />
+  //             ) : fileItem.type == "video" ? (
+  //               <VideoThumbnail src={fileItem.url || ""} type="m3u8" />
   //             ) : (
   //               <p>지원하지 않는 파일 형태</p>
   //             )}
   //             <button
-  //               onClick={() => handleRemoveItem(fileItem.id)}
+  //               onClick={() => handleRemoveItem(fileItem.id, fileItem.idx)}
   //               className="absolute -top-2 -right-2 transform translate-x-1/4 -translate-y-1/4 w-6 h-6 bg-red-500 text-white rounded-full"
   //             >
   //               X
@@ -349,22 +479,33 @@ export default function AuctionWrite() {
   //             className="relative w-20 h-20 mx-1 border-2 border-gray-300 rounded-xl"
   //             onClick={(e) => e.preventDefault()}
   //           >
-  //             {fileItem.file.type.startsWith("image/") ? (
+  //             {fileItem.file?.type.startsWith("image/") ? (
   //               <img
-  //                 src={imageUrl}
+  //                 src={URL.createObjectURL(fileItem.file)}
   //                 alt={`Image ${fileItem.id}`}
   //                 className="object-cover w-full h-full rounded-xl"
   //               />
-  //             ) : fileItem.file.type.startsWith("video/") ? (
+  //             ) : fileItem.file?.type.startsWith("video/") ? (
   //               <video className="object-cover w-full h-full rounded-xl">
-  //                 <source src={imageUrl} type={fileItem.file.type} />
+  //                 <source
+  //                   src={URL.createObjectURL(fileItem.file)}
+  //                   type={fileItem.file.type}
+  //                 />
   //                 현재 브라우저는 비디오 태그를 지원하지 않습니다.
   //               </video>
+  //             ) : fileItem.type == "img" ? (
+  //               <img
+  //                 src={fileItem.url || ""}
+  //                 alt={`Image ${fileItem.id}`}
+  //                 className="object-cover w-full h-full rounded-xl"
+  //               />
+  //             ) : fileItem.type == "video" ? (
+  //               <VideoThumbnail src={fileItem.url || ""} type="m3u8" />
   //             ) : (
   //               <p>지원하지 않는 파일 형태</p>
   //             )}
   //             <button
-  //               onClick={() => handleRemoveItem(fileItem.id)}
+  //               onClick={() => handleRemoveItem(fileItem.id, fileItem.idx)}
   //               className="absolute -top-1 -right-1 transform translate-x-1/4 -translate-y-1/4 w-5 h-5 bg-red-500 text-white text-sm rounded-full"
   //             >
   //               X
@@ -377,158 +518,172 @@ export default function AuctionWrite() {
   // };
 
   const mutation = useMutation({
-    mutationFn: auctionWrite,
+    mutationFn: auctionEdit,
     onSuccess: (data) => {
-      alert(
-        "경매가 임시 저장되었습니다.\n마이페이지 메뉴의 내 경매에서 최종 등록을 하실 수 있습니다."
-      );
-      window.history.back();
-    },
-    onError: (data) => {
-      alert(data);
+      alert("경매가 등록 되었습니다.");
+      router.replace(`/my/auction`);
       setIsLoading(false);
     },
   });
   const regExp = /,/g;
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (streamKey.length !== 24) {
+      alert("잘못된 스트림 키 입니다.\n새로고침 후 다시 시도해주세요.");
+    } else {
+      setIsLoading(true);
 
-    setIsLoading(true);
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷
+      const day = String(today.getDate()).padStart(2, "0"); // 일자를 2자리로 포맷
 
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷
-    const day = String(today.getDate()).padStart(2, "0"); // 일자를 2자리로 포맷
+      const formattedDate = `${year}-${month}-${day}`;
 
-    const formattedDate = `${year}-${month}-${day}`;
+      const minutesToSubtract = parseInt(alretTime, 10);
 
-    const minutesToSubtract = parseInt(alretTime, 10);
+      const newTime = new Date(today.getTime() - minutesToSubtract * 60000);
 
-    const newTime = new Date(today.getTime() - minutesToSubtract * 60000);
+      // newTime을 원하는 형식으로 포맷팅하기 (예: "2023-09-14 12:30" 형태)
+      const newYear = newTime.getFullYear();
+      const newMonth = String(newTime.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 1을 더하고 두 자리로 포맷팅
+      const newDay = String(newTime.getDate()).padStart(2, "0");
+      const hours = String(newTime.getHours()).padStart(2, "0");
+      const minutes = String(newTime.getMinutes()).padStart(2, "0");
 
-    // newTime을 원하는 형식으로 포맷팅하기 (예: "2023-09-14 12:30" 형태)
-    const newYear = newTime.getFullYear();
-    const newMonth = String(newTime.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 1을 더하고 두 자리로 포맷팅
-    const newDay = String(newTime.getDate()).padStart(2, "0");
-    const hours = String(newTime.getHours()).padStart(2, "0");
-    const minutes = String(newTime.getMinutes()).padStart(2, "0");
-    const formattedTime = `${newYear}-${newMonth}-${newDay}T${hours}:${minutes}`;
+      const formattedTime = `${newYear}-${newMonth}-${newDay}T${hours}:${minutes}`;
 
-    let priceReplace = price.replace(regExp, '');
-    let startPriceReplace = startPrice.replace(regExp, '');
-    let unitReplace = unit.replace(regExp, '');
+      let priceReplace = price.replace(regExp, '');
+      let startPriceReplace = startPrice.replace(regExp, '');
+      let unitReplace = unit.replace(regExp, '');
+      const requestData = {
+        auctionIdx: auctionIdx,
+        state: "selling",
+        boardIdx: idx || "",
+        userIdx: currentUserIdx?.toString() || "",
+        title: title,
+        category: "auction",
+        description: description,
+        price: priceReplace,
+        gender: selectedGender || "",
+        size: selectedSize || "",
+        variety: variety,
+        pattern: pattern,
+        startPrice: startPriceReplace,
+        unit: unitReplace,
+        endTime: formattedDate + "T" + endTime,
+        alertTime: formattedTime,
+        extensionRule: rule,
+        birthDate: birthDate,
+        streamKey: streamKey,
+        userAccessToken: userAccessToken || "",
+        fileUrl: "",
+      };
 
-    const requestData = {
-      state: selling,
-      userIdx: userIdx || "",
-      title: title,
-      category: "auction",
-      description: description,
-      price: priceReplace,
-      gender: selectedGender || "",
-      size: selectedSize || "",
-      variety: variety,
-      pattern: pattern,
-      startPrice: startPriceReplace,
-      unit: unitReplace,
-      endTime: formattedDate + "T" + endTime,
-      alertTime: formattedTime,
-      extensionRule: rule,
-      birthDate: birthDate,
-      userAccessToken: userAccessToken || "",
-      fileUrl: "",
-    };
-
-    if (
-      title !== "" &&
-      price !== "" &&
-      selectedGender !== "" &&
-      selectedSize !== "" &&
-      variety !== "" &&
-      pattern !== "" &&
-      startPrice !== "" &&
-      unit !== "" &&
-      endTime !== "" &&
-      rule !== "" &&
-      birthDate !== "" &&
-      description !== ""
-    ) {
-      if (selectedFiles.length === 0) {
-        mutation.mutate(requestData);
-      } else {
-        const formData = new FormData();
-        selectedFiles.forEach((fileItem) => {
-          formData.append("files", fileItem.file);
-        });
-
-        try {
-          // Send files to the first server
-          const response = await axios.post(uploadUri, formData, {
-            headers: {
-              Authorization: `Bearer ${userAccessToken}`,
-              "Content-Type": "multipart/form-data",
-            },
+      if (
+        title !== "" &&
+        price !== "" &&
+        selectedGender !== "" &&
+        selectedSize !== "" &&
+        variety !== "" &&
+        pattern !== "" &&
+        startPrice !== "" &&
+        unit !== "" &&
+        endTime !== "" &&
+        rule !== "" &&
+        birthDate !== ""
+      ) {
+        if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
+          mutation.mutate(requestData);
+        } else {
+          const formData = new FormData();
+          addFiles.forEach((fileItem) => {
+            formData.append("files", fileItem.file || "");
           });
 
-          if (response.status === 201) {
-            const responseData = response.data;
-            // Now, you can send additional data to the API server
-            const requestData1 = {
-              state: selling,
-              userIdx: userIdx || "",
-              title: title,
-              category: "auction",
-              description: description,
-              price: priceReplace,
-              gender: selectedGender || "",
-              size: selectedSize || "",
-              variety: variety,
-              pattern: pattern,
-              startPrice: startPriceReplace,
-              unit: unitReplace,
-              endTime: formattedDate + "T" + endTime,
-              alertTime: formattedTime,
-              extensionRule: rule,
-              birthDate: birthDate,
-              userAccessToken: userAccessToken || "",
-              fileUrl: responseData.result, // Use the response from the first server
-            };
-            mutation.mutate(requestData1);
-          } else {
-            console.error("Error uploading files to the first server.");
-            alert("Error uploading files. Please try again later.");
+          const modifySqenceArr = allFiles.map((item) => item.mediaSequence);
+          const deleteIdxArr = deletedFiles;
+          const FileIdx = addFiles.map((item) => item.mediaSequence);
+          // Append JSON data to the FormData object
+          formData.append("modifySqenceArr", JSON.stringify(modifySqenceArr));
+          formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
+          formData.append("FileIdx", JSON.stringify(FileIdx));
+
+          try {
+            // Send both FormData and JSON data to the server
+            const response = await axios.patch(
+              `https://www.reptimate.store/conv/board/update/${idx}`,
+              formData,
+              {
+                headers: {
+                  Authorization: `Bearer ${userAccessToken}`,
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+            if (response.status === 201) {
+              const responseData = response.data;
+              // Now, you can send additional data to the API server
+              const requestData1 = {
+                auctionIdx: auctionIdx,
+                state: "selling",
+                boardIdx: idx,
+                userIdx: currentUserIdx?.toString() || "",
+                title: title,
+                category: "auction",
+                description: description,
+                price: priceReplace,
+                gender: selectedGender || "",
+                size: selectedSize || "",
+                variety: variety,
+                pattern: pattern,
+                startPrice: startPriceReplace,
+                unit: unitReplace,
+                endTime: formattedDate + "T" + endTime,
+                alertTime: formattedTime,
+                extensionRule: rule,
+                birthDate: birthDate,
+                streamKey: streamKey,
+                userAccessToken: userAccessToken || "",
+                fileUrl: responseData.result, // Use the response from the first server
+              };
+              mutation.mutate(requestData1);
+            } else {
+              console.error("Error uploading files to the first server.");
+              alert("Error uploading files. Please try again later.");
+              setIsLoading(false);
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again later.");
             setIsLoading(false);
           }
-        } catch (error) {
-          console.error("Error:", error);
-          alert("An error occurred. Please try again later.");
-          setIsLoading(false);
         }
+      } else {
+        // Create a list of missing fields
+        const missingFields = [];
+        if (title === "") missingFields.push("제목");
+        if (price === "") missingFields.push("시작 가격");
+        if (variety === "") missingFields.push("품종");
+        if (pattern === "") missingFields.push("모프");
+        if (startPrice === "" || "null") missingFields.push("시작 가격");
+        if (unit === "" || "null") missingFields.push("경매 단위");
+        if (endTime === "" || "null") missingFields.push("마감 시간");
+        if (rule === "" || "null") missingFields.push("연장 룰");
+        if (birthDate === "") missingFields.push("생년월일");
+        if (selectedGender === "" || "null") missingFields.push("성별");
+        if (selectedSize === "" || "null") missingFields.push("크기");
+
+        // Create the alert message based on missing fields
+        let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
+        alertMessage += missingFields.join(", ");
+
+        alert(alertMessage);
+        setIsLoading(false);
       }
-    } else {
-      // Create a list of missing fields
-      const missingFields = [];
-      if (title === "") missingFields.push("제목");
-      if (price === "") missingFields.push("시작 가격");
-      if (variety === "품종을 선택하세요") missingFields.push("품종");
-      if (pattern === "모프를 선택하세요") missingFields.push("모프");
-      if (startPrice === "" || "null") missingFields.push("시작 가격");
-      if (unit === "" || "null") missingFields.push("경매 단위");
-      if (endTime === "" || "null") missingFields.push("마감 시간");
-      if (rule === "" || "null") missingFields.push("연장 룰");
-      if (birthDate === "") missingFields.push("생년월일");
-      if (selectedGender === "" || "null") missingFields.push("성별");
-      if (selectedSize === "" || "null") missingFields.push("크기");
-      if (description === "") missingFields.push("내용");
-
-      // Create the alert message based on missing fields
-      let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
-      alertMessage += missingFields.join(", ");
-
-      alert(alertMessage);
-      setIsLoading(false);
     }
   };
+
   const handlePriceChange = (value: String, event: ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
     const num = /[0-9]/g;
@@ -557,17 +712,11 @@ export default function AuctionWrite() {
       }
     }
   };
+  const handleCommaReplace = (price: String) => {
+    let transComma = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return transComma;
 
-  // const fn_down = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  // }
-  // const fn_up = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  // }
-  // onKeyDown={fn_down}
-  // onKeyUp={fn_up}
-
-  // const handleFocusOn = (event: React.FocusEvent<HTMLTextAreaElement>) => {
-  //   console.log(event)
-  // }
+  }
 
   const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.target.value;
@@ -575,7 +724,6 @@ export default function AuctionWrite() {
       setDescription(inputValue);
     }
   };
-
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
@@ -584,7 +732,6 @@ export default function AuctionWrite() {
       setTitle(inputValue);
     }
   };
-
   return (
     <div className="max-w-screen-md mx-auto mt-20 px-7">
       {isLoading && (
@@ -620,17 +767,78 @@ export default function AuctionWrite() {
 
       <PC>
         <DndProvider backend={HTML5Backend}>
-          <ImageSelecterWrite handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} selectedFiles={selectedFiles} moveFile={moveFile}></ImageSelecterWrite>
+          <ImageSelecterEdit handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} allFiles={allFiles} moveFile={moveFile}></ImageSelecterEdit>
         </DndProvider>
       </PC>
       <Mobile>
         <DndProvider backend={TouchBackend}>
-          <ImageSelecterWrite handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} selectedFiles={selectedFiles} moveFile={moveFile}></ImageSelecterWrite>
+          <ImageSelecterEdit handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} allFiles={allFiles} moveFile={moveFile}></ImageSelecterEdit>
         </DndProvider>
       </Mobile>
 
-      <div className="mx-1 mt-4 flex flex-col">
+      {/* <div className="flex flex-row">
+        <input
+          type="file"
+          accept="image/*, video/*"
+          multiple
+          onChange={handleFileSelect}
+          className="hidden"
+          id="mediaInput"
+          max="5"
+        />
+        <label
+          className="w-auto h-auto cursor-pointer py-3"
+          htmlFor="mediaInput"
+        >
+          <PC>
+            <div className="w-28 h-28 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
+              <img
+                src="/img/camera.png"
+                alt="Camera Icon"
+                className="w-16 h-16"
+              />
+              <span className="">{allFiles.length}/5</span>
+            </div>
+          </PC>
+          <Mobile>
+            <div className="mx-1 w-20 h-20 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
+              <img
+                src="/img/camera.png"
+                alt="Camera Icon"
+                className="w-12 h-12"
+              />
+              <span className="text-sm">{allFiles.length}/5</span>
+            </div>
+          </Mobile>
+        </label>
+        <div
+          className="flex items-center py-3 mx-auto"
+          style={{
+            width: "100%", // 화면 넓이보다 넓도록 설정
+            overflowX: "auto", // 가로 스크롤 허용
+            whiteSpace: "nowrap", // 텍스트 줄 바꿈 방지
+          }}
+        >
+          {allFiles.map((fileItem, index) => (
+            <FileItemEdit key={fileItem.id} fileItem={fileItem} index={index} handleRemoveItem={handleRemoveItem} moveFile={moveFile}></FileItemEdit>
+            // <div
+            //   key={fileItem.id}
+            //   className="relative w-28 h-28 mx-2 border-2 border-gray-200 rounded-xl"
+            //   onClick={(e) => e.preventDefault()}
+            // >
 
+            // <img
+            //   src={fileItem.url || ""}
+            //   alt={`Image ${fileItem.id}`}
+            //   className="object-cover w-full h-full rounded-xl"
+            //   />
+            // </div>
+
+            // <FileItem key={fileItem.id} fileItem={fileItem} index={index} />
+          ))}
+        </div>
+      </div> */}
+      <div className="mx-1 mt-4 flex flex-col">
         <div className="mb-4">
           <p className="font-bold text-xl my-2">제목</p>
           <div className="flex">
@@ -641,12 +849,13 @@ export default function AuctionWrite() {
               value={title}
               onChange={handleTitleChange}
             />
+            {/* <div>글자 체크 </div> */}
+            {/* <div><NumberCounting count={titleInfo.current.length}></NumberCounting></div> */}
             <div className="flex items-center">
               <span className="text-sm mx-6">{title.length}/40</span>
             </div>
           </div>
         </div>
-
         <div className="mb-4">
           <p className="font-bold text-xl my-2">즉시 구입가</p>
           <input
@@ -679,7 +888,6 @@ export default function AuctionWrite() {
             onChange={(e) => handlePriceChange("unit", e)}
           />
         </div>
-
         <div className="mb-4">
           <p className="font-bold text-xl my-2">마감 시간</p>
           <input
@@ -690,7 +898,6 @@ export default function AuctionWrite() {
             onChange={(e) => setEndTime(e.target.value)}
           />
         </div>
-
         <div className="mb-4">
           <p className="font-bold text-xl my-2">연장 룰</p>
           <select
@@ -720,7 +927,6 @@ export default function AuctionWrite() {
             ))}
           </select>
         </div>
-
         <div className="mb-4">
           <p className="font-bold text-xl my-2">품종</p>
           <select
@@ -735,7 +941,6 @@ export default function AuctionWrite() {
             ))}
           </select>
         </div>
-
         <div className="mb-4">
           <p className="font-bold text-xl my-2">모프</p>
           {/* {variety !== "품종을 선택하세요" && patternOptions[variety] && ( */}
@@ -763,7 +968,6 @@ export default function AuctionWrite() {
             onChange={handleDateChange}
           />
         </div>
-
         <div className="mb-4">
           <p className="font-bold text-xl my-2">성별</p>
           <div className="flex flex-row">
@@ -771,7 +975,7 @@ export default function AuctionWrite() {
               className={`w-52 py-2 rounded 
               ${selectedGender === "수컷"
                   ? "bg-gender-male-dark-color"
-                  : "bg-gender-male-color"} 
+                  : "bg-gender-male-color"}
                 text-lg text-white font-bold flex-1`}
               onClick={() => handleGenderClick("수컷")}
             >
@@ -781,7 +985,7 @@ export default function AuctionWrite() {
               className={`w-52 py-2 rounded 
               ${selectedGender === "암컷"
                   ? "bg-gender-female-dark-color"
-                  : "bg-gender-female-color"} 
+                  : "bg-gender-female-color"}
                 text-lg text-white mx-2 font-bold flex-1`}
               onClick={() => handleGenderClick("암컷")}
             >
@@ -791,15 +995,14 @@ export default function AuctionWrite() {
               className={`w-52 py-2 rounded 
               ${selectedGender === "미구분"
                   ? "bg-gender-none-dark-color"
-                  : "bg-gender-none-color"} 
-              text-lg text-white font-bold flex-1`}
+                  : "bg-gender-none-color"}
+                text-lg text-white font-bold flex-1`}
               onClick={() => handleGenderClick("미구분")}
             >
               미구분
             </button>
           </div>
         </div>
-
         <div className="mb-4">
           <p className="font-bold text-xl my-2">크기</p>
           <div className="flex flex-row">
@@ -853,7 +1056,6 @@ export default function AuctionWrite() {
             onChange={handleDescriptionChange}
             rows={10} // 세로 행의 개수를 조절합니다.
             style={{ resize: 'none' }}
-          // onFocus={(event) => handleFocusOn(event)}
           />
         </div>
       </div>
@@ -864,7 +1066,7 @@ export default function AuctionWrite() {
               type="submit"
               className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
             >
-              임시 저장
+              경매 등록
             </button>
           </form>
         ) : (
@@ -877,6 +1079,6 @@ export default function AuctionWrite() {
           </button>
         )
       }
-    </div >
+    </div>
   );
 }

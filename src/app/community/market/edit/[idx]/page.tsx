@@ -12,16 +12,7 @@ export default function MarketEditPage() {
   return (
     <div>
       <CommunityMenu />
-      <PC>
-        <DndProvider backend={HTML5Backend}>
-          <MarketEdit />
-        </DndProvider>
-      </PC>
-      <Mobile>
-        <DndProvider backend={TouchBackend}>
-          <MarketEdit />
-        </DndProvider>
-      </Mobile>
+      <MarketEdit />
     </div>
   );
 }

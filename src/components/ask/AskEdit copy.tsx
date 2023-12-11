@@ -17,10 +17,7 @@ import { GetPostsView, Images } from "@/service/my/board";
 import { freeEdit } from "@/api/free/freeBoard";
 import { useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
-import ImageSelecterEdit from "../ImageSelecterEdit";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { TouchBackend } from "react-dnd-touch-backend";
+import FileItemEdit from "../FileItemEdit";
 
 interface FileItem {
   idx: number;
@@ -136,9 +133,9 @@ export default function AskEdit() {
     getData();
   }, []);
 
-  useEffect(() => { }, [allFiles]);
+  useEffect(() => {}, [allFiles]);
 
-  useEffect(() => { }, [deletedFiles]);
+  useEffect(() => {}, [deletedFiles]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -417,17 +414,9 @@ export default function AskEdit() {
       setDescription(inputValue);
     }
   };
-  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-
-    // console.log(inputValue.length);
-    if (inputValue.length <= 40) {
-      setTitle(inputValue);
-    }
-  };
 
   return (
-    <div className="max-w-screen-md mx-auto mt-20 px-7">
+    <div className="max-w-screen-md mx-auto">
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center z-[10000] bg-gray-800 bg-opacity-75">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-main-color"></div>
@@ -444,51 +433,75 @@ export default function AskEdit() {
           질문 게시글
         </h2>
       </Mobile>
-
-      <PC>
-        <DndProvider backend={HTML5Backend}>
-          <ImageSelecterEdit handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} allFiles={allFiles} moveFile={moveFile}></ImageSelecterEdit>
-        </DndProvider>
-      </PC>
-      <Mobile>
-        <DndProvider backend={TouchBackend}>
-          <ImageSelecterEdit handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} allFiles={allFiles} moveFile={moveFile}></ImageSelecterEdit>
-        </DndProvider>
-      </Mobile>
-
-
-      <div className="mx-1 mt-4 flex flex-col">
-        <div className="mb-4">
-          <p className="font-bold text-xl my-2">제목</p>
-          <div className="flex">
-            <input
-              type="text"
-              placeholder="제목을 입력해주세요."
-              className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
-              value={title}
-              onChange={handleTitleChange}
-            />
-            <div className="flex items-center">
-              <span className="text-sm mx-6">{title.length}/40</span>
+      <div className="flex flex-row">
+        <input
+          type="file"
+          accept="image/*, video/*"
+          multiple
+          onChange={handleFileSelect}
+          className="hidden"
+          id="mediaInput"
+          max="5"
+        />
+        <label
+          className="w-auto h-auto cursor-pointer py-3"
+          htmlFor="mediaInput"
+        >
+          <PC>
+            <div className="w-28 h-28 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
+              <img
+                src="/img/camera.png"
+                alt="Camera Icon"
+                className="w-16 h-16"
+              />
+              <span className="">{allFiles.length}/5</span>
             </div>
-          </div>
+          </PC>
+          <Mobile>
+            <div className="mx-1 w-20 h-20 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
+              <img
+                src="/img/camera.png"
+                alt="Camera Icon"
+                className="w-12 h-12"
+              />
+              <span className="text-sm">{allFiles.length}/5</span>
+            </div>
+          </Mobile>
+        </label>
+        <div
+          className="flex items-center py-3 mx-auto"
+          style={{
+            width: "100%", // 화면 넓이보다 넓도록 설정
+            overflowX: "auto", // 가로 스크롤 허용
+            whiteSpace: "nowrap", // 텍스트 줄 바꿈 방지
+          }}
+        >
+          {allFiles.map((fileItem, index) => (
+            <FileItemEdit key={fileItem.id} fileItem={fileItem} index={index} handleRemoveItem={handleRemoveItem} moveFile={moveFile}></FileItemEdit>
+            // <FileItem key={fileItem.id} fileItem={fileItem} index={index} />
+          ))}
         </div>
-
-        <div>
-          <div className="flex items-center my-2">
-            <p className="font-bold text-xl">내용</p>
-            <span className="text-sm ml-auto">{description.length}/600</span>
-          </div>
-          <textarea
-            placeholder="생물의 상태 (건강 상태, 특이점 유무, 식사 방식) 등을 입력해 주세요.
-            서로가 믿고 거래할 수 있도록, 자세한 정보와 다양한 각도의 상품 사진을 올려주세요."
-            className="focus:outline-none px-2 py-2 border-gray-B7B7B7 border text-17px w-full"
-            value={description}
-            onChange={handleDescriptionChange}
-            rows={10} // 세로 행의 개수를 조절합니다.
-            style={{ resize: 'none' }}
-          />
+      </div>
+      <div className="mx-1 mt-4 flex flex-col">
+        <p className="font-bold text-xl my-2">제목</p>
+        <input
+          type="text"
+          placeholder="제목을 입력해주세요."
+          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <div className="flex items-center">
+          <p className="font-bold text-xl my-2">내용</p>
+          <span className="text-sm ml-auto">{description.length}/600</span>
         </div>
+        <textarea
+          placeholder="내용을 입력해주세요."
+          className="focus:outline-none px-2 py-2 border-gray-400 border-2 text-17px w-full"
+          value={description}
+          onChange={handleDescriptionChange}
+          rows={10} // 세로 행의 개수를 조절합니다.
+        />
       </div>
       {!isLoading ? (
         <form onSubmit={onSubmitHandler}>

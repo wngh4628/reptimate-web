@@ -259,6 +259,11 @@ export default function FreePostsView() {
       // Assuming your response data has a 'result' property
       setCommentCnt(response.data.result.commentCnt);
       setData(response.data);
+      console.log("==========getData : freepostview.tsx===========");
+      console.log("*");
+      console.log(response.data);
+      console.log("*");
+      console.log("========================================");
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -272,6 +277,7 @@ export default function FreePostsView() {
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
       } else {
+
       }
     }
     getData();

@@ -10,16 +10,7 @@ import { Mobile, PC } from "@/components/ResponsiveLayout";
 export default function AuctionEditPage() {
   return (
     <div>
-      <PC>
-        <DndProvider backend={HTML5Backend}>
-          <AuctionEdit />
-        </DndProvider>
-      </PC>
-      <Mobile>
-        <DndProvider backend={TouchBackend}>
-          <AuctionEdit />
-        </DndProvider>
-      </Mobile>
+      <AuctionEdit />
     </div>
   );
 }
