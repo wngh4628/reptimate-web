@@ -124,7 +124,7 @@ export default function AdoptionPosts() {
       <BannerSlider />
        {/* 솔트링 콤보 박스 PC */}
       <PC>
-        <div className="flex items-center relative" style={{marginLeft:40, marginRight:40}}>
+        <div className="flex items-center relative ml-[40px] mr-[40px]">
           <p className="font-bold text-[20px]">분양글</p>
           <div className="relative ml-auto">
             <select
@@ -143,7 +143,7 @@ export default function AdoptionPosts() {
       </PC>
       {/* 솔트링 콤보 박스 모바일 */}
       <Mobile>
-        <div className="flex items-center relative  ml-[16px] mr-[16px]">
+        <div className="flex items-center relative ml-[16px] mr-[16px]">
           <h2 className="text-lg font-bold my-2">분양글</h2>
           <div className="relative ml-auto">
             <select
@@ -163,7 +163,7 @@ export default function AdoptionPosts() {
       {/* 게시글 목록 PC */}
       <PC>
         {data !== null && data.result.items ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5" style={{marginLeft:40,marginRight:40}}>
+          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-[40px] mr-[40px]">
             {itemlist.map((post) => (
               <li key={post.idx}>
                 <PostCard post={post} />
@@ -179,7 +179,7 @@ export default function AdoptionPosts() {
        {/* 게시글 목록 모바일 */}
       <Mobile>
         {data !== null && data.result.items ? (
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-4" style={{paddingLeft:16, paddingRight: 16}}>
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-[16px] pr-[16px]">
               {itemlist.map((post) => (
                   <PostCard  key={post.idx} post={post} />
               ))}

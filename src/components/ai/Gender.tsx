@@ -70,7 +70,7 @@ export default function Gender(props:any) {
       )}
 
       {/* 모프 정보 */}
-      <div className="max-w-screen-sm mx-auto mt-5">
+      <div className="max-w-screen-sm mx-auto mt-5  mt-[130px]" >
 
         <h2 className="text-3xl font-bold pt-5">암수 구분</h2>
 

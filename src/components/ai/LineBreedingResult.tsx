@@ -65,7 +65,7 @@ export default function LineBreedingResult(props:any) {
 
                     <div className="max-w-4xl mx-auto mb-10">
 
-                        <h2 className="text-3xl font-bold mt-10">라인브리딩 서비스 결과</h2>
+                        <h2 className="text-3xl font-bold mt-10">브리딩 추천 결과</h2>
 
                         <div className="mt-10">
                             <span className="text-2xl font-bold ">추천 개체</span>
@@ -113,7 +113,7 @@ export default function LineBreedingResult(props:any) {
 
                     <div className="p-4">
 
-                        <h2 className="text-2xl font-bold mt-4">라인브리딩 서비스 결과</h2>
+                        <h2 className="text-2xl font-bold mt-4">브리딩 추천 결과</h2>
 
                         <div className="mt-8">
                             <span className="text-xl font-bold ">추천 개체</span>

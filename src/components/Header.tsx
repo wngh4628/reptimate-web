@@ -26,7 +26,8 @@ import PersonalChat from "@/components/chat/personalChat";
 import { initializeApp } from "firebase/app";
 import { getMessaging, onMessage, getToken } from "firebase/messaging";
 import Search from "./Search";
-
+import AiMenu from "@/components/ai/AiMenu";
+import AuctionMenu from "@/components/auction/AuctionMenu";
 export default function Header() {
   const login = false;
   const pathName = usePathname() || "";
@@ -305,7 +306,7 @@ export default function Header() {
             <Link
               href="/auction"
               className={`${
-                pathName === "/auction" ? "font-bold" : ""
+                pathName.startsWith("/auction") ? "font-bold" : ""
               }`}
               style={{fontSize:18, color:"#222222"}}
             >
@@ -314,7 +315,7 @@ export default function Header() {
             <Link
               href="/ai"
               className={`${
-                pathName === "/ai" ? "font-bold" : ""
+                pathName.startsWith("/ai") ? "font-bold" : ""
               } `}
               style={{fontSize:18, color:"#222222"}}
             >
@@ -325,7 +326,7 @@ export default function Header() {
               <Link
                 href="/my"
                 className={`${
-                  pathName === "/my" ? "font-bold" : ""
+                  pathName.startsWith("/my") ? "font-bold" : ""
                 } font-normal`}
                 style={{fontSize:18, color:"#222222",}}
                 onClick={chattingClick}
@@ -358,9 +359,17 @@ export default function Header() {
 
           </nav>
         </div>
+       {/* 두번째  메뉴 */}
         <div>
           { pathName === "/" ||  pathName.startsWith("/community") ? <CommunityMenu /> : ""}
         </div>
+        <div>
+          { pathName.startsWith("/auction") ? <AuctionMenu /> : ""}
+        </div>
+        <div>
+          { pathName.startsWith("/ai") ? <AiMenu /> : ""}
+        </div>
+        
         <div
           className={`${
             isChatVisisible

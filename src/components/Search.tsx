@@ -4,6 +4,7 @@ import { ChangeEvent, useEffect, useState, KeyboardEvent } from "react";
 import { Mobile, PC } from "./ResponsiveLayout";
 import { useRecoilState } from "recoil";
 import { recentSearchKeywordssAtom } from "@/recoil/user";
+import { useRouter } from 'next/navigation';
 
 interface SearchProps {
   isHidden: Boolean;
@@ -18,6 +19,7 @@ const Search: React.FC<SearchProps> = ({ isHidden, setHidden }) => {
   const [recentSearchKeywords, setrecentSearchKeywords] = useRecoilState(recentSearchKeywordssAtom);
   const [filteredRecentSearchKeywords, setfilteredRecentSearchKeywords] = useState<string[]>([]);
   const [isModalShown, setisModalShown] = useState(false);
+  const router = useRouter();
 
   const filterRecentKeywords = (recentKeywords:string[]) => {
 
@@ -55,6 +57,11 @@ const Search: React.FC<SearchProps> = ({ isHidden, setHidden }) => {
   const handleEnterPress = (e: React.FormEvent<HTMLFormElement>) => {
                 
         if(inputValue.length !== 0){
+
+          router.push(`/searchresult?keyword=${inputValue}`)
+
+          setHidden(true);
+          
           setrecentSearchKeywords((prevKeywords) => [...prevKeywords, inputValue]);
         }
   };

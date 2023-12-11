@@ -35,7 +35,7 @@ const BannerSlider: React.FC = () => {
                 showArrows={true}
                 showThumbs={false}
                 autoPlay={true}
-                stopOnHover={false}
+                stopOnHover={true}
                 interval={5000}
                 infiniteLoop={true}
                 showStatus={false}
