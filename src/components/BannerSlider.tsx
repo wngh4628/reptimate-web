@@ -20,11 +20,11 @@ const BannerSlider: React.FC = () => {
                   overflow: 'hidden',
                 }}
               >
-             <img
+             <Image
                   src="/img/reptimate_banner0111.png"
                   alt="First Image"
                   // layout="fill"
-                  // objectFit="cover"
+                  objectFit="cover"
                   style={{ transition: 'transform 0.3s' }} // 트랜지션 효과 추가
                   className="transform hover:scale-105" // hover 시 확대 효과 클래스 추가
                 />
@@ -35,7 +35,7 @@ const BannerSlider: React.FC = () => {
                 showArrows={true}
                 showThumbs={false}
                 autoPlay={true}
-                stopOnHover={true}
+                stopOnHover={false}
                 interval={5000}
                 infiniteLoop={true}
                 showStatus={false}
@@ -51,7 +51,7 @@ const BannerSlider: React.FC = () => {
                       style={{ top:"50%", left:"2%", width: 10, height:10, position:"absolute", zIndex :"1000", cursor:"pointer", opacity:"80%"}} // 원하는 위치로 조절
                     >
                       <div style={{ width:30, height:30, backgroundColor:"white", borderRadius:100}}>
-                       <img src="/icon/backIcon.png" width={18} height={15} style={{}} alt="backBtn"/>
+                       <Image src="/icon/backIcon.png" width={18} height={15} style={{}} alt="backBtn"/>
                        </div>
                     </button>
                   )
@@ -66,7 +66,7 @@ const BannerSlider: React.FC = () => {
                       style={{top:"50%", right:"8%", width: 10, height:10, position:"absolute" ,zIndex :"100", cursor:"pointer", opacity:"80%"}} // 원하는 위치로 조절
                     >
                       <div style={{ width:30, height:30, backgroundColor:"white", borderRadius:100}}>
-                        <img src="/icon/nextIcon.png" width={18} height={15} style={{marginLeft: "1px",}} alt="backBtn"/>
+                        <Image src="/icon/nextIcon.png" width={18} height={15} style={{marginLeft: "1px",}} alt="backBtn"/>
                       </div>
                     </button>
                   )
@@ -84,11 +84,11 @@ const BannerSlider: React.FC = () => {
               transition: 'transform 0.3s', // 트랜지션 효과 추가
             }}
           >
-            <img
+            <Image
               src={`/img/reptimate_banner0${index}.png`} // 이미지 경로에 따라 수정
               alt={`Image ${index}`}
               // layout="fill"
-              // objectFit="cover"
+              objectFit="cover"
               style={{
                 transform: 'scale(1)',
                 transition: 'transform 0.3s', // 트랜지션 효과 추가
@@ -117,7 +117,7 @@ const BannerSlider: React.FC = () => {
              <Image
                   src="/img/reptimate_banner0111.png"
                   alt="First Image"
-                  layout="fill"
+                  // layout="fill"
                   objectFit="cover"
                   style={{ transition: 'transform 0.3s' }} // 트랜지션 효과 추가
                   className="transform hover:scale-105" // hover 시 확대 효과 클래스 추가
