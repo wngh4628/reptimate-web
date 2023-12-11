@@ -121,7 +121,7 @@ export default function ActionPage({ params: { slug } }: Props) {
               <div className="flex basis-1/2 flex-row-reverse text-center">
                 <span className="py-[1rem]">22</span>
                 <span className="py-[1rem] text-right">
-                  <img
+                  <Image
                     src={unlike_black}
                     width={25}
                     height={25}

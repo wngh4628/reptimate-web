@@ -1105,7 +1105,7 @@ export default function AuctionPostsView() {
                 <div className="flex flex-row items-center py-3">
                 {bookmarked ? (
                   <a onClick={bookmarkClick}>
-                    <img
+                    <Image
                       src={like_maincolor}
                       width={20}
                       height={20}
@@ -1115,7 +1115,7 @@ export default function AuctionPostsView() {
                   </a>
                   ) : (
                     <a onClick={bookmarkClick}>
-                      <img
+                      <Image
                         src={unlike_black}
                         width={20}
                         height={20}
@@ -1303,7 +1303,7 @@ export default function AuctionPostsView() {
                 <div className="flex flex-row items-center py-3">
                 {bookmarked ? (
                   <a onClick={bookmarkClick}>
-                    <img
+                    <Image
                       src={like_maincolor}
                       width={20}
                       height={20}
@@ -1313,7 +1313,7 @@ export default function AuctionPostsView() {
                   </a>
                   ) : (
                     <a onClick={bookmarkClick}>
-                      <img
+                      <Image
                         src={unlike_black}
                         width={20}
                         height={20}
