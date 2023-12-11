@@ -34,7 +34,7 @@ export const userAtom = atom<User | null>({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const recentSearchKeywordssAtom = atom<string[]>({
+export const recentSearchKeywordsAtom = atom<string[]>({
   key: "recentSearchKeywords",
   default: [],
   effects_UNSTABLE: [persistAtom],

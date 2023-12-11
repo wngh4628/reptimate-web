@@ -14,7 +14,7 @@ import {
   fcmState,
   fcmNotificationState,
   notiVisisibleState,
-  recentSearchKeywordssAtom,
+  recentSearchKeywordsAtom,
 } from "@/recoil/user";
 import {
   chatRoomState,
@@ -25,9 +25,10 @@ import PersonalChat from "@/components/chat/personalChat";
 
 import { initializeApp } from "firebase/app";
 import { getMessaging, onMessage, getToken } from "firebase/messaging";
-import Search from "./Search";
+import Search from "./search/Search";
 import AiMenu from "@/components/ai/AiMenu";
 import AuctionMenu from "@/components/auction/AuctionMenu";
+import SearchResultMenu from "./search/SearchResultMenu";
 export default function Header() {
   const login = false;
   const pathName = usePathname() || "";
@@ -368,6 +369,9 @@ export default function Header() {
         </div>
         <div>
           { pathName.startsWith("/ai") ? <AiMenu /> : ""}
+        </div>
+        <div>
+          { pathName.startsWith("/searchresult/") ? <SearchResultMenu /> : ""}
         </div>
         
         <div

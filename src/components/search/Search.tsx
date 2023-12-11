@@ -1,9 +1,9 @@
 "use client";
 
 import { ChangeEvent, useEffect, useState, KeyboardEvent } from "react";
-import { Mobile, PC } from "./ResponsiveLayout";
+import { Mobile, PC } from "../ResponsiveLayout";
 import { useRecoilState } from "recoil";
-import { recentSearchKeywordssAtom } from "@/recoil/user";
+import { recentSearchKeywordsAtom } from "@/recoil/user";
 import { useRouter } from 'next/navigation';
 
 interface SearchProps {
@@ -16,7 +16,7 @@ const MAX_LENGTH = 10;
 const Search: React.FC<SearchProps> = ({ isHidden, setHidden }) => {
 
   const [inputValue, setInputValue] = useState('');
-  const [recentSearchKeywords, setrecentSearchKeywords] = useRecoilState(recentSearchKeywordssAtom);
+  const [recentSearchKeywords, setrecentSearchKeywords] = useRecoilState(recentSearchKeywordsAtom);
   const [filteredRecentSearchKeywords, setfilteredRecentSearchKeywords] = useState<string[]>([]);
   const [isModalShown, setisModalShown] = useState(false);
   const router = useRouter();
@@ -54,17 +54,30 @@ const Search: React.FC<SearchProps> = ({ isHidden, setHidden }) => {
   };
 
   // 엔터 이벤트
-  const handleEnterPress = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEnterPress = () => {
                 
         if(inputValue.length !== 0){
 
-          router.push(`/searchresult?keyword=${inputValue}`)
+          router.push(`/searchresult/integrated?keyword=${inputValue}`)
 
           setHidden(true);
           
           setrecentSearchKeywords((prevKeywords) => [...prevKeywords, inputValue]);
         }
   };
+
+  // 최근 검색어 클릭
+  const handleRecentKeywordPress = (indexOfPressedKeyword:number) => {    
+
+    const pressedKeyword = recentSearchKeywords[indexOfPressedKeyword];
+    
+    setInputValue(pressedKeyword)
+
+    router.push(`/searchresult/integrated?keyword=${pressedKeyword}`)
+
+    setHidden(true);
+
+  }
 
   // 검색어 개별 삭제
   const deleteRecentKeyword = (indexToDelete:number) => {
@@ -127,7 +140,7 @@ const Search: React.FC<SearchProps> = ({ isHidden, setHidden }) => {
           <form
             onSubmit={(e) => {
               e.preventDefault(); // 폼의 기본 동작(새로고침) 방지
-              handleEnterPress(e);
+              handleEnterPress();
             }} 
             className="w-full">
 
@@ -167,7 +180,7 @@ const Search: React.FC<SearchProps> = ({ isHidden, setHidden }) => {
 
             {filteredRecentSearchKeywords.map((recentKeyword, index) => (
               <div className="inline-block border border-gray-300 rounded-full py-1 px-3 mb-2 mr-2">
-                <span className="text-gray-500 text-sm">{recentKeyword}</span>
+                <span className="text-gray-500 text-sm" onClick={() => {handleRecentKeywordPress(index)}}>{recentKeyword}</span>
                 <span className="ml-1 text-gray-400 text-xs" onClick={() => {deleteRecentKeyword(index)}}>✕</span>
               </div>
             ))}
@@ -215,7 +228,7 @@ const Search: React.FC<SearchProps> = ({ isHidden, setHidden }) => {
             <form
               onSubmit={(e) => {
                 e.preventDefault(); // 폼의 기본 동작(새로고침) 방지
-                handleEnterPress(e);
+                handleEnterPress();
               }} 
               className="w-full">
 
