@@ -74,7 +74,7 @@ export default function ValueAnalysisResult(props:any) {
       // 저장 요청
       const response = await axios({
         method:'post',
-        url:`${process.env.NEXT_PUBLIC_AI_URL}/analyzer_save`,
+        url:`${process.env.NEXT_PUBLIC_AI_URL}/image_ai/analyzer_save`,
         params: {
           idx: idx,
           userIdx: userIdx,

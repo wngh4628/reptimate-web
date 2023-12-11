@@ -6,6 +6,10 @@ import { Mobile, PC } from "../ResponsiveLayout";
 import ImageSlider from "../ImageSlider";
 import { useMutation } from "@tanstack/react-query";
 import { commentWrite } from "@/api/comment";
+import Image from "next/image";
+
+import unlike_black from "../../../public/img/unlike_black.png";
+import like_maincolor from "../../../public/img/like_maincolor.png";
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom, chatVisisibleState } from "@/recoil/user";
@@ -20,6 +24,8 @@ import {
   auctionDelete,
   auctionWrite,
   streamKeyEdit,
+  auctionDeleteBookmark,
+  auctionRegisterBookmark,
 } from "@/api/auction/auction";
 import { useReGenerateTokenMutation } from "@/api/accesstoken/regenerate";
 
@@ -111,6 +117,8 @@ export default function AuctionPostsView() {
   const [userInfoData, setUserInfoData] = useState<userInfo[]>([]); //유저 정보 가지고 있는 리스트
 
   const [commentCnt, setCommentCnt] = useState(0);
+  const [bookmarkCnt, setBookmarkCnt] = useState(0);
+  const [bookmarked, setBookmarked] = useState(false);
 
   const reGenerateTokenMutation = useReGenerateTokenMutation();
   const [isChatVisisible, setIsChatVisisible] =
@@ -177,26 +185,52 @@ export default function AuctionPostsView() {
     }
   }, []);
 
-  function BackButton() {
-    const handleGoBack = () => {
-      window.history.back(); // Go back to the previous page using window.history
-    };
-
-    return (
-      <button
-        onClick={handleGoBack}
-        className="cursor-poiter px-2 font-bold mt-12"
-      >
-        &lt; 뒤로가기
-      </button>
-    );
-  }
-
   const deleteMutation = useMutation({
     mutationFn: auctionDelete,
     onSuccess: (data) => {
       alert("게시글이 삭제되었습니다.");
       router.replace("/auction");
+    },
+  });
+  /*********************
+   *
+   *       북마크
+   *
+   ********************/
+  const bookmarkClick = () => {
+    if (bookmarked) {
+      setBookmarked(false);
+      setBookmarkCnt(bookmarkCnt-1);
+      auctionDeleteMutation.mutate({
+        userAccessToken: accessToken,
+        boardIdx: data!.result.boardAuction.boardIdx
+      });
+    } else {
+      setBookmarked(true);
+      setBookmarkCnt(bookmarkCnt+1);
+      auctionRegisterMutation.mutate({
+        userAccessToken: accessToken,
+        boardIdx: data!.result.boardAuction.boardIdx,
+        userIdx: userIdx
+      });
+    }
+  };
+  // 북마크 등록
+  const auctionRegisterMutation = useMutation({
+    mutationFn: auctionRegisterBookmark,
+    onSuccess: (data) => {
+      console.log("===auctionRegisterMutation====");
+      console.log(data);
+      console.log("==============================");
+    },
+  });
+  // 북마크 삭제
+  const auctionDeleteMutation = useMutation({
+    mutationFn: auctionDeleteBookmark,
+    onSuccess: (data) => {
+      console.log("===auctionDeleteMutation====");
+      console.log(data);
+      console.log("============================");
     },
   });
 
@@ -323,7 +357,6 @@ export default function AuctionPostsView() {
         boardIdx: idx,
         userAccessToken: userAccessToken || "",
       };
-
       deleteMutation.mutate(requestData);
     }
   };
@@ -341,7 +374,7 @@ export default function AuctionPostsView() {
   };
 
   let userAccessToken: string | null = null;
-  let currentUserIdx: number | null = null;
+  let currentUserIdx: number | null = 0;
   let userProfilePath: string | null = null;
   let userNickname: string | null = null;
   if (typeof window !== "undefined") {
@@ -371,7 +404,15 @@ export default function AuctionPostsView() {
         `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${currentUserIdx}`
       );
       setCommentCnt(response.data.result.commentCnt);
+      setBookmarkCnt(response.data.result.bookmarkCounts);
+      setBookmarked(response.data.result.hasBookmarked);
+
       setData(response.data);
+      console.log("==========getData : view.tsx===========");
+      console.log("*");
+      console.log(response.data);
+      console.log("*");
+      console.log("========================================");
       if (response.data.result.UserInfo.idx === userIdx) {
         setIsInputDisabled(true);
       }
@@ -868,9 +909,10 @@ export default function AuctionPostsView() {
 
     const handleViewClick = () => {
       //라이브 방송에 시청자로 참가
-
       location.href = `/auction/posts/${idx}/live`;
     };
+
+
 
     const handleLiveClick = () => {
       //웹뷰에서 버튼 클릭시 안드로이드 rtmp 송신 액티비티로 이동
@@ -888,6 +930,19 @@ export default function AuctionPostsView() {
       setBidVisible(false);
     }
 
+    function BackButton() {
+      const handleGoBack = () => {
+        window.history.back(); // Go back to the previous page using window.history
+      };
+      return (
+        <button
+          onClick={handleGoBack}
+          className="cursor-poiter px-2 font-bold mt-12"
+        >
+          &lt; 뒤로가기
+        </button>
+      );
+    }
     return (
       <div className="mx-1">
         {post && (
@@ -1042,9 +1097,35 @@ export default function AuctionPostsView() {
               </div>
               <p className="text-lg my-7 break-all">{post.description}</p>
               <hr className="border-t border-gray-300 my-1" />
-              <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-3 mr-2">댓글</p>
-                <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
+              <div className="flex flex-row justify-between items-center py-3">
+                <div className="flex flex-row items-center py-3">
+                  <p className="text-lg font-semibold ml-1 mr-2">댓글</p>
+                  <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
+                </div>
+                <div className="flex flex-row items-center py-3">
+                {bookmarked ? (
+                  <a onClick={bookmarkClick}>
+                    <Image
+                      src={like_maincolor}
+                      width={20}
+                      height={20}
+                      alt="북마크"
+                      className="like_btn m-auto mr-1"
+                    />
+                  </a>
+                  ) : (
+                    <a onClick={bookmarkClick}>
+                      <Image
+                        src={unlike_black}
+                        width={20}
+                        height={20}
+                        alt="북마크"
+                        className="like_btn m-auto mr-1"
+                      />
+                    </a>
+                  )}
+                  <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
+                </div>
               </div>
               {userAccessToken ? (
                 <div>
@@ -1214,9 +1295,35 @@ export default function AuctionPostsView() {
               </div>
               <p className="mx-2 my-4 break-all">{post.description}</p>
               <hr className="border-t border-gray-300" />
-              <div className="flex flex-row items-center py-2">
-                <p className="font-semibold ml-1 mr-1">댓글</p>
-                <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
+              <div className="flex flex-row justify-between items-center py-3">
+                <div className="flex flex-row items-center py-3">
+                  <p className="text-lg font-semibold ml-1 mr-2">댓글</p>
+                  <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
+                </div>
+                <div className="flex flex-row items-center py-3">
+                {bookmarked ? (
+                  <a onClick={bookmarkClick}>
+                    <Image
+                      src={like_maincolor}
+                      width={20}
+                      height={20}
+                      alt="북마크"
+                      className="like_btn m-auto mr-1"
+                    />
+                  </a>
+                  ) : (
+                    <a onClick={bookmarkClick}>
+                      <Image
+                        src={unlike_black}
+                        width={20}
+                        height={20}
+                        alt="북마크"
+                        className="like_btn m-auto mr-1"
+                      />
+                    </a>
+                  )}
+                  <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
+                </div>
               </div>
               {userAccessToken ? (
                 <div>

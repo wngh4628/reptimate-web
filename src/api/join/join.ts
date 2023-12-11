@@ -1,7 +1,5 @@
 import instance from "@/api/index";
 
-
-
 // 회원가입
 export const register = async ({ email, nickName, password, loginMethod, agreeWithMarketing }:  {
     email: string;
@@ -33,6 +31,31 @@ export const emailSend = async ({ email, type}:  {
   const result = await instance.post("/users/email-verify", data);
 
   return result;
+};
+
+export const findPassWordEmail = async ({ email }:  {
+  email: string;
+}) => {
+  const data = {
+      'email' : email,
+      'type' : "OLDUSER"
+    };
+const result = await instance.post("/users/email-verify", data);
+
+return result;
+};
+
+export const patchPassWord = async ({ email, password }:  {
+  email: string;
+  password: string;
+}) => {
+  const data = {
+      'email' : email,
+      'password' : password
+    };
+const result = await instance.post("/users/find-password", data);
+
+return result;
 };
 
 export const nickNameChk = async ({ nickname, accessToken }:  {

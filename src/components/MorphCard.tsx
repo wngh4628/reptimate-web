@@ -23,10 +23,30 @@ export default function MorphCard(props: any) {
   const type = props.type;
   const handleFileChange = props.handleFileChange;
   const setImgFile = props.setImgFile;
+  const imgFile = props.imgFile;
+  
+  const showImageFileInImgTag = (imgFile:File) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event && event.target && event.target.result) {
+        setImagePath(event.target.result as string);
+        setImageType("");
+      }
+    };
+    reader.readAsDataURL(imgFile);
+  }
 
   useEffect(() => {
     setImagePath(imgPath);
     setImageType(getTypeText(type));
+
+    // PC <-> MOBILE로 렌더링 될때마다 이미지태그에 보여지는 이미지(프리뷰)를 유지하기 위함
+    if (imgFile) {
+      showImageFileInImgTag(imgFile)
+    }
+
+
+
   }, []);
 
   return (
@@ -44,14 +64,7 @@ export default function MorphCard(props: any) {
             const selectedFile = e.target.files?.[0] || null;
 
             if (selectedFile) {
-              const reader = new FileReader();
-              reader.onload = (event) => {
-                if (event && event.target && event.target.result) {
-                  setImagePath(event.target.result as string);
-                  setImageType("");
-                }
-              };
-              reader.readAsDataURL(selectedFile);
+              showImageFileInImgTag(selectedFile)
             }
           }}
         />
