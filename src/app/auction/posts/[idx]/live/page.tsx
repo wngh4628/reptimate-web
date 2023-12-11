@@ -196,7 +196,7 @@ export default function ActionPage({ params: { slug } }: Props) {
               <div className="flex basis-1/2 flex-row-reverse text-center">
               {bookmarked ? (
                   <a onClick={bookmarkClick}>
-                    <Image
+                    <img
                       src={like_maincolor}
                       width={20}
                       height={20}
@@ -206,7 +206,7 @@ export default function ActionPage({ params: { slug } }: Props) {
                   </a>
                   ) : (
                     <a onClick={bookmarkClick}>
-                      <Image
+                      <img
                         src={unlike_black}
                         width={20}
                         height={20}

@@ -47,8 +47,7 @@ export default function GenderResult(props:any) {
     return(
         <div>
             <PC>
-                <div>
-
+                <div className="mt-[100px]">
                     <div className="max-w-screen-sm mx-auto mb-10">
 
                         <h2 className="text-3xl font-bold mt-10">암수 구분 결과</h2>

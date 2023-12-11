@@ -594,7 +594,7 @@ export default function FreePostsView() {
                 <div className="flex flex-row items-center py-3">
                 {bookmarked ? (
                   <a onClick={bookmarkClick}>
-                    <Image
+                    <img
                       src={like_maincolor}
                       width={20}
                       height={20}
@@ -604,7 +604,7 @@ export default function FreePostsView() {
                   </a>
                   ) : (
                     <a onClick={bookmarkClick}>
-                      <Image
+                      <img
                         src={unlike_black}
                         width={20}
                         height={20}
@@ -724,7 +724,7 @@ export default function FreePostsView() {
                 <div className="flex flex-row items-center py-3">
                 {bookmarked ? (
                   <a onClick={bookmarkClick}>
-                    <Image
+                    <img
                       src={like_maincolor}
                       width={20}
                       height={20}
@@ -734,7 +734,7 @@ export default function FreePostsView() {
                   </a>
                   ) : (
                     <a onClick={bookmarkClick}>
-                      <Image
+                      <img
                         src={unlike_black}
                         width={20}
                         height={20}
