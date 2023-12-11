@@ -207,9 +207,12 @@ export default function Header() {
   function chattingClick() {
     if (isLoggedIn) {
       // console.log("채팅 목록 켜기");
-      setIsChatVisisible(true);
-    } else {
-      setIsChatVisisible(false);
+      
+      if (isChatVisisible) {
+        setIsChatVisisible(false);
+      } else {
+        setIsChatVisisible(true);
+      }
     }
   }
   function chattingClose() {
@@ -223,9 +226,11 @@ export default function Header() {
   function notiClick() {
     if (isLoggedIn) {
       // console.log("알림 목록 켜기");
-      setIsNotiVisisible(true);
-    } else {
-      setIsNotiVisisible(false);
+      if (isNotiVisisible) {
+        setIsNotiVisisible(false);
+      } else {
+        setIsNotiVisisible(true);
+      }
     }
   }
   function notiClose() {
