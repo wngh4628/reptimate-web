@@ -20,7 +20,7 @@ const BannerSlider: React.FC = () => {
                   overflow: 'hidden',
                 }}
               >
-             <Image
+             <img
                   src="/img/reptimate_banner0111.png"
                   alt="First Image"
                   layout="fill"
@@ -51,7 +51,7 @@ const BannerSlider: React.FC = () => {
                       style={{ top:"50%", left:"2%", width: 10, height:10, position:"absolute", zIndex :"1000", cursor:"pointer", opacity:"80%"}} // 원하는 위치로 조절
                     >
                       <div style={{ width:30, height:30, backgroundColor:"white", borderRadius:100}}>
-                       <Image src="/icon/backIcon.png" width={18} height={15} style={{}} alt="backBtn"/>
+                       <img src="/icon/backIcon.png" width={18} height={15} style={{}} alt="backBtn"/>
                        </div>
                     </button>
                   )
@@ -66,7 +66,7 @@ const BannerSlider: React.FC = () => {
                       style={{top:"50%", right:"8%", width: 10, height:10, position:"absolute" ,zIndex :"100", cursor:"pointer", opacity:"80%"}} // 원하는 위치로 조절
                     >
                       <div style={{ width:30, height:30, backgroundColor:"white", borderRadius:100}}>
-                        <Image src="/icon/nextIcon.png" width={18} height={15} style={{marginLeft: "1px",}} alt="backBtn"/>
+                        <img src="/icon/nextIcon.png" width={18} height={15} style={{marginLeft: "1px",}} alt="backBtn"/>
                       </div>
                     </button>
                   )
@@ -84,7 +84,7 @@ const BannerSlider: React.FC = () => {
               transition: 'transform 0.3s', // 트랜지션 효과 추가
             }}
           >
-            <Image
+            <img
               src={`/img/reptimate_banner0${index}.png`} // 이미지 경로에 따라 수정
               alt={`Image ${index}`}
               layout="fill"
@@ -114,7 +114,7 @@ const BannerSlider: React.FC = () => {
                   overflow: 'hidden',
                 }}
               >
-             <Image
+             <img
                   src="/img/reptimate_banner0111.png"
                   alt="First Image"
                   layout="fill"

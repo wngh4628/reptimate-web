@@ -305,7 +305,7 @@ export default function Header() {
                 MY
               </Link>
               <Link href="">
-                  <Image src="/img/chat.png" 
+                  <img src="/img/chat.png" 
                     width={18}
                     height={18}  
                     alt="chat-icon"
@@ -316,7 +316,7 @@ export default function Header() {
                   )}
               </Link>
               <Link href="">
-                  <Image src="/img/notification.png" 
+                  <img src="/img/notification.png" 
                     width={18}
                     height={18} 
                     alt="alert-icon"
