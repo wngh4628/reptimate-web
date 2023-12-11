@@ -177,11 +177,14 @@ const Search: React.FC<SearchProps> = ({ isHidden, setHidden }) => {
           </div>
 
           <div className=" w-2/5 mt-2 hover:cursor-pointer">
-
             {filteredRecentSearchKeywords.map((recentKeyword, index) => (
-              <div className="inline-block border border-gray-300 rounded-full py-1 px-3 mb-2 mr-2">
-                <span className="text-gray-500 text-sm" onClick={() => {handleRecentKeywordPress(index)}}>{recentKeyword}</span>
-                <span className="ml-1 text-gray-400 text-xs" onClick={() => {deleteRecentKeyword(index)}}>✕</span>
+              <div key={index} className="inline-block border border-gray-300 rounded-full py-1 px-3 mb-2 mr-2">
+                <span className="text-gray-500 text-sm" onClick={() => handleRecentKeywordPress(index)}>
+                  {recentKeyword}
+                </span>
+                <span className="ml-1 text-gray-400 text-xs" onClick={() => deleteRecentKeyword(index)}>
+                  ✕
+                </span>
               </div>
             ))}
           </div>
@@ -267,9 +270,9 @@ const Search: React.FC<SearchProps> = ({ isHidden, setHidden }) => {
             <div className=" w-4/5 mt-2">
 
               {filteredRecentSearchKeywords.map((recentKeyword, index) => (
-                <div className="inline-block border border-gray-300 rounded-full py-1 px-3 mb-2 mr-2">
+                <div key={recentKeyword} className="inline-block border border-gray-300 rounded-full py-1 px-3 mb-2 mr-2">
                   <span className="text-gray-500 text-sm">{recentKeyword}</span>
-                  <span className="ml-1 text-gray-400 text-xs" onClick={() => {deleteRecentKeyword(index)}}>✕</span>
+                  <span className="ml-1 text-gray-400 text-xs" onClick={() => deleteRecentKeyword(index)}>✕</span>
                 </div>
               ))}
             </div>

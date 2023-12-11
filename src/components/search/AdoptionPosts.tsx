@@ -6,7 +6,6 @@ import PostCard from "../PostCard";
 import { Mobile, PC } from "../ResponsiveLayout";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "@/recoil/user";
-import BannerSlider from "../BannerSlider";
 import { useSearchParams } from 'next/navigation'
 import { Adpotion, getSearchResponse } from "@/service/my/adoption";
 
@@ -107,20 +106,20 @@ export default function AdoptionPosts() {
   const itemlist: Adpotion[] =
     data !== null && data.result
       ? data.result.map((item) => ({
-          idx: item._source.idx,
-        //   view: 없음,
-          userIdx: item._source.userIdx,
-          title: item._source.title,
-          category: item._source.category,
-        //   writeDate: 없음,
-          thumbnail: item._source.thumbnail,
-        //   nickname: 없음,
-        //   profilePath: 없음,
-          price: item._source.boardCommercial.price,
-          gender: item._source.boardCommercial.gender,
-          size: item._source.boardCommercial.size,
-          variety: item._source.boardCommercial.variety,
-          state: item._source.boardCommercial.state,
+        idx: 1,
+        userIdx: 123,
+        title: '예시 입양',
+        category: 'adoption',
+        writeDate: new Date('2023-01-01T12:00:00Z'),
+        thumbnail: '예시 썸네일.jpg',
+        nickname: '예시 닉네임',
+        profilePath: '예시 프로필 경로',
+        price: 100,
+        gender: '수컷',
+        size: '중형',
+        variety: '예시 종류',
+        state: '입양 가능',
+        view: 1,
         }))
       : [];
 
@@ -129,7 +128,7 @@ export default function AdoptionPosts() {
        {/* 솔트링 콤보 박스 PC */}
       <PC>
         <div className="flex items-center relative ml-[40px] mr-[40px] mt-36">
-          <p className="font-bold text-[20px]">"{searchKeyword}" 검색 결과</p>
+          <p className="font-bold text-[20px]">{searchKeyword}</p>
           <div className="relative ml-auto">
             <select
               className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 "
@@ -148,7 +147,7 @@ export default function AdoptionPosts() {
       {/* 솔트링 콤보 박스 모바일 */}
       <Mobile>
         <div className="flex items-center relative ml-[16px] mr-[16px] mt-36">
-          <p className="font-bold text-[20px]">"{searchKeyword}" 검색 결과</p>
+          <p className="font-bold text-[20px]">{searchKeyword}</p>
           <div className="relative ml-auto">
             <select
               className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 "
