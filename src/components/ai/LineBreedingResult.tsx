@@ -55,7 +55,7 @@ export default function LineBreedingResult(props:any) {
     return(
         <div>
             <PC>
-                <div>
+                <div className="mt-[100px]">
                     {/* 로딩바 */}
                     {isLoading && (
                     <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-75">

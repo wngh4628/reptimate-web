@@ -1,14 +1,14 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Mobile, PC } from "./ResponsiveLayout";
-import Image from 'next/image';
 
 const BannerSlider: React.FC = () => {
   return (
     <div className="">
       <PC>
-        <div style={{display:"flex", width:1280, height:534, marginTop: 145, marginLeft:40}}>
+        <div className="flex w-[1280px] h-[534px] mt-[145px] ml-[40px]" >
           <div className="" style={{position: 'relative',width:890, height:534}}>
             <div
                 className="object-cover rounded-md"
@@ -20,13 +20,11 @@ const BannerSlider: React.FC = () => {
                   overflow: 'hidden',
                 }}
               >
-             <Image
+             <img
                   src="/img/reptimate_banner0111.png"
                   alt="First Image"
-                  layout="fill"
-                  objectFit="cover"
                   style={{ transition: 'transform 0.3s' }} // 트랜지션 효과 추가
-                  className="transform hover:scale-105" // hover 시 확대 효과 클래스 추가
+                  className="transform hover:scale-105 object-cover h-[534px] w-[1280px]" // hover 시 확대 효과 클래스 추가
                 />
               </div>
           </div>
@@ -35,7 +33,7 @@ const BannerSlider: React.FC = () => {
                 showArrows={true}
                 showThumbs={false}
                 autoPlay={true}
-                stopOnHover={true}
+                stopOnHover={false}
                 interval={5000}
                 infiniteLoop={true}
                 showStatus={false}
@@ -51,7 +49,7 @@ const BannerSlider: React.FC = () => {
                       style={{ top:"50%", left:"2%", width: 10, height:10, position:"absolute", zIndex :"1000", cursor:"pointer", opacity:"80%"}} // 원하는 위치로 조절
                     >
                       <div style={{ width:30, height:30, backgroundColor:"white", borderRadius:100}}>
-                       <Image src="/icon/backIcon.png" width={18} height={15} style={{}} alt="backBtn"/>
+                       <img src="/icon/backIcon.png" width={18} height={15} style={{}} alt="backBtn"/>
                        </div>
                     </button>
                   )
@@ -66,7 +64,7 @@ const BannerSlider: React.FC = () => {
                       style={{top:"50%", right:"8%", width: 10, height:10, position:"absolute" ,zIndex :"100", cursor:"pointer", opacity:"80%"}} // 원하는 위치로 조절
                     >
                       <div style={{ width:30, height:30, backgroundColor:"white", borderRadius:100}}>
-                        <Image src="/icon/nextIcon.png" width={18} height={15} style={{marginLeft: "1px",}} alt="backBtn"/>
+                        <img src="/icon/nextIcon.png" width={18} height={15} style={{marginLeft: "1px",}} alt="backBtn"/>
                       </div>
                     </button>
                   )
@@ -84,11 +82,9 @@ const BannerSlider: React.FC = () => {
               transition: 'transform 0.3s', // 트랜지션 효과 추가
             }}
           >
-            <Image
+            <img
               src={`/img/reptimate_banner0${index}.png`} // 이미지 경로에 따라 수정
               alt={`Image ${index}`}
-              layout="fill"
-              objectFit="cover"
               style={{
                 transform: 'scale(1)',
                 transition: 'transform 0.3s', // 트랜지션 효과 추가
@@ -114,13 +110,11 @@ const BannerSlider: React.FC = () => {
                   overflow: 'hidden',
                 }}
               >
-             <Image
+             <img
                   src="/img/reptimate_banner0111.png"
                   alt="First Image"
-                  layout="fill"
-                  objectFit="cover"
                   style={{ transition: 'transform 0.3s' }} // 트랜지션 효과 추가
-                  className="transform hover:scale-105" // hover 시 확대 효과 클래스 추가
+                  className="transform hover:scale-105 object-cover h-[231px] w-[412px]" // hover 시 확대 효과 클래스 추가
                 />
               </div>
             </div>

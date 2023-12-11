@@ -14,14 +14,13 @@ export default function AiMain() {
             <Link href={`/ai/valueanalysis`}>
               <article className="flex flex-col items-center">
                 <div className="relative w-[500px] h-[300px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
-                   <Image
+                   <img
                     className="object-cover w-full h-full"
                     src={"/img/value_analysis.png"}
                     width={500}
                     height={300}
                     alt={""}
                     style={{ zIndex: 1 }}
-                    loading="lazy"
                   />
                 </div>
               </article>
@@ -36,14 +35,13 @@ export default function AiMain() {
             <Link href={`/ai/linebreeding`}>
               <article className="flex flex-col items-center">
                 <div className="relative w-[500px] h-[300px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
-                   <Image
+                   <img
                     className="object-cover w-full h-full"
                     src={"/img/line_breeding.png"}
                     width={500}
                     height={300}
                     alt={""}
                     style={{ zIndex: 1 }}
-                    loading="lazy"
                   />
                 </div>
               </article>
@@ -58,14 +56,13 @@ export default function AiMain() {
             <Link href={`/ai/gender`}>
               <article className="flex flex-col items-center">
                 <div className="relative w-[500px] h-[300px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
-                   <Image
+                   <img
                     className="object-cover w-full h-full"
                     src={"/img/gender.jpeg"}
                     width={500}
                     height={300}
                     alt={""}
                     style={{ zIndex: 1 }}
-                    loading="lazy"
                   />
                 </div>
               </article>
@@ -80,14 +77,13 @@ export default function AiMain() {
             <Link href={`/ai/aibreeder`}>
               <article className="flex flex-col items-center">
                 <div className="relative w-[500px] h-[300px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
-                  <Image
+                  <img
                     className="object-cover w-full h-full"
                     src={"/img/reptimate_logo.png"}
                     width={500}
                     height={300}
                     alt={""}
                     style={{ zIndex: 1 }}
-                    loading="lazy"
                   />
                 </div>
               </article>
@@ -104,13 +100,12 @@ export default function AiMain() {
           <div className="w-[183.5px]" >
             <h3 className="font-bold mb-2 text-xl">모프 가치 판단</h3>
             <Link href={`/ai/valueanalysis`}>
-              <Image
+              <img
                 className="object-cover w-[183.5px] h-[183.5px] rounded-md"
                 src={"/img/value_analysis.png"}
                 width={183.5}
                 height={183.5}
                 alt={""}
-                loading="lazy"
               />
             </Link>
             <p className="mt-2 text-mg ml-1 break-text">
@@ -121,13 +116,12 @@ export default function AiMain() {
           <div className="w-[183.5px] rounded-md">
             <h3 className="font-bold mb-2 text-xl">브리딩 라인 추천</h3>
             <Link href={`/ai/linebreeding`}>
-                <Image
+                <img
                   className="object-cover w-[183.5px] h-[183.5px] rounded-md"
                   src={"/img/line_breeding.png"}
                   width={183.5}
                   height={183.5}
                   alt={""}
-                  loading="lazy"
                 />
             </Link>
             <p className="mt-2 text-mg ml-1 break-words">
@@ -138,14 +132,13 @@ export default function AiMain() {
           <div className="w-[183.5px] rounded-md">
             <h3 className="font-bold mb-2 text-xl">암수 구분 기능</h3>
             <Link href={`/ai/gender`}>
-              <Image
+              <img
                   className="object-cover  w-[183.5px] h-[183.5px] rounded-md"
                   src={"/img/gender.jpeg"}
                   width={183.5}
                   height={183.5}
                   alt={""}
                   style={{ zIndex: 1 }}
-                  loading="lazy"
                 />
             </Link>
             <p className="mt-2 text-mg ml-1 break-words">
@@ -156,7 +149,7 @@ export default function AiMain() {
           <div className="w-[183.5px] rounded-md">
             <h3 className="font-bold mb-2 text-xl">사육 챗봇</h3>
             <Link href={`/ai/aibreeder`}>
-              <Image
+              <img
                   className="object-cover w-[183.5px] h-[183.5px] rounded-md"
                   src={"/img/reptimate_logo.png"}
                   width={500}

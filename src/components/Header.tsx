@@ -232,6 +232,12 @@ export default function Header() {
   function notiClose() {
     setIsNotiVisisible(false);
   }
+  function pageReload() {
+    // router.refresh();
+    // router.push("/")
+    window.location.href = "/"
+    // window.location.reload();
+  }
 
   function showSearchModal(){
 
@@ -275,80 +281,76 @@ export default function Header() {
               className="group hover:text-main-color"
               onClick={handleLogout}
             >
-              <p style={{fontSize:12, color:"#222222CC"}}>로그아웃</p>
+              <p style={{ fontSize: 12, color: "#222222CC" }}>로그아웃</p>
             </button>
           ) : (
             <>
-              <Link href="/login" className="group hover:text-main-color" style={{height:14, paddingRight:10}}>
-               <p style={{fontSize: 12, color: "#222222CC", height:14}}>로그인</p>
+              <Link href="/login" className="group hover:text-main-color" style={{ height: 14, paddingRight: 10 }}>
+                <p style={{ fontSize: 12, color: "#222222CC", height: 14 }}>로그인</p>
               </Link>
-              <Link href="/join" className="group hover:text-main-color" style={{height:14}}>
-                <p style={{fontSize:12, color:"#222222CC", height:14}}>회원가입</p>
+              <Link href="/join" className="group hover:text-main-color" style={{ height: 14 }}>
+                <p style={{ fontSize: 12, color: "#222222CC", height: 14 }}>회원가입</p>
               </Link>
             </>
           )}
         </div>
-        <div className="flex justify-between items-center py-4 max-w-screen-xl mx-auto" style={{paddingLeft:40, paddingRight:40}}>
+        <div className="flex justify-between items-center py-4 max-w-screen-xl mx-auto" style={{ paddingLeft: 40, paddingRight: 40 }}>
           <Link href={link}>
             <div className="flex w-[170px]">
-              <img src="/img/main_logo2.png" style={{height:32}}/>
+              <img src="/img/main_logo2.png" style={{ height: 32 }} />
             </div>
           </Link>
           <nav className="flex gap-4 ">
-          <Link
-            href="/"
-            className={`${
-              pathName === "/" ||  pathName.startsWith("/community") ? "font-bold" : ""
-            }`}
-            style={{ fontSize: 18, color: "#222222" }}
-          >
-            COMMUNITY
-          </Link>
+            <Link
+              href="/"
+              className={`${pathName === "/" || pathName.startsWith("/community") ? "font-bold" : ""
+                }`}
+              style={{ fontSize: 18, color: "#222222" }}
+            >
+              COMMUNITY
+            </Link>
             <Link
               href="/auction"
-              className={`${
-                pathName.startsWith("/auction") ? "font-bold" : ""
-              }`}
-              style={{fontSize:18, color:"#222222"}}
+              className={`${pathName.startsWith("/auction") ? "font-bold" : ""
+                }`}
+              style={{ fontSize: 18, color: "#222222" }}
             >
               AUCTION
             </Link>
             <Link
               href="/ai"
-              className={`${
-                pathName.startsWith("/ai") ? "font-bold" : ""
-              } `}
-              style={{fontSize:18, color:"#222222"}}
+              className={`${pathName.startsWith("/ai") ? "font-bold" : ""
+                } `}
+              style={{ fontSize: 18, color: "#222222" }}
             >
               AI
             </Link>
             {isLoggedIn ?
-            <div className="flex justify-between items-center "  style={{width: 100}} >
-              <Link
-                href="/my"
-                className={`${
-                  pathName.startsWith("/my") ? "font-bold" : ""
-                } font-normal`}
-                style={{fontSize:18, color:"#222222",}}
-                onClick={chattingClick}
-              >
-                MY
-              </Link>
-              <Link href="">
-                  <Image src="/img/chat.png" 
+              <div className="flex justify-between items-center " style={{ width: 100 }} >
+                <Link
+                  href="/my"
+                  className={`${pathName.startsWith("/my") ? "font-bold" : ""
+                    } font-normal`}
+                  style={{ fontSize: 18, color: "#222222", }}
+                  onClick={chattingClick}
+                >
+                  MY
+                </Link>
+                <Link href="">
+                  <Image src="/img/chat.png"
                     width={18}
-                    height={18}  
+                    height={18}
                     alt="chat-icon"
                     onClick={notiClick}
                   />
                   {receivedNewChat && (
                     <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
                   )}
-              </Link>
-              <Link href="">
-                  <Image src="/img/notification.png" 
+                </Link>
+                <Link href="">
+                  <Image src="/img/notification.png"
                     width={18}
-                    height={18} 
+                    height={18}
                     alt="alert-icon"
                    />
               </Link> 
@@ -360,26 +362,25 @@ export default function Header() {
 
           </nav>
         </div>
-       {/* 두번째  메뉴 */}
+        {/* 두번째  메뉴 */}
         <div>
-          { pathName === "/" ||  pathName.startsWith("/community") ? <CommunityMenu /> : ""}
+          {pathName === "/" || pathName.startsWith("/community") ? <CommunityMenu /> : ""}
         </div>
         <div>
-          { pathName.startsWith("/auction") ? <AuctionMenu /> : ""}
+          {pathName.startsWith("/auction") ? <AuctionMenu /> : ""}
         </div>
         <div>
-          { pathName.startsWith("/ai") ? <AiMenu /> : ""}
+          {pathName.startsWith("/ai") ? <AiMenu /> : ""}
         </div>
         <div>
           { pathName.startsWith("/searchresult/") ? <SearchResultMenu /> : ""}
         </div>
         
         <div
-          className={`${
-            isChatVisisible
-              ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
-              : "hidden"
-          }`}
+          className={`${isChatVisisible
+            ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
+            : "hidden"
+            }`}
         >
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
@@ -396,11 +397,10 @@ export default function Header() {
         </div>
 
         <div
-          className={`${
-            isNotiVisisible
-              ? "bg-white w-[450px] h-[500px] z-[10000] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
-              : "hidden"
-          }`}
+          className={`${isNotiVisisible
+            ? "bg-white w-[450px] h-[500px] z-[10000] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
+            : "hidden"
+            }`}
         >
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
@@ -425,10 +425,9 @@ export default function Header() {
               <img src="/img/main_logo2.png"/>
             </div>
           </Link>
-          <nav className={`${
-            isMobile ? "" : "gap-4"
+          <nav className={`${isMobile ? "" : "gap-4"
             } flex font-bold ml-auto`}>
-            { isLoggedIn ? 
+            {isLoggedIn ?
               <Link href="">
                 <div
                   className="flex w-[23px] h-5 my-0.5 relative"
@@ -438,12 +437,11 @@ export default function Header() {
                     <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
                   )}
                 </div>
-              </Link>  
-            : ""}
-            
+              </Link>
+              : ""}
+
             <a onClick={notiClick}>
-              <div className={`${
-                isMobile ? "hidden" : "flex gap-4 w-5 my-0.5"
+              <div className={`${isMobile ? "hidden" : "flex gap-4 w-5 my-0.5"
                 }`}>
                 <img src="/img/notification.png" />
               </div>
@@ -458,11 +456,10 @@ export default function Header() {
           </nav>
         </div>
         <div
-          className={`${
-            isChatVisisible
-              ? "bg-white w-full h-[460px] z-[9999] fixed top-0 border-[2px] border-gray-300 flex flex-col shadow-md"
-              : "hidden"
-          }`}
+          className={`${isChatVisisible
+            ? "bg-white w-full h-[460px] z-[9999] fixed top-0 border-[2px] border-gray-300 flex flex-col shadow-md"
+            : "hidden"
+            }`}
         >
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
@@ -478,11 +475,11 @@ export default function Header() {
           <PersonalChat></PersonalChat>
         </div>
         <div
-          className={`${
-            isNotiVisisible
-              ? "bg-white w-full h-full z-[10000] fixed bottom-0 border-[2px] border-gray-300 flex flex-col shadow-md"
-              : "hidden"
-          }`}>
+          className={`${isNotiVisisible
+            ? "bg-white w-full h-full z-[10000] fixed bottom-0 border-[2px] border-gray-300 flex flex-col shadow-md"
+            : "hidden"
+            }`}
+        >
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
               알림

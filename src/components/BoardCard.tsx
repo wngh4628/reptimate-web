@@ -46,7 +46,6 @@ export default function PostCard({
                   height={233.59}
                   alt={"post"}
                   style={{ zIndex: 1 }}
-                  loading="lazy"
                 />
               </div>
               {/* 작성자 정보 */}
@@ -60,7 +59,6 @@ export default function PostCard({
                       ? profilePath
                       : "/img/reptimate_logo.png"
                   }
-                  loading="lazy"
                   alt={""}
                 />
                 <p className="text-white font-semibold ml-1">{nickname}</p>
@@ -89,7 +87,6 @@ export default function PostCard({
                     }
                     alt=""
                     style={{ zIndex: 1 }}
-                    loading="lazy"
                   />
                 </div>
                 {/* 작성자 정보 */}
@@ -106,7 +103,6 @@ export default function PostCard({
                     }
                     style={{width:20, height:20}}
                     alt={"profile"}
-                    loading="lazy"
                   />
                   <p className="text-white font-semibold text-sm ml-1">
                     {nickname}

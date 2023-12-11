@@ -12,16 +12,7 @@ export default function MarketWritePage() {
   return (
     <div>
       <CommunityMenu />
-      <PC>
-        <DndProvider backend={HTML5Backend}>
-          <AskWrite />
-        </DndProvider>
-      </PC>
-      <Mobile>
-        <DndProvider backend={TouchBackend}>
-          <AskWrite />
-        </DndProvider>
-      </Mobile>
+      <AskWrite />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { Mobile, PC } from "../ResponsiveLayout";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
 import { getResponseAuction, Auction } from "@/service/my/auction";
-import AuctionPostCard from "./AcutionPostCard";
+import AuctionPostCard from "./AucutionPostCard";
 import BannerSlider from "../BannerSlider";
 
 interface Option {
