@@ -6,7 +6,7 @@ import { Mobile, PC } from "../ResponsiveLayout";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
 import { getResponseAuction, Auction } from "@/service/my/auction";
-import AuctionPostCard from "./AcutionPostCard";
+import AuctionPostCard from "./AucutionPostCard";
 import BannerSlider from "../BannerSlider";
 
 interface Option {
@@ -128,8 +128,9 @@ export default function AuctionPosts() {
     <section>
       <PC>
         <div className="mt-24">
+           {/* 광고 배너 */}
           <BannerSlider />
-          <div className="flex items-center relative"  style={{marginLeft:40, marginRight:40}}>
+          <div className="flex items-center relative ml-[40px] mr-[40px]" >
             <h2 className="font-bold text-[20px]">경매</h2>
             <div className="relative ml-auto">
               <select
@@ -147,14 +148,16 @@ export default function AuctionPosts() {
           </div>
         </div>
       </PC>
+      
       <Mobile>
         <div className="mt-11">
           <BannerSlider />
-          <div className="flex items-center relative">
-            <h2 className="text-lg font-bold ml-2 my-2">경매</h2>
+          {/* 솔트링 콤보 박스 모바일 */}
+          <div className="flex items-center relative  ml-[16px] mr-[16px]">
+            <h2 className="text-lg font-bold my-2">경매</h2>
             <div className="relative ml-auto">
               <select
-                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
+                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2"
                 value={sort}
                 onChange={handleSortChange}
               >
@@ -170,7 +173,7 @@ export default function AuctionPosts() {
       </Mobile>
       <PC>
         {data !== null && data.result.items ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5"  style={{marginLeft:40,marginRight:40}}>
+          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-[40px] mr-[40px]" >
             {itemlist.map((post) => (
               <li key={post.idx}>
                 <AuctionPostCard post={post} />
@@ -185,11 +188,9 @@ export default function AuctionPosts() {
       </PC>
       <Mobile>
         {data !== null && data.result.items ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5">
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-[16px] pr-[16px]">
             {itemlist.map((post) => (
-              <li key={post.idx}>
-                <AuctionPostCard post={post} />
-              </li>
+                <AuctionPostCard post={post} key={post.idx}/>
             ))}
           </ul>
         ) : (

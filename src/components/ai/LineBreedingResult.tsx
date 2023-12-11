@@ -28,7 +28,7 @@ export default function LineBreedingResult(props:any) {
 
         axios({
             method:'post',
-            url:`${process.env.NEXT_PUBLIC_AI_URL}/value_analyzer`,
+            url:`${process.env.NEXT_PUBLIC_AI_URL}/image_ai/value_analyzer`,
             data: morphInfo.formData,
             params: {
             morph: morphInfo.morph,
@@ -60,7 +60,7 @@ export default function LineBreedingResult(props:any) {
     return(
         <div>
             <PC>
-                <div>
+                <div className="mt-[100px]">
                     {/* 로딩바 */}
                     {isLoading && (
                     <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-75">
@@ -70,10 +70,10 @@ export default function LineBreedingResult(props:any) {
 
                     <div className="max-w-4xl mx-auto mb-10">
 
-                        <h2 className="text-3xl font-bold mt-10">라인브리딩 서비스 결과</h2>
+                        <h2 className="text-3xl font-bold mt-10">브리딩 추천 결과</h2>
 
                         <div className="mt-10">
-                            <span className="text-2xl font-bold dark:text-white">추천 개체</span>
+                            <span className="text-2xl font-bold ">추천 개체</span>
 
                             <div className="flex mt-2.5">
                                 <div className="flex-auto">
@@ -91,12 +91,12 @@ export default function LineBreedingResult(props:any) {
                         </div>
 
                         <div className="mt-10">
-                            <span className="text-2xl font-bold dark:text-white mt-5">교배 추천 개체</span>
+                            <span className="text-2xl font-bold mt-5">교배 추천 개체</span>
                             <p className="mt-2.5">{morphRecommendList}</p>
                         </div>
 
                         <div className="mt-10">
-                            <span className="text-2xl font-bold dark:text-white">분석 설명</span>
+                            <span className="text-2xl font-bold ">분석 설명</span>
                             <p className="mt-2.5">{explanation}</p>
                         </div>
                         
@@ -118,10 +118,10 @@ export default function LineBreedingResult(props:any) {
 
                     <div className="p-4">
 
-                        <h2 className="text-2xl font-bold mt-4">라인브리딩 서비스 결과</h2>
+                        <h2 className="text-2xl font-bold mt-4">브리딩 추천 결과</h2>
 
                         <div className="mt-8">
-                            <span className="text-xl font-bold dark:text-white">추천 개체</span>
+                            <span className="text-xl font-bold ">추천 개체</span>
 
                             <div className="flex mt-2.5">
                             <div
@@ -145,12 +145,12 @@ export default function LineBreedingResult(props:any) {
                         </div>
 
                         <div className="mt-10">
-                            <span className="text-xl font-bold dark:text-white mt-5">교배 추천 개체</span>
+                            <span className="text-xl font-bold  mt-5">교배 추천 개체</span>
                             <p className="mt-2.5">{morphRecommendList}</p>
                         </div>
 
                         <div className="mt-10">
-                            <span className="text-xl font-bold dark:text-white">분석 설명</span>
+                            <span className="text-xl font-bold ">분석 설명</span>
                             <p className="mt-2.5">{explanation}</p>
                         </div>
                         

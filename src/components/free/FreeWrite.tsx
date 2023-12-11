@@ -8,6 +8,10 @@ import { freeWrite } from "@/api/free/freeBoard";
 import { useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
 import Swal from "sweetalert2";
+import ImageSelecterWrite from "../ImageSelecterWrite";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { TouchBackend } from "react-dnd-touch-backend";
 
 interface FileItem {
   file: File;
@@ -19,6 +23,20 @@ const uploadUri = "https://www.reptimate.store/conv/board/upload";
 export default function FreeWrite() {
   const router = useRouter();
 
+  function BackButton() {
+    const handleGoBack = () => {
+      window.history.back(); // Go back to the previous page using window.history
+    };
+
+    return (
+      <button
+        onClick={handleGoBack}
+        className="cursor-poiter px-2 font-bold mt-12"
+      >
+        &lt; 뒤로가기
+      </button>
+    );
+  }
   let userIdx: string | null = null;
   let userAccessToken: string | null = null;
   if (typeof window !== "undefined") {
@@ -94,109 +112,109 @@ export default function FreeWrite() {
     setSelectedFiles(updatedFiles);
   };
 
-  const FileItem = ({
-    fileItem,
-    index,
-  }: {
-    fileItem: { file: File; id: number };
-    index: number;
-  }) => {
-    const [{ isDragging }, drag] = useDrag({
-      type: "FILE",
-      item: { index },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-    });
+  // const FileItem = ({
+  //   fileItem,
+  //   index,
+  // }: {
+  //   fileItem: { file: File; id: number };
+  //   index: number;
+  // }) => {
+  //   const [{ isDragging }, drag] = useDrag({
+  //     type: "FILE",
+  //     item: { index },
+  //     collect: (monitor) => ({
+  //       isDragging: monitor.isDragging(),
+  //     }),
+  //   });
 
-    const [, drop] = useDrop({
-      accept: "FILE",
-      hover: (item: { index: number }) => {
-        if (item.index !== index) {
-          moveFile(item.index, index);
-          item.index = index;
-        }
-      },
-    });
+  //   const [, drop] = useDrop({
+  //     accept: "FILE",
+  //     hover: (item: { index: number }) => {
+  //       if (item.index !== index) {
+  //         moveFile(item.index, index);
+  //         item.index = index;
+  //       }
+  //     },
+  //   });
 
-    useEffect(() => {
-      // Preload images when component mounts
-      selectedFiles.forEach((fileItem) => {
-        const img = new Image();
-        img.src = URL.createObjectURL(fileItem.file);
-      });
-    }, [selectedFiles]);
+  //   useEffect(() => {
+  //     // Preload images when component mounts
+  //     selectedFiles.forEach((fileItem) => {
+  //       const img = new Image();
+  //       img.src = URL.createObjectURL(fileItem.file);
+  //     });
+  //   }, [selectedFiles]);
 
-    const imageUrl = useMemo(
-      () => URL.createObjectURL(fileItem.file),
-      [fileItem]
-    ); // Memoize the image URL
+  //   const imageUrl = useMemo(
+  //     () => URL.createObjectURL(fileItem.file),
+  //     [fileItem]
+  //   ); // Memoize the image URL
 
-    return (
-      <div>
-        <PC>
-          <div ref={(node) => drag(drop(node))}>
-            <div
-              key={fileItem.id}
-              className="relative w-28 h-28 mx-2 border-2 border-gray-300 rounded-xl"
-              onClick={(e) => e.preventDefault()}
-            >
-              {fileItem.file.type.startsWith("image/") ? (
-                <img
-                  src={imageUrl}
-                  alt={`Image ${fileItem.id}`}
-                  className="object-cover w-full h-full rounded-xl"
-                />
-              ) : fileItem.file.type.startsWith("video/") ? (
-                <video className="object-cover w-full h-full rounded-xl">
-                  <source src={imageUrl} type={fileItem.file.type} />
-                  현재 브라우저는 비디오 태그를 지원하지 않습니다.
-                </video>
-              ) : (
-                <p>지원하지 않는 파일 형태</p>
-              )}
-              <button
-                onClick={() => handleRemoveItem(fileItem.id)}
-                className="absolute -top-2 -right-2 transform translate-x-1/4 -translate-y-1/4 w-6 h-6 bg-red-500 text-white rounded-full"
-              >
-                X
-              </button>
-            </div>
-          </div>
-        </PC>
-        <Mobile>
-          <div ref={(node) => drag(drop(node))}>
-            <div
-              key={fileItem.id}
-              className="relative w-20 h-20 mx-1 border-2 border-gray-300 rounded-xl"
-              onClick={(e) => e.preventDefault()}
-            >
-              {fileItem.file.type.startsWith("image/") ? (
-                <img
-                  src={imageUrl}
-                  alt={`Image ${fileItem.id}`}
-                  className="object-cover w-full h-full rounded-xl"
-                />
-              ) : fileItem.file.type.startsWith("video/") ? (
-                <video className="object-cover w-full h-full rounded-xl">
-                  <source src={imageUrl} type={fileItem.file.type} />
-                  현재 브라우저는 비디오 태그를 지원하지 않습니다.
-                </video>
-              ) : (
-                <p>지원하지 않는 파일 형태</p>
-              )}
-              <button
-                onClick={() => handleRemoveItem(fileItem.id)}
-                className="absolute -top-1 -right-1 transform translate-x-1/4 -translate-y-1/4 w-5 h-5 bg-red-500 text-white text-sm rounded-full"
-              >
-                X
-              </button>
-            </div>
-          </div>
-        </Mobile>
-      </div>
-    );
-  };
+  //   return (
+  //     <div>
+  //       <PC>
+  //         <div ref={(node) => drag(drop(node))}>
+  //           <div
+  //             key={fileItem.id}
+  //             className="relative w-28 h-28 mx-2 border-2 border-gray-300 rounded-xl"
+  //             onClick={(e) => e.preventDefault()}
+  //           >
+  //             {fileItem.file.type.startsWith("image/") ? (
+  //               <img
+  //                 src={imageUrl}
+  //                 alt={`Image ${fileItem.id}`}
+  //                 className="object-cover w-full h-full rounded-xl"
+  //               />
+  //             ) : fileItem.file.type.startsWith("video/") ? (
+  //               <video className="object-cover w-full h-full rounded-xl">
+  //                 <source src={imageUrl} type={fileItem.file.type} />
+  //                 현재 브라우저는 비디오 태그를 지원하지 않습니다.
+  //               </video>
+  //             ) : (
+  //               <p>지원하지 않는 파일 형태</p>
+  //             )}
+  //             <button
+  //               onClick={() => handleRemoveItem(fileItem.id)}
+  //               className="absolute -top-2 -right-2 transform translate-x-1/4 -translate-y-1/4 w-6 h-6 bg-red-500 text-white rounded-full"
+  //             >
+  //               X
+  //             </button>
+  //           </div>
+  //         </div>
+  //       </PC>
+  //       <Mobile>
+  //         <div ref={(node) => drag(drop(node))}>
+  //           <div
+  //             key={fileItem.id}
+  //             className="relative w-20 h-20 mx-1 border-2 border-gray-300 rounded-xl"
+  //             onClick={(e) => e.preventDefault()}
+  //           >
+  //             {fileItem.file.type.startsWith("image/") ? (
+  //               <img
+  //                 src={imageUrl}
+  //                 alt={`Image ${fileItem.id}`}
+  //                 className="object-cover w-full h-full rounded-xl"
+  //               />
+  //             ) : fileItem.file.type.startsWith("video/") ? (
+  //               <video className="object-cover w-full h-full rounded-xl">
+  //                 <source src={imageUrl} type={fileItem.file.type} />
+  //                 현재 브라우저는 비디오 태그를 지원하지 않습니다.
+  //               </video>
+  //             ) : (
+  //               <p>지원하지 않는 파일 형태</p>
+  //             )}
+  //             <button
+  //               onClick={() => handleRemoveItem(fileItem.id)}
+  //               className="absolute -top-1 -right-1 transform translate-x-1/4 -translate-y-1/4 w-5 h-5 bg-red-500 text-white text-sm rounded-full"
+  //             >
+  //               X
+  //             </button>
+  //           </div>
+  //         </div>
+  //       </Mobile>
+  //     </div>
+  //   );
+  // };
 
   const mutation = useMutation({
     mutationFn: freeWrite,
@@ -288,6 +306,14 @@ export default function FreeWrite() {
     }
   };
 
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+
+    // console.log(inputValue.length);
+    if (inputValue.length <= 40) {
+      setTitle(inputValue);
+    }
+  };
   const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.target.value;
     if (inputValue.length <= 600) {
@@ -296,7 +322,7 @@ export default function FreeWrite() {
   };
 
   return (
-    <div className="max-w-screen-md mx-auto">
+    <div className="max-w-screen-md mx-auto mt-20 px-7">
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center z-[10000] bg-gray-800 bg-opacity-75">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-main-color"></div>
@@ -308,97 +334,74 @@ export default function FreeWrite() {
         </h2>
       </PC>
       <Mobile>
+        <BackButton />
         <h2 className="flex flex-col items-center justify-center text-xl font-bold p-10 mt-14">
           자유 게시글
         </h2>
       </Mobile>
-      <div className="flex flex-row">
-        <input
-          type="file"
-          accept="image/*, video/*"
-          multiple
-          onChange={handleFileSelect}
-          className="hidden"
-          id="mediaInput"
-          max="5"
-        />
-        <label
-          className="w-auto h-auto cursor-pointer py-3"
-          htmlFor="mediaInput"
-        >
-          <PC>
-            <div className="w-28 h-28 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
-              <img
-                src="/img/camera.png"
-                alt="Camera Icon"
-                className="w-16 h-16"
-              />
-              <span className="">{selectedFiles.length}/5</span>
-            </div>
-          </PC>
-          <Mobile>
-            <div className="mx-1 w-20 h-20 flex flex-col items-center justify-center border-2 border-gray-300 rounded-xl">
-              <img
-                src="/img/camera.png"
-                alt="Camera Icon"
-                className="w-12 h-12"
-              />
-              <span className="text-sm">{selectedFiles.length}/5</span>
-            </div>
-          </Mobile>
-        </label>
-        <div
-          className="flex items-center py-3 mx-auto"
-          style={{
-            width: "100%", // 화면 넓이보다 넓도록 설정
-            overflowX: "auto", // 가로 스크롤 허용
-            whiteSpace: "nowrap", // 텍스트 줄 바꿈 방지
-          }}
-        >
-          {selectedFiles.map((fileItem, index) => (
-            <FileItem key={fileItem.id} fileItem={fileItem} index={index} />
-          ))}
+      <PC>
+        <DndProvider backend={HTML5Backend}>
+          <ImageSelecterWrite handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} selectedFiles={selectedFiles} moveFile={moveFile}></ImageSelecterWrite>
+        </DndProvider>
+      </PC>
+      <Mobile>
+        <DndProvider backend={TouchBackend}>
+          <ImageSelecterWrite handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} selectedFiles={selectedFiles} moveFile={moveFile}></ImageSelecterWrite>
+        </DndProvider>
+      </Mobile>
+
+      <div className="mb-4">
+        <p className="font-bold text-xl my-2">제목</p>
+        <div className="flex">
+          <input
+            type="text"
+            placeholder="제목을 입력해주세요."
+            className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
+            value={title}
+            onChange={handleTitleChange}
+          />
+          <div className="flex items-center">
+            <span className="text-sm mx-6">{title.length}/40</span>
+          </div>
         </div>
       </div>
-      <div className="mx-1 mt-4 flex flex-col">
-        <p className="font-bold text-xl my-2">제목</p>
-        <input
-          type="text"
-          placeholder="제목을 입력해주세요."
-          className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <div className="flex items-center">
-          <p className="font-bold text-xl my-2">내용</p>
+
+      <div>
+        <div className="flex items-center my-2">
+          <p className="font-bold text-xl">내용</p>
           <span className="text-sm ml-auto">{description.length}/600</span>
         </div>
         <textarea
-          placeholder="내용을 입력해주세요."
-          className="focus:outline-none px-2 py-2 border-gray-400 border-2 text-17px w-full"
+          placeholder="생물의 상태 (건강 상태, 특이점 유무, 식사 방식) 등을 입력해 주세요.
+            서로가 믿고 거래할 수 있도록, 자세한 정보와 다양한 각도의 상품 사진을 올려주세요."
+          className="focus:outline-none px-2 py-2 border-gray-B7B7B7 border text-17px w-full"
           value={description}
           onChange={handleDescriptionChange}
           rows={10} // 세로 행의 개수를 조절합니다.
+          style={{ resize: 'none' }}
+        // onFocus={(event) => handleFocusOn(event)}
         />
       </div>
-      {!isLoading ? (
-        <form onSubmit={onSubmitHandler}>
+      {
+        !isLoading ? (
+          <form onSubmit={onSubmitHandler}>
+            <button
+              type="submit"
+              className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
+            >
+              등록
+            </button>
+          </form>
+        ) : (
           <button
-            type="submit"
-            className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
+            type="button"
+            className="items-center cursor-not-allowed inline-flex justify-center text-center align-middle bg-gray-300 text-gray-500 font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
+            disabled
           >
-            등록
+            등록 중...
           </button>
-        </form>
-      ) : (
-        <button
-          type="button"
-          className="items-center cursor-not-allowed inline-flex justify-center text-center align-middle bg-gray-300 text-gray-500 font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
-          disabled
-        >
-          등록 중...
-        </button>
-      )}
+        )
+      }
     </div>
   );
 }

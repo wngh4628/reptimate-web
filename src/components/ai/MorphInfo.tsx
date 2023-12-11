@@ -1,5 +1,5 @@
 "use client";
-import AiMenu from "@/components/AiMenu";
+import AiMenu from "@/components/ai/AiMenu";
 import MorphCard from "@/components/MorphCard";
 import { Mobile, PC } from "@/components/ResponsiveLayout";
 import { useEffect, useState } from "react";
@@ -56,7 +56,7 @@ export default function MorphInfo(props:any) {
         break;
   
     case 'lineBreeding':
-        title = '라인브리딩 서비스'
+        title = '브리딩 추천 서비스'
         endpoint = 'linebreeding_recommend'
         setResult = props.setLineBreedingResult;
         setMorphInfo = props.setMorphInfo;
@@ -94,7 +94,7 @@ export default function MorphInfo(props:any) {
 
       axios({
         method:'post',
-        url:`${process.env.NEXT_PUBLIC_AI_URL}/${endpoint}`,
+        url:`${process.env.NEXT_PUBLIC_AI_URL}/image_ai/${endpoint}`,
         data: formData,
         params: {
           morph: morph,
@@ -159,7 +159,7 @@ export default function MorphInfo(props:any) {
       )}
 
       {/* 모프 정보 */}
-      <div className="max-w-screen-sm mx-auto mt-5">
+      <div className="max-w-screen-sm mx-auto mt-[130px]">
 
         <h2 className="text-3xl font-bold pt-5">{title}</h2>
 
@@ -168,7 +168,7 @@ export default function MorphInfo(props:any) {
             <h3 className="text-2xl font-bold">{'모프'}</h3>
 
             <select
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mt-3"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5  mt-3"
               value={morph}
               onChange={(e) => {setMorph(e.target.value)}}
             >
@@ -189,7 +189,7 @@ export default function MorphInfo(props:any) {
             <h3 className="text-2xl font-bold">{'성별'}</h3>
 
             <select
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mt-3"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5  mt-3"
               value={gender}
               onChange={(e) => {setGender(e.target.value)}}
             >
@@ -220,7 +220,7 @@ export default function MorphInfo(props:any) {
             </div>
               
             <div className="flex-auto">
-              <MorphCard imgPath="/img/file_upload.png" type="imgTop" handleFileChange={handleFileChange} setImgFile={setImgFileTop} />
+              <MorphCard imgPath="/img/file_upload.png" type="imgTop" handleFileChange={handleFileChange} setImgFile={setImgFileTop} imgFile={imgTop} />
             </div>
 
           </div>
@@ -239,7 +239,7 @@ export default function MorphInfo(props:any) {
             </div>
               
             <div className="flex-auto">
-              <MorphCard imgPath="/img/file_upload.png" type="imgLeft" handleFileChange={handleFileChange} setImgFile={setImgFileLeft}/>
+              <MorphCard imgPath="/img/file_upload.png" type="imgLeft" handleFileChange={handleFileChange} setImgFile={setImgFileLeft} imgFile={imgLeft}/>
             </div>
 
           </div>
@@ -258,7 +258,7 @@ export default function MorphInfo(props:any) {
             </div>
               
             <div className="flex-auto">
-              <MorphCard imgPath="/img/file_upload.png" type="imgRight" handleFileChange={handleFileChange} setImgFile={setImgFileRight}/>
+              <MorphCard imgPath="/img/file_upload.png" type="imgRight" handleFileChange={handleFileChange} setImgFile={setImgFileRight} imgFile={imgRight}/>
             </div>
 
           </div>
@@ -294,7 +294,7 @@ export default function MorphInfo(props:any) {
               <h3 className="text-xl font-bold">{'모프'}</h3>
 
               <select
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mt-3"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 mt-3"
                 value={morph}
                 onChange={(e) => {setMorph(e.target.value)}}
               >
@@ -315,7 +315,7 @@ export default function MorphInfo(props:any) {
               <h3 className="text-xl font-bold">{'성별'}</h3>
 
               <select
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mt-3"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5  mt-3"
                 value={gender}
                 onChange={(e) => {setGender(e.target.value)}}
               >
@@ -343,7 +343,7 @@ export default function MorphInfo(props:any) {
               </div>
                 
               <div className="flex-auto">
-                <MorphCard imgPath="/img/file_upload.png" type="imgTop" handleFileChange={handleFileChange} setImgFile={setImgFileTop} />
+                <MorphCard imgPath="/img/file_upload.png" type="imgTop" handleFileChange={handleFileChange} setImgFile={setImgFileTop} imgFile={imgTop} />
               </div>
 
             </div>
@@ -362,7 +362,7 @@ export default function MorphInfo(props:any) {
               </div>
                 
               <div className="flex-auto">
-                <MorphCard imgPath="/img/file_upload.png" type="imgLeft" handleFileChange={handleFileChange} setImgFile={setImgFileLeft}/>
+                <MorphCard imgPath="/img/file_upload.png" type="imgLeft" handleFileChange={handleFileChange} setImgFile={setImgFileLeft} imgFile={imgLeft}/>
               </div>
 
             </div>
@@ -381,7 +381,7 @@ export default function MorphInfo(props:any) {
               </div>
                 
               <div className="flex-auto">
-                <MorphCard imgPath="/img/file_upload.png" type="imgRight" handleFileChange={handleFileChange} setImgFile={setImgFileRight}/>
+                <MorphCard imgPath="/img/file_upload.png" type="imgRight" handleFileChange={handleFileChange} setImgFile={setImgFileRight} imgFile={imgRight}/>
               </div>
 
             </div>

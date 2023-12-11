@@ -12,16 +12,7 @@ export default function AdoptionWritePage() {
   return (
     <div>
       <CommunityMenu />
-      <PC>
-        <DndProvider backend={HTML5Backend}>
-          <AdoptionWrite />
-        </DndProvider>
-      </PC>
-      <Mobile>
-        <DndProvider backend={TouchBackend}>
-          <AdoptionWrite />
-        </DndProvider>
-      </Mobile>
+      <AdoptionWrite />
     </div>
   );
 }

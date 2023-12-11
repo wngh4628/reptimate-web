@@ -976,7 +976,7 @@ export default function AuctionPostsView() {
             <PC>
               <h2 className="text-4xl font-bold pt-10 mt-20">{post.title}</h2>
               <div className="flex items-center my-2 relative">
-                <img
+                <Image
                   className="w-10 h-10 rounded-full border-2 cursor-pointer"
                   src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
                   alt=""

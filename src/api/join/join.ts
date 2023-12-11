@@ -1,7 +1,5 @@
 import instance from "@/api/index";
 
-
-
 // 회원가입
 export const register = async ({ email, nickName, password, loginMethod, agreeWithMarketing }:  {
     email: string;

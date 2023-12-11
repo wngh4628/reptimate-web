@@ -120,9 +120,11 @@ export default function AdoptionPosts() {
 
   return (
     <section>
+      {/* 광고 배너 */}
       <BannerSlider />
+       {/* 솔트링 콤보 박스 PC */}
       <PC>
-        <div className="flex items-center relative" style={{marginLeft:40, marginRight:40}}>
+        <div className="flex items-center relative ml-[40px] mr-[40px]">
           <p className="font-bold text-[20px]">분양글</p>
           <div className="relative ml-auto">
             <select
@@ -139,12 +141,13 @@ export default function AdoptionPosts() {
           </div>
         </div>
       </PC>
+      {/* 솔트링 콤보 박스 모바일 */}
       <Mobile>
-        <div className="flex items-center relative">
-          <h2 className="text-lg font-bold ml-2 my-2">분양글</h2>
+        <div className="flex items-center relative ml-[16px] mr-[16px]">
+          <h2 className="text-lg font-bold my-2">분양글</h2>
           <div className="relative ml-auto">
             <select
-              className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
+              className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 "
               value={sort}
               onChange={handleSortChange}
             >
@@ -157,9 +160,10 @@ export default function AdoptionPosts() {
           </div>
         </div>
       </Mobile>
+      {/* 게시글 목록 PC */}
       <PC>
         {data !== null && data.result.items ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5" style={{marginLeft:40,marginRight:40}}>
+          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-[40px] mr-[40px]">
             {itemlist.map((post) => (
               <li key={post.idx}>
                 <PostCard post={post} />
@@ -172,13 +176,12 @@ export default function AdoptionPosts() {
           </div>
         )}
       </PC>
+       {/* 게시글 목록 모바일 */}
       <Mobile>
         {data !== null && data.result.items ? (
-            <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5">
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-[16px] pr-[16px]">
               {itemlist.map((post) => (
-                <li key={post.idx}>
-                  <PostCard post={post} />
-                </li>
+                  <PostCard  key={post.idx} post={post} />
               ))}
             </ul>
           ) : (
@@ -187,6 +190,7 @@ export default function AdoptionPosts() {
             </div>
           )}
       </Mobile>
+
       {existNextPage && (
         <div className="flex justify-center">
           <div
@@ -211,7 +215,7 @@ export default function AdoptionPosts() {
         {isLogin && (
           <div className="fixed bottom-6 right-6 z-50">
             <button
-              className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
+              className="w-12 h-12 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
               onClick={handleWriteClick}
             >
               +

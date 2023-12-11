@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Auction } from "@/service/my/auction";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,25 +50,33 @@ export default function AuctionPostCard({
     position: "relative" as "relative",
   };
   return (
-    <div>
-      <div className="ml-0.5 mr-0.5 relative">
-        <Link href={`/auction/posts/${idx}`}>
-          <article className="flex flex-col items-center">
-            <PC>
-            <div className="relative w-[233.59px] h-[233.59px] overflow-hidden hover:border-2 hover:border-main-color rounded-md">
-            <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10 opacity-40"></div>
+    <div >
+        <PC>
+          <div className="relative">
+            <Link
+              href={`/auction/posts/${idx}`}
+            >
+              {/* 대표 이미지 부분 */}
+              <div className="relative w-[233.59px] h-[233.59px] overflow-hidden hover:border-2 hover:border-main-color rounded-md">
+                {/* 대표 이미지 쉐도우 */}
+                <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10 opacity-40"></div>
                 <img
                   className="object-cover w-full h-full"
                   src={
                     thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
                   }
+                  width={233.59}
+                  height={233.59}
                   alt={""}
                   style={{ zIndex: 1 }}
                 />
               </div>
+              {/* 작성자 정보 */}
               <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
                 <img
                   className="ml-2 w-8 h-8 rounded-full border-2"
+                  width={10}
+                  height={10}
                   src={
                     profilePath !== null
                       ? profilePath
@@ -91,20 +100,24 @@ export default function AuctionPostCard({
                   {setStateString(state)}
                 </p>
               </div>
-            </PC>
-            <Mobile>
-              <div className="relative w-full overflow-hidden shadow-sm shadow-gray-400 hover:border-2 hover:border-main-color">
-                <div className="absolute inset-0  z-10"></div>
-                <div
-                  className={`${
-                    state === "end"
-                      ? "bg-gray-400 bg-opacity-50"
-                      : "top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent"
-                  } absolute inset-0 z-10`}
-                ></div>
+            </Link>
+          </div>
+        </PC>
+        <Mobile>
+          <Link
+              style={{ marginBottom:16}}
+              href={`/auction/posts/${idx}`}
+          >
+            <div style={{width:183.5}}>
+              {/* 대표 이미지 부분 */}
+              <div className="relative h-[183.5.59px] overflow-hidden hover:border-2 hover:border-main-color rounded-md">
+                {/* 대표 이미지 쉐도우 */}
+                <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10 opacity-40"></div>
                 <div style={imgStyle}>
                   <img
                     className="object-cover absolute inset-0 w-full h-full"
+                    width={183.5}
+                    height={183.5}
                     src={
                       thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
                     }
@@ -112,42 +125,78 @@ export default function AuctionPostCard({
                     style={{ zIndex: 1 }}
                   />
                 </div>
-              </div>
-              <div className="absolute bottom-0 left-0 mb-2 flex items-center z-20">
-                <img
-                  className="ml-2 w-8 h-8 rounded-full border-2"
-                  src={
-                    profilePath !== null
-                      ? profilePath
-                      : "/img/reptimate_logo.png"
-                  }
-                  alt={""}
-                />
-                <p className="text-white font-semibold ml-1 text-sm">
-                  {nickname}
-                </p>
-              </div>
-              <div className="absolute right-2 mt-2 flex items-center z-[999]">
-                <p
-                  className={`${
+                {/* 작성자 정보 */}
+                <div className="absolute bottom-0 left-0 mb-1 flex items-center z-20">
+                  {/* 작성자 프로필 이미지 */}
+                  <img
+                    className="ml-1 rounded-full border-2 object-cover"
+                    width={20}
+                    height={20}
+                    src={
+                      profilePath !== null
+                        ? profilePath
+                        : "/img/reptimate_logo.png"
+                    }
+                    style={{width:20, height:20}}
+                    alt={"profile"}
+                  />
+                  <p className="text-white font-semibold text-sm ml-1">
+                    {nickname}
+                  </p>
+                </div>
+                <div className={`${
                     state === "selling"
                       ? ""
                       : state === "end"
-                      ? "text-[13px] text-white bg-black px-1 rounded-md"
+                      ? "bg-black px-1 rounded-md opacity-80"
                       : "text-main-color font-bold"
-                  } text-lg z-[999] relative`}
+                  } absolute right-3 flex items-center z-[999]`}  style={{top:10, height:18}}>
+                  <p
+                    className={`text-white text-lg z-[999] relative`}
+                    style={{fontSize:12,}}
+                  >
+                    {setStateString(state)}
+                  </p>
+                </div>
+              </div>
+            </div>
+            {/* 게시글 정보 부분 */}
+            <div className="ml-[5px]">
+              <h3 className="text-[14px]">{title}</h3>
+              <div className="w-full flex flex-row items-center">
+                <p className="text-[15px] mr-1">
+                  {state === "selling" ? "현재 입찰가 : " : "낙찰가 : "}
+                </p>
+                <p className="font-bold text-[15px]">
+                  {currentPrice ? currentPrice : "---"}
+                </p>
+                <p className="text-sm ml-1">원</p>
+              </div>
+              <div className="flex items-center">
+                <p
+                  className={`text-xs  text-white p-0.5 rounded font-bold text-[13px] ${
+                    gender === "수컷"
+                      ? "bg-gender-male-color"
+                      : gender === "암컷"
+                      ? "bg-gender-female-color"
+                      : "bg-gray-400"
+                  }`}
                 >
-                  {setStateString(state)}
+                  {gender}
+                </p>
+                <p className="text-xs mx-1 text-white bg-gray-400 p-0.5 rounded font-bold text-[13px]">
+                  {size}
                 </p>
               </div>
-            </Mobile>
-          </article>
-        </Link>
-      </div>
-
-      <div className="mt-1 mb-6 flex flex-col">
+              <div className="flex items-center ">
+                <p className="text-[13px] text-[#606060]">{formatTimeDifference(createdAt)}</p>
+                  
+              </div>
+            </div>
+          </Link>
+        </Mobile>
         <PC>
-          <div style={{marginLeft:5}}>
+          <div className="ml-[5px]">
             <h3 className="text-[14px]">{title}</h3>
             <div className="w-full flex flex-row items-center">
               <p className="text-[15px] mr-1">
@@ -180,41 +229,7 @@ export default function AuctionPostCard({
             </div>
           </div>
         </PC>
-        <Mobile>
-          <h3 className="font-bold ml-1 text-xl mx-1">{title}</h3>
-          <div className="w-full flex flex-row items-center">
-            <p className="text-sm ml-1 mr-1">
-              {state === "selling" ? "현재 입찰가 : " : "낙찰가 : "}
-            </p>
-            <p className="font-bold text-lg">
-              {currentPrice ? currentPrice : "---"}
-            </p>
-            <p className="text-sm ml-1">원</p>
-          </div>
-          <div className="flex items-center">
-            <p
-              className={`text-xs ml-1 text-white p-1 rounded font-bold ${
-                gender === "수컷"
-                  ? "bg-gender-male-color"
-                  : gender === "암컷"
-                  ? "bg-gender-female-color"
-                  : "bg-gray-400"
-              }`}
-            >
-              {gender}
-            </p>
-            <p className="text-xs mx-1 text-white bg-gray-400 p-1 rounded font-bold">
-              {size}
-            </p>
-          </div>
-          <div className="flex items-center mt-1">
-            <img className="flex w-[15px] mx-1" src="/img/clock.png" />
-            <p className="text-gray-500 text-[15px]">
-              {formatDateToCustomString(createdAt)}
-            </p>
-          </div>
-        </Mobile>
-      </div>
+    
     </div>
   );
 }

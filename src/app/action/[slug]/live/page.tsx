@@ -11,7 +11,6 @@ import {
 import React, { useCallback, useState, useEffect } from "react";
 // import { notFound } from 'next/navigation';
 import VideoPlayer from "@/components/action/video-player";
-import BottomPopup from "@/components/action/bottom-popup";
 // import ChettingOpen from '../../../../components/action/chetting-open'
 import StreamingChatView from "@/components/action/StreamingChatView";
 

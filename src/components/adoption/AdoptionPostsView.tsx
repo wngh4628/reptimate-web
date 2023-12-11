@@ -83,7 +83,6 @@ export default function AdoptionPostsView() {
   const [commentCnt, setCommentCnt] = useState(0);
   const [bookmarkCnt, setBookmarkCnt] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
-
   /*********************
    *
    *       북마크
@@ -124,6 +123,7 @@ export default function AdoptionPostsView() {
     const handleGoBack = () => {
       window.history.back(); // Go back to the previous page using window.history
     };
+
     return (
       <button
         onClick={handleGoBack}
@@ -133,8 +133,6 @@ export default function AdoptionPostsView() {
       </button>
     );
   }
-
-
 
   const deleteMutation = useMutation({
     mutationFn: adoptionDelete,
@@ -513,7 +511,7 @@ export default function AdoptionPostsView() {
             <PC>
               <h2 className="text-4xl font-bold pt-10 mt-20">{post.title}</h2>
               <div className="flex items-center my-2 relative">
-                <img
+                <Image
                   className="w-10 h-10 rounded-full border-2 cursor-pointer"
                   src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
                   alt=""
@@ -687,7 +685,7 @@ export default function AdoptionPostsView() {
               <BackButton />
               <h2 className="mx-2 text-2xl font-bold pt-5">{post.title}</h2>
               <div className="mx-2 flex items-center my-2 relative">
-                <img
+                <Image
                   className="w-10 h-10 rounded-full border-2 cursor-pointer"
                   src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
                   alt=""
