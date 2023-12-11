@@ -200,14 +200,14 @@ export default function AuctionPostsView() {
   const bookmarkClick = () => {
     if (bookmarked) {
       setBookmarked(false);
-      setBookmarkCnt(bookmarkCnt-1);
+      setBookmarkCnt(bookmarkCnt - 1);
       auctionDeleteMutation.mutate({
         userAccessToken: accessToken,
         boardIdx: data!.result.boardAuction.boardIdx
       });
     } else {
       setBookmarked(true);
-      setBookmarkCnt(bookmarkCnt+1);
+      setBookmarkCnt(bookmarkCnt + 1);
       auctionRegisterMutation.mutate({
         userAccessToken: accessToken,
         boardIdx: data!.result.boardAuction.boardIdx,
@@ -499,15 +499,15 @@ export default function AuctionPostsView() {
       );
       setCommentData(
         (prevData) =>
-          ({
-            result: {
-              items: [
-                ...(prevData?.result.items || []),
-                ...response.data.result.items,
-              ],
-              existsNextPage: response.data.result.existsNextPage,
-            },
-          } as getCommentResponse)
+        ({
+          result: {
+            items: [
+              ...(prevData?.result.items || []),
+              ...response.data.result.items,
+            ],
+            existsNextPage: response.data.result.existsNextPage,
+          },
+        } as getCommentResponse)
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
@@ -717,8 +717,8 @@ export default function AuctionPostsView() {
       }
       setNowBid(formatNumberWithCommas(message.message));
     });
-    socketBid.on("Auction_End", (message: string) => {});
-    socketBid.on("error", (message: string) => {});
+    socketBid.on("Auction_End", (message: string) => { });
+    socketBid.on("error", (message: string) => { });
     //경매 입찰과 동시에 입찰자 명단 정보를 추가하는 리스너
     socketBid.on("auction_participate", (message: userInfo) => {
       setUserInfoBidData((prevUserInfoData) => ({
@@ -1103,16 +1103,16 @@ export default function AuctionPostsView() {
                   <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
                 </div>
                 <div className="flex flex-row items-center py-3">
-                {bookmarked ? (
-                  <a onClick={bookmarkClick}>
-                    <Image
-                      src={like_maincolor}
-                      width={20}
-                      height={20}
-                      alt="북마크"
-                      className="like_btn m-auto mr-1"
-                    />
-                  </a>
+                  {bookmarked ? (
+                    <a onClick={bookmarkClick}>
+                      <Image
+                        src={like_maincolor}
+                        width={20}
+                        height={20}
+                        alt="북마크"
+                        className="like_btn m-auto mr-1"
+                      />
+                    </a>
                   ) : (
                     <a onClick={bookmarkClick}>
                       <Image
@@ -1301,16 +1301,16 @@ export default function AuctionPostsView() {
                   <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
                 </div>
                 <div className="flex flex-row items-center py-3">
-                {bookmarked ? (
-                  <a onClick={bookmarkClick}>
-                    <Image
-                      src={like_maincolor}
-                      width={20}
-                      height={20}
-                      alt="북마크"
-                      className="like_btn m-auto mr-1"
-                    />
-                  </a>
+                  {bookmarked ? (
+                    <a onClick={bookmarkClick}>
+                      <Image
+                        src={like_maincolor}
+                        width={20}
+                        height={20}
+                        alt="북마크"
+                        className="like_btn m-auto mr-1"
+                      />
+                    </a>
                   ) : (
                     <a onClick={bookmarkClick}>
                       <Image
@@ -1374,11 +1374,10 @@ export default function AuctionPostsView() {
               </div>
 
               <div
-                className={`${
-                  bidVisible
-                    ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
-                    : "hidden"
-                }`}
+                className={`${bidVisible
+                  ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
+                  : "hidden"
+                  }`}
               >
                 <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
                   <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
@@ -1512,11 +1511,10 @@ export default function AuctionPostsView() {
               </div>
 
               <div
-                className={`${
-                  bidVisible
-                    ? "bg-white w-full h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 flex flex-col shadow-md"
-                    : "hidden"
-                }`}
+                className={`${bidVisible
+                  ? "bg-white w-full h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 flex flex-col shadow-md"
+                  : "hidden"
+                  }`}
               >
                 <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
                   <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">

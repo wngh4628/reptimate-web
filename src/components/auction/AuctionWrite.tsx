@@ -558,17 +558,6 @@ export default function AuctionWrite() {
     }
   };
 
-  // const fn_down = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  // }
-  // const fn_up = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  // }
-  // onKeyDown={fn_down}
-  // onKeyUp={fn_up}
-
-  // const handleFocusOn = (event: React.FocusEvent<HTMLTextAreaElement>) => {
-  //   console.log(event)
-  // }
-
   const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.target.value;
     if (inputValue.length <= 600) {
@@ -579,7 +568,6 @@ export default function AuctionWrite() {
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
-    // console.log(inputValue.length);
     if (inputValue.length <= 40) {
       setTitle(inputValue);
     }
@@ -853,7 +841,6 @@ export default function AuctionWrite() {
             onChange={handleDescriptionChange}
             rows={10} // 세로 행의 개수를 조절합니다.
             style={{ resize: 'none' }}
-          // onFocus={(event) => handleFocusOn(event)}
           />
         </div>
       </div>
