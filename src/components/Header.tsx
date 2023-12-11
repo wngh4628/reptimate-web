@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mobile, PC } from "./ResponsiveLayout";
 import { useEffect, useState } from "react";
-import Head from "next/head";
+import Image from "next/image";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import CommunityMenu from "@/components/CommunityMenu";
 import {
   isLoggedInState,
   userAtom,
@@ -23,7 +24,8 @@ import PersonalChat from "@/components/chat/personalChat";
 
 import { initializeApp } from "firebase/app";
 import { getMessaging, onMessage, getToken } from "firebase/messaging";
-
+import AiMenu from "@/components/ai/AiMenu";
+import AuctionMenu from "@/components/auction/AuctionMenu";
 export default function Header() {
   const login = false;
   const pathName = usePathname() || "";
@@ -63,7 +65,6 @@ export default function Header() {
         const cookieObject = JSON.parse(cookieValue || "");
         return cookieObject;
       } catch (error) {
-        // console.error("Error parsing JSON from cookie:", error);
         return null;
       }
     }
@@ -241,91 +242,107 @@ export default function Header() {
   }
 
   return (
-    <header className="w-full fixed top-0 bg-white shadow-md z-[9999]">
-
+    <header className="w-full fixed top-0 bg-white z-[9999]" style={{ boxShadow: '0 1px 0 0 rgba(0, 0, 0, 0.1)' }}>
       {/* PC 화면(반응형) */}
       <PC>
-        <div className="flex justify-end pt-2 gap-2 text-sm max-w-screen-xl mx-auto">
+        <div className="flex justify-end pt-2 gap-2 max-w-screen-xl mx-auto" style={{ paddingRight: 40 }}>
           {isLoggedIn ? (
             <button
               className="group hover:text-main-color"
               onClick={handleLogout}
             >
-              로그아웃
+              <p style={{ fontSize: 12, color: "#222222CC" }}>로그아웃</p>
             </button>
           ) : (
             <>
-              <Link href="/login" className="group hover:text-main-color">
-                로그인
+              <Link href="/login" className="group hover:text-main-color" style={{ height: 14, paddingRight: 10 }}>
+                <p style={{ fontSize: 12, color: "#222222CC", height: 14 }}>로그인</p>
               </Link>
-              <Link href="/join" className="group hover:text-main-color">
-                회원가입
+              <Link href="/join" className="group hover:text-main-color" style={{ height: 14 }}>
+                <p style={{ fontSize: 12, color: "#222222CC", height: 14 }}>회원가입</p>
               </Link>
             </>
           )}
         </div>
-        <div className="flex justify-between items-center py-4 max-w-screen-xl mx-auto">
-          <Link href={link} onClick={pageReload}>
+        <div className="flex justify-between items-center py-4 max-w-screen-xl mx-auto" style={{ paddingLeft: 40, paddingRight: 40 }}>
+          <Link href={link}>
             <div className="flex w-[170px]">
-              <img src="/img/main_logo2.png" />
+              <img src="/img/main_logo2.png" style={{ height: 32 }} />
             </div>
           </Link>
-          <nav className="flex gap-4 font-bold">
-            <Link href="/"
-              className={`${pathName === "/" ? "text-[#6D71E6]" : ""
-                } group hover:text-main-color`}
+          <nav className="flex gap-4 ">
+            <Link
+              href="/"
+              className={`${pathName === "/" || pathName.startsWith("/community") ? "font-bold" : ""
+                }`}
+              style={{ fontSize: 18, color: "#222222" }}
             >
               COMMUNITY
             </Link>
             <Link
               href="/auction"
-              className={`${pathName === "/auction" ? "text-[#6D71E6]" : ""
-                } group hover:text-main-color`}
+              className={`${pathName.startsWith("/auction") ? "font-bold" : ""
+                }`}
+              style={{ fontSize: 18, color: "#222222" }}
             >
               AUCTION
             </Link>
             <Link
               href="/ai"
-              className={`${pathName === "/ai" ? "text-[#6D71E6]" : ""
-                } group hover:text-main-color`}
+              className={`${pathName.startsWith("/ai") ? "font-bold" : ""
+                } `}
+              style={{ fontSize: 18, color: "#222222" }}
             >
               AI
             </Link>
-            <Link
-              href="/my"
-              className={`${pathName === "/my" ? "text-[#6D71E6]" : ""
-                } group hover:text-main-color`}
-            >
-              MY
-            </Link>
-            <Link href="">
-              <div
-                className="flex w-[23px] h-5 my-0.5  relative"
-                onClick={chattingClick}
-              >
-                <img src="/img/chat.png" />
-                {receivedNewChat && (
-                  <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
-                )}
-              </div>
-            </Link>
-            <Link href="">
-              <div className="flex w-[23px] h-5 mb-0.5  relative">
-                <div
-                  className="flex w-[23px] h-5 my-0.5  relative"
-                  onClick={notiClick}
+            {isLoggedIn ?
+              <div className="flex justify-between items-center " style={{ width: 100 }} >
+                <Link
+                  href="/my"
+                  className={`${pathName.startsWith("/my") ? "font-bold" : ""
+                    } font-normal`}
+                  style={{ fontSize: 18, color: "#222222", }}
+                  onClick={chattingClick}
                 >
-                  <img src="/img/notification.png" />
-                </div>
-              </div>
-            </Link>
+                  MY
+                </Link>
+                <Link href="">
+                  <Image src="/img/chat.png"
+                    width={18}
+                    height={18}
+                    alt="chat-icon"
+                    onClick={notiClick}
+                  />
+                  {receivedNewChat && (
+                    <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
+                  )}
+                </Link>
+                <Link href="">
+                  <Image src="/img/notification.png"
+                    width={18}
+                    height={18}
+                    alt="alert-icon"
+                  />
+                </Link>
+              </div> : ""}
             <Link href="">
-              <div className="flex w-[23px] h-5 my-0.5  relative">
+              <div className="flex w-[20px] h-[20+px] h-5 my-0.5  relative pt-[4px]" >
                 <img src="/img/search.png" />
               </div>
             </Link>
           </nav>
         </div>
+        {/* 두번째  메뉴 */}
+        <div>
+          {pathName === "/" || pathName.startsWith("/community") ? <CommunityMenu /> : ""}
+        </div>
+        <div>
+          {pathName.startsWith("/auction") ? <AuctionMenu /> : ""}
+        </div>
+        <div>
+          {pathName.startsWith("/ai") ? <AiMenu /> : ""}
+        </div>
+
         <div
           className={`${isChatVisisible
             ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
@@ -375,17 +392,19 @@ export default function Header() {
           </Link>
           <nav className={`${isMobile ? "" : "gap-4"
             } flex font-bold ml-auto`}>
-            <Link href="">
-              <div
-                className="flex w-[23px] h-5 my-0.5 relative"
-                onClick={chattingClick}
-              >
-                <img src="/img/chat.png" />
-                {receivedNewChat && (
-                  <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
-                )}
-              </div>
-            </Link>
+            {isLoggedIn ?
+              <Link href="">
+                <div
+                  className="flex w-[23px] h-5 my-0.5 relative"
+                  onClick={chattingClick} >
+                  <img src="/img/chat.png" />
+                  {receivedNewChat && (
+                    <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
+                  )}
+                </div>
+              </Link>
+              : ""}
+
             <a onClick={notiClick}>
               <div className={`${isMobile ? "hidden" : "flex gap-4 w-5 my-0.5"
                 }`}>

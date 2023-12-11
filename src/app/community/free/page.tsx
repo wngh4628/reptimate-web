@@ -6,7 +6,6 @@ import FreePosts from "@/components/free/FreePosts";
 export default function FreeHome() {
   return (
     <div>
-      <CommunityMenu />
       <FreePosts />
     </div>
   );

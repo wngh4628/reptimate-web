@@ -6,40 +6,41 @@ import { Mobile, PC } from "./ResponsiveLayout";
 
 export default function CommunityMenu() {
   const pathName = usePathname();
+  
   return (
-    <div className="w-full mx-auto max-w-screen-xl">
+    <div className="w-full mx-auto max-w-screen-xl pl-[40px]">
       <PC>
-        <div className="flex justify-between items-center pl-1 mt-20">
-          <nav className="flex gap-4 font-bold">
+        <div className="flex justify-between items-center pt-[15px]">
+          <nav className="flex gap-4">
             <Link
               href="/"
               className={`${
-                pathName === "/" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color pt-6 pb-3`}
+                pathName === null || pathName === "/" || pathName.startsWith("/community/adoption") ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+              } group hover:text-main-color pb-[6px]`}
             >
               분양글
             </Link>
             <Link
               href="/community/market"
               className={`${
-                pathName === "/community/market" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color pt-6 pb-3`}
+                pathName === "/community/market" ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+              } group hover:text-main-color pb-[6px]`}
             >
               중고 거래
             </Link>
             <Link
               href="/community/free"
               className={`${
-                pathName === "/community/free" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color pt-6 pb-3`}
+                pathName === "/community/free" ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+              } group hover:text-main-color pb-[6px]`}
             >
               자유 게시판
             </Link>
             <Link
               href="/community/ask"
               className={`${
-                pathName === "/community/ask" ? "text-[#6D71E6]" : ""
-              } group hover:text-main-color pt-6 pb-3`}
+                pathName === "/community/ask" ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+              } group hover:text-main-color pb-[6px]`}
             >
               질문 게시판
             </Link>
@@ -53,7 +54,7 @@ export default function CommunityMenu() {
             <Link
               href="/ai"
               className={`${
-                pathName === "/" ? "text-[#6D71E6]" : ""
+                (pathName === null || pathName === "/" || pathName.startsWith("/community/adoption")) ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
             >
               분양글

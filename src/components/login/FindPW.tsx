@@ -2,6 +2,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 import {
   validateEmail,
@@ -27,7 +28,7 @@ export default function FindPWInput() {
 
   const [newPW, setNewPW] = useState(false);
 
-  const [agreement, setagreement] = useState(false);
+  const [emailcode, setagreement] = useState(false);
   const [privacy, setprivacy] = useState(false);
   const [agreeWithMarketing, setAgreeWithMarketing] = useState(false);
 
@@ -44,11 +45,6 @@ export default function FindPWInput() {
     const { value } = e.target as any;
     setEmailCodeChk(value);
   };
-  const onNickNameHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target as any;
-    setNickName(value);
-    setJoinTry(false);
-  };
   const onPasswordHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target as any;
     setPassword(value);
@@ -60,22 +56,18 @@ export default function FindPWInput() {
   const onCheckPasswordHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target as any;
     setCechkPassword(value);
+    
   };
-
-  function onagreementHandler() {
-    setagreement(!agreement);
-  }
-  function onprivacyHandler() {
-    setprivacy(!privacy);
-  }
-  function onagreeWithMarketingHandler() {
-    setAgreeWithMarketing(!agreeWithMarketing);
-  }
 
   const mutation = useMutation({
     mutationFn: patchPassWord,
     onSuccess: (data) => {
       // status code 분기 처리
+      Swal.fire({
+        text: "비밀번호가 수정 되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       router.replace("/login");
     },
     onError: (err: {
@@ -88,23 +80,31 @@ export default function FindPWInput() {
           setnickErrM(true);
           setJoinTry(true);
         }
-      } else {
+      } else if(err.response.status == 400) {
+        if (err.response.data.errorCode == "CANNOT_UPDATE_SOCIAL_USER") {
+            Swal.fire({
+                text: "소셜 회원은 비밀번호를 변경할 수 없습니다.",
+                confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                confirmButtonColor: "#7A75F7", // confrim 버튼 색깔
+              });
+          } else {
+          }
+        
       }
     },
   });
-  const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // 리프레시 막기
     if (
-      validateEmail(email) &&
       validatePassword(password) &&
       password === checkPassword
     ) {
       mutation.mutate({
-        newPassword: password,
-        currentPassword: password
+          password: password,
+          email: email
       });
     } else {
-      alert("회원가입에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.");
+      alert("비밀번호 변경에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.");
     }
   };
 
@@ -175,11 +175,6 @@ export default function FindPWInput() {
                   올바른 형식의 이메일을 작성해 주세요.
                 </p>
               )}
-              {!validateEmail(email) && isJoinTry && (
-                <p className="block absolute leading-[16px] text-xs text-main-color">
-                  이미 가입한 이메일입니다.
-                </p>
-              )}
               {/* <p className=" text-[11px] text-[#f15746]"> 에러메시지 </p> */}
             </div>
             <div className="pb-[32px] relative">
@@ -204,28 +199,8 @@ export default function FindPWInput() {
             </div>
                 </>
             )}
-
-
-
             {newPW && (
                 <>
-                <div className="pb-[32px] relative">
-                    <h3 className="text-[13px] tracking-[-.07px] leading-[18px]">
-                      기존 비밀번호
-                    </h3>
-                    <div className="relative m-0 p-0">
-                        <input
-                            type="password"
-                            onChange={onCurrentPasswordHandler}
-                            placeholder="영문, 숫자, 특수문자 조합 8-16자"
-                            className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full" />
-                    </div>
-                    {!validatePassword(password) && (
-                        <p className="block absolute leading-[16px] text-xs text-main-color">
-                            영문, 숫자, 특수문자를 조합하여 입력해주세요.
-                        </p>
-                    )}
-                </div>
                 <div className="pb-[32px] relative">
                     <h3 className="text-[13px] tracking-[-.07px] leading-[18px]">
                       새 비밀번호
@@ -253,20 +228,20 @@ export default function FindPWInput() {
                                 onChange={onCheckPasswordHandler}
                                 className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full" />
                         </div>
+                        {checkPassword != password && (
+                          <p className="text-xs text-main-color">
+                            비밀번호가 일치하지 않습니다.
+                          </p>
+                        )}
                     </div>
                     </>
             )}
-
-
-
-
-
             <button
               type="submit"
-              className=" items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full tracking-[-.16px]"
-            >
-              {" "}
-                변경하기{" "}
+              className={`${
+                newPW ? "bg-main-color" : "hidden"
+              } items-center cursor-pointer inline-flex justify-center text-center align-middle  text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full tracking-[-.16px]`}
+            >{" "}변경하기{" "}
             </button>
           </div>
         </div>

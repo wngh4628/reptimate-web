@@ -16,7 +16,13 @@ import { Comment, getCommentResponse } from "@/service/comment";
 import CommentCard from "../comment/CommentCard";
 import CommentForm from "../comment/CommentForm";
 import { adoptionDelete } from "@/api/adoption/adoption";
+import { boardRegisterBookmark, boardDeleteBookmark } from "@/api/board/board"
+
 import { useRouter } from "next/navigation";
+
+import unlike_black from "../../../public/img/unlike_black.png";
+import like_maincolor from "../../../public/img/like_maincolor.png";
+import Image from "next/image";
 
 import {
   chatRoomState,
@@ -70,15 +76,59 @@ export default function AdoptionPostsView() {
   const [isNewChatIdx, setisNewChatIdx] = useRecoilState(isNewChatIdxState);
   const [chatNowInfo, setchatNowInfo] = useRecoilState(chatNowInfoState);
   const [accessToken, setAccessToken] = useState("");
+  const [userIdx, setUserIdx] = useState(0);
   const [chatRoomData, setchatRoomData] = useState<chatRoom[]>([]);
 
   const [commentCnt, setCommentCnt] = useState(0);
+  const [bookmarkCnt, setBookmarkCnt] = useState(0);
+  const [bookmarked, setBookmarked] = useState(false);
+
+  /*********************
+   *
+   *       북마크
+   *
+   ********************/
+  const bookmarkClick = () => {
+    if (bookmarked) {
+      setBookmarked(false);
+      setBookmarkCnt(bookmarkCnt-1);
+      boardDeleteMutation.mutate({
+        userAccessToken: accessToken,
+        boardIdx: data!.result.idx,
+      });
+    } else {
+      setBookmarked(true);
+      setBookmarkCnt(bookmarkCnt+1);
+      boardRegisterMutation.mutate({
+        userAccessToken: accessToken,
+        boardIdx: data!.result.idx,
+        userIdx: userIdx
+      });
+    }
+  };
+  // 북마크 등록
+  const boardRegisterMutation = useMutation({
+    mutationFn: boardRegisterBookmark,
+    onSuccess: (data) => {
+      console.log("===auctionRegisterMutation====");
+      console.log(data);
+      console.log("==============================");
+    },
+  });
+  // 북마크 삭제
+  const boardDeleteMutation = useMutation({
+    mutationFn: boardDeleteBookmark,
+    onSuccess: (data) => {
+      console.log("===auctionDeleteMutation====");
+      console.log(data);
+      console.log("============================");
+    },
+  });
 
   function BackButton() {
     const handleGoBack = () => {
       window.history.back(); // Go back to the previous page using window.history
     };
-
     return (
       <button
         onClick={handleGoBack}
@@ -88,6 +138,8 @@ export default function AdoptionPostsView() {
       </button>
     );
   }
+
+
 
   const deleteMutation = useMutation({
     mutationFn: adoptionDelete,
@@ -234,7 +286,7 @@ export default function AdoptionPostsView() {
   };
 
   let userAccessToken: string | null = null;
-  let currentUserIdx: number | null = null;
+  let currentUserIdx: number | null = 0;
   let userProfilePath: string | null = null;
   let userNickname: string | null = null;
   if (typeof window !== "undefined") {
@@ -273,6 +325,7 @@ export default function AdoptionPostsView() {
       if (userData.USER_DATA.accessToken) {
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
+        setUserIdx(userData.USER_DATA.idx);
       } else {
       }
     }
@@ -446,7 +499,7 @@ export default function AdoptionPostsView() {
     const isCurrentUserComment = currentUserIdx === post.UserInfo.idx;
 
     return (
-      <div className="mx-1">
+      <div className="mx-1 pt-[30px]">
         {post && (
           <div className="max-w-screen-sm mx-auto">
             <PC>
@@ -573,9 +626,35 @@ export default function AdoptionPostsView() {
               </div>
               <p className="text-lg my-2 break-all">{post.description}</p>
               <hr className="border-t border-gray-300" />
-              <div className="flex flex-row items-center py-2">
-                <p className="text-lg font-semibold mr-1">댓글</p>
-                <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
+              <div className="flex flex-row justify-between items-center py-3">
+                <div className="flex flex-row items-center py-3">
+                  <p className="text-lg font-semibold ml-1 mr-2">댓글</p>
+                  <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
+                </div>
+                <div className="flex flex-row items-center py-3">
+                {bookmarked ? (
+                  <a onClick={bookmarkClick}>
+                    <Image
+                      src={like_maincolor}
+                      width={20}
+                      height={20}
+                      alt="북마크"
+                      className="like_btn m-auto mr-1"
+                    />
+                  </a>
+                  ) : (
+                    <a onClick={bookmarkClick}>
+                      <Image
+                        src={unlike_black}
+                        width={20}
+                        height={20}
+                        alt="북마크"
+                        className="like_btn m-auto mr-1"
+                      />
+                    </a>
+                  )}
+                  <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
+                </div>
               </div>
               {userAccessToken ? (
                 <div>
@@ -697,9 +776,35 @@ export default function AdoptionPostsView() {
               </div>
               <p className="mx-2 my-4 break-all">{post.description}</p>
               <hr className="border-t border-gray-300" />
-              <div className="flex flex-row items-center py-2">
-                <p className="font-semibold ml-1 mr-1">댓글</p>
-                <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
+              <div className="flex flex-row justify-between items-center py-3">
+                <div className="flex flex-row items-center py-3">
+                  <p className="text-lg font-semibold ml-1 mr-2">댓글</p>
+                  <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
+                </div>
+                <div className="flex flex-row items-center py-3">
+                {bookmarked ? (
+                  <a onClick={bookmarkClick}>
+                    <Image
+                      src={like_maincolor}
+                      width={20}
+                      height={20}
+                      alt="북마크"
+                      className="like_btn m-auto mr-1"
+                    />
+                  </a>
+                  ) : (
+                    <a onClick={bookmarkClick}>
+                      <Image
+                        src={unlike_black}
+                        width={20}
+                        height={20}
+                        alt="북마크"
+                        className="like_btn m-auto mr-1"
+                      />
+                    </a>
+                  )}
+                  <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
+                </div>
               </div>
               {userAccessToken ? (
                 <div>

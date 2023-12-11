@@ -128,12 +128,13 @@ export default function AuctionPosts() {
     <section>
       <PC>
         <div className="mt-24">
+           {/* 광고 배너 */}
           <BannerSlider />
-          <div className="flex items-center relative">
-            <h2 className="text-xl font-bold ml-1">경매</h2>
+          <div className="flex items-center relative ml-[40px] mr-[40px]" >
+            <h2 className="font-bold text-[20px]">경매</h2>
             <div className="relative ml-auto">
               <select
-                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
+                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 "
                 value={sort}
                 onChange={handleSortChange}
               >
@@ -147,14 +148,16 @@ export default function AuctionPosts() {
           </div>
         </div>
       </PC>
+      
       <Mobile>
         <div className="mt-11">
           <BannerSlider />
-          <div className="flex items-center relative">
-            <h2 className="text-lg font-bold ml-2 my-2">경매</h2>
+          {/* 솔트링 콤보 박스 모바일 */}
+          <div className="flex items-center relative  ml-[16px] mr-[16px]">
+            <h2 className="text-lg font-bold my-2">경매</h2>
             <div className="relative ml-auto">
               <select
-                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 mr-2"
+                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2"
                 value={sort}
                 onChange={handleSortChange}
               >
@@ -168,19 +171,34 @@ export default function AuctionPosts() {
           </div>
         </div>
       </Mobile>
-      {data !== null && data.result.items ? (
-        <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5">
-          {itemlist.map((post) => (
-            <li key={post.idx}>
-              <AuctionPostCard post={post} />
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className="flex items-center justify-center h-screen">
-          <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
-        </div>
-      )}
+      <PC>
+        {data !== null && data.result.items ? (
+          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-[40px] mr-[40px]" >
+            {itemlist.map((post) => (
+              <li key={post.idx}>
+                <AuctionPostCard post={post} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="flex items-center justify-center h-screen">
+            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          </div>
+        )}
+      </PC>
+      <Mobile>
+        {data !== null && data.result.items ? (
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-[16px] pr-[16px]">
+            {itemlist.map((post) => (
+                <AuctionPostCard post={post} key={post.idx}/>
+            ))}
+          </ul>
+        ) : (
+          <div className="flex items-center justify-center h-screen">
+            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          </div>
+        )}
+      </Mobile>
       {existNextPage && (
         <div className="flex justify-center">
           <div
