@@ -10,7 +10,6 @@ export default function GenderDiscriminationPage() {
   return (
     <div>
 
-
       {genderResult ? (
         <GenderResult genderResult={genderResult} setGenderResult={setGenderResult}/>
       ) : (
