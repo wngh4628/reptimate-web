@@ -366,12 +366,7 @@ export default function Header() {
         <div>
           {pathName.startsWith("/ai") ? <AiMenu /> : ""}
         </div>
-        <div>
-          {pathName.startsWith("/auction") ? <AuctionMenu /> : ""}
-        </div>
-        <div>
-          {pathName.startsWith("/ai") ? <AiMenu /> : ""}
-        </div>
+       
 
         <div
           className={`${isChatVisisible
