@@ -20,6 +20,7 @@ import ImageSelecterEdit from "../ImageSelecterEdit";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
+import Swal from "sweetalert2";
 
 interface FileItem {
   idx: number;
@@ -322,15 +323,21 @@ export default function AuctionEdit() {
     const file = event.target.files!![0];
 
     if (allFiles.length + files!!.length > 5) {
-      alert("사진 및 비디오는 최대 5개까지만 선택가능합니다.");
+      Swal.fire({
+        text: "사진 및 비디오는 최대 5개까지만 선택가능합니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       event.target.value = "";
     } else {
       if (file) {
         if (file.size > 50 * 1024 * 1024) {
           // Display an error message if the file size exceeds 200MB
-          alert(
-            "파일의 용량이 너무 큽니다. 파일은 개당 50MB까지만 업로드 가능합니다."
-          );
+          Swal.fire({
+            text: "파일의 용량이 너무 큽니다. 파일은 개당 50MB까지만 업로드 가능합니다.",
+            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+            confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+          });
           event.target.value = ""; // Clear the file input
         } else {
           if (files) {
@@ -497,11 +504,19 @@ export default function AuctionEdit() {
   const mutation = useMutation({
     mutationFn: auctionEdit,
     onSuccess: (data) => {
-      alert("게시글 수정이 완료되었습니다.");
+      Swal.fire({
+        text: "게시글 수정이 완료되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       window.history.back();
     },
-    onError: (data) => {
-      alert(data);
+    onError: (data: string) => {
+      Swal.fire({
+        text: data,
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       setIsLoading(false);
     },
   });
@@ -631,13 +646,13 @@ export default function AuctionEdit() {
 
             mutation.mutate(requestData1);
           } else {
-            console.error("Error uploading files to the first server.");
-            alert("Error uploading files. Please try again later.");
+            // console.error("Error uploading files to the first server.");
+            // alert("Error uploading files. Please try again later.");
             setIsLoading(false);
           }
         } catch (error) {
-          console.error("Error:", error);
-          alert("An error occurred. Please try again later.");
+          // console.error("Error:", error);
+          // alert("An error occurred. Please try again later.");
           setIsLoading(false);
         }
       }
@@ -661,7 +676,11 @@ export default function AuctionEdit() {
       let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
       alertMessage += missingFields.join(", ");
 
-      alert(alertMessage);
+      Swal.fire({
+        text: alertMessage,
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       setIsLoading(false);
     }
   };

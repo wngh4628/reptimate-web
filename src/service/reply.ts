@@ -7,6 +7,7 @@ export interface getResponseReply {
       totalPage: number;
       existsNextPage: boolean;
       items: Array<{
+        boardCategory: any;
         idx: number;
         boardIdx: number;
         userIdx: number;
@@ -28,5 +29,6 @@ export interface getResponseReply {
     description: string;
     createdAt: Date;
     filePath: string;
+    boardCategory: string;
   };
   

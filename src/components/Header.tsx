@@ -41,15 +41,10 @@ export default function Header() {
 
   const [isChatVisisible, setIsChatVisisible] =
     useRecoilState(chatVisisibleState);
-  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(
-    chatRoomVisisibleState
-  );
+  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
 
-  const [isNotiVisisible, setIsNotiVisisible] =
-    useRecoilState(notiVisisibleState);
-
-  const [receivedNewChat, setreceivedNewChat] =
-    useRecoilState(receivedNewChatState);
+  const [isNotiVisisible, setIsNotiVisisible] = useRecoilState(notiVisisibleState);
+  const [receivedNewChat, setreceivedNewChat] = useRecoilState(receivedNewChatState);
 
   const setUser = useSetRecoilState(userAtom);
   const setCookieLoggedIn = useSetRecoilState(isLoggedInState);
@@ -170,6 +165,7 @@ export default function Header() {
         if (currentToken) {
           setfcm(currentToken);
         } else {
+
         }
       })
       .catch((err) => {
@@ -213,6 +209,8 @@ export default function Header() {
     if (isLoggedIn) {
       // console.log("채팅 목록 켜기");
       setIsChatVisisible(true);
+    } else {
+      setIsChatVisisible(false);
     }
   }
   function chattingClose() {
@@ -227,6 +225,8 @@ export default function Header() {
     if (isLoggedIn) {
       // console.log("알림 목록 켜기");
       setIsNotiVisisible(true);
+    } else {
+      setIsNotiVisisible(false);
     }
   }
   function notiClose() {
@@ -326,22 +326,22 @@ export default function Header() {
               AI
             </Link>
             {isLoggedIn ?
-              <div className="flex justify-between items-center " style={{ width: 100 }} >
-                <Link
-                  href="/my"
-                  className={`${pathName.startsWith("/my") ? "font-bold" : ""
-                    } font-normal`}
-                  style={{ fontSize: 18, color: "#222222", }}
-                  onClick={chattingClick}
-                >
-                  MY
-                </Link>
-                <Link href="">
-                  <Image src="/img/chat.png"
+            <div className="flex justify-between items-center "  style={{width: 100}} >
+              <Link
+                href="/my"
+                className={`${
+                  pathName === "/my" ? "font-bold" : ""
+                } font-normal`}
+                style={{fontSize:18, color:"#222222",}}
+              >
+                MY
+              </Link>
+              <Link href="">
+                  <Image src="/img/chat.png" 
                     width={18}
                     height={18}
                     alt="chat-icon"
-                    onClick={notiClick}
+                    onClick={chattingClick}
                   />
                   {receivedNewChat && (
                     <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
@@ -352,6 +352,7 @@ export default function Header() {
                     width={18}
                     height={18}
                     alt="alert-icon"
+                    onClick={notiClick}
                    />
               </Link> 
             </div>: ""}

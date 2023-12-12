@@ -11,6 +11,8 @@ import axios from "axios";
 import { getResponseBookmarkBoard, BookmarkBoard } from "@/service/my/bookmark";
 import BoardItem from "./BookmarkItem";
 
+import Swal from "sweetalert2";
+
 export default function BookmarkList() {
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
   const reGenerateTokenMutation = useReGenerateTokenMutation();
@@ -82,6 +84,7 @@ export default function BookmarkList() {
           );
           setENP(response.data?.result.existsNextPage);
           setBoardPage((prevPage) => prevPage + 1);
+          // console.log(data);
         } else {
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_API_URL}/mypage/bookmark/auction?page=${replyPage}&size=20&order=DESC`,
@@ -101,10 +104,11 @@ export default function BookmarkList() {
           );
           setENP(response.data?.result.existsNextPage);
           setReplyPage((prevPage) => prevPage + 1);
+          // console.log(replyData);
         }
       } catch (error: any) {
         // 에러가 발생하면 여기에서 처리할 수 있습니다.
-        console.error("Error fetching user data:", error.response.data);
+        // console.error("Error fetching user data:", error.response.data);
         if (error.response.data.status == 401) {
           const storedData = localStorage.getItem("recoil-persist");
           if (storedData) {
@@ -123,13 +127,21 @@ export default function BookmarkList() {
                   onError: () => {
                     router.replace("/");
                     //
-                    alert("로그인 만료\n다시 로그인 해주세요\n 에메메");
+                    Swal.fire({
+                      text: "로그인 만료\n다시 로그인 해주세요",
+                      confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                      confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                    });
                   },
                 }
               );
             } else {
               router.replace("/");
-              alert("로그인이 필요한 기능입니다.");
+              Swal.fire({
+                text: "로그인이 필요한 기능입니다.",
+                confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+              });
             }
           }
         }
@@ -146,11 +158,14 @@ export default function BookmarkList() {
       if (userData.USER_DATA.accessToken) {
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
-
         getItems(extractedAccessToken, myBookmarkType);
       } else {
         router.replace("/");
-        alert("로그인이 필요한 기능입니다.");
+        Swal.fire({
+          text: "로그인이 필요한 기능입니다.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
     }
   }, [myBookmarkType]);
@@ -176,7 +191,7 @@ export default function BookmarkList() {
 
   const boardItemlist: BookmarkBoard[] = (data?.result.items ?? []).map(
     (item) => ({
-      idx: item.idx,
+      idx: item.board.idx,
       createdAt: new Date(item.board.createdAt),
       updatedAt: new Date(item.board.updatedAt),
       deletedAt: new Date(item.board.deletedAt),
@@ -189,12 +204,14 @@ export default function BookmarkList() {
       view: item.board.view,
       commentCnt: item.board.commentCnt,
       status: item.board.status,
+      boardCategory: item.board.category,
     })
   );
 
+  
   const auctionItemlist: BookmarkBoard[] = (replyData?.result.items ?? []).map(
     (item) => ({
-      idx: item.idx,
+      idx: item.board.idx,
       createdAt: new Date(item.board.createdAt),
       updatedAt: new Date(item.board.updatedAt),
       deletedAt: new Date(item.board.deletedAt),
@@ -207,6 +224,7 @@ export default function BookmarkList() {
       view: item.board.view,
       commentCnt: item.board.commentCnt,
       status: item.board.status,
+      boardCategory: item.board.category,
     })
   );
 

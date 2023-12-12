@@ -27,6 +27,8 @@ export interface getResponseBookmarkBoard {
             view: number;
             commentCnt: number;
             status: string;
+            boardCategory: string;
+            idx: number;
         };
       }>;
     };
@@ -45,5 +47,6 @@ export interface getResponseBookmarkBoard {
     view: number;
     commentCnt: number;
     status: string;
+    boardCategory: string;
   };
   

@@ -188,7 +188,11 @@ export default function AuctionPostsView() {
   const deleteMutation = useMutation({
     mutationFn: auctionDelete,
     onSuccess: (data) => {
-      alert("게시글이 삭제되었습니다.");
+      Swal.fire({
+        text: "게시글이 삭제되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       router.replace("/auction");
     },
   });
@@ -219,18 +223,12 @@ export default function AuctionPostsView() {
   const auctionRegisterMutation = useMutation({
     mutationFn: auctionRegisterBookmark,
     onSuccess: (data) => {
-      console.log("===auctionRegisterMutation====");
-      console.log(data);
-      console.log("==============================");
     },
   });
   // 북마크 삭제
   const auctionDeleteMutation = useMutation({
     mutationFn: auctionDeleteBookmark,
     onSuccess: (data) => {
-      console.log("===auctionDeleteMutation====");
-      console.log(data);
-      console.log("============================");
     },
   });
 
@@ -312,8 +310,12 @@ export default function AuctionPostsView() {
                 },
                 onError: () => {
                   router.replace("/");
-                  //
-                  alert("로그인 만료\n다시 로그인 해주세요");
+                  setIsLoggedIn(false);
+                  Swal.fire({
+                    text: "로그인 만료\n다시 로그인 해주세요",
+                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                  });
                 },
               }
             );
@@ -560,11 +562,19 @@ export default function AuctionPostsView() {
   const streamKeyMutation = useMutation({
     mutationFn: streamKeyEdit,
     onSuccess: (data) => {
-      alert("스트림키가 재생성 되었습니다.");
+      Swal.fire({
+        text: "스트림키가 재생성 되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       setStreamKey(data.data.result);
     },
-    onError: (data) => {
-      alert(data);
+    onError: (data: string) => {
+      Swal.fire({
+        text: data,
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     },
   });
 
@@ -662,18 +672,30 @@ export default function AuctionPostsView() {
                     // Create the alert message based on missing fields
                     let alertMessage = "오류입니다. :\n 다시 시도해주세요.";
 
-                    alert(alertMessage);
+                    Swal.fire({
+                      text: alertMessage,
+                      confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                      confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                    });
                   }
                 },
                 onError: () => {
                   router.replace("/login");
-                  alert("로그인 만료\n다시 로그인 해주세요");
+                  Swal.fire({
+                    text: "로그인 만료\n다시 로그인 해주세요",
+                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                  });
                 },
               }
             );
           } else {
             router.replace("/login");
-            alert("로그인이 필요한 기능입니다.");
+            Swal.fire({
+              text: "로그인이 필요한 기능입니다.",
+              confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+              confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+            });
           }
         }
       }
@@ -873,7 +895,11 @@ export default function AuctionPostsView() {
         // Create the alert message based on missing fields
         let alertMessage = "오류입니다. :\n 다시 시도해주세요.";
 
-        alert(alertMessage);
+        Swal.fire({
+          text: alertMessage,
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
     };
 
