@@ -9,7 +9,11 @@ import StreamingChatView from "@/components/action/StreamingChatView";
 
 import Image from "next/image";
 import unlike_black from "../../../../../../public/img/unlike_black.png";
+<<<<<<< HEAD
 import like_maincolor from "../../../../../../public/img/like_maincolor.png";
+=======
+import like_maincolor from "../../../public/img/like_maincolor.png";
+>>>>>>> db5b3a0 (feat: 북마크 기능 추가)
 import { getActionInfo } from "@/service/httpconnect/live_stream_axios";
 import acitonLiveDto from "@/service/dto/action-live-dto";
 import { GetAuctionPostsView } from "@/service/my/auction";
