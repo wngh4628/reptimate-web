@@ -15,7 +15,10 @@ import acitonLiveDto from "@/service/dto/action-live-dto";
 import { GetAuctionPostsView } from "@/service/my/auction";
 import axios from "axios";
 
-import { auctionDeleteBookmark, auctionRegisterBookmark } from "@/api/auction/auction";
+import {
+  auctionDeleteBookmark,
+  auctionRegisterBookmark,
+} from "@/api/auction/auction";
 
 type Props = {
   params: {
@@ -43,7 +46,6 @@ export default function ActionPage({ params: { slug } }: Props) {
   const [postsData, setPostsData] = useState<GetAuctionPostsView | null>(null);
   const [accessToken, setAccessToken] = useState("");
   const [userIdx, setUserIdx] = useState<number>(0); // 로그인 한 유저의 userIdx 저장
-
 
   useEffect(() => {
     const storedData = localStorage.getItem("recoil-persist");
@@ -83,17 +85,28 @@ export default function ActionPage({ params: { slug } }: Props) {
   }, []);
 
   /*********************
+<<<<<<< HEAD
  *
  *       북마크
  *
  ********************/
+=======
+   *
+   *       북마크
+   *
+   ********************/
+>>>>>>> 1defd5b3ac8c16b7b27208af3ca59d5242538224
   const bookmarkClick = () => {
     if (bookmarked) {
       setBookmarked(false);
       setBookmarkCnt(bookmarkCnt - 1);
       auctionDeleteMutation.mutate({
         userAccessToken: accessToken,
+<<<<<<< HEAD
         boardIdx: postsData!.result.boardAuction.boardIdx
+=======
+        boardIdx: postsData!.result.boardAuction.boardIdx,
+>>>>>>> 1defd5b3ac8c16b7b27208af3ca59d5242538224
       });
     } else {
       setBookmarked(true);
@@ -101,7 +114,11 @@ export default function ActionPage({ params: { slug } }: Props) {
       auctionRegisterMutation.mutate({
         userAccessToken: accessToken,
         boardIdx: postsData!.result.boardAuction.boardIdx,
+<<<<<<< HEAD
         userIdx: userIdx
+=======
+        userIdx: userIdx,
+>>>>>>> 1defd5b3ac8c16b7b27208af3ca59d5242538224
       });
     }
   };
@@ -176,7 +193,7 @@ export default function ActionPage({ params: { slug } }: Props) {
                 }
             /> */}
       <div className="flex flex-col lg:flex-row mt-36">
-        <div className="flex-auto flex-col">
+        <div className="flex-auto flex-col w-[70%]">
           <div className="bg-black w-full">
             <VideoPlayer src={videoUrl}></VideoPlayer>
           </div>
@@ -226,7 +243,7 @@ export default function ActionPage({ params: { slug } }: Props) {
             </div>
           </div>
         </div>
-        <div className="lg:w-[20rem] w-full">
+        <div className="w-[30%] lg:w-[20rem]">
           <StreamingChatView></StreamingChatView>
         </div>
       </div>
