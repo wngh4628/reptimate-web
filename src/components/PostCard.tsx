@@ -74,9 +74,9 @@ export default function PostCard({
               href={`/community/${category}/posts/[idx]`}
               as={`/community/${category}/posts/${idx}`}
           >
-            <div style={{width:183.5}}>
+            <div >
               {/* 대표 이미지 부분 */}
-              <div className="relative h-[183.5.59px] overflow-hidden hover:border-2 hover:border-main-color rounded-md">
+              <div className="relative overflow-hidden hover:border-2 hover:border-main-color rounded-md">
                 {/* 대표 이미지 쉐도우 */}
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10 opacity-40"></div>
                 <div style={imgStyle}>

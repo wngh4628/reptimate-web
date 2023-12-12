@@ -72,16 +72,16 @@ export default function PostCard({
               href={`/community/${category}/posts/[idx]`}
               as={`/community/${category}/posts/${idx}`}
           >
-            <div style={{width:183.5}}>
+            <div >
               {/* 대표 이미지 부분 */}
-              <div className="relative h-[183.5.59px] overflow-hidden hover:border-2 hover:border-main-color rounded-md">
+              <div className="relative overflow-hidden hover:border-2 hover:border-main-color rounded-md">
                 {/* 대표 이미지 쉐도우 */}
                 <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-gray-400 via-transparent to-transparent z-10 opacity-40"></div>
                 <div style={imgStyle}>
                   <Image
                     className="object-cover absolute inset-0 w-full h-full"
-                    width={183.5}
-                    height={183.5}
+                    width={75}
+                    height={75}
                     src={
                       thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
                     }
@@ -93,7 +93,7 @@ export default function PostCard({
                 <div className="absolute bottom-0 left-0 mb-1 flex items-center z-20">
                   {/* 작성자 프로필 이미지 */}
                   <Image
-                    className="ml-1 rounded-full border-2 object-cover"
+                    className="ml-1 rounded-full border-2 object-cover w-5 h-5"
                     width={20}
                     height={20}
                     src={
@@ -101,7 +101,6 @@ export default function PostCard({
                         ? profilePath
                         : "/img/reptimate_logo.png"
                     }
-                    style={{width:20, height:20}}
                     alt={"profile"}
                   />
                   <p className="text-white font-semibold text-sm ml-1">
@@ -111,7 +110,7 @@ export default function PostCard({
               </div>
             </div>
             {/* 게시글 정보 부분 */}
-            <div className="w-[183.5px]">
+            <div className="">
               {/* 제목 */}
               <h3 className="text-[14px]">{title}</h3>
               

@@ -949,161 +949,178 @@ export default function AuctionPostsView() {
         {post && (
           <div className="max-w-screen-sm mx-auto">
             <PC>
-              <h2 className="text-4xl font-bold pt-10 mt-20">{post.title}</h2>
-              <div className="flex items-center my-2 relative">
-                <img
-                  className="w-10 h-10 rounded-full border-2 cursor-pointer"
-                  src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
-                  alt=""
-                  onClick={profileMenu}
-                />
-                {!isCurrentUserComment && (
-                  <div className="flex items-center justify-center absolute top-full mt-1 bg-white border border-gray-200 shadow-lg rounded z-50">
-                    {profileMenuOpen && (
-                      <ul>
-                        <li
-                          onClick={() => {
-                            handleChat();
-                            profileMenu();
-                          }}
-                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                        >
-                          1:1채팅하기
-                        </li>
-                      </ul>
-                    )}
-                  </div>
-                )}
-                <p className="text-xl font-bold ml-1">
-                  {post.UserInfo.nickname}
-                </p>
-                <p className="ml-2 text-gray-500">{postWriteDate}</p>
-                <p className="ml-1 text-gray-500">{postWriteTime}</p>
-                <p className="ml-2 text-gray-500">조회 {post.view}</p>
-                <div className="relative ml-auto">
-                  <button
-                    onClick={toggleMenu}
-                    className="text-gray-500 cursor-pointer text-xl"
-                  >
-                    ⁝
-                  </button>
-                  {menuOpen && (
-                    <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
-                      {isCurrentUserComment ? (
+              <div className="mt-[150px]">
+              {/* 제목 */}
+              <p className="text-4xl font-bold text-[27px]">{post.title}</p>
+                <div className="flex items-center my-2 relative">
+                  <Image
+                    className="w-11 h-11 rounded-full border-2 cursor-pointer"
+                    src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
+                    alt=""
+                    width={75}
+                    height={75}
+                    onClick={profileMenu}
+                  />
+                  {!isCurrentUserComment && (
+                    <div className="flex items-center justify-center absolute top-full mt-1 bg-white border border-gray-200 shadow-lg rounded z-50">
+                      {profileMenuOpen && (
                         <ul>
                           <li
                             onClick={() => {
-                              handleEdit();
-                              toggleMenu();
+                              handleChat();
+                              profileMenu();
                             }}
                             className="py-2 px-4 cursor-pointer hover:bg-gray-100"
                           >
-                            수정
-                          </li>
-                          <li
-                            onClick={() => {
-                              handleDelete();
-                              toggleMenu();
-                            }}
-                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                          >
-                            삭제
-                          </li>
-                        </ul>
-                      ) : (
-                        <ul>
-                          <li
-                            onClick={() => {
-                              handleReport();
-                              toggleMenu();
-                            }}
-                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                          >
-                            신고
+                            1:1채팅하기
                           </li>
                         </ul>
                       )}
                     </div>
                   )}
+                  <div className="ml-2 ">
+                    <p className="font-bold cursor-pointer" onClick={profileMenu}>
+                      {post.UserInfo.nickname}
+                    </p>
+                    <div className="flex">
+                      <p className="text-gray-500 text-[12px]">{postWriteDate}</p>
+                      <p className="ml-1 text-gray-500 text-[12px]">{postWriteTime}</p>
+                      <p className="ml-2 text-gray-500 text-[12px]">조회 {post.view}</p>
+                    </div>
+                  </div>
+                  <div className="relative ml-auto">
+                    <button
+                      onClick={toggleMenu}
+                      className="text-gray-500 cursor-pointer "
+                    >
+                      <p className="text-[24px]">⁝</p>
+                    </button>
+                    {menuOpen && (
+                      <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
+                        {isCurrentUserComment ? (
+                          <ul>
+                            <li
+                              onClick={() => {
+                                handleEdit();
+                                toggleMenu();
+                              }}
+                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                            >
+                              수정
+                            </li>
+                            <li
+                              onClick={() => {
+                                handleDelete();
+                                toggleMenu();
+                              }}
+                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                            >
+                              삭제
+                            </li>
+                          </ul>
+                        ) : (
+                          <ul>
+                            <li
+                              onClick={() => {
+                                handleReport();
+                                toggleMenu();
+                              }}
+                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                            >
+                              신고
+                            </li>
+                          </ul>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <ImageSlider imageUrls={itemlist} />
-              <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-5">현재 경매가</p>
-                <p className="text-xl font-bold ml-auto mr-5">{nowBid}원</p>
-              </div>
-              <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-5">즉시 구입가</p>
-                <p className="text-xl font-bold ml-auto mr-5">
-                  {post.boardAuction.startPrice.toLocaleString()}원
-                </p>
-              </div>
-              <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-5">마감 시간</p>
-                <p className="text-xl font-bold ml-auto mr-5">
-                  {post.boardAuction.endTime}까지
-                </p>
-              </div>
-              <div className="flex flex-row items-center justify-center">
-                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">시작 가격</p>
-                  <p className="pb-1 text-lg">
-                    {post.boardAuction.startPrice}원
-                  </p>
+                {/* 갤러리 */}
+                <div className="pt-3">
+                  <ImageSlider imageUrls={itemlist} />
                 </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">경매 단위</p>
-                  <p className="pb-1 text-lg">{post.boardAuction.unit}원</p>
+                <div className="mt-3">
+                  <div className="flex flex-row items-center py-3">
+                    <p className="text-lg font-semibold ml-1">현재 경매가</p>
+                    <p className="text-xl font-bold ml-auto mr-1">{nowBid}원</p>
+                  </div>
+                  <div className="flex flex-row items-center py-3">
+                    <p className="text-lg font-semibold ml-1">즉시 구입가</p>
+                    <p className="text-xl font-bold ml-auto mr-1">
+                      {post.boardAuction.startPrice.toLocaleString()}원
+                    </p>
+                  </div>
+                  <div className="flex flex-row items-center py-3">
+                    <p className="text-lg font-semibold ml-1">마감 시간</p>
+                    <p className="text-xl font-bold ml-auto mr-1">
+                      {post.boardAuction.endTime}까지
+                    </p>
+                  </div>
+                  <div className="pb-6">
+                  <div className="flex flex-row items-center justify-center">
+                    <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">시작 가격</p>
+                      <p className="pb-1 text-lg">
+                        {post.boardAuction.startPrice}원
+                      </p>
+                    </div>
+                    <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">경매 단위</p>
+                      <p className="pb-1 text-lg">{post.boardAuction.unit}원</p>
+                    </div>
+                    <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">마감 룰</p>
+                      <p className="pb-1 text-lg">
+                        {post.boardAuction.extensionRule === 1 ? "적용" : "미적용"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-row items-center justify-center mt-1">
+                    <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">품종</p>
+                      <p className="pb-1 text-lg">{post.boardAuction.variety}</p>
+                    </div>
+                    <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">성별</p>
+                      <p className="pb-1 text-lg">{post.boardAuction.gender}</p>
+                    </div>
+                    <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">크기</p>
+                      <p className="pb-1 text-lg">{post.boardAuction.size}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-row items-center justify-center mt-1">
+                    <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">모프</p>
+                      <p className="pb-1 text-lg">{post.boardAuction.pattern}</p>
+                    </div>
+                    <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">출생</p>
+                      <p className="pb-1 text-lg">{post.boardAuction.birthDate}</p>
+                    </div>
+                    <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">상태</p>
+                      {post.boardAuction.state === "reservation" ? (
+                        <p className="pb-1 text-lg text-red-600">예약중</p>
+                      ) : post.boardAuction.state === "end" ? (
+                        <p className="pb-1 text-lg text-gray-500">판매완료</p>
+                      ) : (
+                        <p className="pb-1 text-lg text-blue-600">판매중</p>
+                      )}
+                    </div>
+                  </div>
+                  </div>
+                  
+                  <p className="text-lg my-7 break-all">{post.description}</p>
+                  <hr className="border-t border-gray-300 my-1" />
                 </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">마감 룰</p>
-                  <p className="pb-1 text-lg">
-                    {post.boardAuction.extensionRule === 1 ? "적용" : "미적용"}
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-row items-center justify-center mt-1">
-                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">품종</p>
-                  <p className="pb-1 text-lg">{post.boardAuction.variety}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">성별</p>
-                  <p className="pb-1 text-lg">{post.boardAuction.gender}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">크기</p>
-                  <p className="pb-1 text-lg">{post.boardAuction.size}</p>
-                </div>
-              </div>
-              <div className="flex flex-row items-center justify-center mt-1">
-                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">모프</p>
-                  <p className="pb-1 text-lg">{post.boardAuction.pattern}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">출생</p>
-                  <p className="pb-1 text-lg">{post.boardAuction.birthDate}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">상태</p>
-                  {post.boardAuction.state === "reservation" ? (
-                    <p className="pb-1 text-lg text-red-600">예약중</p>
-                  ) : post.boardAuction.state === "end" ? (
-                    <p className="pb-1 text-lg text-gray-500">판매완료</p>
-                  ) : (
-                    <p className="pb-1 text-lg text-blue-600">판매중</p>
-                  )}
-                </div>
-              </div>
-              <p className="text-lg my-7 break-all">{post.description}</p>
-              <hr className="border-t border-gray-300 my-1" />
-              <div className="flex flex-row justify-between items-center py-3">
-                <div className="flex flex-row items-center py-3">
-                  <p className="text-lg font-semibold ml-1 mr-2">댓글</p>
-                  <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
-                </div>
-                <div className="flex flex-row items-center py-3">
+                
+                <div className="flex flex-row justify-between items-center py-3">
+                  <div className="flex flex-row items-center py-3">
+                    <p className="text-lg font-semibold ml-1 mr-2">댓글</p>
+                    <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
+                  </div>
+                  <div className="flex flex-row items-center py-3">
                   {bookmarked ? (
                     <a onClick={bookmarkClick}>
                       <Image
@@ -1114,42 +1131,43 @@ export default function AuctionPostsView() {
                         className="like_btn m-auto mr-1"
                       />
                     </a>
-                  ) : (
-                    <a onClick={bookmarkClick}>
-                      <Image
-                        src={unlike_black}
-                        width={20}
-                        height={20}
-                        alt="북마크"
-                        className="like_btn m-auto mr-1"
-                      />
-                    </a>
-                  )}
-                  <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
+                    ) : (
+                      <a onClick={bookmarkClick}>
+                        <Image
+                          src={unlike_black}
+                          width={20}
+                          height={20}
+                          alt="북마크"
+                          className="like_btn m-auto mr-1"
+                        />
+                      </a>
+                    )}
+                    <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
+                  </div>
                 </div>
+                {userAccessToken ? (
+                  <div>
+                    <CommentForm
+                      value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
+                      onSubmit={handleCommentSubmit}
+                      onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
+                    />
+                  </div>
+                ) : (
+                  <p
+                    className="cursor-pointer"
+                    onClick={() => {
+                      handleLogin();
+                    }}
+                  >
+                    로그인 후 댓글을 작성할 수 있습니다.
+                  </p>
+                )}
               </div>
-              {userAccessToken ? (
-                <div>
-                  <CommentForm
-                    value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
-                    onSubmit={handleCommentSubmit}
-                    onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
-                  />
-                </div>
-              ) : (
-                <p
-                  className="cursor-pointer"
-                  onClick={() => {
-                    handleLogin();
-                  }}
-                >
-                  로그인 후 댓글을 작성할 수 있습니다.
-                </p>
-              )}
             </PC>
             <Mobile>
-              <BackButton />
-              <h2 className="mx-2 text-2xl font-bold pt-5">{post.title}</h2>
+              {/* <BackButton /> */}
+              <h2 className="mx-2 text-2xl font-bold pt-[55px]">{post.title}</h2>
               <div className="mx-2 flex items-center my-2 relative">
                 <img
                   className="w-10 h-10 rounded-full border-2 cursor-pointer"
@@ -1174,10 +1192,17 @@ export default function AuctionPostsView() {
                     )}
                   </div>
                 )}
-                <p className="text-lg font-bold">{post.UserInfo.nickname}</p>
-                <p className="ml-2 text-gray-500 text-sm">{postWriteDate}</p>
-                <p className="ml-1 text-gray-500 text-sm">{postWriteTime}</p>
-                <p className="ml-2 text-gray-500 text-sm">조회 {post.view}</p>
+                <div className="ml-2 ">
+                  <p className="font-bold cursor-pointer" onClick={profileMenu}>
+                    {post.UserInfo.nickname}
+                  </p>
+                  <div className="flex">
+                    <p className="text-gray-500 text-[12px]">{postWriteDate}</p>
+                    <p className="ml-1 text-gray-500 text-[12px]">{postWriteTime}</p>
+                    <p className="ml-2 text-gray-500 text-[12px]">조회 {post.view}</p>
+                  </div>
+                </div>
+
                 <div className="relative ml-auto">
                   <button
                     onClick={toggleMenu}
@@ -1225,78 +1250,86 @@ export default function AuctionPostsView() {
                   )}
                 </div>
               </div>
-              <ImageSlider imageUrls={itemlist} />
-              <div className="flex flex-row items-center py-1">
-                <p className="font-semibold ml-2">현재 경매가</p>
-                <p className="font-bold ml-auto mr-2">{nowBid}원</p>
+               {/* 갤러리 */}
+              <div className=''>
+                <ImageSlider imageUrls={itemlist} />
               </div>
-              <div className="flex flex-row items-center py-1">
-                <p className="font-semibold ml-2">즉시 구입가</p>
-                <p className="font-bold ml-auto mr-2">
-                  {post.boardAuction.startPrice.toLocaleString()}원
-                </p>
-              </div>
-              <div className="flex flex-row items-center py-1">
-                <p className="font-semibold ml-2">마감 시간</p>
-                <p className="font-bold ml-auto mr-2">
-                  {post.boardAuction.endTime}까지
-                </p>
-              </div>
-              <div className="my-1 mx-1 flex flex-row items-center justify-center">
-                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 font-bold">시작 가격</p>
-                  <p className="pb-1 text-md">
-                    {post.boardAuction.startPrice}원
+              {/* 상세 설명 */}
+              <div className="ml-4 mr-4">
+                <div className="flex flex-row items-center pt-3">
+                  <p className="font-semibold ">현재 경매가</p>
+                  <p className="font-bold ml-auto ">{nowBid}원</p>
+                </div>
+                <div className="flex flex-row items-center py-1">
+                  <p className="font-semibold ">즉시 구입가</p>
+                  <p className="font-bold ml-auto ">
+                    {post.boardAuction.startPrice.toLocaleString()}원
                   </p>
                 </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 font-bold">경매 단위</p>
-                  <p className="pb-1 text-md">{post.boardAuction.unit}원</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 font-bold">마감 룰</p>
-                  <p className="pb-1 text-md">
-                    {post.boardAuction.extensionRule === 1 ? "적용" : "미적용"}
+                <div className="flex flex-row items-center py-1">
+                  <p className="font-semibold ">마감 시간</p>
+                  <p className="font-bold ml-auto ">
+                    {post.boardAuction.endTime}까지
                   </p>
                 </div>
+                <div className="flex flex-row items-center justify-center">
+                  <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                    <p className="pt-1 text-lg font-bold">시작 가격</p>
+                    <p className="pb-1 text-m">
+                      {post.boardAuction.startPrice}원
+                    </p>
+                  </div>
+                  <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                    <p className="pt-1 text-lg font-bold">경매 단위</p>
+                    <p className="pb-1 text-md">{post.boardAuction.unit}원</p>
+                  </div>
+                  <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                    <p className="pt-1 text-lg font-bold">마감 룰</p>
+                    <p className="pb-1 text-md">
+                      {post.boardAuction.extensionRule === 1 ? "적용" : "미적용"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-row items-center justify-center mt-1">
+                  <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                    <p className="pt-1 text-lg font-bold">품종</p>
+                    <p className="pb-1 text-md">{post.boardAuction.variety}</p>
+                  </div>
+                  <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                    <p className="pt-1 text-lg font-bold">성별</p>
+                    <p className="pb-1 text-md">{post.boardAuction.gender}</p>
+                  </div>
+                  <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                    <p className="pt-1 text-lg font-bold">크기</p>
+                    <p className="pb-1 text-md">{post.boardAuction.size}</p>
+                  </div>
+                </div>
+                <div className="flex flex-row items-center justify-center mt-1">
+                  <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                    <p className="pt-1 text-lg font-bold">모프</p>
+                    <p className="pb-1 text-md">{post.boardAuction.pattern}</p>
+                  </div>
+                  <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                    <p className="pt-1 text-lg font-bold">출생</p>
+                    <p className="pb-1 text-md">{post.boardAuction.birthDate}</p>
+                  </div>
+                  <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                    <p className="pt-1 text-lg font-bold">상태</p>
+                    {post.boardAuction.state === "reservation" ? (
+                      <p className="pb-1 text-md text-red-600">예약중</p>
+                    ) : post.boardAuction.state === "end" ? (
+                      <p className="pb-1 text-md text-gray-500">판매완료</p>
+                    ) : (
+                      <p className="pb-1 text-md text-blue-600">판매중</p>
+                    )}
+                  </div>
+                </div>
+                <div>
+                    <p className="mx-2 my-6 break-all">{post.description}</p>
+                    <hr className="border-t border-gray-300" />
+                  </div>
               </div>
-              <div className="my-1 mx-1 flex flex-row items-center justify-center">
-                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 font-bold">품종</p>
-                  <p className="pb-1 text-md">{post.boardAuction.variety}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 font-bold">성별</p>
-                  <p className="pb-1 text-md">{post.boardAuction.gender}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 font-bold">크기</p>
-                  <p className="pb-1 text-md">{post.boardAuction.size}</p>
-                </div>
-              </div>
-              <div className="my-1 mx-1 flex flex-row items-center justify-center">
-                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 font-bold">모프</p>
-                  <p className="pb-1 text-md">{post.boardAuction.pattern}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 font-bold">출생</p>
-                  <p className="pb-1 text-md">{post.boardAuction.birthDate}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 font-bold">상태</p>
-                  {post.boardAuction.state === "reservation" ? (
-                    <p className="pb-1 text-md text-red-600">예약중</p>
-                  ) : post.boardAuction.state === "end" ? (
-                    <p className="pb-1 text-md text-gray-500">판매완료</p>
-                  ) : (
-                    <p className="pb-1 text-md text-blue-600">판매중</p>
-                  )}
-                </div>
-              </div>
-              <p className="mx-2 my-4 break-all">{post.description}</p>
-              <hr className="border-t border-gray-300" />
-              <div className="flex flex-row justify-between items-center py-3">
+              <div className="flex flex-row justify-between items-center py-3 ml-4 mr-4">
                 <div className="flex flex-row items-center py-3">
                   <p className="text-lg font-semibold ml-1 mr-2">댓글</p>
                   <p className="text-lg font-semibold mr-2">{commentCnt}개</p>

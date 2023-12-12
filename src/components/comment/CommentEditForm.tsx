@@ -32,7 +32,7 @@ const CommentEditForm: React.FC<CommentFormProps> = ({ value, onSubmit }) => {
             placeholder="댓글을 남겨보세요."
             value={comment}
             className="flex-grow border-2 border-gray-400 p-3 rounded-md resize-none"
-            rows={2}
+            rows={1}
             onChange={handleCommentChange}
           />
           <div className="flex items-center">
