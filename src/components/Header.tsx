@@ -183,8 +183,7 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem("recoil-persist");
     setIsLoggedIn(false);
-    router.refresh();
-    window.location.reload();
+    router.replace("/");
   };
 
   function chattingClick() {

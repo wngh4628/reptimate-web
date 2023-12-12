@@ -169,8 +169,8 @@ export default function ActionPage({ params: { slug } }: Props) {
                     console.log(`script loaded correctly, window.FB has been populated`)
                 }
             /> */}
-      <div className="flex flex-col lg:flex-row mt-36">
-        <div className="flex-auto flex-col">
+      <div className="flex flex-col lg:flex-row mt-36 ">
+        <div className="flex-auto flex-col lg:basis-9/12">
           <div className="bg-black w-full">
             <VideoPlayer src={videoUrl}></VideoPlayer>
           </div>
@@ -222,7 +222,7 @@ export default function ActionPage({ params: { slug } }: Props) {
         </div>
 
         {/* 우측 채팅뷰 */}
-        <div className="lg:w-[20rem] w-full">
+        <div className="lg:basis-3/12 w-full">
           <StreamingChatView></StreamingChatView>
         </div>
       </div>
