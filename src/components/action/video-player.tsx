@@ -50,7 +50,7 @@ export default function VideoPlayer(props: Props) {
   return (
     <>
       {/* <LivePlayerScript></LivePlayerScript> */}
-      {/* <video data-displaymaxtap ref={videoRef} className="w-full" id="player" /> */}
+      <video data-displaymaxtap ref={videoRef} className="w-full" id="player" />
     </>
   );
 }

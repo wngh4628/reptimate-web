@@ -85,28 +85,17 @@ export default function ActionPage({ params: { slug } }: Props) {
   }, []);
 
   /*********************
-<<<<<<< HEAD
- *
- *       북마크
- *
- ********************/
-=======
    *
    *       북마크
    *
    ********************/
->>>>>>> 1defd5b3ac8c16b7b27208af3ca59d5242538224
   const bookmarkClick = () => {
     if (bookmarked) {
       setBookmarked(false);
       setBookmarkCnt(bookmarkCnt - 1);
       auctionDeleteMutation.mutate({
         userAccessToken: accessToken,
-<<<<<<< HEAD
-        boardIdx: postsData!.result.boardAuction.boardIdx
-=======
         boardIdx: postsData!.result.boardAuction.boardIdx,
->>>>>>> 1defd5b3ac8c16b7b27208af3ca59d5242538224
       });
     } else {
       setBookmarked(true);
@@ -114,11 +103,7 @@ export default function ActionPage({ params: { slug } }: Props) {
       auctionRegisterMutation.mutate({
         userAccessToken: accessToken,
         boardIdx: postsData!.result.boardAuction.boardIdx,
-<<<<<<< HEAD
-        userIdx: userIdx
-=======
         userIdx: userIdx,
->>>>>>> 1defd5b3ac8c16b7b27208af3ca59d5242538224
       });
     }
   };
