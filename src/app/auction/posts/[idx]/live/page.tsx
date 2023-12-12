@@ -82,47 +82,47 @@ export default function ActionPage({ params: { slug } }: Props) {
     }
   }, []);
 
-    /*********************
-   *
-   *       북마크
-   *
-   ********************/
-    const bookmarkClick = () => {
-      if (bookmarked) {
-        setBookmarked(false);
-        setBookmarkCnt(bookmarkCnt-1);
-        auctionDeleteMutation.mutate({
-          userAccessToken: accessToken,
-          boardIdx: postsData!.result.boardAuction.boardIdx
-        });
-      } else {
-        setBookmarked(true);
-        setBookmarkCnt(bookmarkCnt+1);
-        auctionRegisterMutation.mutate({
-          userAccessToken: accessToken,
-          boardIdx: postsData!.result.boardAuction.boardIdx,
-          userIdx: userIdx
-        });
-      }
-    };
-    // 북마크 등록
-    const auctionRegisterMutation = useMutation({
-      mutationFn: auctionRegisterBookmark,
-      onSuccess: (data) => {
-        console.log("===auctionRegisterMutation====");
-        console.log(data);
-        console.log("==============================");
-      },
-    });
-    // 북마크 삭제
-    const auctionDeleteMutation = useMutation({
-      mutationFn: auctionDeleteBookmark,
-      onSuccess: (data) => {
-        console.log("===auctionDeleteMutation====");
-        console.log(data);
-        console.log("============================");
-      },
-    });
+  /*********************
+ *
+ *       북마크
+ *
+ ********************/
+  const bookmarkClick = () => {
+    if (bookmarked) {
+      setBookmarked(false);
+      setBookmarkCnt(bookmarkCnt - 1);
+      auctionDeleteMutation.mutate({
+        userAccessToken: accessToken,
+        boardIdx: postsData!.result.boardAuction.boardIdx
+      });
+    } else {
+      setBookmarked(true);
+      setBookmarkCnt(bookmarkCnt + 1);
+      auctionRegisterMutation.mutate({
+        userAccessToken: accessToken,
+        boardIdx: postsData!.result.boardAuction.boardIdx,
+        userIdx: userIdx
+      });
+    }
+  };
+  // 북마크 등록
+  const auctionRegisterMutation = useMutation({
+    mutationFn: auctionRegisterBookmark,
+    onSuccess: (data) => {
+      console.log("===auctionRegisterMutation====");
+      console.log(data);
+      console.log("==============================");
+    },
+  });
+  // 북마크 삭제
+  const auctionDeleteMutation = useMutation({
+    mutationFn: auctionDeleteBookmark,
+    onSuccess: (data) => {
+      console.log("===auctionDeleteMutation====");
+      console.log(data);
+      console.log("============================");
+    },
+  });
 
   useEffect(() => {
     if (streamKey != "") {
@@ -194,7 +194,7 @@ export default function ActionPage({ params: { slug } }: Props) {
               </div>
 
               <div className="flex basis-1/2 flex-row-reverse text-center">
-              {bookmarked ? (
+                {bookmarked ? (
                   <a onClick={bookmarkClick}>
                     <Image
                       src={like_maincolor}
@@ -204,18 +204,18 @@ export default function ActionPage({ params: { slug } }: Props) {
                       className="like_btn m-auto mr-1"
                     />
                   </a>
-                  ) : (
-                    <a onClick={bookmarkClick}>
-                      <Image
-                        src={unlike_black}
-                        width={20}
-                        height={20}
-                        alt="북마크"
-                        className="like_btn m-auto mr-1"
-                      />
-                    </a>
-                  )}
-                  <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
+                ) : (
+                  <a onClick={bookmarkClick}>
+                    <Image
+                      src={unlike_black}
+                      width={20}
+                      height={20}
+                      alt="북마크"
+                      className="like_btn m-auto mr-1"
+                    />
+                  </a>
+                )}
+                <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
               </div>
             </div>
           </div>
