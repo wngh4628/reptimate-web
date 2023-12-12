@@ -167,15 +167,17 @@ export default function AuctionPostsView() {
       });
       setIsLoggedIn(true);
     }
+    const match = pathName.match(/\/auction\/posts\/(\d+)/);
+    const extractedNumber = match ? match[1] : "";
+    setroomName(extractedNumber);
+
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken) {
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
-        const match = pathName.match(/\/auction\/posts\/(\d+)/);
-        const extractedNumber = match ? match[1] : "";
-        setroomName(extractedNumber);
+
 
         setUserIdx(userData.USER_DATA.idx);
         setNickname(userData.USER_DATA.nickname);
@@ -461,7 +463,7 @@ export default function AuctionPostsView() {
           );
         }
       };
-      
+
       const countdownInterval = setInterval(updateCountdown, 1000);
       updateCountdown(); // Initial call to set the countdown
 
