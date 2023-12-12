@@ -5,22 +5,19 @@ import {
   FormEvent,
   useCallback,
   useEffect,
-  useMemo,
-  useRef,
   useState,
 } from "react";
-import { useDrag, useDrop } from "react-dnd";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { auctionEdit } from "@/api/auction/auction";
 import { GetAuctionPostsView, Images } from "@/service/my/auction";
-// import VideoThumbnail from "../VideoThumbnail";
 import { useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
 import ImageSelecterEdit from "../ImageSelecterEdit";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
+import TimePicker from "../TimePicker";
 
 interface FileItem {
   idx: number;
@@ -39,7 +36,6 @@ interface Option {
 const uploadUri = "https://www.reptimate.store/conv/board/upload";
 
 const sellingOption: Option[] = [
-  { value: "temp", label: "임시 저장" },
   { value: "selling", label: "판매중" },
   { value: "end", label: "판매완료" },
   { value: "reservation", label: "예약중" },
@@ -223,6 +219,16 @@ export default function AuctionTemp() {
 
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   function makeStreamKey() {
     let streamKey = "";
@@ -522,9 +528,7 @@ export default function AuctionTemp() {
   const mutation = useMutation({
     mutationFn: auctionEdit,
     onSuccess: (data) => {
-      alert(
-        "게시글 수정이 완료되었습니다.\n임시 저장된 글은 마이페이지 메뉴의 확인 하실 수 있습니다."
-      );
+      alert("경매글이 등록되었습니다.");
       router.replace(`/my/auction`);
       setIsLoading(false);
     },
@@ -542,155 +546,166 @@ export default function AuctionTemp() {
 
       // Update the endTime state only if the selected time is not before the current time
       if (endTime >= currentTime) {
-        setIsLoading(true);
+        const confirmation = window.confirm(
+          "경매글을 등록하면 다시 임시 저장 상태로 되돌릴 수 없습니다.\n경매글을 등록하시겠습니까?"
+        );
 
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷
-        const day = String(today.getDate()).padStart(2, "0"); // 일자를 2자리로 포맷
+        if (confirmation) {
+          setIsLoading(true);
 
-        const formattedDate = `${year}-${month}-${day}`;
+          const today = new Date();
+          const year = today.getFullYear();
+          const month = String(today.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷
+          const day = String(today.getDate()).padStart(2, "0"); // 일자를 2자리로 포맷
 
-        const minutesToSubtract = parseInt(alretTime, 10);
+          const formattedDate = `${year}-${month}-${day}`;
 
-        const newTime = new Date(today.getTime() - minutesToSubtract * 60000);
+          const minutesToSubtract = parseInt(alretTime, 10);
 
-        // newTime을 원하는 형식으로 포맷팅하기 (예: "2023-09-14 12:30" 형태)
-        const newYear = newTime.getFullYear();
-        const newMonth = String(newTime.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 1을 더하고 두 자리로 포맷팅
-        const newDay = String(newTime.getDate()).padStart(2, "0");
-        const hours = String(newTime.getHours()).padStart(2, "0");
-        const minutes = String(newTime.getMinutes()).padStart(2, "0");
+          const newTime = new Date(today.getTime() - minutesToSubtract * 60000);
 
-        const formattedTime = `${newYear}-${newMonth}-${newDay}T${hours}:${minutes}`;
+          // newTime을 원하는 형식으로 포맷팅하기 (예: "2023-09-14 12:30" 형태)
+          const newYear = newTime.getFullYear();
+          const newMonth = String(newTime.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 1을 더하고 두 자리로 포맷팅
+          const newDay = String(newTime.getDate()).padStart(2, "0");
+          const hours = String(newTime.getHours()).padStart(2, "0");
+          const minutes = String(newTime.getMinutes()).padStart(2, "0");
 
-        let priceReplace = price.replace(regExp, "");
-        let startPriceReplace = startPrice.replace(regExp, "");
-        let unitReplace = unit.replace(regExp, "");
-        const requestData = {
-          auctionIdx: auctionIdx,
-          state: selling,
-          boardIdx: idx || "",
-          userIdx: currentUserIdx?.toString() || "",
-          title: title,
-          category: "auction",
-          description: description,
-          price: priceReplace,
-          gender: selectedGender || "",
-          size: selectedSize || "",
-          variety: variety,
-          pattern: pattern,
-          startPrice: startPriceReplace,
-          unit: unitReplace,
-          endTime: formattedDate + "T" + endTime,
-          alertTime: formattedTime,
-          extensionRule: rule,
-          birthDate: birthDate,
-          streamKey: streamKey,
-          userAccessToken: userAccessToken || "",
-          fileUrl: "",
-        };
+          const formattedTime = `${newYear}-${newMonth}-${newDay}T${hours}:${minutes}`;
 
-        if (
-          title !== "" &&
-          price !== "" &&
-          selectedGender !== "" &&
-          selectedSize !== "" &&
-          variety !== "" &&
-          pattern !== "" &&
-          startPrice !== "" &&
-          unit !== "" &&
-          endTime !== "" &&
-          rule !== "" &&
-          birthDate !== ""
-        ) {
-          if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
-            mutation.mutate(requestData);
-          } else {
-            const formData = new FormData();
-            addFiles.forEach((fileItem) => {
-              formData.append("files", fileItem.file || "");
-            });
+          let priceReplace = price.replace(regExp, "");
+          let startPriceReplace = startPrice.replace(regExp, "");
+          let unitReplace = unit.replace(regExp, "");
+          const requestData = {
+            auctionIdx: auctionIdx,
+            state: "selling",
+            boardIdx: idx || "",
+            userIdx: currentUserIdx?.toString() || "",
+            title: title,
+            category: "auction",
+            description: description,
+            price: priceReplace,
+            gender: selectedGender || "",
+            size: selectedSize || "",
+            variety: variety,
+            pattern: pattern,
+            startPrice: startPriceReplace,
+            unit: unitReplace,
+            endTime: formattedDate + "T" + endTime,
+            alertTime: formattedTime,
+            extensionRule: rule,
+            birthDate: birthDate,
+            streamKey: streamKey,
+            userAccessToken: userAccessToken || "",
+            fileUrl: "",
+          };
 
-            const modifySqenceArr = allFiles.map((item) => item.mediaSequence);
-            const deleteIdxArr = deletedFiles;
-            const FileIdx = addFiles.map((item) => item.mediaSequence);
-            // Append JSON data to the FormData object
-            formData.append("modifySqenceArr", JSON.stringify(modifySqenceArr));
-            formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
-            formData.append("FileIdx", JSON.stringify(FileIdx));
+          if (
+            title !== "" &&
+            price !== "" &&
+            selectedGender !== "" &&
+            selectedSize !== "" &&
+            variety !== "" &&
+            pattern !== "" &&
+            startPrice !== "" &&
+            unit !== "" &&
+            endTime !== "" &&
+            rule !== "" &&
+            birthDate !== ""
+          ) {
+            if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
+              mutation.mutate(requestData);
+            } else {
+              const formData = new FormData();
+              addFiles.forEach((fileItem) => {
+                formData.append("files", fileItem.file || "");
+              });
 
-            try {
-              // Send both FormData and JSON data to the server
-              const response = await axios.patch(
-                `https://www.reptimate.store/conv/board/update/${idx}`,
-                formData,
-                {
-                  headers: {
-                    Authorization: `Bearer ${userAccessToken}`,
-                    "Content-Type": "multipart/form-data",
-                  },
-                }
+              const modifySqenceArr = allFiles.map(
+                (item) => item.mediaSequence
               );
-              if (response.status === 201) {
-                const responseData = response.data;
-                // Now, you can send additional data to the API server
-                const requestData1 = {
-                  auctionIdx: auctionIdx,
-                  state: selling,
-                  boardIdx: idx,
-                  userIdx: currentUserIdx?.toString() || "",
-                  title: title,
-                  category: "auction",
-                  description: description,
-                  price: priceReplace,
-                  gender: selectedGender || "",
-                  size: selectedSize || "",
-                  variety: variety,
-                  pattern: pattern,
-                  startPrice: startPriceReplace,
-                  unit: unitReplace,
-                  endTime: formattedDate + "T" + endTime,
-                  alertTime: formattedTime,
-                  extensionRule: rule,
-                  birthDate: birthDate,
-                  streamKey: streamKey,
-                  userAccessToken: userAccessToken || "",
-                  fileUrl: responseData.result, // Use the response from the first server
-                };
-                mutation.mutate(requestData1);
-              } else {
-                console.error("Error uploading files to the first server.");
-                alert("Error uploading files. Please try again later.");
+              const deleteIdxArr = deletedFiles;
+              const FileIdx = addFiles.map((item) => item.mediaSequence);
+              // Append JSON data to the FormData object
+              formData.append(
+                "modifySqenceArr",
+                JSON.stringify(modifySqenceArr)
+              );
+              formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
+              formData.append("FileIdx", JSON.stringify(FileIdx));
+
+              try {
+                // Send both FormData and JSON data to the server
+                const response = await axios.patch(
+                  `https://www.reptimate.store/conv/board/update/${idx}`,
+                  formData,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${userAccessToken}`,
+                      "Content-Type": "multipart/form-data",
+                    },
+                  }
+                );
+                if (response.status === 201) {
+                  const responseData = response.data;
+                  // Now, you can send additional data to the API server
+                  const requestData1 = {
+                    auctionIdx: auctionIdx,
+                    state: "selling",
+                    boardIdx: idx,
+                    userIdx: currentUserIdx?.toString() || "",
+                    title: title,
+                    category: "auction",
+                    description: description,
+                    price: priceReplace,
+                    gender: selectedGender || "",
+                    size: selectedSize || "",
+                    variety: variety,
+                    pattern: pattern,
+                    startPrice: startPriceReplace,
+                    unit: unitReplace,
+                    endTime: formattedDate + "T" + endTime,
+                    alertTime: formattedTime,
+                    extensionRule: rule,
+                    birthDate: birthDate,
+                    streamKey: streamKey,
+                    userAccessToken: userAccessToken || "",
+                    fileUrl: responseData.result, // Use the response from the first server
+                  };
+                  mutation.mutate(requestData1);
+                } else {
+                  console.error("Error uploading files to the first server.");
+                  alert("Error uploading files. Please try again later.");
+                  setIsLoading(false);
+                }
+              } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred. Please try again later.");
                 setIsLoading(false);
               }
-            } catch (error) {
-              console.error("Error:", error);
-              alert("An error occurred. Please try again later.");
-              setIsLoading(false);
             }
+          } else {
+            // Create a list of missing fields
+            const missingFields = [];
+            if (title === "") missingFields.push("제목");
+            if (price === "") missingFields.push("시작 가격");
+            if (variety === "") missingFields.push("품종");
+            if (pattern === "") missingFields.push("모프");
+            if (startPrice === "" || "null") missingFields.push("시작 가격");
+            if (unit === "" || "null") missingFields.push("경매 단위");
+            if (endTime === "" || "null") missingFields.push("마감 시간");
+            if (rule === "" || "null") missingFields.push("연장 룰");
+            if (birthDate === "") missingFields.push("생년월일");
+            if (selectedGender === "" || "null") missingFields.push("성별");
+            if (selectedSize === "" || "null") missingFields.push("크기");
+
+            // Create the alert message based on missing fields
+            let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
+            alertMessage += missingFields.join(", ");
+
+            alert(alertMessage);
+            setIsLoading(false);
           }
-        } else {
-          // Create a list of missing fields
-          const missingFields = [];
-          if (title === "") missingFields.push("제목");
-          if (price === "") missingFields.push("시작 가격");
-          if (variety === "") missingFields.push("품종");
-          if (pattern === "") missingFields.push("모프");
-          if (startPrice === "" || "null") missingFields.push("시작 가격");
-          if (unit === "" || "null") missingFields.push("경매 단위");
-          if (endTime === "" || "null") missingFields.push("마감 시간");
-          if (rule === "" || "null") missingFields.push("연장 룰");
-          if (birthDate === "") missingFields.push("생년월일");
-          if (selectedGender === "" || "null") missingFields.push("성별");
-          if (selectedSize === "" || "null") missingFields.push("크기");
-
-          // Create the alert message based on missing fields
-          let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
-          alertMessage += missingFields.join(", ");
-
-          alert(alertMessage);
-          setIsLoading(false);
         }
       } else {
         // You can optionally provide feedback to the user (e.g., show an error message)
@@ -760,22 +775,22 @@ export default function AuctionTemp() {
     }
   };
 
-  const handleEndTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
+  const handleTimeChange = (selectedTime: string) => {
+    console.log("Selected Time:", selectedTime);
 
-    // Get the current time in HH:mm format
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, "0");
     const minutes = now.getMinutes().toString().padStart(2, "0");
     const currentTime = `${hours}:${minutes}`;
 
     // Update the endTime state only if the selected time is not before the current time
-    if (inputValue >= currentTime) {
-      setEndTime(inputValue);
+    if (selectedTime >= currentTime) {
+      setEndTime(selectedTime);
     } else {
       // You can optionally provide feedback to the user (e.g., show an error message)
       alert("마감 시간은 현재 시간 이후의 시간만 선택 가능합니다.");
     }
+    // You can perform further actions with the selected time
   };
 
   return (
@@ -786,7 +801,7 @@ export default function AuctionTemp() {
         </div>
       )}
       <PC>
-        <h2 className="flex flex-col items-center justify-center text-4xl font-bold p-10">
+        <h2 className="flex flex-col items-center justify-center text-4xl font-bold p-10 pt-20">
           경매 등록
         </h2>
       </PC>
@@ -796,7 +811,7 @@ export default function AuctionTemp() {
           경매 등록
         </h2>
       </Mobile>
-      <div>
+      {/* <div>
         <p className="font-bold text-xl my-2">거래 상태</p>
         <select
           className="text-black bg-white focus:outline-none text-lg mb-6"
@@ -809,7 +824,7 @@ export default function AuctionTemp() {
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
 
       <PC>
         <DndProvider backend={HTML5Backend}>
@@ -946,12 +961,20 @@ export default function AuctionTemp() {
         </div>
         <div className="mb-4">
           <p className="font-bold text-xl my-2">마감 시간</p>
-          <input
-            type="time"
-            className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
-            value={endTime}
-            onChange={handleEndTimeChange}
-          />
+          <div className="flex flex-row">
+            <input
+              type="time"
+              readOnly
+              className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-[90%]"
+              value={endTime}
+            />
+            <button
+              className={`w-[10%] py-2 rounded text-md text-white font-bold flex-1 bg-main-color`}
+              onClick={handleOpenModal}
+            >
+              선택
+            </button>
+          </div>
         </div>
         <div className="mb-4">
           <p className="font-bold text-xl my-2">연장 룰</p>
@@ -1144,6 +1167,11 @@ export default function AuctionTemp() {
           등록 중...
         </button>
       )}
+      <TimePicker
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onChange={handleTimeChange}
+      />
     </div>
   );
 }

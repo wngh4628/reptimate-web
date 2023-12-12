@@ -20,6 +20,7 @@ import ImageSelecterEdit from "../ImageSelecterEdit";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
+import TimePicker from "../TimePicker";
 
 interface FileItem {
   idx: number;
@@ -38,7 +39,6 @@ interface Option {
 const uploadUri = "https://www.reptimate.store/conv/board/upload";
 
 const sellingOption: Option[] = [
-  { value: "temp", label: "임시 저장" },
   { value: "selling", label: "판매중" },
   { value: "end", label: "판매완료" },
   { value: "reservation", label: "예약중" },
@@ -220,6 +220,16 @@ export default function AuctionEdit() {
   const [pattern, setPattern] = useState<string>("모프를 선택하세요");
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     setSelling("selling");
@@ -499,10 +509,8 @@ export default function AuctionEdit() {
   const mutation = useMutation({
     mutationFn: auctionEdit,
     onSuccess: (data) => {
-      alert(
-        "게시글 수정이 완료되었습니다.\n임시 저장된 글은 마이페이지 메뉴의 확인 하실 수 있습니다."
-      );
-      router.replace("/auction");
+      alert("게시글 수정이 완료되었습니다.");
+      window.history.back();
     },
     onError: (data) => {
       alert(data);
@@ -743,22 +751,22 @@ export default function AuctionEdit() {
     }
   };
 
-  const handleEndTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
+  const handleTimeChange = (selectedTime: string) => {
+    console.log("Selected Time:", selectedTime);
 
-    // Get the current time in HH:mm format
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, "0");
     const minutes = now.getMinutes().toString().padStart(2, "0");
     const currentTime = `${hours}:${minutes}`;
 
     // Update the endTime state only if the selected time is not before the current time
-    if (inputValue >= currentTime) {
-      setEndTime(inputValue);
+    if (selectedTime >= currentTime) {
+      setEndTime(selectedTime);
     } else {
       // You can optionally provide feedback to the user (e.g., show an error message)
       alert("마감 시간은 현재 시간 이후의 시간만 선택 가능합니다.");
     }
+    // You can perform further actions with the selected time
   };
 
   return (
@@ -769,7 +777,7 @@ export default function AuctionEdit() {
         </div>
       )}
       <PC>
-        <h2 className="flex flex-col items-center justify-center text-4xl font-bold p-10">
+        <h2 className="flex flex-col items-center justify-center text-4xl font-bold p-10 pt-20">
           경매 등록
         </h2>
       </PC>
@@ -866,12 +874,20 @@ export default function AuctionEdit() {
 
         <div className="mb-4">
           <p className="font-bold text-xl my-2">마감 시간</p>
-          <input
-            type="time"
-            className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
-            value={endTime}
-            onChange={handleEndTimeChange}
-          />
+          <div className="flex flex-row">
+            <input
+              type="time"
+              readOnly
+              className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-[90%]"
+              value={endTime}
+            />
+            <button
+              className={`w-[10%] py-2 rounded text-md text-white font-bold flex-1 bg-main-color`}
+              onClick={handleOpenModal}
+            >
+              선택
+            </button>
+          </div>
         </div>
 
         <div className="mb-4">
@@ -1071,6 +1087,11 @@ export default function AuctionEdit() {
           등록 중...
         </button>
       )}
+      <TimePicker
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onChange={handleTimeChange}
+      />
     </div>
   );
 }
