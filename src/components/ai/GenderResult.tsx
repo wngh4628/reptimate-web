@@ -47,10 +47,10 @@ export default function GenderResult(props:any) {
     return(
         <div>
             <PC>
-                <div className="mt-[100px]">
+                <div className="mt-[150px]">
                     <div className="max-w-screen-sm mx-auto mb-10">
 
-                        <h2 className="text-3xl font-bold mt-10">암수 구분 결과</h2>
+                        <h2 className="text-3xl font-bold">암수 구분 결과</h2>
 
                         <div className="flex mt-10">
                             <div className={`flex flex-col justify-center items-center w-[290px] h-[290px] shadow-md shadow-gray-400 rounded-lg bg-gray-100`}>

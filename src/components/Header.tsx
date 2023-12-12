@@ -452,9 +452,10 @@ export default function Header() {
                   }`}>
                   <img src="/img/search.png" />
               </div>
-
           </nav>
+
         </div>
+        
         <div
           className={`${isChatVisisible
             ? "bg-white w-full h-[460px] z-[9999] fixed top-0 border-[2px] border-gray-300 flex flex-col shadow-md"

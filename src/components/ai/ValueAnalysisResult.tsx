@@ -191,7 +191,7 @@ export default function ValueAnalysisResult(props:any) {
         )}
 
           {/* 가치 판단 결과 */}
-          <div className="max-w-screen-lg mx-auto mt-10">
+          <div className="max-w-screen-lg mx-auto mt-40">
           
           <h2 className="text-3xl font-bold">가치 판단 결과</h2>
 
@@ -354,7 +354,7 @@ export default function ValueAnalysisResult(props:any) {
         )}
 
           {/* 가치 판단 결과 */}
-          <div className="max-w-screen-lg mx-auto mt-4 p-4">
+          <div className="max-w-screen-lg mx-auto mt-10 p-4">
           
           <h2 className="text-2xl font-bold">가치 판단 결과</h2>
           <div
