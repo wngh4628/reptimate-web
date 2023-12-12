@@ -291,9 +291,9 @@ export default function AuctionEdit() {
     getData();
   }, []);
 
-  useEffect(() => {}, [allFiles]);
+  useEffect(() => { }, [allFiles]);
 
-  useEffect(() => {}, [deletedFiles]);
+  useEffect(() => { }, [deletedFiles]);
 
   const handleVarietyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVariety = e.target.value;
@@ -670,53 +670,11 @@ export default function AuctionEdit() {
               alert("Error uploading files. Please try again later.");
               setIsLoading(false);
             }
-<<<<<<< HEAD
-          );
-
-          if (response.status === 201) {
-            const responseData = response.data;
-            // Now, you can send additional data to the API server
-            const requestData1 = {
-              auctionIdx: auctionIdx,
-              state: selling,
-              boardIdx: idx,
-              userIdx: currentUserIdx?.toString() || "",
-              title: title,
-              category: "auction",
-              description: description,
-              price: priceReplace,
-              gender: selectedGender || "",
-              size: selectedSize || "",
-              variety: variety,
-              pattern: pattern,
-              startPrice: startPriceReplace,
-              unit: unitReplace,
-              endTime: formattedDate + "T" + endTime,
-              alertTime: formattedTime,
-              extensionRule: rule,
-              birthDate: birthDate,
-              streamKey: streamKey,
-              userAccessToken: userAccessToken || "",
-              fileUrl: responseData.result, // Use the response from the first server
-            };
-
-            mutation.mutate(requestData1);
-          } else {
-            // console.error("Error uploading files to the first server.");
-            // alert("Error uploading files. Please try again later.");
-            setIsLoading(false);
-          }
-        } catch (error) {
-          // console.error("Error:", error);
-          // alert("An error occurred. Please try again later.");
-          setIsLoading(false);
-=======
           } catch (error) {
             console.error("Error:", error);
             alert("An error occurred. Please try again later.");
             setIsLoading(false);
           }
->>>>>>> feature/board
         }
       } else {
         // Create a list of missing fields
@@ -742,36 +700,8 @@ export default function AuctionEdit() {
         setIsLoading(false);
       }
     } else {
-<<<<<<< HEAD
-      // Create a list of missing fields
-      const missingFields = [];
-      if (title === "") missingFields.push("제목");
-      if (price === "") missingFields.push("시작 가격");
-      if (variety === "품종을 선택하세요") missingFields.push("품종");
-      if (pattern === "모프를 선택하세요") missingFields.push("모프");
-      if (startPrice === "" || "null") missingFields.push("시작 가격");
-      if (unit === "" || "null") missingFields.push("경매 단위");
-      if (endTime === "" || "null") missingFields.push("마감 시간");
-      if (rule === "" || "null") missingFields.push("연장 룰");
-      if (birthDate === "") missingFields.push("생년월일");
-      if (selectedGender === "" || "null") missingFields.push("성별");
-      if (selectedSize === "" || "null") missingFields.push("크기");
-      if (description === "") missingFields.push("내용");
-
-      // Create the alert message based on missing fields
-      let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
-      alertMessage += missingFields.join(", ");
-
-      Swal.fire({
-        text: alertMessage,
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
-      setIsLoading(false);
-=======
       // You can optionally provide feedback to the user (e.g., show an error message)
       alert("마감 시간은 현재 시간 이후의 시간만 선택 가능합니다.");
->>>>>>> feature/board
     }
   };
 
@@ -1054,11 +984,10 @@ export default function AuctionEdit() {
           <div className="flex flex-row">
             <button
               className={`w-52 py-2 rounded 
-              ${
-                selectedGender === "수컷"
+              ${selectedGender === "수컷"
                   ? "bg-gender-male-dark-color"
                   : "bg-gender-male-color"
-              } 
+                } 
                 text-lg text-white font-bold flex-1`}
               onClick={() => handleGenderClick("수컷")}
             >
@@ -1066,11 +995,10 @@ export default function AuctionEdit() {
             </button>
             <button
               className={`w-52 py-2 rounded 
-              ${
-                selectedGender === "암컷"
+              ${selectedGender === "암컷"
                   ? "bg-gender-female-dark-color"
                   : "bg-gender-female-color"
-              } 
+                } 
                 text-lg text-white mx-2 font-bold flex-1`}
               onClick={() => handleGenderClick("암컷")}
             >
@@ -1078,11 +1006,10 @@ export default function AuctionEdit() {
             </button>
             <button
               className={`w-52 py-2 rounded 
-              ${
-                selectedGender === "미구분"
+              ${selectedGender === "미구분"
                   ? "bg-gender-none-dark-color"
                   : "bg-gender-none-color"
-              } 
+                } 
               text-lg text-white font-bold flex-1`}
               onClick={() => handleGenderClick("미구분")}
             >
@@ -1095,41 +1022,37 @@ export default function AuctionEdit() {
           <p className="font-bold text-xl my-2">크기</p>
           <div className="flex flex-row">
             <button
-              className={`w-36 py-2 mr-2 rounded ${
-                selectedSize === "베이비"
+              className={`w-36 py-2 mr-2 rounded ${selectedSize === "베이비"
                   ? "bg-main-color"
                   : "bg-gender-none-color"
-              } text-lg text-white font-bold flex-1`}
+                } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("베이비")}
             >
               베이비
             </button>
             <button
-              className={`w-36 py-2 mr-2 rounded ${
-                selectedSize === "아성체"
+              className={`w-36 py-2 mr-2 rounded ${selectedSize === "아성체"
                   ? "bg-main-color"
                   : "bg-gender-none-color"
-              } text-lg text-white font-bold flex-1`}
+                } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("아성체")}
             >
               아성체
             </button>
             <button
-              className={`w-36 py-2 mr-2 rounded ${
-                selectedSize === "준성체"
+              className={`w-36 py-2 mr-2 rounded ${selectedSize === "준성체"
                   ? "bg-main-color"
                   : "bg-gender-none-color"
-              } text-lg text-white font-bold flex-1`}
+                } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("준성체")}
             >
               준성체
             </button>
             <button
-              className={`w-36 py-2 rounded ${
-                selectedSize === "성체"
+              className={`w-36 py-2 rounded ${selectedSize === "성체"
                   ? "bg-main-color"
                   : "bg-gender-none-color"
-              } text-lg text-white font-bold flex-1`}
+                } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("성체")}
             >
               성체

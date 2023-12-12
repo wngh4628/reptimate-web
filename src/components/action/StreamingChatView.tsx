@@ -138,11 +138,7 @@ export default function StreamingChatView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-<<<<<<< HEAD
         `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=0`
-=======
-        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=`
->>>>>>> feature/board
       );
       // console.log("========getData() : 경매글 정보 불러오기====================");
       // console.log(response.data);
@@ -797,40 +793,22 @@ export default function StreamingChatView() {
         <div className="flex py-[0.5rem] text-sm bg-gray-100 w-full">
           <span
             onClick={viewChat}
-<<<<<<< HEAD
-            className={`${
-              sideView === "chat" ? "text-main-color" : "hover:cursor-pointer"
-            } basis-1/3 text-center border-r border-gray-400`}
-=======
-            className={`${sideView === "chat" ? "text-main-color" : ""
+            className={`${sideView === "chat" ? "text-main-color" : "hover:cursor-pointer"
               } basis-1/3 text-center border-r border-gray-400`}
->>>>>>> feature/board
           >
             실시간 채팅
           </span>
           <span
             onClick={viewParticipate}
-<<<<<<< HEAD
-            className={`${
-              sideView === "participate" ? "text-main-color" : "hover:cursor-pointer"
-            } basis-1/3 text-center border-r border-gray-400`}
-=======
-            className={`${sideView === "participate" ? "text-main-color" : ""
+            className={`${sideView === "participate" ? "text-main-color" : "hover:cursor-pointer"
               } basis-1/3 text-center border-r border-gray-400`}
->>>>>>> feature/board
           >
             참가자
           </span>
           <span
             onClick={viewBid}
-<<<<<<< HEAD
-            className={`${
-              sideView === "bid" ? "text-main-color" : "hover:cursor-pointer"
-            } basis-1/3 text-center`}
-=======
-            className={`${sideView === "bid" ? "text-main-color" : ""
+            className={`${sideView === "bid" ? "text-main-color" : "hover:cursor-pointer"
               } basis-1/3 text-center`}
->>>>>>> feature/board
           >
             입찰
           </span>
