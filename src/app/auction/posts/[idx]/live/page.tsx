@@ -61,7 +61,7 @@ export default function ActionPage({ params: { slug } }: Props) {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${userIdx}`
       );
       // Assuming your response data has a 'result' property
       console.log(response.data);
@@ -109,18 +109,12 @@ export default function ActionPage({ params: { slug } }: Props) {
     const auctionRegisterMutation = useMutation({
       mutationFn: auctionRegisterBookmark,
       onSuccess: (data) => {
-        console.log("===auctionRegisterMutation====");
-        console.log(data);
-        console.log("==============================");
       },
     });
     // 북마크 삭제
     const auctionDeleteMutation = useMutation({
       mutationFn: auctionDeleteBookmark,
       onSuccess: (data) => {
-        console.log("===auctionDeleteMutation====");
-        console.log(data);
-        console.log("============================");
       },
     });
 
@@ -226,6 +220,8 @@ export default function ActionPage({ params: { slug } }: Props) {
             </div>
           </div>
         </div>
+
+        {/* 우측 채팅뷰 */}
         <div className="lg:w-[20rem] w-full">
           <StreamingChatView></StreamingChatView>
         </div>

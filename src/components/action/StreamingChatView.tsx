@@ -138,7 +138,7 @@ export default function StreamingChatView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=0`
       );
       // console.log("========getData() : 경매글 정보 불러오기====================");
       // console.log(response.data);
@@ -215,6 +215,8 @@ export default function StreamingChatView() {
     joinRoom();
     joinBidRoom();
   }, [profilePath]);
+
+
   useEffect(() => {
     if (userIdx === host) {
       setUserAuth("host");
@@ -233,7 +235,9 @@ export default function StreamingChatView() {
     return numberWithCommas;
   }
 
-  //방에 들어왔을 때 작동하는 함수
+  // 방에 들어왔을 때 작동하는 함수
+  // joinRoom() 정상작동엔 userIdx, roomName, profilePath, nickname 필요.
+  // state에 값이 할당 되지 않을 경우 에러 발생
   const joinRoom = () => {
     const socket = io("https://socket.reptimate.store/LiveChat", {
       path: "/socket.io",
@@ -496,7 +500,7 @@ export default function StreamingChatView() {
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
-      if (userData.USER_DATA.accessToken) {
+      if (!userData.USER_DATA.accessToken) {
         Swal.fire({
           text: "로그인이 필요합니다.",
           icon: "warning",
@@ -713,7 +717,7 @@ export default function StreamingChatView() {
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
-      if (userData.USER_DATA.accessToken) {
+      if (!userData.USER_DATA.accessToken) {
         Swal.fire({
           text: "로그인이 필요합니다.",
           icon: "warning",
@@ -776,6 +780,7 @@ export default function StreamingChatView() {
       setSideView("bid");
     }
   }
+
   return (
     <>
       <div className="flex-col w-full right-0 h-[87%] flex bg-white">
@@ -789,7 +794,7 @@ export default function StreamingChatView() {
           <span
             onClick={viewChat}
             className={`${
-              sideView === "chat" ? "text-main-color" : ""
+              sideView === "chat" ? "text-main-color" : "hover:cursor-pointer"
             } basis-1/3 text-center border-r border-gray-400`}
           >
             실시간 채팅
@@ -797,7 +802,7 @@ export default function StreamingChatView() {
           <span
             onClick={viewParticipate}
             className={`${
-              sideView === "participate" ? "text-main-color" : ""
+              sideView === "participate" ? "text-main-color" : "hover:cursor-pointer"
             } basis-1/3 text-center border-r border-gray-400`}
           >
             참가자
@@ -805,7 +810,7 @@ export default function StreamingChatView() {
           <span
             onClick={viewBid}
             className={`${
-              sideView === "bid" ? "text-main-color" : ""
+              sideView === "bid" ? "text-main-color" : "hover:cursor-pointer"
             } basis-1/3 text-center`}
           >
             입찰
