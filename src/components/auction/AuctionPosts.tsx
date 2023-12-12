@@ -54,15 +54,15 @@ export default function AuctionPosts() {
       );
       setData(
         (prevData) =>
-          ({
-            result: {
-              items: [
-                ...(prevData?.result.items || []),
-                ...response.data.result.items,
-              ],
-              existsNextPage: response.data.result.existsNextPage,
-            },
-          } as getResponseAuction)
+        ({
+          result: {
+            items: [
+              ...(prevData?.result.items || []),
+              ...response.data.result.items,
+            ],
+            existsNextPage: response.data.result.existsNextPage,
+          },
+        } as getResponseAuction)
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
@@ -104,31 +104,31 @@ export default function AuctionPosts() {
   const itemlist: Auction[] =
     data !== null && data.result.items
       ? data.result.items.map((item) => ({
-          idx: item.idx,
-          view: item.view,
-          userIdx: item.userIdx,
-          title: item.title,
-          category: item.category,
-          createdAt: new Date(item.writeDate),
-          thumbnail: item.thumbnail,
-          nickname: item.UserInfo.nickname,
-          currentPrice: item.boardAuction?.currentPrice,
-          endTime: item.boardAuction?.endTime,
-          gender: item.boardAuction?.gender,
-          size: item.boardAuction?.size,
-          variety: item.boardAuction?.variety,
-          state: item.boardAuction?.state,
-          unit: item.boardAuction?.unit,
-          boardIdx: item.boardAuction?.boardIdx,
-          profilePath: item.UserInfo.profilePath,
-        }))
+        idx: item.idx,
+        view: item.view,
+        userIdx: item.userIdx,
+        title: item.title,
+        category: item.category,
+        createdAt: new Date(item.writeDate),
+        thumbnail: item.thumbnail,
+        nickname: item.UserInfo.nickname,
+        currentPrice: item.boardAuction?.currentPrice,
+        endTime: item.boardAuction?.endTime,
+        gender: item.boardAuction?.gender,
+        size: item.boardAuction?.size,
+        variety: item.boardAuction?.variety,
+        state: item.boardAuction?.state,
+        unit: item.boardAuction?.unit,
+        boardIdx: item.boardAuction?.boardIdx,
+        profilePath: item.UserInfo.profilePath,
+      }))
       : [];
 
   return (
     <section>
       <PC>
         <div className="mt-24">
-           {/* 광고 배너 */}
+          {/* 광고 배너 */}
           <BannerSlider />
           <div className="flex items-center relative ml-[40px] mr-[40px]" >
             <h2 className="font-bold text-[20px]">경매</h2>
@@ -148,7 +148,7 @@ export default function AuctionPosts() {
           </div>
         </div>
       </PC>
-      
+
       <Mobile>
         <div className="mt-11">
           <BannerSlider />
@@ -190,7 +190,7 @@ export default function AuctionPosts() {
         {data !== null && data.result.items ? (
           <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-[16px] pr-[16px]">
             {itemlist.map((post) => (
-                <AuctionPostCard post={post} key={post.idx}/>
+              <AuctionPostCard post={post} key={post.idx} />
             ))}
           </ul>
         ) : (

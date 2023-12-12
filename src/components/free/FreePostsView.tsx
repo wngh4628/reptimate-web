@@ -292,7 +292,7 @@ export default function FreePostsView() {
   };
 
   let userAccessToken: string | null = null;
-  let currentUserIdx: number | null = null;
+  let currentUserIdx: number | null = 0;
   let userProfilePath: string | null = null;
   let userNickname: string | null = null;
   if (typeof window !== "undefined") {

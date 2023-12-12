@@ -21,6 +21,7 @@ import ImageSelecterEdit from "../ImageSelecterEdit";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
+import TimePicker from "../TimePicker";
 
 
 interface FileItem {
@@ -156,10 +157,7 @@ export default function AuctionEdit() {
     };
 
     return (
-      <button
-        onClick={handleGoBack}
-        className="cursor-poiter px-2 font-bold mt-12"
-      >
+      <button onClick={handleGoBack} className="cursor-poiter px-2 font-bold">
         &lt; 뒤로가기
       </button>
     );
@@ -225,6 +223,16 @@ export default function AuctionEdit() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   useEffect(() => {
     setSelling("selling");
     setRule("0");
@@ -247,9 +255,13 @@ export default function AuctionEdit() {
       setSelectedGender(post?.boardAuction.gender || "");
       setSelectedSize(post?.boardAuction.size || "");
 
-      setPrice(handleCommaReplace(post?.boardAuction.buyPrice.toString()) || "");
+      setPrice(
+        handleCommaReplace(post?.boardAuction.buyPrice.toString()) || ""
+      );
       setDescription(post?.description || "");
-      setstartPrice(handleCommaReplace(post?.boardAuction.startPrice.toString()) || "");
+      setstartPrice(
+        handleCommaReplace(post?.boardAuction.startPrice.toString()) || ""
+      );
       setunit(handleCommaReplace(post?.boardAuction.unit.toString()) || "");
       setEndTime(post?.boardAuction.endTime.split(" ")[1] || "");
       setRule(post?.boardAuction.extensionRule || "0");
@@ -279,9 +291,9 @@ export default function AuctionEdit() {
     getData();
   }, []);
 
-  useEffect(() => { }, [allFiles]);
+  useEffect(() => {}, [allFiles]);
 
-  useEffect(() => { }, [deletedFiles]);
+  useEffect(() => {}, [deletedFiles]);
 
   const handleVarietyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVariety = e.target.value;
@@ -526,96 +538,139 @@ export default function AuctionEdit() {
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setIsLoading(true);
+    const now = new Date();
+    const nowHours = now.getHours().toString().padStart(2, "0");
+    const nowMinutes = now.getMinutes().toString().padStart(2, "0");
+    const currentTime = `${nowHours}:${nowMinutes}`;
 
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷
-    const day = String(today.getDate()).padStart(2, "0"); // 일자를 2자리로 포맷
+    // Update the endTime state only if the selected time is not before the current time
+    if (endTime >= currentTime) {
+      setIsLoading(true);
 
-    const formattedDate = `${year}-${month}-${day}`;
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷
+      const day = String(today.getDate()).padStart(2, "0"); // 일자를 2자리로 포맷
 
-    const minutesToSubtract = parseInt(alretTime, 10);
+      const formattedDate = `${year}-${month}-${day}`;
 
-    const newTime = new Date(today.getTime() - minutesToSubtract * 60000);
+      const minutesToSubtract = parseInt(alretTime, 10);
 
-    // newTime을 원하는 형식으로 포맷팅하기 (예: "2023-09-14 12:30" 형태)
-    const newYear = newTime.getFullYear();
-    const newMonth = String(newTime.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 1을 더하고 두 자리로 포맷팅
-    const newDay = String(newTime.getDate()).padStart(2, "0");
-    const hours = String(newTime.getHours()).padStart(2, "0");
-    const minutes = String(newTime.getMinutes()).padStart(2, "0");
+      const newTime = new Date(today.getTime() - minutesToSubtract * 60000);
 
-    const formattedTime = `${newYear}-${newMonth}-${newDay}T${hours}:${minutes}`;
+      // newTime을 원하는 형식으로 포맷팅하기 (예: "2023-09-14 12:30" 형태)
+      const newYear = newTime.getFullYear();
+      const newMonth = String(newTime.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 1을 더하고 두 자리로 포맷팅
+      const newDay = String(newTime.getDate()).padStart(2, "0");
+      const hours = String(newTime.getHours()).padStart(2, "0");
+      const minutes = String(newTime.getMinutes()).padStart(2, "0");
 
-    let priceReplace = price.replace(regExp, '');
-    let startPriceReplace = startPrice.replace(regExp, '');
-    let unitReplace = unit.replace(regExp, '');
-    const requestData = {
-      auctionIdx: auctionIdx,
-      state: selling,
-      boardIdx: idx || "",
-      userIdx: currentUserIdx?.toString() || "",
-      title: title,
-      category: "auction",
-      description: description,
-      price: priceReplace,
-      gender: selectedGender || "",
-      size: selectedSize || "",
-      variety: variety,
-      pattern: pattern,
-      startPrice: startPriceReplace,
-      unit: unitReplace,
-      endTime: formattedDate + "T" + endTime,
-      alertTime: formattedTime,
-      extensionRule: rule,
-      birthDate: birthDate,
-      streamKey: streamKey,
-      userAccessToken: userAccessToken || "",
-      fileUrl: "",
-    };
+      const formattedTime = `${newYear}-${newMonth}-${newDay}T${hours}:${minutes}`;
 
-    if (
-      title !== "" &&
-      price !== "" &&
-      selectedGender !== "" &&
-      selectedSize !== "" &&
-      variety !== "" &&
-      pattern !== "" &&
-      startPrice !== "" &&
-      unit !== "" &&
-      endTime !== "" &&
-      rule !== "" &&
-      birthDate !== "" &&
-      description !== ""
-    ) {
-      if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
-        mutation.mutate(requestData);
-      } else {
-        const formData = new FormData();
-        addFiles.forEach((fileItem) => {
-          formData.append("files", fileItem.file || "");
-        });
+      let priceReplace = price.replace(regExp, "");
+      let startPriceReplace = startPrice.replace(regExp, "");
+      let unitReplace = unit.replace(regExp, "");
+      const requestData = {
+        auctionIdx: auctionIdx,
+        state: selling,
+        boardIdx: idx || "",
+        userIdx: currentUserIdx?.toString() || "",
+        title: title,
+        category: "auction",
+        description: description,
+        price: priceReplace,
+        gender: selectedGender || "",
+        size: selectedSize || "",
+        variety: variety,
+        pattern: pattern,
+        startPrice: startPriceReplace,
+        unit: unitReplace,
+        endTime: formattedDate + "T" + endTime,
+        alertTime: formattedTime,
+        extensionRule: rule,
+        birthDate: birthDate,
+        streamKey: streamKey,
+        userAccessToken: userAccessToken || "",
+        fileUrl: "",
+      };
 
-        const modifySqenceArr = allFiles.map((item) => item.mediaSequence);
-        const deleteIdxArr = deletedFiles;
-        const FileIdx = addFiles.map((item) => item.mediaSequence);
-        // Append JSON data to the FormData object
-        formData.append("modifySqenceArr", JSON.stringify(modifySqenceArr));
-        formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
-        formData.append("FileIdx", JSON.stringify(FileIdx));
+      if (
+        title !== "" &&
+        price !== "" &&
+        selectedGender !== "" &&
+        selectedSize !== "" &&
+        variety !== "" &&
+        pattern !== "" &&
+        startPrice !== "" &&
+        unit !== "" &&
+        endTime !== "" &&
+        rule !== "" &&
+        birthDate !== "" &&
+        description !== ""
+      ) {
+        if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
+          mutation.mutate(requestData);
+        } else {
+          const formData = new FormData();
+          addFiles.forEach((fileItem) => {
+            formData.append("files", fileItem.file || "");
+          });
 
-        try {
-          // Send both FormData and JSON data to the server
-          const response = await axios.patch(
-            `https://www.reptimate.store/conv/board/update/${idx}`,
-            formData,
-            {
-              headers: {
-                Authorization: `Bearer ${userAccessToken}`,
-                "Content-Type": "multipart/form-data",
-              },
+          const modifySqenceArr = allFiles.map((item) => item.mediaSequence);
+          const deleteIdxArr = deletedFiles;
+          const FileIdx = addFiles.map((item) => item.mediaSequence);
+          // Append JSON data to the FormData object
+          formData.append("modifySqenceArr", JSON.stringify(modifySqenceArr));
+          formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
+          formData.append("FileIdx", JSON.stringify(FileIdx));
+
+          try {
+            // Send both FormData and JSON data to the server
+            const response = await axios.patch(
+              `https://www.reptimate.store/conv/board/update/${idx}`,
+              formData,
+              {
+                headers: {
+                  Authorization: `Bearer ${userAccessToken}`,
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+
+            if (response.status === 201) {
+              const responseData = response.data;
+              // Now, you can send additional data to the API server
+              const requestData1 = {
+                auctionIdx: auctionIdx,
+                state: selling,
+                boardIdx: idx,
+                userIdx: currentUserIdx?.toString() || "",
+                title: title,
+                category: "auction",
+                description: description,
+                price: priceReplace,
+                gender: selectedGender || "",
+                size: selectedSize || "",
+                variety: variety,
+                pattern: pattern,
+                startPrice: startPriceReplace,
+                unit: unitReplace,
+                endTime: formattedDate + "T" + endTime,
+                alertTime: formattedTime,
+                extensionRule: rule,
+                birthDate: birthDate,
+                streamKey: streamKey,
+                userAccessToken: userAccessToken || "",
+                fileUrl: responseData.result, // Use the response from the first server
+              };
+
+              mutation.mutate(requestData1);
+            } else {
+              console.error("Error uploading files to the first server.");
+              alert("Error uploading files. Please try again later.");
+              setIsLoading(false);
             }
+<<<<<<< HEAD
           );
 
           if (response.status === 201) {
@@ -655,9 +710,39 @@ export default function AuctionEdit() {
           // console.error("Error:", error);
           // alert("An error occurred. Please try again later.");
           setIsLoading(false);
+=======
+          } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again later.");
+            setIsLoading(false);
+          }
+>>>>>>> feature/board
         }
+      } else {
+        // Create a list of missing fields
+        const missingFields = [];
+        if (title === "") missingFields.push("제목");
+        if (price === "") missingFields.push("시작 가격");
+        if (variety === "품종을 선택하세요") missingFields.push("품종");
+        if (pattern === "모프를 선택하세요") missingFields.push("모프");
+        if (startPrice === "" || "null") missingFields.push("시작 가격");
+        if (unit === "" || "null") missingFields.push("경매 단위");
+        if (endTime === "" || "null") missingFields.push("마감 시간");
+        if (rule === "" || "null") missingFields.push("연장 룰");
+        if (birthDate === "") missingFields.push("생년월일");
+        if (selectedGender === "" || "null") missingFields.push("성별");
+        if (selectedSize === "" || "null") missingFields.push("크기");
+        if (description === "") missingFields.push("내용");
+
+        // Create the alert message based on missing fields
+        let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
+        alertMessage += missingFields.join(", ");
+
+        alert(alertMessage);
+        setIsLoading(false);
       }
     } else {
+<<<<<<< HEAD
       // Create a list of missing fields
       const missingFields = [];
       if (title === "") missingFields.push("제목");
@@ -683,25 +768,42 @@ export default function AuctionEdit() {
         confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
       });
       setIsLoading(false);
+=======
+      // You can optionally provide feedback to the user (e.g., show an error message)
+      alert("마감 시간은 현재 시간 이후의 시간만 선택 가능합니다.");
+>>>>>>> feature/board
     }
   };
 
-  const handlePriceChange = (value: String, event: ChangeEvent<HTMLInputElement>) => {
+  const handlePriceChange = (
+    value: String,
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
     const inputValue = event.target.value;
     const num = /[0-9]/g;
     const eng = /[a-zA-Z]/g;
     const kor = /[\ㄱ-ㅎㅏ-ㅣ가-힣]/g;
     const regExpTotal = /[\{\}\[\]\/?.;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
 
-    if (inputValue.search(eng) == -1 && inputValue.search(kor) == -1 && inputValue.search(regExpTotal) == -1) {
-      if (inputValue == "" || inputValue.search(num) != -1 || inputValue.search(regExp) != -1) {
+    if (
+      inputValue.search(eng) == -1 &&
+      inputValue.search(kor) == -1 &&
+      inputValue.search(regExpTotal) == -1
+    ) {
+      if (
+        inputValue == "" ||
+        inputValue.search(num) != -1 ||
+        inputValue.search(regExp) != -1
+      ) {
         // console.log("***1");
 
-        let replaceComma = inputValue.replace(regExp, '');
+        let replaceComma = inputValue.replace(regExp, "");
 
         if (replaceComma.length <= 9) {
           // console.log("***2");
-          let transComma = replaceComma.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          let transComma = replaceComma
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
           if (value == "price") {
             setPrice(transComma);
@@ -717,8 +819,7 @@ export default function AuctionEdit() {
   const handleCommaReplace = (price: String) => {
     let transComma = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return transComma;
-
-  }
+  };
 
   const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.target.value;
@@ -735,6 +836,25 @@ export default function AuctionEdit() {
       setTitle(inputValue);
     }
   };
+
+  const handleTimeChange = (selectedTime: string) => {
+    console.log("Selected Time:", selectedTime);
+
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+    const currentTime = `${hours}:${minutes}`;
+
+    // Update the endTime state only if the selected time is not before the current time
+    if (selectedTime >= currentTime) {
+      setEndTime(selectedTime);
+    } else {
+      // You can optionally provide feedback to the user (e.g., show an error message)
+      alert("마감 시간은 현재 시간 이후의 시간만 선택 가능합니다.");
+    }
+    // You can perform further actions with the selected time
+  };
+
   return (
     <div className="max-w-screen-md mx-auto mt-20 px-7">
       {isLoading && (
@@ -743,13 +863,13 @@ export default function AuctionEdit() {
         </div>
       )}
       <PC>
-        <h2 className="flex flex-col items-center justify-center text-4xl font-bold p-10">
+        <h2 className="flex flex-col items-center justify-center text-4xl font-bold p-10 pt-20">
           경매 등록
         </h2>
       </PC>
       <Mobile>
         <BackButton />
-        <h2 className="flex flex-col items-center justify-center text-xl font-bold p-10 mt-14">
+        <h2 className="flex flex-col items-center justify-center text-xl font-bold p-10">
           경매 등록
         </h2>
       </Mobile>
@@ -770,12 +890,22 @@ export default function AuctionEdit() {
 
       <PC>
         <DndProvider backend={HTML5Backend}>
-          <ImageSelecterEdit handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} allFiles={allFiles} moveFile={moveFile}></ImageSelecterEdit>
+          <ImageSelecterEdit
+            handleFileSelect={handleFileSelect}
+            handleRemoveItem={handleRemoveItem}
+            allFiles={allFiles}
+            moveFile={moveFile}
+          ></ImageSelecterEdit>
         </DndProvider>
       </PC>
       <Mobile>
         <DndProvider backend={TouchBackend}>
-          <ImageSelecterEdit handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} allFiles={allFiles} moveFile={moveFile}></ImageSelecterEdit>
+          <ImageSelecterEdit
+            handleFileSelect={handleFileSelect}
+            handleRemoveItem={handleRemoveItem}
+            allFiles={allFiles}
+            moveFile={moveFile}
+          ></ImageSelecterEdit>
         </DndProvider>
       </Mobile>
 
@@ -830,13 +960,20 @@ export default function AuctionEdit() {
 
         <div className="mb-4">
           <p className="font-bold text-xl my-2">마감 시간</p>
-          <input
-            type="time"
-            placeholder="마감 시간을 입력해주세요."
-            className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
-          />
+          <div className="flex flex-row">
+            <input
+              type="time"
+              readOnly
+              className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-[90%]"
+              value={endTime}
+            />
+            <button
+              className={`w-[10%] py-2 rounded text-md text-white font-bold flex-1 bg-main-color`}
+              onClick={handleOpenModal}
+            >
+              선택
+            </button>
+          </div>
         </div>
 
         <div className="mb-4">
@@ -917,9 +1054,11 @@ export default function AuctionEdit() {
           <div className="flex flex-row">
             <button
               className={`w-52 py-2 rounded 
-              ${selectedGender === "수컷"
+              ${
+                selectedGender === "수컷"
                   ? "bg-gender-male-dark-color"
-                  : "bg-gender-male-color"} 
+                  : "bg-gender-male-color"
+              } 
                 text-lg text-white font-bold flex-1`}
               onClick={() => handleGenderClick("수컷")}
             >
@@ -927,9 +1066,11 @@ export default function AuctionEdit() {
             </button>
             <button
               className={`w-52 py-2 rounded 
-              ${selectedGender === "암컷"
+              ${
+                selectedGender === "암컷"
                   ? "bg-gender-female-dark-color"
-                  : "bg-gender-female-color"} 
+                  : "bg-gender-female-color"
+              } 
                 text-lg text-white mx-2 font-bold flex-1`}
               onClick={() => handleGenderClick("암컷")}
             >
@@ -937,9 +1078,11 @@ export default function AuctionEdit() {
             </button>
             <button
               className={`w-52 py-2 rounded 
-              ${selectedGender === "미구분"
+              ${
+                selectedGender === "미구분"
                   ? "bg-gender-none-dark-color"
-                  : "bg-gender-none-color"} 
+                  : "bg-gender-none-color"
+              } 
               text-lg text-white font-bold flex-1`}
               onClick={() => handleGenderClick("미구분")}
             >
@@ -952,35 +1095,41 @@ export default function AuctionEdit() {
           <p className="font-bold text-xl my-2">크기</p>
           <div className="flex flex-row">
             <button
-              className={`w-36 py-2 mr-2 rounded ${selectedSize === "베이비"
-                ? "bg-main-color"
-                : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
+              className={`w-36 py-2 mr-2 rounded ${
+                selectedSize === "베이비"
+                  ? "bg-main-color"
+                  : "bg-gender-none-color"
+              } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("베이비")}
             >
               베이비
             </button>
             <button
-              className={`w-36 py-2 mr-2 rounded ${selectedSize === "아성체"
-                ? "bg-main-color"
-                : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
+              className={`w-36 py-2 mr-2 rounded ${
+                selectedSize === "아성체"
+                  ? "bg-main-color"
+                  : "bg-gender-none-color"
+              } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("아성체")}
             >
               아성체
             </button>
             <button
-              className={`w-36 py-2 mr-2 rounded ${selectedSize === "준성체"
-                ? "bg-main-color"
-                : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
+              className={`w-36 py-2 mr-2 rounded ${
+                selectedSize === "준성체"
+                  ? "bg-main-color"
+                  : "bg-gender-none-color"
+              } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("준성체")}
             >
               준성체
             </button>
             <button
-              className={`w-36 py-2 rounded ${selectedSize === "성체" ? "bg-main-color" : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
+              className={`w-36 py-2 rounded ${
+                selectedSize === "성체"
+                  ? "bg-main-color"
+                  : "bg-gender-none-color"
+              } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("성체")}
             >
               성체
@@ -1000,30 +1149,35 @@ export default function AuctionEdit() {
             value={description}
             onChange={handleDescriptionChange}
             rows={10} // 세로 행의 개수를 조절합니다.
-            style={{ resize: 'none' }}
+            style={{ resize: "none" }}
           />
         </div>
       </div>
-      {
-        !isLoading ? (
-          <form onSubmit={onSubmitHandler}>
-            <button
-              type="submit"
-              className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
-            >
-              경매 등록
-            </button>
-          </form>
-        ) : (
+      {!isLoading ? (
+        // 임시저장
+
+        <form onSubmit={onSubmitHandler}>
           <button
-            type="button"
-            className="items-center cursor-not-allowed inline-flex justify-center text-center align-middle bg-gray-300 text-gray-500 font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
-            disabled
+            type="submit"
+            className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
           >
-            등록 중...
+            경매 등록
           </button>
-        )
-      }
+        </form>
+      ) : (
+        <button
+          type="button"
+          className="items-center cursor-not-allowed inline-flex justify-center text-center align-middle bg-gray-300 text-gray-500 font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
+          disabled
+        >
+          등록 중...
+        </button>
+      )}
+      <TimePicker
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onChange={handleTimeChange}
+      />
     </div>
   );
 }

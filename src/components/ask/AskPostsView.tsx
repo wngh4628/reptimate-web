@@ -90,14 +90,14 @@ export default function AskPostsView() {
   const bookmarkClick = () => {
     if (bookmarked) {
       setBookmarked(false);
-      setBookmarkCnt(bookmarkCnt-1);
+      setBookmarkCnt(bookmarkCnt - 1);
       boardDeleteMutation.mutate({
         userAccessToken: accessToken,
         boardIdx: data!.result.idx,
       });
     } else {
       setBookmarked(true);
-      setBookmarkCnt(bookmarkCnt+1);
+      setBookmarkCnt(bookmarkCnt + 1);
       boardRegisterMutation.mutate({
         userAccessToken: accessToken,
         boardIdx: data!.result.idx,
@@ -287,7 +287,7 @@ export default function AskPostsView() {
   };
 
   let userAccessToken: string | null = null;
-  let currentUserIdx: number | null = null;
+  let currentUserIdx: number | null = 0;
   let userProfilePath: string | null = null;
   let userNickname: string | null = null;
   if (typeof window !== "undefined") {
@@ -354,15 +354,15 @@ export default function AskPostsView() {
       );
       setCommentData(
         (prevData) =>
-          ({
-            result: {
-              items: [
-                ...(prevData?.result.items || []),
-                ...response.data.result.items,
-              ],
-              existsNextPage: response.data.result.existsNextPage,
-            },
-          } as getCommentResponse)
+        ({
+          result: {
+            items: [
+              ...(prevData?.result.items || []),
+              ...response.data.result.items,
+            ],
+            existsNextPage: response.data.result.existsNextPage,
+          },
+        } as getCommentResponse)
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
@@ -699,16 +699,16 @@ export default function AskPostsView() {
                   <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
                 </div>
                 <div className="flex flex-row items-center py-3">
-                {bookmarked ? (
-                  <a onClick={bookmarkClick}>
-                    <Image
-                      src={like_maincolor}
-                      width={20}
-                      height={20}
-                      alt="북마크"
-                      className="like_btn m-auto mr-1"
-                    />
-                  </a>
+                  {bookmarked ? (
+                    <a onClick={bookmarkClick}>
+                      <Image
+                        src={like_maincolor}
+                        width={20}
+                        height={20}
+                        alt="북마크"
+                        className="like_btn m-auto mr-1"
+                      />
+                    </a>
                   ) : (
                     <a onClick={bookmarkClick}>
                       <Image

@@ -167,16 +167,15 @@ export default function AuctionPostsView() {
       });
       setIsLoggedIn(true);
     }
-    const match = pathName.match(/\/auction\/posts\/(\d+)/);
-    const extractedNumber = match ? match[1] : "";
-    setroomName(extractedNumber);
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken) {
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
-        
+        const match = pathName.match(/\/auction\/posts\/(\d+)/);
+        const extractedNumber = match ? match[1] : "";
+        setroomName(extractedNumber);
 
         setUserIdx(userData.USER_DATA.idx);
         setNickname(userData.USER_DATA.nickname);
@@ -189,11 +188,7 @@ export default function AuctionPostsView() {
   const deleteMutation = useMutation({
     mutationFn: auctionDelete,
     onSuccess: (data) => {
-      Swal.fire({
-        text: "게시글이 삭제되었습니다.",
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
+      alert("게시글이 삭제되었습니다.");
       router.replace("/auction");
     },
   });
@@ -205,14 +200,14 @@ export default function AuctionPostsView() {
   const bookmarkClick = () => {
     if (bookmarked) {
       setBookmarked(false);
-      setBookmarkCnt(bookmarkCnt-1);
+      setBookmarkCnt(bookmarkCnt - 1);
       auctionDeleteMutation.mutate({
         userAccessToken: accessToken,
         boardIdx: data!.result.boardAuction.boardIdx
       });
     } else {
       setBookmarked(true);
-      setBookmarkCnt(bookmarkCnt+1);
+      setBookmarkCnt(bookmarkCnt + 1);
       auctionRegisterMutation.mutate({
         userAccessToken: accessToken,
         boardIdx: data!.result.boardAuction.boardIdx,
@@ -224,12 +219,18 @@ export default function AuctionPostsView() {
   const auctionRegisterMutation = useMutation({
     mutationFn: auctionRegisterBookmark,
     onSuccess: (data) => {
+      console.log("===auctionRegisterMutation====");
+      console.log(data);
+      console.log("==============================");
     },
   });
   // 북마크 삭제
   const auctionDeleteMutation = useMutation({
     mutationFn: auctionDeleteBookmark,
     onSuccess: (data) => {
+      console.log("===auctionDeleteMutation====");
+      console.log(data);
+      console.log("============================");
     },
   });
 
@@ -311,12 +312,8 @@ export default function AuctionPostsView() {
                 },
                 onError: () => {
                   router.replace("/");
-                  setIsLoggedIn(false);
-                  Swal.fire({
-                    text: "로그인 만료\n다시 로그인 해주세요",
-                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-                  });
+                  //
+                  alert("로그인 만료\n다시 로그인 해주세요");
                 },
               }
             );
@@ -465,8 +462,9 @@ export default function AuctionPostsView() {
         }
       };
 
-      updateCountdown(); // Initial call to set the countdown
       const countdownInterval = setInterval(updateCountdown, 1000);
+      updateCountdown(); // Initial call to set the countdown
+
 
       return () => {
         clearInterval(countdownInterval);
@@ -502,15 +500,15 @@ export default function AuctionPostsView() {
       );
       setCommentData(
         (prevData) =>
-          ({
-            result: {
-              items: [
-                ...(prevData?.result.items || []),
-                ...response.data.result.items,
-              ],
-              existsNextPage: response.data.result.existsNextPage,
-            },
-          } as getCommentResponse)
+        ({
+          result: {
+            items: [
+              ...(prevData?.result.items || []),
+              ...response.data.result.items,
+            ],
+            existsNextPage: response.data.result.existsNextPage,
+          },
+        } as getCommentResponse)
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
@@ -563,19 +561,11 @@ export default function AuctionPostsView() {
   const streamKeyMutation = useMutation({
     mutationFn: streamKeyEdit,
     onSuccess: (data) => {
-      Swal.fire({
-        text: "스트림키가 재생성 되었습니다.",
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
+      alert("스트림키가 재생성 되었습니다.");
       setStreamKey(data.data.result);
     },
-    onError: (data: string) => {
-      Swal.fire({
-        text: data,
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
+    onError: (data) => {
+      alert(data);
     },
   });
 
@@ -673,30 +663,18 @@ export default function AuctionPostsView() {
                     // Create the alert message based on missing fields
                     let alertMessage = "오류입니다. :\n 다시 시도해주세요.";
 
-                    Swal.fire({
-                      text: alertMessage,
-                      confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-                      confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-                    });
+                    alert(alertMessage);
                   }
                 },
                 onError: () => {
                   router.replace("/login");
-                  Swal.fire({
-                    text: "로그인 만료\n다시 로그인 해주세요",
-                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-                  });
+                  alert("로그인 만료\n다시 로그인 해주세요");
                 },
               }
             );
           } else {
             router.replace("/login");
-            Swal.fire({
-              text: "로그인이 필요한 기능입니다.",
-              confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-              confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-            });
+            alert("로그인이 필요한 기능입니다.");
           }
         }
       }
@@ -740,8 +718,8 @@ export default function AuctionPostsView() {
       }
       setNowBid(formatNumberWithCommas(message.message));
     });
-    socketBid.on("Auction_End", (message: string) => {});
-    socketBid.on("error", (message: string) => {});
+    socketBid.on("Auction_End", (message: string) => { });
+    socketBid.on("error", (message: string) => { });
     //경매 입찰과 동시에 입찰자 명단 정보를 추가하는 리스너
     socketBid.on("auction_participate", (message: userInfo) => {
       setUserInfoBidData((prevUserInfoData) => ({
@@ -825,25 +803,8 @@ export default function AuctionPostsView() {
   };
   //메시지 발송하는 함수
   const sendBidMsg = async () => {
-    const storedData = localStorage.getItem("recoil-persist");
-    if (storedData) {
-      const userData = JSON.parse(storedData);
-      if (userData.USER_DATA.accessToken) {
-
-      } else {
-        Swal.fire({
-          text: "로그인이 필요한 기능입니다.",
-          icon: "error",
-          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-        });
-        return;
-      }
-    }
-
     if (bidMsg.trim() !== "") {
-      // const numericValue = parseInt(bidMsg.trim(), 10);
-      const numericValue = parseInt(bidMsg.trim().replace(/,/g, ""), 10);
+      const numericValue = parseInt(bidMsg.trim(), 10);
 
       if (numericValue % parseInt(bidUnit) !== 0) {
         // 입력값이 1000의 배수가 아니면 초기화
@@ -913,11 +874,7 @@ export default function AuctionPostsView() {
         // Create the alert message based on missing fields
         let alertMessage = "오류입니다. :\n 다시 시도해주세요.";
 
-        Swal.fire({
-          text: alertMessage,
-          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-        });
+        alert(alertMessage);
       }
     };
 
@@ -948,8 +905,7 @@ export default function AuctionPostsView() {
     };
     const onChangeBid = (event: { target: { value: string } }) => {
       const numericInput = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-      const formattedInput = Number(numericInput).toLocaleString();
-      setBidMsg(formattedInput);
+      setBidMsg(numericInput);
     };
 
     const handleViewClick = () => {
@@ -995,7 +951,7 @@ export default function AuctionPostsView() {
             <PC>
               <h2 className="text-4xl font-bold pt-10 mt-20">{post.title}</h2>
               <div className="flex items-center my-2 relative">
-                <Image
+                <img
                   className="w-10 h-10 rounded-full border-2 cursor-pointer"
                   src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
                   alt=""
@@ -1148,16 +1104,16 @@ export default function AuctionPostsView() {
                   <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
                 </div>
                 <div className="flex flex-row items-center py-3">
-                {bookmarked ? (
-                  <a onClick={bookmarkClick}>
-                    <Image
-                      src={like_maincolor}
-                      width={20}
-                      height={20}
-                      alt="북마크"
-                      className="like_btn m-auto mr-1"
-                    />
-                  </a>
+                  {bookmarked ? (
+                    <a onClick={bookmarkClick}>
+                      <Image
+                        src={like_maincolor}
+                        width={20}
+                        height={20}
+                        alt="북마크"
+                        className="like_btn m-auto mr-1"
+                      />
+                    </a>
                   ) : (
                     <a onClick={bookmarkClick}>
                       <Image
@@ -1346,16 +1302,16 @@ export default function AuctionPostsView() {
                   <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
                 </div>
                 <div className="flex flex-row items-center py-3">
-                {bookmarked ? (
-                  <a onClick={bookmarkClick}>
-                    <Image
-                      src={like_maincolor}
-                      width={20}
-                      height={20}
-                      alt="북마크"
-                      className="like_btn m-auto mr-1"
-                    />
-                  </a>
+                  {bookmarked ? (
+                    <a onClick={bookmarkClick}>
+                      <Image
+                        src={like_maincolor}
+                        width={20}
+                        height={20}
+                        alt="북마크"
+                        className="like_btn m-auto mr-1"
+                      />
+                    </a>
                   ) : (
                     <a onClick={bookmarkClick}>
                       <Image
@@ -1419,11 +1375,10 @@ export default function AuctionPostsView() {
               </div>
 
               <div
-                className={`${
-                  bidVisible
-                    ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
-                    : "hidden"
-                }`}
+                className={`${bidVisible
+                  ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
+                  : "hidden"
+                  }`}
               >
                 <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
                   <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
@@ -1557,11 +1512,10 @@ export default function AuctionPostsView() {
               </div>
 
               <div
-                className={`${
-                  bidVisible
-                    ? "bg-white w-full h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 flex flex-col shadow-md"
-                    : "hidden"
-                }`}
+                className={`${bidVisible
+                  ? "bg-white w-full h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 flex flex-col shadow-md"
+                  : "hidden"
+                  }`}
               >
                 <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
                   <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">

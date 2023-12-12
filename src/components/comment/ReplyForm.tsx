@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 
 type CommentFormProps = {
   value: string;
@@ -16,7 +16,13 @@ const ReplyForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
       setComment("");
     }
   };
+  const handleCommentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const inputValue = e.target.value;
 
+    if (inputValue.length <= 500) {
+      setComment(inputValue);
+    }
+  };
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -26,15 +32,18 @@ const ReplyForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
             name="comment"
             placeholder="답글을 남겨보세요."
             value={comment}
-            onChange={(e) => setComment(e.target.value)}
             className="flex-grow border-2 border-gray-400 p-3 rounded-md resize-none"
             rows={2}
+            onChange={handleCommentChange}
+
           />
+          <div className="flex items-center">
+            <span className="text-sm mx-6">{comment.length}/500</span>
+          </div>
           <button
             type="submit"
-            className={`flex items-center cursor-pointer text-center bg-main-color text-white font-bold rounded-md p-3 px-5 ml-0.5 ${
-              comment ? "opacity-100" : "opacity-50 pointer-events-none"
-            }`}
+            className={`flex items-center cursor-pointer text-center bg-main-color text-white font-bold rounded-md p-3 px-5 ml-0.5 ${comment ? "opacity-100" : "opacity-50 pointer-events-none"
+              }`}
             disabled={!comment}
           >
             입력

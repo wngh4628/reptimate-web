@@ -15,7 +15,10 @@ import acitonLiveDto from "@/service/dto/action-live-dto";
 import { GetAuctionPostsView } from "@/service/my/auction";
 import axios from "axios";
 
-import { auctionDeleteBookmark, auctionRegisterBookmark } from "@/api/auction/auction";
+import {
+  auctionDeleteBookmark,
+  auctionRegisterBookmark,
+} from "@/api/auction/auction";
 
 type Props = {
   params: {
@@ -44,7 +47,6 @@ export default function ActionPage({ params: { slug } }: Props) {
   const [accessToken, setAccessToken] = useState("");
   const [userIdx, setUserIdx] = useState<number>(0); // 로그인 한 유저의 userIdx 저장
 
-
   useEffect(() => {
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
@@ -61,7 +63,7 @@ export default function ActionPage({ params: { slug } }: Props) {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${userIdx}`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=`
       );
       // Assuming your response data has a 'result' property
       console.log(response.data);
@@ -82,44 +84,47 @@ export default function ActionPage({ params: { slug } }: Props) {
     }
   }, []);
 
-    /*********************
+  /*********************
    *
    *       북마크
    *
    ********************/
-    const bookmarkClick = () => {
-      if (bookmarked) {
-        setBookmarked(false);
-        setBookmarkCnt(bookmarkCnt-1);
-        auctionDeleteMutation.mutate({
-          userAccessToken: accessToken,
-          boardIdx: postsData!.result.boardAuction.boardIdx
-        });
-      } else {
-        setBookmarked(true);
-        setBookmarkCnt(bookmarkCnt+1);
-        auctionRegisterMutation.mutate({
-          userAccessToken: accessToken,
-          boardIdx: postsData!.result.boardAuction.boardIdx,
-          userIdx: userIdx
-        });
-      }
-    };
-    // 북마크 등록
-    const auctionRegisterMutation = useMutation({
-      mutationFn: auctionRegisterBookmark,
-      onSuccess: (data) => {
-        console.log("===auctionRegisterMutation====");
-        console.log(data);
-        console.log("==============================");
-      },
-    });
-    // 북마크 삭제
-    const auctionDeleteMutation = useMutation({
-      mutationFn: auctionDeleteBookmark,
-      onSuccess: (data) => {
-      },
-    });
+  const bookmarkClick = () => {
+    if (bookmarked) {
+      setBookmarked(false);
+      setBookmarkCnt(bookmarkCnt - 1);
+      auctionDeleteMutation.mutate({
+        userAccessToken: accessToken,
+        boardIdx: postsData!.result.boardAuction.boardIdx,
+      });
+    } else {
+      setBookmarked(true);
+      setBookmarkCnt(bookmarkCnt + 1);
+      auctionRegisterMutation.mutate({
+        userAccessToken: accessToken,
+        boardIdx: postsData!.result.boardAuction.boardIdx,
+        userIdx: userIdx,
+      });
+    }
+  };
+  // 북마크 등록
+  const auctionRegisterMutation = useMutation({
+    mutationFn: auctionRegisterBookmark,
+    onSuccess: (data) => {
+      console.log("===auctionRegisterMutation====");
+      console.log(data);
+      console.log("==============================");
+    },
+  });
+  // 북마크 삭제
+  const auctionDeleteMutation = useMutation({
+    mutationFn: auctionDeleteBookmark,
+    onSuccess: (data) => {
+      console.log("===auctionDeleteMutation====");
+      console.log(data);
+      console.log("============================");
+    },
+  });
 
   useEffect(() => {
     if (streamKey != "") {
@@ -172,8 +177,8 @@ export default function ActionPage({ params: { slug } }: Props) {
                     console.log(`script loaded correctly, window.FB has been populated`)
                 }
             /> */}
-      <div className="flex flex-col lg:flex-row mt-36 ">
-        <div className="flex-auto flex-col lg:basis-9/12">
+      <div className="flex flex-col lg:flex-row mt-36">
+        <div className="flex-auto flex-col w-[70%]">
           <div className="bg-black w-full">
             <VideoPlayer src={videoUrl}></VideoPlayer>
           </div>
@@ -191,7 +196,7 @@ export default function ActionPage({ params: { slug } }: Props) {
               </div>
 
               <div className="flex basis-1/2 flex-row-reverse text-center">
-              {bookmarked ? (
+                {bookmarked ? (
                   <a onClick={bookmarkClick}>
                     <Image
                       src={like_maincolor}
@@ -201,18 +206,18 @@ export default function ActionPage({ params: { slug } }: Props) {
                       className="like_btn m-auto mr-1"
                     />
                   </a>
-                  ) : (
-                    <a onClick={bookmarkClick}>
-                      <Image
-                        src={unlike_black}
-                        width={20}
-                        height={20}
-                        alt="북마크"
-                        className="like_btn m-auto mr-1"
-                      />
-                    </a>
-                  )}
-                  <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
+                ) : (
+                  <a onClick={bookmarkClick}>
+                    <Image
+                      src={unlike_black}
+                      width={20}
+                      height={20}
+                      alt="북마크"
+                      className="like_btn m-auto mr-1"
+                    />
+                  </a>
+                )}
+                <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
               </div>
             </div>
           </div>
@@ -223,9 +228,7 @@ export default function ActionPage({ params: { slug } }: Props) {
             </div>
           </div>
         </div>
-
-        {/* 우측 채팅뷰 */}
-        <div className="lg:basis-3/12 w-full">
+        <div className="w-[30%] lg:w-[20rem]">
           <StreamingChatView></StreamingChatView>
         </div>
       </div>
