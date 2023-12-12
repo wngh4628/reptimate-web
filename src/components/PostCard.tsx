@@ -74,7 +74,7 @@ export default function PostCard({
               href={`/community/${category}/posts/[idx]`}
               as={`/community/${category}/posts/${idx}`}
           >
-            <div style={{width:183.5}}>
+            <div style={{}}>
               {/* 대표 이미지 부분 */}
               <div className="relative h-[183.5.59px] overflow-hidden hover:border-2 hover:border-main-color rounded-md">
                 {/* 대표 이미지 쉐도우 */}
@@ -82,8 +82,6 @@ export default function PostCard({
                 <div style={imgStyle}>
                   <img
                     className="object-cover absolute inset-0 w-full h-full"
-                    width={183.5}
-                    height={183.5}
                     src={
                       thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
                     }
@@ -113,7 +111,7 @@ export default function PostCard({
               </div>
             </div>
             {/* 게시글 정보 부분 */}
-            <div className="w-[183.5px]">
+            <div className="w-full">
               {/* 제목 */}
               <h3 className="text-[14px]">{title}</h3>
               {/* 성별 부분 */}
