@@ -201,8 +201,7 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem("recoil-persist");
     setIsLoggedIn(false);
-    router.refresh();
-    window.location.reload();
+    router.replace("/");
   };
 
   function chattingClick() {
@@ -238,14 +237,6 @@ export default function Header() {
     window.location.href = "/"
     // window.location.reload();
   }
-
-  function showSearchModal(){
-
-    setIsSearchModalHidden(false);
-    
-  }
-
-  
 
   const communityPathnames = [
     "/",
@@ -356,11 +347,9 @@ export default function Header() {
                    />
               </Link> 
             </div>: ""}
-
-              <div className="flex w-[20px] h-[20+px] h-5 my-0.5 relative hover:cursor-pointer " style={{paddingTop:4}} onClick={() => showSearchModal()}>
-                <img src="/img/search.png"/>
-              </div>
-
+            <div className="flex w-[20px] h-5 my-0.5 relative " style={{paddingTop:4}}>
+              <img src="/img/search.png" />
+            </div>
           </nav>
         </div>
         {/* 두번째  메뉴 */}
@@ -373,10 +362,6 @@ export default function Header() {
         <div>
           {pathName.startsWith("/ai") ? <AiMenu /> : ""}
         </div>
-        <div>
-          { pathName.startsWith("/searchresult/") ? <SearchResultMenu /> : ""}
-        </div>
-        
         <div
           className={`${isChatVisisible
             ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"

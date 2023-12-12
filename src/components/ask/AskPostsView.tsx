@@ -77,7 +77,6 @@ export default function AskPostsView() {
   const [bookmarkCnt, setBookmarkCnt] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
 
-
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
 

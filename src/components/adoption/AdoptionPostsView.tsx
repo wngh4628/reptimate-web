@@ -83,7 +83,6 @@ export default function AdoptionPostsView() {
   const [commentCnt, setCommentCnt] = useState(0);
   const [bookmarkCnt, setBookmarkCnt] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
-
   /*********************
    *
    *       북마크

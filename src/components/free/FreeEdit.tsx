@@ -17,6 +17,7 @@ import { GetPostsView, Images } from "@/service/my/board";
 import { freeEdit } from "@/api/free/freeBoard";
 import { useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
+
 import ImageSelecterEdit from "../ImageSelecterEdit";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";

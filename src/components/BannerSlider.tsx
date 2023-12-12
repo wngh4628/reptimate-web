@@ -98,12 +98,11 @@ const BannerSlider: React.FC = () => {
         </div>
       </PC>
       <Mobile>
-        <div style={{display:"flex", width:412, height:231, marginTop:41}}>
-          <div className="" style={{position: 'relative',width:412, height:231}}>
+        <div style={{display:"flex", height:231, marginTop:41}}>
+          <div className="w-full" style={{position: 'relative', height:231}}>
             <div
                 className="object-cover"
                 style={{
-                  width: 412,
                   height: 231,
                   cursor: 'pointer',
                   position: 'relative',
@@ -114,7 +113,7 @@ const BannerSlider: React.FC = () => {
                   src="/img/reptimate_banner0111.png"
                   alt="First Image"
                   style={{ transition: 'transform 0.3s' }} // 트랜지션 효과 추가
-                  className="transform hover:scale-105 object-cover h-[231px] w-[412px]" // hover 시 확대 효과 클래스 추가
+                  className="transform hover:scale-105 object-cover h-[231px] w-full" // hover 시 확대 효과 클래스 추가
                 />
               </div>
             </div>
