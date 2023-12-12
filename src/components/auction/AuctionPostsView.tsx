@@ -461,9 +461,10 @@ export default function AuctionPostsView() {
           );
         }
       };
-
-      updateCountdown(); // Initial call to set the countdown
+      
       const countdownInterval = setInterval(updateCountdown, 1000);
+      updateCountdown(); // Initial call to set the countdown
+
 
       return () => {
         clearInterval(countdownInterval);

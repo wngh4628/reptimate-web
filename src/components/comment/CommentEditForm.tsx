@@ -18,7 +18,7 @@ const CommentEditForm: React.FC<CommentFormProps> = ({ value, onSubmit }) => {
   const handleCommentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.target.value;
 
-    if (inputValue.length <= 1000) {
+    if (inputValue.length <= 500) {
       setComment(inputValue);
     }
   };
@@ -36,7 +36,7 @@ const CommentEditForm: React.FC<CommentFormProps> = ({ value, onSubmit }) => {
             onChange={handleCommentChange}
           />
           <div className="flex items-center">
-            <span className="text-sm mx-6">{comment.length}/1000</span>
+            <span className="text-sm mx-6">{comment.length}/500</span>
           </div>
           <button
             type="submit"

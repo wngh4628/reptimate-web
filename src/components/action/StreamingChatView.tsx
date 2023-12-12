@@ -129,7 +129,7 @@ export default function StreamingChatView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=`
       );
       // console.log("========getData() : 경매글 정보 불러오기====================");
       // console.log(response.data);
@@ -190,9 +190,9 @@ export default function StreamingChatView() {
           );
         }
       };
-
-      updateCountdown(); // Initial call to set the countdown
       const countdownInterval = setInterval(updateCountdown, 1000);
+      updateCountdown(); // Initial call to set the countdown
+
 
       return () => {
         clearInterval(countdownInterval);
@@ -779,25 +779,22 @@ export default function StreamingChatView() {
         <div className="flex py-[0.5rem] text-sm bg-gray-100 w-full">
           <span
             onClick={viewChat}
-            className={`${
-              sideView === "chat" ? "text-main-color" : ""
-            } basis-1/3 text-center border-r border-gray-400`}
+            className={`${sideView === "chat" ? "text-main-color" : ""
+              } basis-1/3 text-center border-r border-gray-400`}
           >
             실시간 채팅
           </span>
           <span
             onClick={viewParticipate}
-            className={`${
-              sideView === "participate" ? "text-main-color" : ""
-            } basis-1/3 text-center border-r border-gray-400`}
+            className={`${sideView === "participate" ? "text-main-color" : ""
+              } basis-1/3 text-center border-r border-gray-400`}
           >
             참가자
           </span>
           <span
             onClick={viewBid}
-            className={`${
-              sideView === "bid" ? "text-main-color" : ""
-            } basis-1/3 text-center`}
+            className={`${sideView === "bid" ? "text-main-color" : ""
+              } basis-1/3 text-center`}
           >
             입찰
           </span>

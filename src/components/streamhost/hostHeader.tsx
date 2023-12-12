@@ -138,7 +138,7 @@ export default function HostStreamingInfoView() {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=`
       );
       setPostsData(response.data);
 
