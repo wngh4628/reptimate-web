@@ -842,7 +842,8 @@ export default function AuctionPostsView() {
     }
 
     if (bidMsg.trim() !== "") {
-      const numericValue = parseInt(bidMsg.trim(), 10);
+      // const numericValue = parseInt(bidMsg.trim(), 10);
+      const numericValue = parseInt(bidMsg.trim().replace(/,/g, ""), 10);
 
       if (numericValue % parseInt(bidUnit) !== 0) {
         // 입력값이 1000의 배수가 아니면 초기화
@@ -947,7 +948,8 @@ export default function AuctionPostsView() {
     };
     const onChangeBid = (event: { target: { value: string } }) => {
       const numericInput = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-      setBidMsg(numericInput);
+      const formattedInput = Number(numericInput).toLocaleString();
+      setBidMsg(formattedInput);
     };
 
     const handleViewClick = () => {

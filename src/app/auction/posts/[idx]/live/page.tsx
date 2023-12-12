@@ -187,7 +187,7 @@ export default function ActionPage({ params: { slug } }: Props) {
                 <p className="text-lg font-bold">{nickname}</p>
               </div>
 
-              <div className="flex basis-1/2 flex-row-reverse text-center">
+              <div className="flex basis-1/2 flex-row-reverse text-center items-center">
               {bookmarked ? (
                   <a onClick={bookmarkClick}>
                     <Image
@@ -209,7 +209,7 @@ export default function ActionPage({ params: { slug } }: Props) {
                       />
                     </a>
                   )}
-                  <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
+                  <p className="text-[20px] mr-2">{bookmarkCnt}</p>
               </div>
             </div>
           </div>

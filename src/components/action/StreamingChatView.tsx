@@ -92,15 +92,15 @@ export default function StreamingChatView() {
       router.back(); // 뒤로가기 동작 실행
     };
     window.addEventListener("popstate", handleBackNavigation);
+    const match = pathName.match(/\/auction\/posts\/(\d+)\/live/);
+    const extractedNumber = match ? match[1] : "";
+    // 참가한 스트리밍의 방 번호(boardidx)로 채팅 입장
+    setroomName(extractedNumber);
+    setBoardIdx(parseInt(extractedNumber));
 
     if (storedData) {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken) {
-        const match = pathName.match(/\/auction\/posts\/(\d+)\/live/);
-        const extractedNumber = match ? match[1] : "";
-        // 참가한 스트리밍의 방 번호(boardidx)로 채팅 입장
-        setroomName(extractedNumber);
-        setBoardIdx(parseInt(extractedNumber));
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
         //입장한 사용자의 idx지정
@@ -226,7 +226,8 @@ export default function StreamingChatView() {
   //입찰가 입력란
   const onChangeBid = (event: { target: { value: string } }) => {
     const numericInput = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-    setBidMsg(numericInput);
+    const formattedInput = Number(numericInput).toLocaleString();
+    setBidMsg(formattedInput);
   };
   // 숫자 사이에 , 기입
   function formatNumberWithCommas(input: string): string {
@@ -605,7 +606,6 @@ export default function StreamingChatView() {
         message: bidMsg.trim(),
         room: roomName,
       };
-
       if (socketBidRef.current) {
         socketBidRef.current.emit("join-room", message);
       }
@@ -616,9 +616,9 @@ export default function StreamingChatView() {
     // 메시지 리스너
     socketBid.on("Auction_message", (message: IMessage) => {
       setchattingBidData((chattingData) => [...chattingData, message]);
-      // console.log("======경매 입찰 채팅 수신=======");
-      // console.log("bid message  :  ", message);
-      // console.log("========================");
+      console.log("======경매 입찰 채팅 수신=======");
+      console.log("bid message  :  ", message);
+      console.log("========================");
       if (bidContainerRef.current) {
         bidContainerRef.current.scrollTop =
           bidContainerRef.current.scrollHeight;
@@ -728,10 +728,10 @@ export default function StreamingChatView() {
       }
     }
     if (bidMsg.trim() !== "") {
-      const numericValue = parseInt(bidMsg.trim(), 10);
+      const numericValue = parseInt(bidMsg.trim().replace(/,/g, ""), 10);
 
       if (numericValue % parseInt(bidUnit) !== 0) {
-        // 입력값이 1000의 배수가 아니면 초기화
+        // 입력값이 bidUnit의 배수가 아니면 초기화
         Swal.fire({
           text: "입찰 단위를 확인해 주시기 바랍니다.",
           icon: "error",
