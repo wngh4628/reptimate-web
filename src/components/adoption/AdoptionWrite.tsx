@@ -6,6 +6,7 @@ import { adoptionWrite } from "@/api/adoption/adoption";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
+import Swal from "sweetalert2";
 import { auctionWrite } from "@/api/auction/auction";
 import { useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
@@ -13,7 +14,6 @@ import ImageSelecterWrite from "../ImageSelecterWrite";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
-import Swal from "sweetalert2";
 
 interface FileItem {
   file: File;

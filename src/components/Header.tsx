@@ -348,7 +348,6 @@ export default function Header() {
                     width={18}
                     height={18}
                     alt="alert-icon"
-                    onClick={notiClick}
                    />
               </Link> 
             </div>: ""}
@@ -367,6 +366,13 @@ export default function Header() {
         <div>
           {pathName.startsWith("/ai") ? <AiMenu /> : ""}
         </div>
+        <div>
+          {pathName.startsWith("/auction") ? <AuctionMenu /> : ""}
+        </div>
+        <div>
+          {pathName.startsWith("/ai") ? <AiMenu /> : ""}
+        </div>
+
         <div
           className={`${isChatVisisible
             ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"

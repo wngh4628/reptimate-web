@@ -123,6 +123,7 @@ export default function AdoptionPostsView() {
     const handleGoBack = () => {
       window.history.back(); // Go back to the previous page using window.history
     };
+
     return (
       <button
         onClick={handleGoBack}
@@ -132,8 +133,6 @@ export default function AdoptionPostsView() {
       </button>
     );
   }
-
-
 
   const deleteMutation = useMutation({
     mutationFn: adoptionDelete,
