@@ -7,7 +7,6 @@ import AdoptionEdit from "@/components/adoption/AdoptionEdit";
 export default function AdoptionEditPage() {
   return (
     <div>
-      <CommunityMenu />
       <AdoptionEdit />
     </div>
   );

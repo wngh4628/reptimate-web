@@ -102,6 +102,38 @@ export default function AuctionPostCard({
               </div>
             </Link>
           </div>
+          <div className="ml-1 mb-6">
+            <h3 className="text-[14px]">{title}</h3>
+            <div className="w-full flex flex-row items-center">
+              <p className="text-[15px] mr-1">
+                {state === "selling" ? "현재 입찰가 : " : "낙찰가 : "}
+              </p>
+              <p className="font-bold text-[15px]">
+                {currentPrice ? currentPrice : "---"}
+              </p>
+              <p className="text-sm ml-1">원</p>
+            </div>
+            <div className="flex items-center">
+              <p
+                className={`text-xs  text-white p-0.5 rounded font-bold text-[13px] ${
+                  gender === "수컷"
+                    ? "bg-gender-male-color"
+                    : gender === "암컷"
+                    ? "bg-gender-female-color"
+                    : "bg-gray-400"
+                }`}
+              >
+                {gender}
+              </p>
+              <p className="text-xs mx-1 text-white bg-gray-400 p-0.5 rounded font-bold text-[13px]">
+                {size}
+              </p>
+            </div>
+            <div className="flex items-center ">
+              <p className="text-[13px] text-[#606060]">{formatTimeDifference(createdAt)}</p>
+                
+            </div>
+          </div>
         </PC>
         <Mobile>
           <Link
@@ -194,41 +226,6 @@ export default function AuctionPostCard({
             </div>
           </Link>
         </Mobile>
-        <PC>
-          <div className="ml-[5px]">
-            <h3 className="text-[14px]">{title}</h3>
-            <div className="w-full flex flex-row items-center">
-              <p className="text-[15px] mr-1">
-                {state === "selling" ? "현재 입찰가 : " : "낙찰가 : "}
-              </p>
-              <p className="font-bold text-[15px]">
-                {currentPrice ? currentPrice : "---"}
-              </p>
-              <p className="text-sm ml-1">원</p>
-            </div>
-            <div className="flex items-center">
-              <p
-                className={`text-xs  text-white p-0.5 rounded font-bold text-[13px] ${
-                  gender === "수컷"
-                    ? "bg-gender-male-color"
-                    : gender === "암컷"
-                    ? "bg-gender-female-color"
-                    : "bg-gray-400"
-                }`}
-              >
-                {gender}
-              </p>
-              <p className="text-xs mx-1 text-white bg-gray-400 p-0.5 rounded font-bold text-[13px]">
-                {size}
-              </p>
-            </div>
-            <div className="flex items-center ">
-              <p className="text-[13px] text-[#606060]">{formatTimeDifference(createdAt)}</p>
-                
-            </div>
-          </div>
-        </PC>
-    
     </div>
   );
 }

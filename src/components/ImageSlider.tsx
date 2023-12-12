@@ -37,13 +37,13 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ imageUrls }) => {
           <img
             src={currentImage.path}
             alt={`Image ${currentIndex}`}
-            className="absolute inset-0 w-full h-full object-contain bg-white"
+            className="absolute inset-0 w-full h-full object-contain bg-white object-cover"
           />
           <div className="absolute inset-x-0 bottom-2 flex justify-center">
             {imageUrls.map((_, index) => (
               <span
                 key={index}
-                className={`w-3 h-3 mx-1 rounded-full ${
+                className={`w-2 h-2 mx-1 rounded-full ${
                   index === currentIndex ? "bg-main-color" : "bg-gray-300"
                 }`}
               ></span>
