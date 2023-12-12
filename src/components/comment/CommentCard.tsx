@@ -7,6 +7,7 @@ import { commentDelete, commentEdit, replyWrite } from "@/api/comment";
 import CommentEditForm from "./CommentEditForm";
 import axios from "axios";
 import ReplyCard from "./ReplyCard";
+import Swal from "sweetalert2";
 
 type Props = {
   comment: Comment;
@@ -177,7 +178,11 @@ export default function CommentCard({
       // Create the alert message based on missing fields
       let alertMessage = "오류입니다. :\n 다시 시도해주세요.";
 
-      alert(alertMessage);
+      Swal.fire({
+        text: alertMessage,
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
   };
 

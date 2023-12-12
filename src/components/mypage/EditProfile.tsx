@@ -23,6 +23,8 @@ import { emailSend, nickNameChk } from "@/api/join/join";
 import axios from "axios";
 import PasswordPromptModal from "../UserDeleteModal";
 
+import Swal from "sweetalert2";
+
 export default function EditProfileInput() {
   const setUser = useSetRecoilState(userAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
@@ -91,17 +93,26 @@ export default function EditProfileInput() {
                   router.replace("/");
                   setIsLoggedIn(false);
                   //
-                  alert("로그인 만료\n다시 로그인 해주세요");
+                  Swal.fire({
+                    text: "로그인 만료\n다시 로그인 해주세요",
+                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                  });
                 },
               }
             );
           } else {
             router.replace("/");
-            alert("로그인이 필요한 기능입니다.");
+            Swal.fire({
+              text: "로그인이 필요한 기능입니다.",
+              confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+              confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+            });
+            setIsLoggedIn(false);
           }
         }
       } else {
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     }
   };
@@ -140,7 +151,11 @@ export default function EditProfileInput() {
   const mutationNicknameSend = useMutation({
     mutationFn: nickNameChk,
     onSuccess: (data) => {
-      alert("사용 가능한 닉네임입니다.");
+      Swal.fire({
+        text: "사용 가능한 닉네임입니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       setIsNicknameChanged(true);
     },
     onError: (err: { response: { status: number } }) => {
@@ -167,17 +182,29 @@ export default function EditProfileInput() {
                 onError: () => {
                   router.replace("/");
                   setIsLoggedIn(false);
-                  alert("로그인 만료\n다시 로그인 해주세요");
+                  Swal.fire({
+                    text: "로그인 만료\n다시 로그인 해주세요",
+                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                  });
                 },
               }
             );
           } else {
             router.replace("/");
-            alert("로그인이 필요한 기능입니다.");
+            Swal.fire({
+              text: "로그인이 필요한 기능입니다.",
+              confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+              confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+            });
           }
         }
       } else if (err.response.status == 409) {
-        alert("이미 사용중인 닉네임입니다.");
+        Swal.fire({
+          text: "이미 사용중인 닉네임입니다.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
     },
   });
@@ -232,6 +259,9 @@ export default function EditProfileInput() {
     const { value } = e.target as any;
     setPrevPassword(value);
   };
+  function onagreeWithMarketingHandler() {
+    setAgreeWithMarketing(!agreeWithMarketing);
+  }
 
   function onPwChangeBtnClick() {
     setPwChange(true);
@@ -247,16 +277,29 @@ export default function EditProfileInput() {
     ) {
     } else {
       if (validateEmail(email)) {
-        mutationEmailSend.mutate({ email: email, type: "OLDUSER" });
+        Swal.fire({
+          text: "이메일이 발송 되었습니다.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
+        mutationEmailSend.mutate({ email: email, type: "NEWUSER" });
       }
     }
   }
   function onEmailCodeValidateHandler() {
     if (emailCode == emailCodeChk) {
-      alert("이메일 인증 완료.");
+      Swal.fire({
+        text: "이메일이 인증 되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       setEmailEdit2(false);
     } else {
-      alert("유효하지 않은 인증 코드입니다.");
+      Swal.fire({
+        text: "유효하지 않은 인증 코드입니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
   }
 
@@ -270,9 +313,15 @@ export default function EditProfileInput() {
   const mutation = useMutation({
     mutationFn: editAccountInfo,
     onSuccess: (data) => {
+      Swal.fire({
+        text: "회원정보가 수정 되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
+      // console.log(data)
       router.replace("/my");
     },
-    onError: (err: { response: { status: number } }) => {
+    onError: (err: { response: { status: number, data: {errorCode: string, message: string} } }) => {
       if (err.response.status == 401) {
         const storedData = localStorage.getItem("recoil-persist");
         if (storedData) {
@@ -298,17 +347,31 @@ export default function EditProfileInput() {
                 onError: () => {
                   router.replace("/");
                   setIsLoggedIn(false);
-                  alert("로그인 만료\n다시 로그인 해주세요");
+                  Swal.fire({
+                    text: "로그인 만료\n다시 로그인 해주세요",
+                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                  });
                 },
               }
             );
           } else {
             router.replace("/");
-            alert("로그인이 필요한 기능입니다.");
+            Swal.fire({
+              text: "로그인이 필요한 기능입니다.",
+              confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+              confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+            });
           }
         }
+      } else if(err.response.status == 409) {
+        Swal.fire({
+          text: err.response.data.message,
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       } else {
-        console.log(err.response);
+        // console.log(err.response);
       }
     },
   });
@@ -316,16 +379,24 @@ export default function EditProfileInput() {
   const userDelmutation = useMutation({
     mutationFn: deleteUser,
     onSuccess: (data) => {
-      console.log(data);
-      alert("회원 탈퇴가 완료되었습니다.");
+      // console.log(data);
+      Swal.fire({
+        text: "회원 탈퇴가 완료되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       router.replace("/");
       setIsLoggedIn(false);
     },
     onError: (err: {
       response: { status: number; data: { message: string } };
     }) => {
-      console.log(err.response.data.message);
-      alert(err.response.data.message);
+      // console.log(err.response.data.message);
+      Swal.fire({
+        text: err.response.data.message,
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     },
   });
 
@@ -343,26 +414,37 @@ export default function EditProfileInput() {
       if (isImageChanged && selectedFile) {
         formData.append("file", selectedFile);
       }
-
       mutation.mutate({
         accessToken: accessToken,
         formData: formData,
       });
     } else {
-      alert("정보 수정에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.");
+      Swal.fire({
+        text: "정보 수정에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
   };
 
   const mutationPwChange = useMutation({
     mutationFn: changePassword,
     onSuccess: (data) => {
-      if (data.data.status == 200) {
-        setPrevPassword("");
+      setPrevPassword("");
         setCechkPassword("");
         setPassword("");
         setPwChange(false);
-        alert("비밀번호가 변경되었습니다.");
+      if (data.data.status == 200) {
+        Swal.fire({
+          text: "비밀번호가 변경 되었습니다.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
+      setPrevPassword("");
+      setCechkPassword("");
+      setPassword("");
+      setPwChange(false);
     },
     onError: (err: { response: { status: number } }) => {
       if (err.response.status == 401) {
@@ -390,17 +472,25 @@ export default function EditProfileInput() {
                 onError: () => {
                   router.replace("/");
                   setIsLoggedIn(false);
-                  alert("로그인 만료\n다시 로그인 해주세요");
+                  Swal.fire({
+                    text: "로그인 만료\n다시 로그인 해주세요",
+                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                  });
                 },
               }
             );
           } else {
             router.replace("/");
-            alert("로그인이 필요한 기능입니다.");
+            Swal.fire({
+              text: "로그인이 필요한 기능입니다.",
+              confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+              confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+            });
           }
         }
       } else {
-        console.log(err.response);
+        // console.log(err.response);
       }
     },
   });
@@ -413,7 +503,11 @@ export default function EditProfileInput() {
         newPassword: password,
       });
     } else {
-      alert("입력란을 확인 후 다시 시도해주세요.");
+      Swal.fire({
+        text: "입력란을 확인 후 다시 시도해주세요.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
   };
 
@@ -433,7 +527,11 @@ export default function EditProfileInput() {
       });
     }
     if (password == "") {
-      alert("비밀번호를 입력해주세요.");
+      Swal.fire({
+        text: "비밀번호를 입력해주세요.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
   };
 
@@ -449,7 +547,11 @@ export default function EditProfileInput() {
         getUserInfo(extractedAccessToken);
       } else {
         router.replace("/");
-        alert("로그인이 필요한 기능입니다.");
+        Swal.fire({
+          text: "로그인이 필요한 기능입니다.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
     }
   }, [accessToken]);
@@ -496,17 +598,27 @@ export default function EditProfileInput() {
                   value={email}
                   readOnly={canEdit ? false : true}
                   className={`${
-                    canEdit ? "" : "text-gray-500"
+                    canEdit ? "" : "text-gray-400"
                   } focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full`}
                 />
-                <button
-                  type="button"
-                  onClick={onEmailSend}
-                  disabled={canEdit ? false : true}
-                  className="text-[13px] absolute right-0 t-1/2 translate-y-1/2 items-center cursor-pointer inline-flex justify-center align-middle text-cente hover:text-main-color"
-                >
+                
+                {canEdit ? (
+                  <button
+                    type="button"
+                    onClick={onEmailSend}
+                    className="text-[13px] absolute right-0 t-1/2 translate-y-1/2 items-center cursor-pointer inline-flex justify-center align-middle text-cente hover:text-main-color"
+                  >
                   인증 발송
-                </button>
+                  </button>
+                ) : 
+                  <button
+                    type="button"
+                    onClick={onEmailSend}
+                    className="text-[13px] absolute right-0 t-1/2 translate-y-1/2 items-center cursor-pointer inline-flex justify-center align-middle text-cente hover:text-main-color"
+                  >
+                  재발송
+                  </button>
+                  }
               </div>
               {!validateEmail(email) && (
                 <p className="text-xs text-main-color">
@@ -530,7 +642,9 @@ export default function EditProfileInput() {
                   placeholder=""
                   onChange={onEmailCodeHandler}
                   readOnly={canEdit2 ? false : true}
-                  className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"
+                  className={`${
+                    canEdit2 ? "" : "text-gray-400"
+                  } focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full`}
                 />
                 <button
                   type="button"
@@ -577,6 +691,7 @@ export default function EditProfileInput() {
                     />
                     <label
                       htmlFor="advertise"
+                      onClick={onagreeWithMarketingHandler}
                       className="relative cursor-pointer inline-flex"
                     >
                       {!agreeWithMarketing && (
@@ -635,6 +750,7 @@ export default function EditProfileInput() {
                     type="password"
                     placeholder="영문, 숫자, 특수문자 조합 8-16자"
                     onChange={onPrevPasswordHandler}
+                    value={prevPassword}
                     className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"
                   />
                 </div>
@@ -648,6 +764,7 @@ export default function EditProfileInput() {
                     type="password"
                     placeholder="영문, 숫자, 특수문자 조합 8-16자"
                     onChange={onPasswordHandler}
+                    value={password}
                     className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"
                   />
                 </div>
@@ -661,6 +778,7 @@ export default function EditProfileInput() {
                   <input
                     type="password"
                     onChange={onCheckPasswordHandler}
+                    value={checkPassword}
                     className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"
                   />
                 </div>

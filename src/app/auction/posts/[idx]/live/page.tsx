@@ -61,7 +61,7 @@ export default function ActionPage({ params: { slug } }: Props) {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?macAdress=`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${userIdx}`
       );
       // Assuming your response data has a 'result' property
       console.log(response.data);
@@ -118,9 +118,6 @@ export default function ActionPage({ params: { slug } }: Props) {
     const auctionDeleteMutation = useMutation({
       mutationFn: auctionDeleteBookmark,
       onSuccess: (data) => {
-        console.log("===auctionDeleteMutation====");
-        console.log(data);
-        console.log("============================");
       },
     });
 
@@ -175,8 +172,8 @@ export default function ActionPage({ params: { slug } }: Props) {
                     console.log(`script loaded correctly, window.FB has been populated`)
                 }
             /> */}
-      <div className="flex flex-col lg:flex-row mt-36">
-        <div className="flex-auto flex-col">
+      <div className="flex flex-col lg:flex-row mt-36 ">
+        <div className="flex-auto flex-col lg:basis-9/12">
           <div className="bg-black w-full">
             <VideoPlayer src={videoUrl}></VideoPlayer>
           </div>
@@ -226,7 +223,9 @@ export default function ActionPage({ params: { slug } }: Props) {
             </div>
           </div>
         </div>
-        <div className="lg:w-[20rem] w-full">
+
+        {/* 우측 채팅뷰 */}
+        <div className="lg:basis-3/12 w-full">
           <StreamingChatView></StreamingChatView>
         </div>
       </div>

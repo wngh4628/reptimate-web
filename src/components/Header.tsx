@@ -41,15 +41,10 @@ export default function Header() {
 
   const [isChatVisisible, setIsChatVisisible] =
     useRecoilState(chatVisisibleState);
-  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(
-    chatRoomVisisibleState
-  );
+  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
 
-  const [isNotiVisisible, setIsNotiVisisible] =
-    useRecoilState(notiVisisibleState);
-
-  const [receivedNewChat, setreceivedNewChat] =
-    useRecoilState(receivedNewChatState);
+  const [isNotiVisisible, setIsNotiVisisible] = useRecoilState(notiVisisibleState);
+  const [receivedNewChat, setreceivedNewChat] = useRecoilState(receivedNewChatState);
 
   const setUser = useSetRecoilState(userAtom);
   const setCookieLoggedIn = useSetRecoilState(isLoggedInState);
@@ -170,6 +165,7 @@ export default function Header() {
         if (currentToken) {
           setfcm(currentToken);
         } else {
+
         }
       })
       .catch((err) => {
@@ -205,14 +201,18 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem("recoil-persist");
     setIsLoggedIn(false);
-    router.refresh();
-    window.location.reload();
+    router.replace("/");
   };
 
   function chattingClick() {
     if (isLoggedIn) {
       // console.log("채팅 목록 켜기");
-      setIsChatVisisible(true);
+      
+      if (isChatVisisible) {
+        setIsChatVisisible(false);
+      } else {
+        setIsChatVisisible(true);
+      }
     }
   }
   function chattingClose() {
@@ -226,7 +226,11 @@ export default function Header() {
   function notiClick() {
     if (isLoggedIn) {
       // console.log("알림 목록 켜기");
-      setIsNotiVisisible(true);
+      if (isNotiVisisible) {
+        setIsNotiVisisible(false);
+      } else {
+        setIsNotiVisisible(true);
+      }
     }
   }
   function notiClose() {
@@ -238,14 +242,6 @@ export default function Header() {
     window.location.href = "/"
     // window.location.reload();
   }
-
-  function showSearchModal(){
-
-    setIsSearchModalHidden(false);
-    
-  }
-
-  
 
   const communityPathnames = [
     "/",
@@ -326,22 +322,22 @@ export default function Header() {
               AI
             </Link>
             {isLoggedIn ?
-              <div className="flex justify-between items-center " style={{ width: 100 }} >
-                <Link
-                  href="/my"
-                  className={`${pathName.startsWith("/my") ? "font-bold" : ""
-                    } font-normal`}
-                  style={{ fontSize: 18, color: "#222222", }}
-                  onClick={chattingClick}
-                >
-                  MY
-                </Link>
-                <Link href="">
-                  <Image src="/img/chat.png"
+            <div className="flex justify-between items-center "  style={{width: 100}} >
+              <Link
+                href="/my"
+                className={`${
+                  pathName === "/my" ? "font-bold" : ""
+                } font-normal`}
+                style={{fontSize:18, color:"#222222",}}
+              >
+                MY
+              </Link>
+              <Link href="">
+                  <Image src="/img/chat.png" 
                     width={18}
                     height={18}
                     alt="chat-icon"
-                    onClick={notiClick}
+                    onClick={chattingClick}
                   />
                   {receivedNewChat && (
                     <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
@@ -355,11 +351,9 @@ export default function Header() {
                    />
               </Link> 
             </div>: ""}
-
-              <div className="flex w-[20px] h-[20+px] h-5 my-0.5 relative hover:cursor-pointer " style={{paddingTop:4}} onClick={() => showSearchModal()}>
-                <img src="/img/search.png"/>
-              </div>
-
+            <div className="flex w-[20px] h-5 my-0.5 relative " style={{paddingTop:4}}>
+              <img src="/img/search.png" />
+            </div>
           </nav>
         </div>
         {/* 두번째  메뉴 */}
@@ -372,10 +366,6 @@ export default function Header() {
         <div>
           {pathName.startsWith("/ai") ? <AiMenu /> : ""}
         </div>
-        <div>
-          { pathName.startsWith("/searchresult/") ? <SearchResultMenu /> : ""}
-        </div>
-        
         <div
           className={`${isChatVisisible
             ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"

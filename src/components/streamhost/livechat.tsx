@@ -112,7 +112,11 @@ export default function HostStreamingChatView() {
         });
       } else {
         router.replace("/");
-        alert("로그인이 필요한 기능입니다.");
+        Swal.fire({
+          text: "로그인이 필요한 기능입니다.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
     }
 

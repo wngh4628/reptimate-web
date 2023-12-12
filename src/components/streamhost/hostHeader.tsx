@@ -9,6 +9,7 @@ import { IMessage, connectMessage, userInfo } from "@/service/chat/chat";
 import { bannedUserState, noChatUserState } from "@/recoil/chatting";
 import axios from "axios";
 import { useRecoilState } from "recoil";
+import Swal from "sweetalert2";
 
 interface UserInfoData {
   [userIdx: number]: {
@@ -99,7 +100,11 @@ export default function HostStreamingInfoView() {
         });
       } else {
         router.replace("/");
-        alert("로그인이 필요한 기능입니다.");
+        Swal.fire({
+          text: "로그인이 필요한 기능입니다.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
     }
   }, []);

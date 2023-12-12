@@ -108,7 +108,7 @@ export default function AuctionPostCard({
               style={{ marginBottom:16}}
               href={`/auction/posts/${idx}`}
           >
-            <div style={{width:183.5}}>
+            <div style={{}}>
               {/* 대표 이미지 부분 */}
               <div className="relative h-[183.5.59px] overflow-hidden hover:border-2 hover:border-main-color rounded-md">
                 {/* 대표 이미지 쉐도우 */}
@@ -116,7 +116,6 @@ export default function AuctionPostCard({
                 <div style={imgStyle}>
                   <img
                     className="object-cover absolute inset-0 w-full h-full"
-                    width={183.5}
                     height={183.5}
                     src={
                       thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"

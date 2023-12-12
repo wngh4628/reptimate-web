@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import MorphCard from "../MorphCard";
 import { Mobile, PC } from "../ResponsiveLayout";
+import Swal from "sweetalert2";
 
 
 export default function LineBreedingResult(props:any) {
@@ -46,7 +47,11 @@ export default function LineBreedingResult(props:any) {
             .catch((error)=>{console.log('요청실패')
             console.log(error)  
             setIsLoading(false);
-            alert('요청에 실패했습니다. 이미지를 변경하거나, 다시 시도해주세요.')
+            Swal.fire({
+                text: "요청에 실패했습니다. 이미지를 변경하거나, 다시 시도해주세요.",
+                confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+              });
 
         })
 

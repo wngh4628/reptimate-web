@@ -41,6 +41,7 @@ import {
   userInfo,
   getResponseChatList,
 } from "@/service/chat/chat";
+import Swal from "sweetalert2";
 
 export default function MarketPostsView() {
   const router = useRouter();
@@ -159,7 +160,11 @@ export default function MarketPostsView() {
   const deleteMutation = useMutation({
     mutationFn: adoptionDelete,
     onSuccess: (data) => {
-      alert("게시글이 삭제되었습니다.");
+      Swal.fire({
+        text: "게시글이 삭제되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       router.replace("/community/market");
     },
   });
@@ -238,7 +243,11 @@ export default function MarketPostsView() {
                 onError: () => {
                   router.replace("/");
                   //
-                  alert("로그인 만료\n다시 로그인 해주세요");
+                  Swal.fire({
+                    text: "로그인 만료\n다시 로그인 해주세요",
+                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                  });
                 },
               }
             );
@@ -473,7 +482,11 @@ export default function MarketPostsView() {
         // Create the alert message based on missing fields
         let alertMessage = "오류입니다. :\n 다시 시도해주세요.";
 
-        alert(alertMessage);
+        Swal.fire({
+          text: alertMessage,
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
     };
 

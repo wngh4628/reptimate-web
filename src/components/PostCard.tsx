@@ -113,7 +113,7 @@ export default function PostCard({
               </div>
             </div>
             {/* 게시글 정보 부분 */}
-            <div className="w-[183.5px]">
+            <div className="w-full">
               {/* 제목 */}
               <h3 className="text-[14px]">{title}</h3>
               {/* 성별 부분 */}
