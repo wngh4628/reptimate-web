@@ -4,6 +4,7 @@ import MorphCard from "@/components/MorphCard";
 import { Mobile, PC } from "@/components/ResponsiveLayout";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 
 export default function Gender(props:any) {    
@@ -40,12 +41,20 @@ export default function Gender(props:any) {
           .catch((error)=>{console.log('요청실패')
           console.log(error)  
           setIsLoading(false);
-          alert('요청에 실패했습니다. 이미지를 변경하거나, 다시 시도해주세요.')
+          Swal.fire({
+            text: "요청에 실패했습니다. 이미지를 변경하거나, 다시 시도해주세요.",
+            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+            confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+          });
 
       })
     }    
     else{
-      alert('천공 사진을 선택해야 해야합니다.');
+      Swal.fire({
+        text: "천공 사진을 선택해야 해야합니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
   };
 

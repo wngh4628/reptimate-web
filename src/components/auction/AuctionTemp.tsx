@@ -18,6 +18,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import TimePicker from "../TimePicker";
+import Swal from "sweetalert2";
 
 interface FileItem {
   idx: number;
@@ -353,15 +354,21 @@ export default function AuctionTemp() {
     const file = event.target.files!![0];
 
     if (allFiles.length + files!!.length > 5) {
-      alert("사진 및 비디오는 최대 5개까지만 선택가능합니다.");
+      Swal.fire({
+        text: "사진 및 비디오는 최대 5개까지만 선택가능합니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       event.target.value = "";
     } else {
       if (file) {
         if (file.size > 50 * 1024 * 1024) {
           // Display an error message if the file size exceeds 200MB
-          alert(
-            "파일의 용량이 너무 큽니다. 파일은 개당 50MB까지만 업로드 가능합니다."
-          );
+          Swal.fire({
+            text: "파일의 용량이 너무 큽니다. 파일은 개당 50MB까지만 업로드 가능합니다.",
+            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+            confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+          });
           event.target.value = ""; // Clear the file input
         } else {
           if (files) {
@@ -528,7 +535,11 @@ export default function AuctionTemp() {
   const mutation = useMutation({
     mutationFn: auctionEdit,
     onSuccess: (data) => {
-      alert("경매글이 등록되었습니다.");
+      Swal.fire({
+        text: "경매글이 등록되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       router.replace(`/my/auction`);
       setIsLoading(false);
     },
@@ -537,7 +548,11 @@ export default function AuctionTemp() {
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (streamKey.length !== 24) {
-      alert("잘못된 스트림 키 입니다.\n새로고침 후 다시 시도해주세요.");
+      Swal.fire({
+        text: "잘못된 스트림 키 입니다.\n새로고침 후 다시 시도해주세요.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     } else {
       const now = new Date();
       const nowHours = now.getHours().toString().padStart(2, "0");
@@ -546,11 +561,14 @@ export default function AuctionTemp() {
 
       // Update the endTime state only if the selected time is not before the current time
       if (endTime >= currentTime) {
-        const confirmation = window.confirm(
-          "경매글을 등록하면 다시 임시 저장 상태로 되돌릴 수 없습니다.\n경매글을 등록하시겠습니까?"
-        );
-
-        if (confirmation) {
+        Swal.fire({
+          text: "경매글을 등록하면 다시 임시 저장 상태로 되돌릴 수 없습니다.\n경매글을 등록하시겠습니까?",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+          showCancelButton: true,
+          cancelButtonText: '취소'
+        }).then(async function(){
+          // 이벤트
           setIsLoading(true);
 
           const today = new Date();
@@ -675,12 +693,12 @@ export default function AuctionTemp() {
                   mutation.mutate(requestData1);
                 } else {
                   console.error("Error uploading files to the first server.");
-                  alert("Error uploading files. Please try again later.");
+                  // alert("Error uploading files. Please try again later.");
                   setIsLoading(false);
                 }
               } catch (error) {
                 console.error("Error:", error);
-                alert("An error occurred. Please try again later.");
+                // alert("An error occurred. Please try again later.");
                 setIsLoading(false);
               }
             }
@@ -703,13 +721,21 @@ export default function AuctionTemp() {
             let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
             alertMessage += missingFields.join(", ");
 
-            alert(alertMessage);
+            Swal.fire({
+              text: alertMessage,
+              confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+              confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+            });
             setIsLoading(false);
           }
-        }
+        });
       } else {
         // You can optionally provide feedback to the user (e.g., show an error message)
-        alert("마감 시간은 현재 시간 이후의 시간만 선택 가능합니다.");
+        Swal.fire({
+          text: "마감 시간은 현재 시간 이후의 시간만 선택 가능합니다.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
     }
   };
@@ -788,7 +814,11 @@ export default function AuctionTemp() {
       setEndTime(selectedTime);
     } else {
       // You can optionally provide feedback to the user (e.g., show an error message)
-      alert("마감 시간은 현재 시간 이후의 시간만 선택 가능합니다.");
+      Swal.fire({
+        text: "마감 시간은 현재 시간 이후의 시간만 선택 가능합니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
     // You can perform further actions with the selected time
   };
