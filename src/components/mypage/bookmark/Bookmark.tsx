@@ -244,7 +244,7 @@ export default function BookmarkList() {
                   onClick={onMyBoardTypeChange2}
                   className={`${
                     myBookmarkType ? "font-bold" : ""
-                  } w-full h-[95%] justify-center text-[18px] pt-[25px]`}
+                  } w-full h-[95%] justify-center text-[18px] py-[15px]`}
                 >
                   게시글
                 </button>
@@ -259,7 +259,7 @@ export default function BookmarkList() {
                   onClick={onMyBoardTypeChange}
                   className={`${
                     myBookmarkType ? "" : "font-bold"
-                  } w-full h-[95%] justify-center text-[18px] pt-[25px]`}
+                  } w-full h-[95%] justify-center text-[18px] py-[15px]`}
                 >
                   경매
                 </button>
