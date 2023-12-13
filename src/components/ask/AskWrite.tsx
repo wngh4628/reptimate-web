@@ -11,8 +11,6 @@ import ImageSelecterWrite from "../ImageSelecterWrite";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
-import Swal from "sweetalert2";
-
 interface FileItem {
   file: File;
   id: number;
@@ -206,12 +204,8 @@ export default function AskWrite() {
     onSuccess: (data) => {
       window.history.back();
     },
-    onError: (data: string) => {
-      Swal.fire({
-        text: data,
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
+    onError: (data) => {
+      alert(data);
       setIsLoading(false);
     },
   });
@@ -260,13 +254,13 @@ export default function AskWrite() {
             };
             mutation.mutate(requestData1);
           } else {
-            // console.error("Error uploading files to the first server.");
-            // alert("Error uploading files. Please try again later.");
+            console.error("Error uploading files to the first server.");
+            alert("Error uploading files. Please try again later.");
             setIsLoading(false);
           }
         } catch (error) {
-          // console.error("Error:", error);
-          // alert("An error occurred. Please try again later.");
+          console.error("Error:", error);
+          alert("An error occurred. Please try again later.");
           setIsLoading(false);
         }
       }
@@ -280,11 +274,7 @@ export default function AskWrite() {
       let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
       alertMessage += missingFields.join(", ");
 
-      Swal.fire({
-        text: alertMessage,
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
+      alert(alertMessage);
       setIsLoading(false);
     }
   };

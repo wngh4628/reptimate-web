@@ -5,8 +5,6 @@ import { useDrag, useDrop } from "react-dnd";
 import { adoptionWrite } from "@/api/adoption/adoption";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-
-import Swal from "sweetalert2";
 import { auctionWrite } from "@/api/auction/auction";
 import { useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
@@ -14,7 +12,6 @@ import ImageSelecterWrite from "../ImageSelecterWrite";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
-
 interface FileItem {
   file: File;
   id: number;
@@ -136,11 +133,7 @@ export default function AdoptionWrite() {
     userAccessToken = userData.USER_DATA.accessToken;
   } else {
     router.replace("/");
-    Swal.fire({
-      text: "로그인이 필요한 기능입니다.",
-      confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-      confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-    });
+    alert("로그인이 필요한 기능입니다.");
   }
 
   const [selectedFiles, setSelectedFiles] = useState<
@@ -205,21 +198,15 @@ export default function AdoptionWrite() {
     const file = event.target.files!![0];
 
     if (selectedFiles.length + files!!.length > 5) {
-      Swal.fire({
-        text: "사진 및 비디오는 최대 5개까지만 선택가능합니다.",
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
+      alert("사진 및 비디오는 최대 5개까지만 선택가능합니다.");
       event.target.value = "";
     } else {
       if (file) {
         if (file.size > 50 * 1024 * 1024) {
           // Display an error message if the file size exceeds 200MB
-          Swal.fire({
-            text: "파일의 용량이 너무 큽니다. 파일은 개당 50MB까지만 업로드 가능합니다.",
-            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-            confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-          });
+          alert(
+            "파일의 용량이 너무 큽니다. 파일은 개당 50MB까지만 업로드 가능합니다."
+          );
           event.target.value = ""; // Clear the file input
         } else {
           if (files) {
@@ -257,15 +244,11 @@ export default function AdoptionWrite() {
   const mutation = useMutation({
     mutationFn: adoptionWrite,
     onSuccess: (data) => {
-      Swal.fire({
-        text: "게시글이 작성되었습니다.",
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
+      alert("게시글이 작성되었습니다.");
       window.history.back();
     },
     onError: (data) => {
-      // alert(data);
+      alert(data);
       setIsLoading(false);
     },
   });
@@ -340,13 +323,13 @@ export default function AdoptionWrite() {
             };
             mutation.mutate(requestData1);
           } else {
-            // console.error("Error uploading files to the first server.");
-            // alert("Error uploading files. Please try again later.");
+            console.error("Error uploading files to the first server.");
+            alert("Error uploading files. Please try again later.");
             setIsLoading(false);
           }
         } catch (error) {
-          // console.error("Error:", error);
-          // alert("An error occurred. Please try again later.");
+          console.error("Error:", error);
+          alert("An error occurred. Please try again later.");
           setIsLoading(false);
         }
       }
@@ -366,11 +349,7 @@ export default function AdoptionWrite() {
       let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
       alertMessage += missingFields.join(", ");
 
-      Swal.fire({
-        text: alertMessage,
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
+      alert(alertMessage);
       setIsLoading(false);
     }
   };

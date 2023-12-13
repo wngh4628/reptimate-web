@@ -16,13 +16,11 @@ import { GetAuctionPostsView, Images } from "@/service/my/auction";
 // import VideoThumbnail from "../VideoThumbnail";
 import { useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
-import Swal from "sweetalert2";
 import ImageSelecterEdit from "../ImageSelecterEdit";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import TimePicker from "../TimePicker";
-
 
 interface FileItem {
   idx: number;
@@ -336,21 +334,15 @@ export default function AuctionEdit() {
     const file = event.target.files!![0];
 
     if (allFiles.length + files!!.length > 5) {
-      Swal.fire({
-        text: "사진 및 비디오는 최대 5개까지만 선택가능합니다.",
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
+      alert("사진 및 비디오는 최대 5개까지만 선택가능합니다.");
       event.target.value = "";
     } else {
       if (file) {
         if (file.size > 50 * 1024 * 1024) {
           // Display an error message if the file size exceeds 200MB
-          Swal.fire({
-            text: "파일의 용량이 너무 큽니다. 파일은 개당 50MB까지만 업로드 가능합니다.",
-            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-            confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-          });
+          alert(
+            "파일의 용량이 너무 큽니다. 파일은 개당 50MB까지만 업로드 가능합니다."
+          );
           event.target.value = ""; // Clear the file input
         } else {
           if (files) {
@@ -517,19 +509,11 @@ export default function AuctionEdit() {
   const mutation = useMutation({
     mutationFn: auctionEdit,
     onSuccess: (data) => {
-      Swal.fire({
-        text: "게시글 수정이 완료되었습니다.",
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
+      alert("게시글 수정이 완료되었습니다.");
       window.history.back();
     },
-    onError: (data: string) => {
-      Swal.fire({
-        text: data,
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
+    onError: (data) => {
+      alert(data);
       setIsLoading(false);
     },
   });
@@ -1023,8 +1007,8 @@ export default function AuctionEdit() {
           <div className="flex flex-row">
             <button
               className={`w-36 py-2 mr-2 rounded ${selectedSize === "베이비"
-                  ? "bg-main-color"
-                  : "bg-gender-none-color"
+                ? "bg-main-color"
+                : "bg-gender-none-color"
                 } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("베이비")}
             >
@@ -1032,8 +1016,8 @@ export default function AuctionEdit() {
             </button>
             <button
               className={`w-36 py-2 mr-2 rounded ${selectedSize === "아성체"
-                  ? "bg-main-color"
-                  : "bg-gender-none-color"
+                ? "bg-main-color"
+                : "bg-gender-none-color"
                 } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("아성체")}
             >
@@ -1041,8 +1025,8 @@ export default function AuctionEdit() {
             </button>
             <button
               className={`w-36 py-2 mr-2 rounded ${selectedSize === "준성체"
-                  ? "bg-main-color"
-                  : "bg-gender-none-color"
+                ? "bg-main-color"
+                : "bg-gender-none-color"
                 } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("준성체")}
             >
@@ -1050,8 +1034,8 @@ export default function AuctionEdit() {
             </button>
             <button
               className={`w-36 py-2 rounded ${selectedSize === "성체"
-                  ? "bg-main-color"
-                  : "bg-gender-none-color"
+                ? "bg-main-color"
+                : "bg-gender-none-color"
                 } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("성체")}
             >
