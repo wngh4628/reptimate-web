@@ -126,7 +126,7 @@ export default function Header() {
     useRecoilState(fcmNotificationState);
 
   useEffect(() => {
-    handleLogin();
+    // handleLogin();
     const user = navigator.userAgent;
     if (user.indexOf("iPhone") > -1 || user.indexOf("Android") > -1) {
     } else {
@@ -147,6 +147,12 @@ export default function Header() {
   }, [isSearchModalHidden]);
 
   useEffect(() => {}, [receivedNewChat]);
+  useEffect(() => {
+    console.log("==========",isLoggedIn);
+    if (!isLoggedIn) {
+      localStorage.removeItem("recoil-persist");
+    }
+  }, [isLoggedIn]);
 
   const onMessageFCM = async () => {
     // 브라우저에 알림 권한을 요청합니다.
@@ -189,12 +195,13 @@ export default function Header() {
   };
 
   const handleLogin = () => {
+    
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA && userData.USER_DATA.accessToken) {
         const accessToken = userData.USER_DATA.accessToken;
-        setIsLoggedIn(true);
+        // setIsLoggedIn(true);
       }
     }
   };
@@ -409,7 +416,6 @@ export default function Header() {
       </PC>
       {/* 모바일 화면(반응형) */}
       <Mobile>
-
         <Search isHidden={isSearchModalHidden} setHidden={setIsSearchModalHidden} />
         <div className="flex justify-start pt-2 pl-3 pr-3 pb-2">
           <Link href={link}>
