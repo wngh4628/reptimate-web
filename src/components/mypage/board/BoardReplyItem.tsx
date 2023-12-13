@@ -29,7 +29,7 @@ export default function BoardReplyItem({
 
   return (
     <div className="w-full h-[160px] p-2 border-gray-200 border-[1px] rounded-[12px] mb-[5px] shadow">
-      <Link href={`/community/${boardCategory}/posts/${boardIdx}`}>
+      <Link href={ boardCategory == "auction" ? `/auction/posts/${boardIdx}` : `/community/${boardCategory}/posts/${boardIdx}`}>
         <div className="w-full flex flex-col">
           <div className="border-b-[1px] h-[85px] pt-[10px]">
             <div className="flex flex-row mx-1 justify-between mb-2">
