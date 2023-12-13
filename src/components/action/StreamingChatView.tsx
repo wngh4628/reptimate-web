@@ -757,7 +757,7 @@ export default function StreamingChatView() {
         const message: IMessage = {
           userIdx: userIdx,
           socketId: socketId,
-          message: bidMsg.trim(),
+          message: bidMsg.trim().replace(/,/g, ""),
           room: roomName,
         };
         socketBidRef.current.emit("Auction_message", message);
@@ -816,7 +816,7 @@ export default function StreamingChatView() {
         {sideView === "chat" ? (
           <div className="min-h-screen w-full">
             <div className="flex items-start flex-col">
-              <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px]">
+              <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px] border-l-[1px]">
                 <div className="flex-1 min-h-[72vh] max-h-[72vh] overflow-auto bg-white pb-1">
                   {chattingData.map((chatData, i) => (
                     <ChatItem
@@ -853,7 +853,7 @@ export default function StreamingChatView() {
           ""
         )}
         {sideView === "participate" ? (
-          <div className="flex-1 min-h-[77.9vh] max-h-[77.9vh] w-full border-gray-100 border-r-[1px] border-b-[1px]">
+          <div className="flex-1 min-h-[77.9vh] max-h-[77.9vh] w-full border-gray-100 border-r-[1px] border-l-[1px] border-b-[1px]">
             <div className="flex flex-col overflow-auto bg-white mt-2 pl-5">
               {Object.values(userInfoData).map((userList) => (
                 <ChatUserList
@@ -876,7 +876,7 @@ export default function StreamingChatView() {
         {sideView === "bid" ? (
           <div className="min-h-screen w-full">
             <div className="flex items-start flex-col">
-              <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px]">
+              <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px] border-l-[1px]">
                 <div className="flex-1 min-h-[62vh] max-h-[62vh] overflow-auto bg-white pb-1">
                   {chattingBidData.map((chattingBidData, i) => (
                     <BidItem

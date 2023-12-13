@@ -804,7 +804,7 @@ export default function AuctionPostsView() {
   //메시지 발송하는 함수
   const sendBidMsg = async () => {
     if (bidMsg.trim() !== "") {
-      const numericValue = parseInt(bidMsg.trim(), 10);
+      const numericValue = parseInt(bidMsg.trim().replace(/,/g, ""), 10);
 
       if (numericValue % parseInt(bidUnit) !== 0) {
         // 입력값이 1000의 배수가 아니면 초기화
@@ -816,7 +816,7 @@ export default function AuctionPostsView() {
         });
         return;
       }
-      if (parseInt(bidMsg.trim()) < parseInt(bidStartPrice)) {
+      if (numericValue < parseInt(bidStartPrice)) {
         Swal.fire({
           text: "입찰 시작가 보다 큰 금액을 입력해 주세요",
           icon: "error",
@@ -833,7 +833,7 @@ export default function AuctionPostsView() {
         const message: IMessage = {
           userIdx: userIdx,
           socketId: socketId,
-          message: bidMsg.trim(),
+          message: bidMsg.trim().replace(/,/g, ""),
           room: roomName,
         };
         socketBidRef.current.emit("Auction_message", message);
@@ -905,7 +905,8 @@ export default function AuctionPostsView() {
     };
     const onChangeBid = (event: { target: { value: string } }) => {
       const numericInput = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-      setBidMsg(numericInput);
+      const formattedInput = Number(numericInput).toLocaleString();
+      setBidMsg(formattedInput);
     };
 
     const handleViewClick = () => {
@@ -1263,7 +1264,7 @@ export default function AuctionPostsView() {
                 <div className="flex flex-row items-center py-1">
                   <p className="font-semibold ">즉시 구입가</p>
                   <p className="font-bold ml-auto ">
-                    {post.boardAuction.startPrice.toLocaleString()}원
+                    {post.boardAuction.buyPrice.toLocaleString()}원
                   </p>
                 </div>
                 <div className="flex flex-row items-center py-1">
