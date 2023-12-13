@@ -102,7 +102,7 @@ export default function AiMain() {
             <Link href={`/ai/valueanalysis`}>
               <img
                 className="object-cover w-[183.5px] h-[183.5px] rounded-md"
-                src={"/img/value_analysis.png"}
+                src={"/img/ai_value.png"}
                 width={183.5}
                 height={183.5}
                 alt={""}
@@ -118,7 +118,7 @@ export default function AiMain() {
             <Link href={`/ai/linebreeding`}>
               <img
                 className="object-cover w-[183.5px] h-[183.5px] rounded-md"
-                src={"/img/line_breeding.png"}
+                src={"/img/ai_linebreeding.png"}
                 width={183.5}
                 height={183.5}
                 alt={""}
@@ -134,7 +134,7 @@ export default function AiMain() {
             <Link href={`/ai/gender`}>
               <img
                 className="object-cover  w-[183.5px] h-[183.5px] rounded-md"
-                src={"/img/gender.jpeg"}
+                src={"/img/ai_sex.jpeg"}
                 width={183.5}
                 height={183.5}
                 alt={""}
@@ -148,7 +148,7 @@ export default function AiMain() {
 
           <div className="w-[183.5px] rounded-md">
             <h3 className="font-bold mb-2 text-xl">사육 챗봇</h3>
-            <Link href={`/ai/aibreeder`}>
+            <Link href={`/ai/ai_chatting`}>
               <img
                 className="object-cover w-[183.5px] h-[183.5px] rounded-md"
                 src={"/img/reptimate_logo.png"}
