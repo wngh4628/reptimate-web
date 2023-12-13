@@ -58,7 +58,7 @@ export default function AiMain() {
                 <div className="relative w-[500px] h-[300px] overflow-hidden shadow-md shadow-gray-400 hover:border-2 hover:border-main-color rounded-lg">
                   <img
                     className="object-cover w-full h-full"
-                    src={"/img/ai_sex.png"}
+                    src={"/img/ai_gender.png"}
                     width={500}
                     height={300}
                     alt={""}
@@ -102,7 +102,7 @@ export default function AiMain() {
             <Link href={`/ai/valueanalysis`}>
               <img
                 className="object-cover w-[183.5px] h-[183.5px] rounded-md"
-                src={"/img/ai_value.png"}
+                src={"/img/ai_m_value.png"}
                 width={183.5}
                 height={183.5}
                 alt={""}
@@ -118,7 +118,7 @@ export default function AiMain() {
             <Link href={`/ai/linebreeding`}>
               <img
                 className="object-cover w-[183.5px] h-[183.5px] rounded-md"
-                src={"/img/ai_linebreeding.png"}
+                src={"/img/ai_m_linebreeding.png"}
                 width={183.5}
                 height={183.5}
                 alt={""}
@@ -134,7 +134,7 @@ export default function AiMain() {
             <Link href={`/ai/gender`}>
               <img
                 className="object-cover  w-[183.5px] h-[183.5px] rounded-md"
-                src={"/img/ai_sex.jpeg"}
+                src={"/img/ai_gender.png"}
                 width={183.5}
                 height={183.5}
                 alt={""}
@@ -148,10 +148,10 @@ export default function AiMain() {
 
           <div className="w-[183.5px] rounded-md">
             <h3 className="font-bold mb-2 text-xl">사육 챗봇</h3>
-            <Link href={`/ai/ai_chatting`}>
+            <Link href={`/ai/aibreeder`}>
               <img
                 className="object-cover w-[183.5px] h-[183.5px] rounded-md"
-                src={"/img/reptimate_logo.png"}
+                src={"/img/ai_chatting.png"}
                 width={500}
                 height={300}
                 alt={""}
