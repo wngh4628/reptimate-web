@@ -79,7 +79,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
           <p className="font-bold text-lg">시간 설정</p>
           <div>
             <select
-              className="text-black bg-white focus:outline-none text-2xl mx-2 mt-2 mb-4 appearance-none cursor-pointer"
+              className="text-black bg-white focus:outline-none text-2xl px-6 mt-2 mb-4 appearance-none cursor-pointer"
               value={selectedHour}
               onChange={handleHourChange}
             >
@@ -89,11 +89,11 @@ const TimePicker: React.FC<TimePickerProps> = ({
                 </option>
               ))}
             </select>
-            <span className="text-black bg-white focus:outline-none text-2xl my-2">
+            <span className="text-black bg-white focus:outline-none text-2xl my-2 mx-1">
               :
             </span>
             <select
-              className="text-black bg-white focus:outline-none text-2xl mx-2 mt-2 mb-4 appearance-none cursor-pointer"
+              className="text-black bg-white focus:outline-none text-2xl px-6 mt-2 mb-4 appearance-none cursor-pointer"
               value={selectedMinute}
               onChange={handleMinuteChange}
             >
@@ -116,13 +116,13 @@ const TimePicker: React.FC<TimePickerProps> = ({
           <div>
             <button
               onClick={handleConfirm}
-              className="bg-main-color text-white px-4 py-2 mr-2 rounded"
+              className="bg-main-color text-white px-6 py-2 mr-2 rounded"
             >
               확인
             </button>
             <button
               onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded"
+              className="bg-gray-500 text-white px-6 py-2 rounded"
             >
               취소
             </button>
