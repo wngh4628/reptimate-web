@@ -103,7 +103,11 @@ export default function JoinInput() {
         loginMethod: "",
       });
     } else {
-      alert("회원가입에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.");
+      Swal.fire({
+        text: "회원가입에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
   };
 
@@ -122,18 +126,35 @@ export default function JoinInput() {
     if (validateEmail(email)) {
       Swal.fire({
         text: "이메일이 전송 되었습니다.",
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        confirmButtonText: "확인",
+        confirmButtonColor: "#7A75F7",
       });
       mutationEmailSend.mutate({ email: email, type: "NEWUSER" });
     } else {
-      alert("이메일 형식에 맞게 작성해 주세요.");
+      Swal.fire({
+        text: "이메일 형식에 맞게 작성해 주세요.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
   }
   function onEmailCodeValidateHandler() {
     if (emailCode == emailCodeChk) {
+      Swal.fire({
+        text: "이메일이 인증이 완료 되었습니다.",
+        confirmButtonText: "확인",
+        confirmButtonColor: "#7A75F7",
+      });
+      // 이메일, 인증코드 입력란 비활성화
+
+
+
     } else {
-      alert("이메일 인증 코드를 다시 확인해주세요.");
+      Swal.fire({
+        text: "이메일 인증 코드를 다시 확인해주세요.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
   }
 
@@ -230,6 +251,11 @@ export default function JoinInput() {
                   className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"
                 />
               </div>
+              { password !== checkPassword && (
+                <p className="block absolute leading-[16px] text-xs text-main-color">
+                  비밀번호가 일치하지 않습니다.
+                </p>
+              )}
             </div>
 
             <div className="pb-[32px] relative">

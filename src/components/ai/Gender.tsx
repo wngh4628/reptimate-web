@@ -85,7 +85,7 @@ export default function Gender(props:any) {
             className={`relative flex flex-col items-center w-[290px] h-[290px] shadow-md shadow-gray-400 rounded-lg bg-gray-100`}
           >
             <img
-              className={`max-w-full max-h-full object-cover w-full h-full shadow-md shadow-gray-400 rounded-lg"`}
+              className={`max-w-full max-h-full object-cover w-full h-full shadow-md shadow-gray-400 rounded-lg`}
               src={'/img/perforation.jpeg'}
               style={{ zIndex: 1 }}
             />

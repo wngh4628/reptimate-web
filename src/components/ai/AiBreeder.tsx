@@ -167,7 +167,7 @@ export default function AiBreeder(props:any) {
     <div>
       <PC>
 
-      <div className="max-w-screen-md mx-auto  mt-[90px]">
+      <div className="max-w-screen-md mx-auto  mt-[130px]">
 
         <h2 className="text-3xl font-bold pt-5">사육 챗봇</h2>
 

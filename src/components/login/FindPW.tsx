@@ -56,7 +56,7 @@ export default function FindPWInput() {
   const onCheckPasswordHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target as any;
     setCechkPassword(value);
-    
+
   };
 
   const mutation = useMutation({
@@ -104,7 +104,11 @@ export default function FindPWInput() {
           email: email
       });
     } else {
-      alert("비밀번호 변경에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.");
+      Swal.fire({
+        text: "비밀번호 변경에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
   };
 
@@ -128,14 +132,22 @@ export default function FindPWInput() {
       });
       mutationEmailSend.mutate({ email: email });
     } else {
-      alert("이메일 형식에 맞게 작성해 주세요.");
+      Swal.fire({
+        text: "이메일 형식에 맞게 작성해 주세요.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
   }
   function onEmailCodeValidateHandler() {
     if (emailCode == emailCodeChk) {
         setNewPW(true);
     } else {
-      alert("이메일 인증 코드를 다시 확인해주세요.");
+      Swal.fire({
+        text: "이메일 인증 코드를 다시 확인해주세요.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
   }
 

@@ -4,8 +4,7 @@ import AiBreeder from "@/components/ai/AiBreeder";
 
 export default function AiBreederPage() {
   return (
-    <div>
-      <AiMenu />
+    <div>      
       <AiBreeder />
     </div>
   );

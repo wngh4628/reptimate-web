@@ -414,7 +414,7 @@ export default function MarketWrite() {
           ))}
         </select>
       </div>
-      
+
       <PC>
         <DndProvider backend={HTML5Backend}>
           <ImageSelecterWrite handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} selectedFiles={selectedFiles} moveFile={moveFile}></ImageSelecterWrite>
@@ -427,7 +427,7 @@ export default function MarketWrite() {
       </Mobile>
 
       <div className="mx-1 mt-4 flex flex-col">
-      <div className="mb-4">
+        <div className="mb-4">
           <p className="font-bold text-xl my-2">제목</p>
           <div className="flex">
             <input
@@ -481,7 +481,7 @@ export default function MarketWrite() {
             value={birthDate}
             onChange={handleDateChange}
           />
-        </div>        
+        </div>
         <div className="mb-4">
           <p className="font-bold text-xl my-2">성별</p>
           <div className="flex flex-row">

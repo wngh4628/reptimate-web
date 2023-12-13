@@ -65,7 +65,7 @@ export default function PersonalChat() {
     const storedData = localStorage.getItem('recoil-persist');
     if (storedData) {
       const userData = JSON.parse(storedData);
-      if (userData.USER_DATA.accessToken) {
+      if (userData.USER_DATA && userData.USER_DATA.accessToken) {
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
         //입장한 사용자의 idx지정
@@ -74,7 +74,6 @@ export default function PersonalChat() {
         setNickname(userData.USER_DATA.nickname);
         setProfilePath(userData.USER_DATA.profilePath);
 
-        getChatRoomList(extractedAccessToken);
         // chatRoomData 배열의 각 요소를 확인하여 unreadCount가 0보다 큰지 확인
         const hasUnreadMessages = chatRoomData.some((chatRoom) => chatRoom.unreadCount > 0);
         if (hasUnreadMessages) {
@@ -96,6 +95,7 @@ export default function PersonalChat() {
     }
   }, [fcmNotification])
 
+  // 채팅 알람이 올 경우 목록의 상위로 올리고 내용을 업데이트
   const updateChatRoomData = (newRecentMessage: string, nickname: string) => {
     // 채팅 목록의 내용 변경
     const updatedChatRoomData = chatRoomData.map((chatRoom) => {
@@ -132,24 +132,25 @@ export default function PersonalChat() {
   }, [chatRoomData])
 
   useEffect(() => {
+    setchatRoomData([]);
     if (!chatRoomVisisible) {
-      setchatRoomData([])
       const storedData = localStorage.getItem('recoil-persist');
       if (storedData) {
         const userData = JSON.parse(storedData);
-        if (userData.USER_DATA.accessToken) {
+        if (userData.USER_DATA && userData.USER_DATA.accessToken) {
           const extractedAccessToken = userData.USER_DATA.accessToken;
           getChatRoomList(extractedAccessToken);
         } else {
         }
       }
     } else {
-      setchatRoomData([])
+      setchatRoomData([]);
     }
   }, [chatRoomVisisible]);
 
   // 채팅방 리스트 불러오기
   const getChatRoomList = async (accessToken: string) => {
+    setchatRoomData([]);
     setLoading(true);
     const config = {
         headers: {
@@ -180,7 +181,7 @@ export default function PersonalChat() {
           // 내림차순으로 정렬하려면 dateB - dateA를 반환합니다.
           return dateB.getTime() - dateA.getTime();
         });
-        await setchatRoomData(sortedArray);
+        setchatRoomData(sortedArray);
         // console.log("=====getChatRoomList() : personalChat.tsx : 채팅방 리스트 불러오기 성공=====")
         // console.log(response.data)
         // console.log("=============================")
@@ -230,7 +231,7 @@ useEffect(() => {
   const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
           if (entry.isIntersecting && !loading && existNextPage) {
-            getChatRoomList(accessToken);
+            // getChatRoomList(accessToken);
           }
       });
   }, options);

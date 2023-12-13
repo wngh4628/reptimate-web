@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   GetAdoptionPostsView,
   Images,
@@ -41,6 +42,7 @@ import {
   userInfo,
   getResponseChatList,
 } from "@/service/chat/chat";
+import Swal from "sweetalert2";
 
 export default function MarketPostsView() {
   const router = useRouter();
@@ -159,7 +161,11 @@ export default function MarketPostsView() {
   const deleteMutation = useMutation({
     mutationFn: adoptionDelete,
     onSuccess: (data) => {
-      alert("게시글이 삭제되었습니다.");
+      Swal.fire({
+        text: "게시글이 삭제되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       router.replace("/community/market");
     },
   });
@@ -238,7 +244,11 @@ export default function MarketPostsView() {
                 onError: () => {
                   router.replace("/");
                   //
-                  alert("로그인 만료\n다시 로그인 해주세요");
+                  Swal.fire({
+                    text: "로그인 만료\n다시 로그인 해주세요",
+                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                  });
                 },
               }
             );
@@ -473,7 +483,11 @@ export default function MarketPostsView() {
         // Create the alert message based on missing fields
         let alertMessage = "오류입니다. :\n 다시 시도해주세요.";
 
-        alert(alertMessage);
+        Swal.fire({
+          text: alertMessage,
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
     };
 
@@ -503,14 +517,15 @@ export default function MarketPostsView() {
         {post && (
           <div className="max-w-screen-sm mx-auto">
             <PC>
-              <h2 className="text-4xl font-bold pt-10 mt-20">{post.title}</h2>
+              <div className="mt-[150px]">
+              <p className="text-4xl font-bold text-[27px]">{post.title}</p>
               <div className="flex items-center my-2 relative">
                 <img
-                  className="w-10 h-10 rounded-full border-2 cursor-pointer"
-                  src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
-                  alt=""
-                  onClick={profileMenu}
-                />
+                    className="w-11 h-11 rounded-full border-2 cursor-pointer object-cover"
+                    src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
+                    alt=""
+                    onClick={profileMenu}
+                  />
                 {!isCurrentUserComment && (
                   <div className="flex items-center justify-center absolute top-full mt-1 bg-white border border-gray-200 shadow-lg rounded z-50">
                     {profileMenuOpen && (
@@ -528,19 +543,24 @@ export default function MarketPostsView() {
                     )}
                   </div>
                 )}
-                <p className="text-xl font-bold ml-1">
-                  {post.UserInfo.nickname}
-                </p>
-                <p className="ml-2 text-gray-500">{postWriteDate}</p>
-                <p className="ml-1 text-gray-500">{postWriteTime}</p>
-                <p className="ml-2 text-gray-500">조회 {post.view}</p>
+                <div className="ml-2 ">
+                    <p className="font-bold cursor-pointer" onClick={profileMenu}>
+                      {post.UserInfo.nickname}
+                    </p>
+                    <div className="flex">
+                      <p className="text-gray-500 text-[12px]">{postWriteDate}</p>
+                      <p className="ml-1 text-gray-500 text-[12px]">{postWriteTime}</p>
+                      <p className="ml-2 text-gray-500 text-[12px]">조회 {post.view}</p>
+                    </div>
+                  </div>
+
                 <div className="relative ml-auto">
-                  <button
-                    onClick={toggleMenu}
-                    className="text-gray-500 cursor-pointer text-xl"
-                  >
-                    ⁝
-                  </button>
+                   <button
+                      onClick={toggleMenu}
+                      className="text-gray-500 cursor-pointer "
+                    >
+                    <p className="text-[24px]">⁝</p>
+                    </button>
                   {menuOpen && (
                     <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
                       {isCurrentUserComment ? (
@@ -581,50 +601,24 @@ export default function MarketPostsView() {
                   )}
                 </div>
               </div>
-              <ImageSlider imageUrls={itemlist} />
-              <div className="flex flex-row items-center py-3">
-                <p className="text-lg font-semibold ml-5">판매가격</p>
-                <p className="text-xl font-bold ml-auto mr-5">
-                  {post.boardCommercial.price.toLocaleString()}원
-                </p>
+              {/* 갤러리 */}
+              <div className="pt-3">
+                <ImageSlider imageUrls={itemlist} />
               </div>
-              <div className="flex flex-row items-center justify-center">
-                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">품종</p>
-                  <p className="pb-1 text-lg">{post.boardCommercial.variety}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">성별</p>
-                  <p className="pb-1 text-lg">{post.boardCommercial.gender}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">크기</p>
-                  <p className="pb-1 text-lg">{post.boardCommercial.size}</p>
-                </div>
-              </div>
-              <div className="flex flex-row items-center justify-center mt-1">
-                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">모프</p>
-                  <p className="pb-1 text-lg">{post.boardCommercial.pattern}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">출생</p>
-                  <p className="pb-1 text-lg">
-                    {post.boardCommercial.birthDate}
+              <div className="mt-3">
+                <div className="flex flex-row items-center py-3">
+                  <p className="text-xl font-semibold ml-1">판매가격</p>
+                  <p className="text-xl font-bold ml-auto mr-1">
+                      {post.boardCommercial.price.toLocaleString()}원
                   </p>
                 </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 text-lg font-bold">상태</p>
-                  {post.boardCommercial.state === "reservation" ? (
-                    <p className="pb-1 text-lg text-red-600">예약중</p>
-                  ) : post.boardCommercial.state === "end" ? (
-                    <p className="pb-1 text-lg text-gray-500">판매완료</p>
-                  ) : (
-                    <p className="pb-1 text-lg text-blue-600">판매중</p>
-                  )}
-                </div>
               </div>
-              <p className="text-lg my-7 break-all">{post.description}</p>
+              
+              {/* 내용 */}
+              <div className="pb-4 pt-4">
+                  <p className="text-lg my-2 break-all">{post.description}</p>
+              </div>
+
               <hr className="border-t border-gray-300 my-1" />
               <div className="flex flex-row justify-between items-center py-3">
                 <div className="flex flex-row items-center py-3">
@@ -674,10 +668,11 @@ export default function MarketPostsView() {
                   로그인 후 댓글을 작성할 수 있습니다.
                 </p>
               )}
+              </div>
             </PC>
             <Mobile>
-              <BackButton />
-              <h2 className="mx-2 text-2xl font-bold pt-5">{post.title}</h2>
+              {/* <BackButton /> */}
+              <h2 className="mx-2 text-2xl font-bold pt-[55px]">{post.title}</h2>
               <div className="mx-2 flex items-center my-2 relative">
                 <img
                   className="w-10 h-10 rounded-full border-2 cursor-pointer"
@@ -702,10 +697,17 @@ export default function MarketPostsView() {
                     )}
                   </div>
                 )}
-                <p className="text-lg font-bold">{post.UserInfo.nickname}</p>
-                <p className="ml-2 text-gray-500 text-sm">{postWriteDate}</p>
-                <p className="ml-1 text-gray-500 text-sm">{postWriteTime}</p>
-                <p className="ml-2 text-gray-500 text-sm">조회 {post.view}</p>
+                 <div className="ml-2 ">
+                    <p className="font-bold cursor-pointer" onClick={profileMenu}>
+                      {post.UserInfo.nickname}
+                    </p>
+                    <div className="flex">
+                      <p className="text-gray-500 text-[12px]">{postWriteDate}</p>
+                      <p className="ml-1 text-gray-500 text-[12px]">{postWriteTime}</p>
+                      <p className="ml-2 text-gray-500 text-[12px]">조회 {post.view}</p>
+                    </div>
+                  </div>
+                
                 <div className="relative ml-auto">
                   <button
                     onClick={toggleMenu}
@@ -753,30 +755,27 @@ export default function MarketPostsView() {
                   )}
                 </div>
               </div>
-              <ImageSlider imageUrls={itemlist} />
-              <div className="flex flex-row items-center py-1">
-                <p className="font-semibold ml-2">판매가격</p>
-                <p className="font-bold ml-auto mr-2">
-                  {post.boardCommercial.price.toLocaleString()}원
-                </p>
+              {/* 갤러리 */}
+              <div className=''>
+                <ImageSlider imageUrls={itemlist} />
               </div>
-              <div className="mx-2 flex flex-row items-center justify-center">
-                <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 font-bold">품종</p>
-                  <p className="pb-1 text-sm">{post.boardCommercial.variety}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 font-bold">성별</p>
-                  <p className="pb-1 text-sm">{post.boardCommercial.gender}</p>
-                </div>
-                <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                  <p className="pt-1 font-bold">크기</p>
-                  <p className="pb-1 text-sm">{post.boardCommercial.size}</p>
-                </div>
+              {/* 상세 설명 */}
+              <div className="ml-4 mr-4">
+                {/* 가격 */}
+                <div className="flex flex-row items-center py-3">
+                    <p className="text-xl font-semibold ">판매가격</p>
+                    <p className="text-xl font-bold ml-auto mr-1">
+                      {post.boardCommercial.price.toLocaleString()}원
+                    </p>
+                  </div>
+                  <div>
+                    <p className="mx-2 my-6 break-all">{post.description}</p>
+                    <hr className="border-t border-gray-300" />
+                  </div>
               </div>
-              <p className="mx-2 my-4 break-all">{post.description}</p>
-              <hr className="border-t border-gray-300" />
-              <div className="flex flex-row justify-between items-center py-3">
+              
+              
+              <div className="flex flex-row justify-between items-center py-3 ml-4 mr-4">
                 <div className="flex flex-row items-center py-3">
                   <p className="text-lg font-semibold ml-1 mr-2">댓글</p>
                   <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
@@ -816,7 +815,7 @@ export default function MarketPostsView() {
                 </div>
               ) : (
                 <p
-                  className="cursor-pointer"
+                  className="cursor-pointer ml-4 mr-4"
                   onClick={() => {
                     handleLogin();
                   }}

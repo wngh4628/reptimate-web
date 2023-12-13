@@ -28,6 +28,7 @@ import {
 
 import AuctionItem from "./AuctionItem";
 import AuctionBidItem from "./AuctionBidItem";
+import Swal from "sweetalert2";
 
 export default function AuctionList() {
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
@@ -102,6 +103,9 @@ export default function AuctionList() {
           );
           setENP(response.data?.result.existsNextPage);
           setBoardPage((prevPage) => prevPage + 1);
+          // console.log(data);
+          
+
         } else {
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_API_URL}/mypage/bid?page=${replyPage}&size=20&order=DESC`,
@@ -121,10 +125,11 @@ export default function AuctionList() {
           );
           setENP(response.data?.result.existsNextPage);
           setReplyPage((prevPage) => prevPage + 1);
+          // console.log(replyData);
         }
       } catch (error: any) {
         // 에러가 발생하면 여기에서 처리할 수 있습니다.
-        console.error("Error fetching user data:", error.response.data);
+        // console.error("Error fetching user data:", error.response.data);
         if (error.response.data.status == 401) {
           const storedData = localStorage.getItem("recoil-persist");
           if (storedData) {
@@ -143,13 +148,21 @@ export default function AuctionList() {
                   onError: () => {
                     router.replace("/");
                     setIsLoggedIn(false);
-                    alert("로그인 만료\n다시 로그인 해주세요");
+                    Swal.fire({
+                      text: "로그인 만료\n다시 로그인 해주세요",
+                      confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                      confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                    });
                   },
                 }
               );
             } else {
               router.replace("/");
-              alert("로그인이 필요한 기능입니다.");
+              Swal.fire({
+                text: "로그인이 필요한 기능입니다.",
+                confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+              });
             }
           }
         }
@@ -171,7 +184,11 @@ export default function AuctionList() {
       } else {
         router.replace("/");
         setIsLoggedIn(false);
-        alert("로그인이 필요한 기능입니다.");
+        Swal.fire({
+          text: "로그인이 필요한 기능입니다.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
     }
   }, [myAuctionType]);
@@ -215,7 +232,7 @@ export default function AuctionList() {
     boardIdx: item.boardAuction?.boardIdx,
   }));
   const replyItemlist: Bid[] = (replyData?.result.items ?? []).map((item) => ({
-    idx: item.idx,
+    idx: item.board.idx,
     userIdx: item.userIdx,
     createdAt: new Date(item.createdAt),
     updatedAt: new Date(item.updatedAt),

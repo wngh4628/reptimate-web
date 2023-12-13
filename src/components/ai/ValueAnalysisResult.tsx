@@ -9,6 +9,7 @@ import { useSetRecoilState } from "recoil";
 import { userAtom, isLoggedInState } from "@/recoil/user";
 import { usePathname, useRouter } from "next/navigation";
 import { Mobile, PC } from "../ResponsiveLayout";
+import Swal from "sweetalert2";
 
 export default function ValueAnalysisResult(props:any) {
   const router = useRouter();
@@ -65,7 +66,11 @@ export default function ValueAnalysisResult(props:any) {
 
     // 모프 이름 작성여부 확인
     if(petName.length === 0){
-      alert('개체의 이름을 작성해주세요');
+      Swal.fire({
+        text: "개체의 이름을 작성해주세요",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     } else{
 
       setShowModal(false);
@@ -92,7 +97,11 @@ export default function ValueAnalysisResult(props:any) {
       if(response.status === 200){
         console.log(`statusText: ${response.statusText}`)
         console.log(`response 객체: ${JSON.stringify(response)}`)
-        alert('저장이 완료되었습니다');
+        Swal.fire({
+          text: "저장이 완료되었습니다",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
 
       // 401(토큰만료) 응답시 처리
       } else if (response.status === 401){
@@ -116,20 +125,32 @@ export default function ValueAnalysisResult(props:any) {
                 onError: () => {
                   router.replace("/");
                   setIsLoggedIn(false);
-                  alert("로그인 만료\n다시 로그인 해주세요");
+                  Swal.fire({
+                    text: "로그인 만료\n다시 로그인 해주세요",
+                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                  });
                 },
               }
             );
           } else {
             router.replace("/");
-            alert("로그인이 필요한 기능입니다.");
+            Swal.fire({
+              text: "로그인이 필요한 기능입니다.",
+              confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+              confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+            });
           }
         }
       // 201과 401이 아닌 모든 응답에 대한 처리
       } else {
         console.log(`statusText: ${response.statusText}`)
         console.log(`response 객체: ${JSON.stringify(response)}`)
-        alert('요청에 실패했습니다. 다시 시도해주세요.');
+        Swal.fire({
+          text: "요청에 실패했습니다. 다시 시도해주세요.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
     }
   }
@@ -191,7 +212,7 @@ export default function ValueAnalysisResult(props:any) {
         )}
 
           {/* 가치 판단 결과 */}
-          <div className="max-w-screen-lg mx-auto mt-10">
+          <div className="max-w-screen-lg mx-auto mt-40">
           
           <h2 className="text-3xl font-bold">가치 판단 결과</h2>
 
@@ -354,7 +375,7 @@ export default function ValueAnalysisResult(props:any) {
         )}
 
           {/* 가치 판단 결과 */}
-          <div className="max-w-screen-lg mx-auto mt-4 p-4">
+          <div className="max-w-screen-lg mx-auto mt-10 p-4">
           
           <h2 className="text-2xl font-bold">가치 판단 결과</h2>
           <div

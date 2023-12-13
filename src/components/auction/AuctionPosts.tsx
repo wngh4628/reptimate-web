@@ -130,7 +130,7 @@ export default function AuctionPosts() {
         <div className="mt-24">
           {/* 광고 배너 */}
           <BannerSlider />
-          <div className="flex items-center relative ml-[40px] mr-[40px]" >
+          <div className="flex items-center relative ml-10 mr-10" >
             <h2 className="font-bold text-[20px]">경매</h2>
             <div className="relative ml-auto">
               <select
@@ -153,7 +153,7 @@ export default function AuctionPosts() {
         <div className="mt-11">
           <BannerSlider />
           {/* 솔트링 콤보 박스 모바일 */}
-          <div className="flex items-center relative  ml-[16px] mr-[16px]">
+          <div className="flex items-center relative  ml-4 mr-4">
             <h2 className="text-lg font-bold my-2">경매</h2>
             <div className="relative ml-auto">
               <select
@@ -173,11 +173,9 @@ export default function AuctionPosts() {
       </Mobile>
       <PC>
         {data !== null && data.result.items ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-[40px] mr-[40px]" >
+          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10" >
             {itemlist.map((post) => (
-              <li key={post.idx}>
-                <AuctionPostCard post={post} />
-              </li>
+                <AuctionPostCard post={post} key={post.idx}/>
             ))}
           </ul>
         ) : (
@@ -188,7 +186,7 @@ export default function AuctionPosts() {
       </PC>
       <Mobile>
         {data !== null && data.result.items ? (
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-[16px] pr-[16px]">
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 ml-4 mr-4">
             {itemlist.map((post) => (
               <AuctionPostCard post={post} key={post.idx} />
             ))}
