@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Mobile, PC } from "../ResponsiveLayout";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { adoptionWrite } from "@/api/adoption/adoption";
+import { marketWrite } from "@/api/market/market";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useSetRecoilState } from "recoil";
@@ -161,30 +161,10 @@ export default function MarketWrite() {
       </button>
     );
   }
-  const handleVarietyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedVariety = e.target.value;
-    setVariety(selectedVariety);
-
-    // Reset pattern when variety changes
-    setPattern("모프를 선택하세요");
-  };
 
   const handleSellingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedSelling = e.target.value;
     setSelling(selectedSelling);
-  };
-
-  const handleGenderClick = (gender: string) => {
-    setSelectedGender(gender);
-  };
-
-  const handleSizeClick = (size: string) => {
-    setSelectedSize(size);
-  };
-
-  const handleDateChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newDate = event.target.value;
-    setBirthDate(newDate);
   };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -242,7 +222,7 @@ export default function MarketWrite() {
   };
 
   const mutation = useMutation({
-    mutationFn: adoptionWrite,
+    mutationFn: marketWrite,
     onSuccess: (data) => {
       window.history.back();
     },
@@ -265,11 +245,11 @@ export default function MarketWrite() {
       category: "market",
       description: description,
       price: priceReplace,
-      gender: selectedGender || "",
-      size: selectedSize || "",
-      variety: variety,
-      pattern: pattern,
-      birthDate: birthDate,
+      // gender: selectedGender || "",
+      // size: selectedSize || "",
+      // variety: variety,
+      // pattern: pattern,
+      // birthDate: birthDate,
       userAccessToken: userAccessToken || "",
       fileUrl: "",
     };
@@ -277,11 +257,11 @@ export default function MarketWrite() {
     if (
       title !== "" &&
       price !== "" &&
-      selectedGender !== "" &&
-      selectedSize !== "" &&
-      variety !== "" &&
-      pattern !== "" &&
-      birthDate !== "" &&
+      // selectedGender !== "" &&
+      // selectedSize !== "" &&
+      // variety !== "" &&
+      // pattern !== "" &&
+      // birthDate !== "" &&
       description !== ""
     ) {
       if (selectedFiles.length === 0) {
@@ -311,11 +291,11 @@ export default function MarketWrite() {
               category: "market",
               description: description,
               price: priceReplace,
-              gender: selectedGender || "",
-              size: selectedSize || "",
-              variety: variety,
-              pattern: pattern,
-              birthDate: birthDate,
+              // gender: selectedGender || "",
+              // size: selectedSize || "",
+              // variety: variety,
+              // pattern: pattern,
+              // birthDate: birthDate,
               userAccessToken: userAccessToken || "",
               fileUrl: responseData.result, // Use the response from the first server
             };
@@ -451,120 +431,6 @@ export default function MarketWrite() {
             <div className="flex items-center">
               <span className="text-sm mx-6">{title.length}/40</span>
             </div>
-          </div>
-        </div>
-        <div className="mb-4">
-          <p className="font-bold text-xl my-2">품종</p>
-          <select
-            className="text-black bg-white focus:outline-none py-[8px] border-b-[1px] text-lg w-full"
-            value={variety}
-            onChange={handleVarietyChange}
-          >
-            {varietyOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-4">
-          <p className="font-bold text-xl my-2">모프</p>
-          {/* {variety !== "품종을 선택하세요" && patternOptions[variety] && ( */}
-          <select
-            className="text-black bg-white focus:outline-none py-[8px] border-b-[1px] text-lg w-full"
-            value={pattern}
-            onChange={(e) => setPattern(e.target.value)}
-          >
-            {patternOptions[variety].map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          {/* // )} */}
-        </div>
-        <div className="mb-4">
-          <p className="font-bold text-xl my-2">생년월일</p>
-          <input
-            type="date"
-            placeholder="선택해주세요."
-            className="text-black bg-white focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
-            value={birthDate}
-            onChange={handleDateChange}
-          />
-        </div>
-        <div className="mb-4">
-          <p className="font-bold text-xl my-2">성별</p>
-          <div className="flex flex-row">
-            <button
-              className={`w-52 py-2 rounded 
-              ${selectedGender === "수컷"
-                  ? "bg-gender-male-dark-color"
-                  : "bg-gender-male-color"} 
-                text-lg text-white font-bold flex-1`}
-              onClick={() => handleGenderClick("수컷")}
-            >
-              수컷
-            </button>
-            <button
-              className={`w-52 py-2 rounded 
-              ${selectedGender === "암컷"
-                  ? "bg-gender-female-dark-color"
-                  : "bg-gender-female-color"} 
-                text-lg text-white mx-2 font-bold flex-1`}
-              onClick={() => handleGenderClick("암컷")}
-            >
-              암컷
-            </button>
-            <button
-              className={`w-52 py-2 rounded 
-              ${selectedGender === "미구분"
-                  ? "bg-gender-none-dark-color"
-                  : "bg-gender-none-color"} 
-              text-lg text-white font-bold flex-1`}
-              onClick={() => handleGenderClick("미구분")}
-            >
-              미구분
-            </button>
-          </div>
-        </div>
-        <div className="mb-4">
-          <p className="font-bold text-xl my-2">크기</p>
-          <div className="flex flex-row">
-            <button
-              className={`w-36 py-2 mr-2 rounded ${selectedSize === "베이비"
-                ? "bg-main-color"
-                : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
-              onClick={() => handleSizeClick("베이비")}
-            >
-              베이비
-            </button>
-            <button
-              className={`w-36 py-2 mr-2 rounded ${selectedSize === "아성체"
-                ? "bg-main-color"
-                : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
-              onClick={() => handleSizeClick("아성체")}
-            >
-              아성체
-            </button>
-            <button
-              className={`w-36 py-2 mr-2 rounded ${selectedSize === "준성체"
-                ? "bg-main-color"
-                : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
-              onClick={() => handleSizeClick("준성체")}
-            >
-              준성체
-            </button>
-            <button
-              className={`w-36 py-2 rounded ${selectedSize === "성체" ? "bg-main-color" : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
-              onClick={() => handleSizeClick("성체")}
-            >
-              성체
-            </button>
           </div>
         </div>
         <div className="mb-4">

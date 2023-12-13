@@ -35,9 +35,6 @@ const CommentEditForm: React.FC<CommentFormProps> = ({ value, onSubmit }) => {
             rows={1}
             onChange={handleCommentChange}
           />
-          <div className="flex items-center">
-            <span className="text-sm mx-6">{comment.length}/500</span>
-          </div>
           <button
             type="submit"
             className={`flex items-center cursor-pointer text-center bg-main-color text-white font-bold rounded-md p-3 px-5 ml-0.5 ${comment ? "opacity-100" : "opacity-50 pointer-events-none"
