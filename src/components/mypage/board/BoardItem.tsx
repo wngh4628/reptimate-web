@@ -5,6 +5,10 @@ type Props = { post: Board };
 export default function BoardItem({
   post: { idx, view, userIdx, title, category, writeDate },
 }: Props) {
+  if(category == "auction") {
+    // return null;
+  }
+
   return (
     <div className="w-full h-[60px] p-2 border-gray-200 border-[1px]">
       <Link href={`/community/${category}/posts/${idx}`}>

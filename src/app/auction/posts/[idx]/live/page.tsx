@@ -63,7 +63,7 @@ export default function ActionPage({ params: { slug } }: Props) {
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${userIdx}`
       );
       // Assuming your response data has a 'result' property
       console.log(response.data);
@@ -177,13 +177,13 @@ export default function ActionPage({ params: { slug } }: Props) {
                     console.log(`script loaded correctly, window.FB has been populated`)
                 }
             /> */}
-      <div className="flex flex-col lg:flex-row mt-36">
-        <div className="flex-auto flex-col w-[70%]">
+      <div className="flex flex-col lg:flex-row lg:mt-36 md:mt-36 max-[768px]:mt-[50px]">
+        <div className="flex-auto flex-col lg:w-[70%]">
           <div className="bg-black w-full">
             <VideoPlayer src={videoUrl}></VideoPlayer>
           </div>
 
-          <div className="flex h-[8rem] flex-col py-4 px-6 text-black border-b-[1px] border-gray border-r-[1px] border-gray">
+          <div className="flex h-[8rem] flex-col py-4 px-6 text-black border-b-[1px] border-gray">
             <span className="basis-1/2 text-left text-lg">{actionTitle}</span>
             <div className="flex text-left basis-1/2">
               <div className="flex items-center my-2 relative basis-1/2">
@@ -222,13 +222,13 @@ export default function ActionPage({ params: { slug } }: Props) {
             </div>
           </div>
 
-          <div className="h-[20rem] p-4 text-start border-r-[1px] border-gray">
-            <div className="h-[18rem] rounded-lg bg-silver p-4">
+          <div className="p-4 text-start border-gray">
+            <div className="overflow-y-auto rounded-lg bg-silver p-4">
               {description}
             </div>
           </div>
         </div>
-        <div className="w-[30%] lg:w-[20rem]">
+        <div className="lg:w-[30%]">
           <StreamingChatView></StreamingChatView>
         </div>
       </div>

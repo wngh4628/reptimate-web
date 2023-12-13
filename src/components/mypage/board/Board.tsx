@@ -220,7 +220,7 @@ export default function BoardList() {
                                     <button onClick={onMyBoardTypeChange2}
                                     className={`${
                                         myBoardType ? "font-bold" : ""
-                                        } w-full h-[95%] justify-center text-[18px] pt-[25px]`}>
+                                        } w-full h-[95%] justify-center text-[18px] py-[15px]`}>
                                     게시글</button>
                                     <p className={`${
                                         myBoardType ? "" : "hidden"
@@ -230,7 +230,7 @@ export default function BoardList() {
                                     <button onClick={onMyBoardTypeChange}
                                     className={`${
                                         myBoardType ? "" : "font-bold"
-                                        } w-full h-[95%] justify-center text-[18px] pt-[25px]`}>
+                                        } w-full h-[95%] justify-center text-[18px] py-[15px]`}>
                                     댓글</button>
                                     <p className={`${
                                         myBoardType ? "hidden" : ""

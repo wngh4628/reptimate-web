@@ -188,7 +188,11 @@ export default function AuctionPostsView() {
   const deleteMutation = useMutation({
     mutationFn: auctionDelete,
     onSuccess: (data) => {
-      alert("게시글이 삭제되었습니다.");
+      Swal.fire({
+        text: "게시글이 삭제되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       router.replace("/auction");
     },
   });
@@ -313,7 +317,12 @@ export default function AuctionPostsView() {
                 onError: () => {
                   router.replace("/");
                   //
-                  alert("로그인 만료\n다시 로그인 해주세요");
+
+                  Swal.fire({
+                    text: "로그인 만료\n다시 로그인 해주세요",
+                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                  });
                 },
               }
             );
@@ -561,7 +570,11 @@ export default function AuctionPostsView() {
   const streamKeyMutation = useMutation({
     mutationFn: streamKeyEdit,
     onSuccess: (data) => {
-      alert("스트림키가 재생성 되었습니다.");
+      Swal.fire({
+        text: "스트림키가 재생성 되었습니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
       setStreamKey(data.data.result);
     },
     onError: (data) => {
@@ -663,18 +676,30 @@ export default function AuctionPostsView() {
                     // Create the alert message based on missing fields
                     let alertMessage = "오류입니다. :\n 다시 시도해주세요.";
 
-                    alert(alertMessage);
+                    Swal.fire({
+                      text: alertMessage,
+                      confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                      confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                    });
                   }
                 },
                 onError: () => {
                   router.replace("/login");
-                  alert("로그인 만료\n다시 로그인 해주세요");
+                  Swal.fire({
+                    text: "로그인 만료\n다시 로그인 해주세요",
+                    confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                    confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+                  });
                 },
               }
             );
           } else {
             router.replace("/login");
-            alert("로그인이 필요한 기능입니다.");
+            Swal.fire({
+              text: "로그인이 필요한 기능입니다.",
+              confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+              confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+            });
           }
         }
       }
@@ -804,7 +829,7 @@ export default function AuctionPostsView() {
   //메시지 발송하는 함수
   const sendBidMsg = async () => {
     if (bidMsg.trim() !== "") {
-      const numericValue = parseInt(bidMsg.trim(), 10);
+      const numericValue = parseInt(bidMsg.trim().replace(/,/g, ""), 10);
 
       if (numericValue % parseInt(bidUnit) !== 0) {
         // 입력값이 1000의 배수가 아니면 초기화
@@ -816,7 +841,7 @@ export default function AuctionPostsView() {
         });
         return;
       }
-      if (parseInt(bidMsg.trim()) < parseInt(bidStartPrice)) {
+      if (numericValue < parseInt(bidStartPrice)) {
         Swal.fire({
           text: "입찰 시작가 보다 큰 금액을 입력해 주세요",
           icon: "error",
@@ -833,7 +858,7 @@ export default function AuctionPostsView() {
         const message: IMessage = {
           userIdx: userIdx,
           socketId: socketId,
-          message: bidMsg.trim(),
+          message: bidMsg.trim().replace(/,/g, ""),
           room: roomName,
         };
         socketBidRef.current.emit("Auction_message", message);
@@ -874,7 +899,11 @@ export default function AuctionPostsView() {
         // Create the alert message based on missing fields
         let alertMessage = "오류입니다. :\n 다시 시도해주세요.";
 
-        alert(alertMessage);
+        Swal.fire({
+          text: alertMessage,
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
       }
     };
 
@@ -905,7 +934,8 @@ export default function AuctionPostsView() {
     };
     const onChangeBid = (event: { target: { value: string } }) => {
       const numericInput = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-      setBidMsg(numericInput);
+      const formattedInput = Number(numericInput).toLocaleString();
+      setBidMsg(formattedInput);
     };
 
     const handleViewClick = () => {
@@ -1263,7 +1293,7 @@ export default function AuctionPostsView() {
                 <div className="flex flex-row items-center py-1">
                   <p className="font-semibold ">즉시 구입가</p>
                   <p className="font-bold ml-auto ">
-                    {post.boardAuction.startPrice.toLocaleString()}원
+                    {post.boardAuction.buyPrice.toLocaleString()}원
                   </p>
                 </div>
                 <div className="flex flex-row items-center py-1">

@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent } from "react";
+import Swal from "sweetalert2";
 
 interface TimePickerProps {
   onChange: (selectedTime: string) => void;
@@ -68,7 +69,11 @@ const TimePicker: React.FC<TimePickerProps> = ({
       onClose();
     } else {
       // You can optionally provide feedback to the user (e.g., show an error message)
-      alert("마감 시간은 현재 시간 이후의 시간만 선택 가능합니다.");
+      Swal.fire({
+        text: "마감 시간은 현재 시간 이후의 시간만 선택 가능합니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
     }
   };
 
