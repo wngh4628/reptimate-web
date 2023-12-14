@@ -54,7 +54,7 @@ export default function ValueAnalysisResult(props:any) {
 
     if (storedData) {
       const userData = JSON.parse(storedData);
-      if (userData.USER_DATA.accessToken) {
+      if (userData.USER_DATA && userData.USER_DATA.accessToken) {
         setAccessToken(userData.USER_DATA.accessToken)
         setUserIdx(userData.USER_DATA.idx);
       }

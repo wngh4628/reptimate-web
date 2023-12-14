@@ -12,10 +12,11 @@ export default function LineBreedingResult(props:any) {
     const lineBreedingResultData = props.lineBreedingResult.data;
     const setValueAnalysisResult = props.setValueAnalysisResult;
     const morphInfo = props.morphInfo;
+    
 
-    const topImgPath = lineBreedingResultData.recommend_data.top_img;
-    const leftImgPath = lineBreedingResultData.recommend_data.left_img;
-    const rightImgPath = lineBreedingResultData.recommend_data.right_img;
+    const topImgPath = lineBreedingResultData.recommend_data ? lineBreedingResultData.recommend_data.top_img : '';
+    const leftImgPath = lineBreedingResultData.recommend_data ? lineBreedingResultData.recommend_data.left_img : '';
+    const rightImgPath = lineBreedingResultData.recommend_data ? lineBreedingResultData.recommend_data.right_img : '';
 
     const explanation = lineBreedingResultData.explanation;
     const morphRecommendList = lineBreedingResultData.morph_recommend_list;
@@ -28,7 +29,7 @@ export default function LineBreedingResult(props:any) {
 
         axios({
             method:'post',
-            url:`${process.env.NEXT_PUBLIC_AI_URL}/image_ai/value_analyzer`,
+            url:`${process.env.NEXT_PUBLIC_AI_URL}/image_ai/value_analyzer_nosave`,
             data: morphInfo.formData,
             params: {
             morph: morphInfo.morph,
