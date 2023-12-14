@@ -11,7 +11,8 @@ import {
 } from "react";
 import { Mobile, PC } from "../ResponsiveLayout";
 import { useMutation } from "@tanstack/react-query";
-import { adoptionEdit } from "@/api/adoption/adoption";
+import { marketEdit } from "@/api/market/market";
+
 import { useRouter } from "next/navigation";
 import { useDrag, useDrop } from "react-dnd";
 import VideoThumbnail from "../VideoThumbnail";
@@ -350,7 +351,7 @@ export default function MarketEdit() {
   };
 
   const mutation = useMutation({
-    mutationFn: adoptionEdit,
+    mutationFn: marketEdit,
     onSuccess: (data) => {
       Swal.fire({
         text: "게시글 수정이 완료되었습니다.",
@@ -380,11 +381,11 @@ export default function MarketEdit() {
       category: "market",
       description: description,
       price: priceReplace,
-      gender: selectedGender || "",
-      size: selectedSize || "",
-      variety: variety,
-      pattern: pattern,
-      birthDate: birthDate,
+      // gender: selectedGender || "",
+      // size: selectedSize || "",
+      // variety: variety,
+      // pattern: pattern,
+      // birthDate: birthDate,
       userAccessToken: userAccessToken || "",
       fileUrl: "",
     };
@@ -392,11 +393,11 @@ export default function MarketEdit() {
     if (
       title !== "" &&
       price !== "" &&
-      selectedGender !== "" &&
-      selectedSize !== "" &&
-      variety !== "" &&
-      pattern !== "" &&
-      birthDate !== "" &&
+      // selectedGender !== "" &&
+      // selectedSize !== "" &&
+      // variety !== "" &&
+      // pattern !== "" &&
+      // birthDate !== "" &&
       description !== ""
     ) {
       if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
@@ -439,11 +440,11 @@ export default function MarketEdit() {
               category: "market",
               description: description,
               price: priceReplace,
-              gender: selectedGender || "",
-              size: selectedSize || "",
-              variety: variety,
-              pattern: pattern,
-              birthDate: birthDate,
+              // gender: selectedGender || "",
+              // size: selectedSize || "",
+              // variety: variety,
+              // pattern: pattern,
+              // birthDate: birthDate,
               userAccessToken: userAccessToken || "",
               fileUrl: "",
             };
@@ -587,125 +588,6 @@ export default function MarketEdit() {
             <div className="flex items-center">
               <span className="text-sm mx-6">{title.length}/40</span>
             </div>
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <p className="font-bold text-xl my-2">품종</p>
-          <select
-            className="text-black bg-white focus:outline-none py-[8px] border-b-[1px] text-lg w-full"
-            value={variety}
-            onChange={handleVarietyChange}
-          >
-            {varietyOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <p className="font-bold text-xl my-2">모프</p>
-          {/* {variety !== "품종을 선택하세요" && patternOptions[variety] && ( */}
-          <select
-            className="text-black bg-white focus:outline-none py-[8px] border-b-[1px] text-lg w-full"
-            value={pattern}
-            onChange={(e) => setPattern(e.target.value)}
-          >
-            {patternOptions[variety].map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          {/* )} */}
-        </div>
-
-        <div className="mb-4">
-          <p className="font-bold text-xl my-2">생년월일</p>
-          <input
-            type="date"
-            placeholder="선택해주세요."
-            className="text-black bg-white focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
-            value={birthDate}
-            onChange={handleDateChange}
-          />
-        </div>
-
-        <div className="mb-4">
-          <p className="font-bold text-xl my-2">성별</p>
-          <div className="flex flex-row">
-            <button
-              className={`w-52 py-2 rounded 
-              ${selectedGender === "수컷"
-                  ? "bg-gender-male-dark-color"
-                  : "bg-gender-male-color"} 
-                text-lg text-white font-bold flex-1`}
-              onClick={() => handleGenderClick("수컷")}
-            >
-              수컷
-            </button>
-            <button
-              className={`w-52 py-2 rounded 
-              ${selectedGender === "암컷"
-                  ? "bg-gender-female-dark-color"
-                  : "bg-gender-female-color"} 
-                text-lg text-white mx-2 font-bold flex-1`}
-              onClick={() => handleGenderClick("암컷")}
-            >
-              암컷
-            </button>
-            <button
-              className={`w-52 py-2 rounded 
-              ${selectedGender === "미구분"
-                  ? "bg-gender-none-dark-color"
-                  : "bg-gender-none-color"} 
-              text-lg text-white font-bold flex-1`}
-              onClick={() => handleGenderClick("미구분")}
-            >
-              미구분
-            </button>
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <p className="font-bold text-xl my-2">크기</p>
-          <div className="flex flex-row">
-            <button
-              className={`w-36 py-2 mr-2 rounded ${selectedSize === "베이비"
-                ? "bg-main-color"
-                : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
-              onClick={() => handleSizeClick("베이비")}
-            >
-              베이비
-            </button>
-            <button
-              className={`w-36 py-2 mr-2 rounded ${selectedSize === "아성체"
-                ? "bg-main-color"
-                : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
-              onClick={() => handleSizeClick("아성체")}
-            >
-              아성체
-            </button>
-            <button
-              className={`w-36 py-2 mr-2 rounded ${selectedSize === "준성체"
-                ? "bg-main-color"
-                : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
-              onClick={() => handleSizeClick("준성체")}
-            >
-              준성체
-            </button>
-            <button
-              className={`w-36 py-2 rounded ${selectedSize === "성체" ? "bg-main-color" : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
-              onClick={() => handleSizeClick("성체")}
-            >
-              성체
-            </button>
           </div>
         </div>
 
