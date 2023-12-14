@@ -22,7 +22,7 @@ export default function LineBreedingResult(props:any) {
     const morphRecommendList = lineBreedingResultData.morph_recommend_list;
     
 
-      // 가치판단 실행버튼 클릭이벤트
+    // 가치판단 실행버튼 클릭이벤트
     const handleUpload = async () => {
 
         setIsLoading(true);

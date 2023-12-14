@@ -254,14 +254,14 @@ export default function ValueAnalysisResult(props:any) {
                   <div className="w-full px-10 py-8">
 
                     <div className="relatvie flex">
-                      <span className="absolute text-base font-medium dark:text-white">모프</span>
+                      <span className="absolute text-base font-medium">모프</span>
                       <span className="mx-auto">{morph}</span>
                     </div>
 
                     <div className="bg-gray-300 h-px mt-5 mb-5"></div>
 
                     <div className="relatvie flex items-center">
-                      <span className="absolute text-base font-medium dark:text-white">성별</span>
+                      <span className="absolute text-base font-medium">성별</span>
                       <span className="m-auto">{gender}</span>
                     </div>
 
@@ -425,14 +425,14 @@ export default function ValueAnalysisResult(props:any) {
                   <div className="w-full px-10 py-8">
 
                     <div className="relatvie flex">
-                      <span className="absolute text-base font-medium dark:text-white">모프</span>
+                      <span className="absolute text-base font-medium">모프</span>
                       <span className="mx-auto">{morph}</span>
                     </div>
 
                     <div className="bg-gray-300 h-px mt-5 mb-5"></div>
 
                     <div className="relatvie flex items-center">
-                      <span className="absolute text-base font-medium dark:text-white">성별</span>
+                      <span className="absolute text-base font-medium">성별</span>
                       <span className="m-auto">{gender}</span>
                     </div>
 
