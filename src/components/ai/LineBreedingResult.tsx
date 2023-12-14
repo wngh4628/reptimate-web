@@ -103,7 +103,7 @@ export default function LineBreedingResult(props:any) {
                             </div>
                         </div>
 
-                        <p className="mt-4 text-center text-xl">{lineBreedingResultData}</p>
+                        <p className={`mt-4 text-center text-xl ${lineBreedingResultData.recommend_data ? 'hidden' : ''}`}>추천 가능한 개체가 없습니다.</p>
 
                     </div>
 
@@ -162,7 +162,7 @@ export default function LineBreedingResult(props:any) {
                             </div>
                         </div>
 
-                        <p className="mt-4 text-center text-xl">{lineBreedingResultData}</p>
+                        <p className={`mt-4 text-center text-xl ${lineBreedingResultData.recommend_data ? 'hidden' : ''}`}>추천 가능한 개체가 없습니다.</p>
                         
                         <div className="flex justify-center mt-10">
                         <button className="bg-main-color text-white font-bold py-2 px-4 rounded ml-1" onClick={handleUpload}>가치판단 결과 보기</button>
