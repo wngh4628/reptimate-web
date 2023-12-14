@@ -443,7 +443,7 @@ export default function Header() {
             </a>
 
               <div className={`${
-                  isMobile ? "hidden" : "flex w-5 my-0.5 hover:cursor-pointer"
+                  isMobile ? "hidden" : "flex w-5 my-0.5"
                   }`}>
                   <img src="/img/search.png" />
               </div>
