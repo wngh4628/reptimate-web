@@ -72,7 +72,9 @@ export default function MorphInfo(props:any) {
       const userData = JSON.parse(storedData || "");
       // const currentUserIdx = userData.USER_DATA.idx;
       
-      userAccessToken = userData.USER_DATA.accessToken;
+      if(userData.USER_DATA){
+        userAccessToken = userData.USER_DATA.accessToken;
+      }
     }
 }, []);
   

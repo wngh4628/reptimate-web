@@ -358,8 +358,8 @@ export default function Header() {
                    />
               </Link> 
             </div>: ""}
-            <div className="flex w-[20px] h-5 my-0.5 relative " style={{paddingTop:4}}>
-              <img src="/img/search.png" />
+            <div className="flex w-[20px] h-5 my-0.5 relative hover:cursor-pointer" style={{paddingTop:4}}>
+              <img src="/img/search.png" onClick={() => {setIsSearchModalHidden(false)}} />
             </div>
           </nav>
         </div>
@@ -372,6 +372,9 @@ export default function Header() {
         </div>
         <div>
           {pathName.startsWith("/ai") ? <AiMenu /> : ""}
+        </div>
+        <div>
+          { pathName.startsWith("/searchresult/") ? <SearchResultMenu /> : ""}
         </div>
        
 
