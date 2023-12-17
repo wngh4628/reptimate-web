@@ -224,7 +224,18 @@ export default function MarketWrite() {
   const mutation = useMutation({
     mutationFn: marketWrite,
     onSuccess: (data) => {
-      window.history.back();
+      Swal.fire({
+        text: "게시글이 작성되었습니다.",
+        confirmButtonText: "확인",
+        confirmButtonColor: "#7A75F7",
+        customClass: {
+          container: "z-[11111]", // Tailwind CSS class for z-index
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.history.back();
+        }
+      });
     },
     onError: (data) => {
       alert(data);
@@ -237,7 +248,7 @@ export default function MarketWrite() {
 
     setIsLoading(true);
 
-    let priceReplace = price.replace(regExp, '');
+    let priceReplace = price.replace(regExp, "");
     const requestData = {
       state: selling,
       userIdx: userIdx || "",
@@ -335,22 +346,35 @@ export default function MarketWrite() {
       setIsLoading(false);
     }
   };
-  const handlePriceChange = (value: String, event: ChangeEvent<HTMLInputElement>) => {
+  const handlePriceChange = (
+    value: String,
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
     const inputValue = event.target.value;
     const num = /[0-9]/g;
     const eng = /[a-zA-Z]/g;
     const kor = /[\ㄱ-ㅎㅏ-ㅣ가-힣]/g;
     const regExpTotal = /[\{\}\[\]\/?.;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
 
-    if (inputValue.search(eng) == -1 && inputValue.search(kor) == -1 && inputValue.search(regExpTotal) == -1) {
-      if (inputValue == "" || inputValue.search(num) != -1 || inputValue.search(regExp) != -1) {
+    if (
+      inputValue.search(eng) == -1 &&
+      inputValue.search(kor) == -1 &&
+      inputValue.search(regExpTotal) == -1
+    ) {
+      if (
+        inputValue == "" ||
+        inputValue.search(num) != -1 ||
+        inputValue.search(regExp) != -1
+      ) {
         // console.log("***1");
 
-        let replaceComma = inputValue.replace(regExp, '');
+        let replaceComma = inputValue.replace(regExp, "");
 
         if (replaceComma.length <= 9) {
           // console.log("***2");
-          let transComma = replaceComma.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          let transComma = replaceComma
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
           if (value == "price") {
             setPrice(transComma);
@@ -408,12 +432,22 @@ export default function MarketWrite() {
 
       <PC>
         <DndProvider backend={HTML5Backend}>
-          <ImageSelecterWrite handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} selectedFiles={selectedFiles} moveFile={moveFile}></ImageSelecterWrite>
+          <ImageSelecterWrite
+            handleFileSelect={handleFileSelect}
+            handleRemoveItem={handleRemoveItem}
+            selectedFiles={selectedFiles}
+            moveFile={moveFile}
+          ></ImageSelecterWrite>
         </DndProvider>
       </PC>
       <Mobile>
         <DndProvider backend={TouchBackend}>
-          <ImageSelecterWrite handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} selectedFiles={selectedFiles} moveFile={moveFile}></ImageSelecterWrite>
+          <ImageSelecterWrite
+            handleFileSelect={handleFileSelect}
+            handleRemoveItem={handleRemoveItem}
+            selectedFiles={selectedFiles}
+            moveFile={moveFile}
+          ></ImageSelecterWrite>
         </DndProvider>
       </Mobile>
 
@@ -455,8 +489,8 @@ export default function MarketWrite() {
             value={description}
             onChange={handleDescriptionChange}
             rows={10} // 세로 행의 개수를 조절합니다.
-            style={{ resize: 'none' }}
-          // onFocus={(event) => handleFocusOn(event)}
+            style={{ resize: "none" }}
+            // onFocus={(event) => handleFocusOn(event)}
           />
         </div>
       </div>

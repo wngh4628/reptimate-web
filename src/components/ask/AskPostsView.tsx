@@ -18,7 +18,7 @@ import CommentForm from "../comment/CommentForm";
 import { useRouter } from "next/navigation";
 import { GetPostsView, Images } from "@/service/my/board";
 import { freeDelete } from "@/api/free/freeBoard";
-import { boardRegisterBookmark, boardDeleteBookmark } from "@/api/board/board"
+import { boardRegisterBookmark, boardDeleteBookmark } from "@/api/board/board";
 
 import {
   chatRoomState,
@@ -75,7 +75,6 @@ export default function AskPostsView() {
 
   const [commentCnt, setCommentCnt] = useState(0);
 
-
   const [bookmarkCnt, setBookmarkCnt] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
 
@@ -101,23 +100,20 @@ export default function AskPostsView() {
       boardRegisterMutation.mutate({
         userAccessToken: accessToken,
         boardIdx: data!.result.idx,
-        userIdx: userIdx
+        userIdx: userIdx,
       });
     }
   };
   // 북마크 등록
   const boardRegisterMutation = useMutation({
     mutationFn: boardRegisterBookmark,
-    onSuccess: (data) => {
-    },
+    onSuccess: (data) => {},
   });
   // 북마크 삭제
   const boardDeleteMutation = useMutation({
     mutationFn: boardDeleteBookmark,
-    onSuccess: (data) => {
-    },
+    onSuccess: (data) => {},
   });
-
 
   function BackButton() {
     const handleGoBack = () => {
@@ -139,10 +135,16 @@ export default function AskPostsView() {
     onSuccess: (data) => {
       Swal.fire({
         text: "게시글이 삭제되었습니다.",
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        confirmButtonText: "확인",
+        confirmButtonColor: "#7A75F7",
+        customClass: {
+          container: "z-[11111]", // Tailwind CSS class for z-index
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.replace("/community/ask");
+        }
       });
-      router.replace("/community/ask");
     },
   });
 
@@ -354,15 +356,15 @@ export default function AskPostsView() {
       );
       setCommentData(
         (prevData) =>
-        ({
-          result: {
-            items: [
-              ...(prevData?.result.items || []),
-              ...response.data.result.items,
-            ],
-            existsNextPage: response.data.result.existsNextPage,
-          },
-        } as getCommentResponse)
+          ({
+            result: {
+              items: [
+                ...(prevData?.result.items || []),
+                ...response.data.result.items,
+              ],
+              existsNextPage: response.data.result.existsNextPage,
+            },
+          } as getCommentResponse)
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
@@ -512,7 +514,7 @@ export default function AskPostsView() {
                 {/* 제목 */}
                 <p className="text-4xl font-bold text-[27px]">{post.title}</p>
                 <div className="flex items-center my-2 relative">
-                <img
+                  <img
                     className="w-11 h-11 rounded-full border-2 cursor-pointer object-cover"
                     src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
                     alt=""
@@ -535,14 +537,23 @@ export default function AskPostsView() {
                       )}
                     </div>
                   )}
-                 <div className="ml-2 ">
-                    <p className="font-bold cursor-pointer" onClick={profileMenu}>
+                  <div className="ml-2 ">
+                    <p
+                      className="font-bold cursor-pointer"
+                      onClick={profileMenu}
+                    >
                       {post.UserInfo.nickname}
                     </p>
                     <div className="flex">
-                      <p className="text-gray-500 text-[12px]">{postWriteDate}</p>
-                      <p className="ml-1 text-gray-500 text-[12px]">{postWriteTime}</p>
-                      <p className="ml-2 text-gray-500 text-[12px]">조회 {post.view}</p>
+                      <p className="text-gray-500 text-[12px]">
+                        {postWriteDate}
+                      </p>
+                      <p className="ml-1 text-gray-500 text-[12px]">
+                        {postWriteTime}
+                      </p>
+                      <p className="ml-2 text-gray-500 text-[12px]">
+                        조회 {post.view}
+                      </p>
                     </div>
                   </div>
                   <div className="relative ml-auto">
@@ -550,7 +561,7 @@ export default function AskPostsView() {
                       onClick={toggleMenu}
                       className="text-gray-500 cursor-pointer "
                     >
-                    <p className="text-[24px]">⁝</p>
+                      <p className="text-[24px]">⁝</p>
                     </button>
                     {menuOpen && (
                       <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
@@ -601,16 +612,16 @@ export default function AskPostsView() {
                     <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
                   </div>
                   <div className="flex flex-row items-center py-3">
-                  {bookmarked ? (
-                    <a onClick={bookmarkClick}>
-                      <Image
-                        src={like_maincolor}
-                        width={20}
-                        height={20}
-                        alt="북마크"
-                        className="like_btn m-auto mr-1"
-                      />
-                    </a>
+                    {bookmarked ? (
+                      <a onClick={bookmarkClick}>
+                        <Image
+                          src={like_maincolor}
+                          width={20}
+                          height={20}
+                          alt="북마크"
+                          className="like_btn m-auto mr-1"
+                        />
+                      </a>
                     ) : (
                       <a onClick={bookmarkClick}>
                         <Image
@@ -647,7 +658,9 @@ export default function AskPostsView() {
             </PC>
             <Mobile>
               {/* <BackButton /> */}
-              <h2 className="mx-2 text-2xl font-bold pt-[55px]">{post.title}</h2>
+              <h2 className="mx-2 text-2xl font-bold pt-[55px]">
+                {post.title}
+              </h2>
               <div className="mx-2 flex items-center my-2 relative">
                 <img
                   className="w-10 h-10 rounded-full border-2 cursor-pointer"
@@ -673,15 +686,19 @@ export default function AskPostsView() {
                   </div>
                 )}
                 <div className="ml-2 ">
-                    <p className="font-bold cursor-pointer" onClick={profileMenu}>
-                      {post.UserInfo.nickname}
+                  <p className="font-bold cursor-pointer" onClick={profileMenu}>
+                    {post.UserInfo.nickname}
+                  </p>
+                  <div className="flex">
+                    <p className="text-gray-500 text-[12px]">{postWriteDate}</p>
+                    <p className="ml-1 text-gray-500 text-[12px]">
+                      {postWriteTime}
                     </p>
-                    <div className="flex">
-                      <p className="text-gray-500 text-[12px]">{postWriteDate}</p>
-                      <p className="ml-1 text-gray-500 text-[12px]">{postWriteTime}</p>
-                      <p className="ml-2 text-gray-500 text-[12px]">조회 {post.view}</p>
-                    </div>
+                    <p className="ml-2 text-gray-500 text-[12px]">
+                      조회 {post.view}
+                    </p>
                   </div>
+                </div>
                 <div className="relative ml-auto">
                   <button
                     onClick={toggleMenu}
@@ -730,7 +747,7 @@ export default function AskPostsView() {
                 </div>
               </div>
               {/* 갤러리 */}
-              <div className=''>
+              <div className="">
                 <ImageSlider imageUrls={itemlist} />
               </div>
               {/* 상세 설명 */}
@@ -770,7 +787,7 @@ export default function AskPostsView() {
                   <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
                 </div>
               </div>
-              
+
               {userAccessToken ? (
                 <div>
                   <CommentForm

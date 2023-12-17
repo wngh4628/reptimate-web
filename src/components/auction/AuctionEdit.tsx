@@ -290,9 +290,9 @@ export default function AuctionEdit() {
     getData();
   }, []);
 
-  useEffect(() => { }, [allFiles]);
+  useEffect(() => {}, [allFiles]);
 
-  useEffect(() => { }, [deletedFiles]);
+  useEffect(() => {}, [deletedFiles]);
 
   const handleVarietyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVariety = e.target.value;
@@ -399,10 +399,16 @@ export default function AuctionEdit() {
     onSuccess: (data) => {
       Swal.fire({
         text: "게시글 수정이 완료되었습니다.",
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        confirmButtonText: "확인",
+        confirmButtonColor: "#7A75F7",
+        customClass: {
+          container: "z-[11111]", // Tailwind CSS class for z-index
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.history.back();
+        }
       });
-      window.history.back();
     },
     onError: (data) => {
       alert(data);
@@ -872,10 +878,11 @@ export default function AuctionEdit() {
           <div className="flex flex-row">
             <button
               className={`w-52 py-2 rounded 
-              ${selectedGender === "수컷"
+              ${
+                selectedGender === "수컷"
                   ? "bg-gender-male-dark-color"
                   : "bg-gender-male-color"
-                } 
+              } 
                 text-lg text-white font-bold flex-1`}
               onClick={() => handleGenderClick("수컷")}
             >
@@ -883,10 +890,11 @@ export default function AuctionEdit() {
             </button>
             <button
               className={`w-52 py-2 rounded 
-              ${selectedGender === "암컷"
+              ${
+                selectedGender === "암컷"
                   ? "bg-gender-female-dark-color"
                   : "bg-gender-female-color"
-                } 
+              } 
                 text-lg text-white mx-2 font-bold flex-1`}
               onClick={() => handleGenderClick("암컷")}
             >
@@ -894,10 +902,11 @@ export default function AuctionEdit() {
             </button>
             <button
               className={`w-52 py-2 rounded 
-              ${selectedGender === "미구분"
+              ${
+                selectedGender === "미구분"
                   ? "bg-gender-none-dark-color"
                   : "bg-gender-none-color"
-                } 
+              } 
               text-lg text-white font-bold flex-1`}
               onClick={() => handleGenderClick("미구분")}
             >
@@ -910,37 +919,41 @@ export default function AuctionEdit() {
           <p className="font-bold text-xl my-2">크기</p>
           <div className="flex flex-row">
             <button
-              className={`w-36 py-2 mr-2 rounded ${selectedSize === "베이비"
-                ? "bg-main-color"
-                : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
+              className={`w-36 py-2 mr-2 rounded ${
+                selectedSize === "베이비"
+                  ? "bg-main-color"
+                  : "bg-gender-none-color"
+              } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("베이비")}
             >
               베이비
             </button>
             <button
-              className={`w-36 py-2 mr-2 rounded ${selectedSize === "아성체"
-                ? "bg-main-color"
-                : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
+              className={`w-36 py-2 mr-2 rounded ${
+                selectedSize === "아성체"
+                  ? "bg-main-color"
+                  : "bg-gender-none-color"
+              } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("아성체")}
             >
               아성체
             </button>
             <button
-              className={`w-36 py-2 mr-2 rounded ${selectedSize === "준성체"
-                ? "bg-main-color"
-                : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
+              className={`w-36 py-2 mr-2 rounded ${
+                selectedSize === "준성체"
+                  ? "bg-main-color"
+                  : "bg-gender-none-color"
+              } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("준성체")}
             >
               준성체
             </button>
             <button
-              className={`w-36 py-2 rounded ${selectedSize === "성체"
-                ? "bg-main-color"
-                : "bg-gender-none-color"
-                } text-lg text-white font-bold flex-1`}
+              className={`w-36 py-2 rounded ${
+                selectedSize === "성체"
+                  ? "bg-main-color"
+                  : "bg-gender-none-color"
+              } text-lg text-white font-bold flex-1`}
               onClick={() => handleSizeClick("성체")}
             >
               성체

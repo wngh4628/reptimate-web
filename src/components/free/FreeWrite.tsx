@@ -115,7 +115,18 @@ export default function FreeWrite() {
   const mutation = useMutation({
     mutationFn: freeWrite,
     onSuccess: (data) => {
-      window.history.back();
+      Swal.fire({
+        text: "게시글이 작성되었습니다.",
+        confirmButtonText: "확인",
+        confirmButtonColor: "#7A75F7",
+        customClass: {
+          container: "z-[11111]", // Tailwind CSS class for z-index
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.history.back();
+        }
+      });
     },
     onError: (data) => {
       alert(data);
@@ -233,12 +244,22 @@ export default function FreeWrite() {
       </Mobile>
       <PC>
         <DndProvider backend={HTML5Backend}>
-          <ImageSelecterWrite handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} selectedFiles={selectedFiles} moveFile={moveFile}></ImageSelecterWrite>
+          <ImageSelecterWrite
+            handleFileSelect={handleFileSelect}
+            handleRemoveItem={handleRemoveItem}
+            selectedFiles={selectedFiles}
+            moveFile={moveFile}
+          ></ImageSelecterWrite>
         </DndProvider>
       </PC>
       <Mobile>
         <DndProvider backend={TouchBackend}>
-          <ImageSelecterWrite handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} selectedFiles={selectedFiles} moveFile={moveFile}></ImageSelecterWrite>
+          <ImageSelecterWrite
+            handleFileSelect={handleFileSelect}
+            handleRemoveItem={handleRemoveItem}
+            selectedFiles={selectedFiles}
+            moveFile={moveFile}
+          ></ImageSelecterWrite>
         </DndProvider>
       </Mobile>
 
@@ -270,30 +291,28 @@ export default function FreeWrite() {
           value={description}
           onChange={handleDescriptionChange}
           rows={10} // 세로 행의 개수를 조절합니다.
-          style={{ resize: 'none' }}
-        // onFocus={(event) => handleFocusOn(event)}
+          style={{ resize: "none" }}
+          // onFocus={(event) => handleFocusOn(event)}
         />
       </div>
-      {
-        !isLoading ? (
-          <form onSubmit={onSubmitHandler}>
-            <button
-              type="submit"
-              className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
-            >
-              등록
-            </button>
-          </form>
-        ) : (
+      {!isLoading ? (
+        <form onSubmit={onSubmitHandler}>
           <button
-            type="button"
-            className="items-center cursor-not-allowed inline-flex justify-center text-center align-middle bg-gray-300 text-gray-500 font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
-            disabled
+            type="submit"
+            className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
           >
-            등록 중...
+            등록
           </button>
-        )
-      }
+        </form>
+      ) : (
+        <button
+          type="button"
+          className="items-center cursor-not-allowed inline-flex justify-center text-center align-middle bg-gray-300 text-gray-500 font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
+          disabled
+        >
+          등록 중...
+        </button>
+      )}
     </div>
   );
 }
