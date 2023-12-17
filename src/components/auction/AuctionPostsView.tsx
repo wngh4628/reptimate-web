@@ -1433,7 +1433,7 @@ export default function AuctionPostsView() {
                 </div>
               ) : (
                 <p
-                  className="cursor-pointer"
+                  className="cursor-pointer ml-4 mr-14"
                   onClick={() => {
                     handleLogin();
                   }}
@@ -1691,22 +1691,42 @@ export default function AuctionPostsView() {
               </div>
             </Mobile>
 
-            <ul className="mt-6">
-              {commentList !== null && commentList ? (
-                commentList.map((comment) => (
-                  <li key={comment.idx}>
-                    <CommentCard
-                      comment={comment}
-                      onDelete={handleCommentDelete}
-                      onReplyWrite={handleReplyWrite}
-                      onReplyDelete={handleReplyDelete}
-                    />
-                  </li>
-                ))
-              ) : (
-                <li></li>
-              )}
-            </ul>
+            <Mobile>
+              <ul className="mt-6 mr-4 ml-4">
+                {commentList !== null && commentList ? (
+                  commentList.map((comment) => (
+                    <li key={comment.idx}>
+                      <CommentCard
+                        comment={comment}
+                        onDelete={handleCommentDelete}
+                        onReplyWrite={handleReplyWrite}
+                        onReplyDelete={handleReplyDelete}
+                      />
+                    </li>
+                  ))
+                ) : (
+                  <li></li>
+                )}
+              </ul>
+            </Mobile>
+            <PC>
+              <ul className="mt-6">
+                {commentList !== null && commentList ? (
+                  commentList.map((comment) => (
+                    <li key={comment.idx}>
+                      <CommentCard
+                        comment={comment}
+                        onDelete={handleCommentDelete}
+                        onReplyWrite={handleReplyWrite}
+                        onReplyDelete={handleReplyDelete}
+                      />
+                    </li>
+                  ))
+                ) : (
+                  <li></li>
+                )}
+              </ul>
+            </PC>
             {existNextPage && (
               <div className="flex justify-center">
                 <div

@@ -161,7 +161,7 @@ export default function MorphInfo(props:any) {
       )}
 
       {/* 모프 정보 */}
-      <div className="max-w-screen-sm mx-auto mt-[130px]">
+      <div className="max-w-screen-sm mx-auto mt-32">
 
         <h2 className="text-3xl font-bold pt-5">{title}</h2>
 
@@ -288,7 +288,7 @@ export default function MorphInfo(props:any) {
       )}
 
       {/* 모프 정보 */}
-      <div className="flex flex-col p-4 mt-4 ml-1">
+      <div className="flex flex-col p-4 mt-8 ml-1">
           <h2 className="text-2xl font-bold">{title}</h2>
 
           <div className="flex mt-8">

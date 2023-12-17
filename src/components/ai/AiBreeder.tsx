@@ -242,7 +242,7 @@ export default function AiBreeder(props:any) {
     </PC>
 
     <Mobile>
-      <div className="max-w-screen-md mx-auto mt-4 p-4">
+      <div className="max-w-screen-md mx-auto mt-8 p-4">
         <h2 className="text-2xl font-bold">개인 사육사 챗봇</h2>
 
         {/* 채팅창 */}

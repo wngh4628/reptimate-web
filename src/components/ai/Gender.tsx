@@ -134,7 +134,7 @@ export default function Gender(props:any) {
       )}
 
       {/* 모프 정보 */}
-      <div className="flex flex-col p-4 mt-4 ml-1">
+      <div className="flex flex-col p-4 mt-8 ml-1">
           <h2 className="text-2xl font-bold">암수 구분</h2>
 
           <div className="mt-8">

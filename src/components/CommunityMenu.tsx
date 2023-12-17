@@ -23,7 +23,7 @@ export default function CommunityMenu() {
             <Link
               href="/community/market"
               className={`${
-                pathName === "/community/market" ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+                pathName && pathName.startsWith("/community/market") ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
               } group hover:text-main-color pb-[6px]`}
             >
               중고 거래
@@ -31,7 +31,7 @@ export default function CommunityMenu() {
             <Link
               href="/community/free"
               className={`${
-                pathName === "/community/free" ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+                pathName && pathName.startsWith("/community/free") ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
               } group hover:text-main-color pb-[6px]`}
             >
               자유 게시판
@@ -39,7 +39,7 @@ export default function CommunityMenu() {
             <Link
               href="/community/ask"
               className={`${
-                pathName === "/community/ask" ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+                pathName && pathName.startsWith("/community/ask") ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
               } group hover:text-main-color pb-[6px]`}
             >
               질문 게시판
