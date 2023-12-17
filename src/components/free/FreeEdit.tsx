@@ -136,9 +136,9 @@ export default function FreeEdit() {
     getData();
   }, []);
 
-  useEffect(() => { }, [allFiles]);
+  useEffect(() => {}, [allFiles]);
 
-  useEffect(() => { }, [deletedFiles]);
+  useEffect(() => {}, [deletedFiles]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -207,7 +207,18 @@ export default function FreeEdit() {
   const mutation = useMutation({
     mutationFn: freeEdit,
     onSuccess: (data) => {
-      window.history.back();
+      Swal.fire({
+        text: "게시글 수정이 완료되었습니다.",
+        confirmButtonText: "확인",
+        confirmButtonColor: "#7A75F7",
+        customClass: {
+          container: "z-[11111]", // Tailwind CSS class for z-index
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.history.back();
+        }
+      });
     },
     onError: (data) => {
       alert(data);
@@ -338,15 +349,24 @@ export default function FreeEdit() {
 
       <PC>
         <DndProvider backend={HTML5Backend}>
-          <ImageSelecterEdit handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} allFiles={allFiles} moveFile={moveFile}></ImageSelecterEdit>
+          <ImageSelecterEdit
+            handleFileSelect={handleFileSelect}
+            handleRemoveItem={handleRemoveItem}
+            allFiles={allFiles}
+            moveFile={moveFile}
+          ></ImageSelecterEdit>
         </DndProvider>
       </PC>
       <Mobile>
         <DndProvider backend={TouchBackend}>
-          <ImageSelecterEdit handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} allFiles={allFiles} moveFile={moveFile}></ImageSelecterEdit>
+          <ImageSelecterEdit
+            handleFileSelect={handleFileSelect}
+            handleRemoveItem={handleRemoveItem}
+            allFiles={allFiles}
+            moveFile={moveFile}
+          ></ImageSelecterEdit>
         </DndProvider>
       </Mobile>
-
 
       <div className="mx-1 mt-4 flex flex-col">
         <div className="mb-4">
@@ -377,7 +397,7 @@ export default function FreeEdit() {
             value={description}
             onChange={handleDescriptionChange}
             rows={10} // 세로 행의 개수를 조절합니다.
-            style={{ resize: 'none' }}
+            style={{ resize: "none" }}
           />
         </div>
       </div>

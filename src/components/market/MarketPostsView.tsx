@@ -23,7 +23,7 @@ import { Comment, getCommentResponse } from "@/service/comment";
 import CommentCard from "../comment/CommentCard";
 import CommentForm from "../comment/CommentForm";
 import { adoptionDelete } from "@/api/adoption/adoption";
-import { boardRegisterBookmark, boardDeleteBookmark } from "@/api/board/board"
+import { boardRegisterBookmark, boardDeleteBookmark } from "@/api/board/board";
 
 import { useRouter } from "next/navigation";
 
@@ -95,7 +95,7 @@ export default function MarketPostsView() {
       setBookmarkCnt(bookmarkCnt - 1);
       boardDeleteMutation.mutate({
         userAccessToken: accessToken,
-        boardIdx: data!.result.idx
+        boardIdx: data!.result.idx,
       });
     } else {
       setBookmarked(true);
@@ -103,7 +103,7 @@ export default function MarketPostsView() {
       boardRegisterMutation.mutate({
         userAccessToken: accessToken,
         boardIdx: data!.result.idx,
-        userIdx: userIdx
+        userIdx: userIdx,
       });
     }
   };
@@ -163,10 +163,16 @@ export default function MarketPostsView() {
     onSuccess: (data) => {
       Swal.fire({
         text: "게시글이 삭제되었습니다.",
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        confirmButtonText: "확인",
+        confirmButtonColor: "#7A75F7",
+        customClass: {
+          container: "z-[11111]", // Tailwind CSS class for z-index
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.replace("/community/market");
+        }
       });
-      router.replace("/community/market");
     },
   });
 
@@ -363,15 +369,15 @@ export default function MarketPostsView() {
       );
       setCommentData(
         (prevData) =>
-        ({
-          result: {
-            items: [
-              ...(prevData?.result.items || []),
-              ...response.data.result.items,
-            ],
-            existsNextPage: response.data.result.existsNextPage,
-          },
-        } as getCommentResponse)
+          ({
+            result: {
+              items: [
+                ...(prevData?.result.items || []),
+                ...response.data.result.items,
+              ],
+              existsNextPage: response.data.result.existsNextPage,
+            },
+          } as getCommentResponse)
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
@@ -518,161 +524,172 @@ export default function MarketPostsView() {
           <div className="max-w-screen-sm mx-auto">
             <PC>
               <div className="mt-[150px]">
-              <p className="text-4xl font-bold text-[27px]">{post.title}</p>
-              <div className="flex items-center my-2 relative">
-                <img
+                <p className="text-4xl font-bold text-[27px]">{post.title}</p>
+                <div className="flex items-center my-2 relative">
+                  <img
                     className="w-11 h-11 rounded-full border-2 cursor-pointer object-cover"
                     src={post.UserInfo.profilePath || "/img/reptimate_logo.png"}
                     alt=""
                     onClick={profileMenu}
                   />
-                {!isCurrentUserComment && (
-                  <div className="flex items-center justify-center absolute top-full mt-1 bg-white border border-gray-200 shadow-lg rounded z-50">
-                    {profileMenuOpen && (
-                      <ul>
-                        <li
-                          onClick={() => {
-                            handleChat();
-                            profileMenu();
-                          }}
-                          className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                        >
-                          1:1채팅하기
-                        </li>
-                      </ul>
-                    )}
-                  </div>
-                )}
-                <div className="ml-2 ">
-                    <p className="font-bold cursor-pointer" onClick={profileMenu}>
-                      {post.UserInfo.nickname}
-                    </p>
-                    <div className="flex">
-                      <p className="text-gray-500 text-[12px]">{postWriteDate}</p>
-                      <p className="ml-1 text-gray-500 text-[12px]">{postWriteTime}</p>
-                      <p className="ml-2 text-gray-500 text-[12px]">조회 {post.view}</p>
-                    </div>
-                  </div>
-
-                <div className="relative ml-auto">
-                   <button
-                      onClick={toggleMenu}
-                      className="text-gray-500 cursor-pointer "
-                    >
-                    <p className="text-[24px]">⁝</p>
-                    </button>
-                  {menuOpen && (
-                    <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
-                      {isCurrentUserComment ? (
+                  {!isCurrentUserComment && (
+                    <div className="flex items-center justify-center absolute top-full mt-1 bg-white border border-gray-200 shadow-lg rounded z-50">
+                      {profileMenuOpen && (
                         <ul>
                           <li
                             onClick={() => {
-                              handleEdit();
-                              toggleMenu();
+                              handleChat();
+                              profileMenu();
                             }}
                             className="py-2 px-4 cursor-pointer hover:bg-gray-100"
                           >
-                            수정
-                          </li>
-                          <li
-                            onClick={() => {
-                              handleDelete();
-                              toggleMenu();
-                            }}
-                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                          >
-                            삭제
-                          </li>
-                        </ul>
-                      ) : (
-                        <ul>
-                          <li
-                            onClick={() => {
-                              handleReport();
-                              toggleMenu();
-                            }}
-                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                          >
-                            신고
+                            1:1채팅하기
                           </li>
                         </ul>
                       )}
                     </div>
                   )}
-                </div>
-              </div>
-              {/* 갤러리 */}
-              <div className="pt-3">
-                <ImageSlider imageUrls={itemlist} />
-              </div>
-              <div className="mt-3">
-                <div className="flex flex-row items-center py-3">
-                  <p className="text-xl font-semibold ml-1">판매가격</p>
-                  <p className="text-xl font-bold ml-auto mr-1">
-                      {post.boardCommercial.price.toLocaleString()}원
-                  </p>
-                </div>
-              </div>
-              
-              {/* 내용 */}
-              <div className="pb-4 pt-4">
-                  <p className="text-lg my-2 break-all">{post.description}</p>
-              </div>
+                  <div className="ml-2 ">
+                    <p
+                      className="font-bold cursor-pointer"
+                      onClick={profileMenu}
+                    >
+                      {post.UserInfo.nickname}
+                    </p>
+                    <div className="flex">
+                      <p className="text-gray-500 text-[12px]">
+                        {postWriteDate}
+                      </p>
+                      <p className="ml-1 text-gray-500 text-[12px]">
+                        {postWriteTime}
+                      </p>
+                      <p className="ml-2 text-gray-500 text-[12px]">
+                        조회 {post.view}
+                      </p>
+                    </div>
+                  </div>
 
-              <hr className="border-t border-gray-300 my-1" />
-              <div className="flex flex-row justify-between items-center py-3">
-                <div className="flex flex-row items-center py-3">
-                  <p className="text-lg font-semibold ml-1 mr-2">댓글</p>
-                  <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
+                  <div className="relative ml-auto">
+                    <button
+                      onClick={toggleMenu}
+                      className="text-gray-500 cursor-pointer "
+                    >
+                      <p className="text-[24px]">⁝</p>
+                    </button>
+                    {menuOpen && (
+                      <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
+                        {isCurrentUserComment ? (
+                          <ul>
+                            <li
+                              onClick={() => {
+                                handleEdit();
+                                toggleMenu();
+                              }}
+                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                            >
+                              수정
+                            </li>
+                            <li
+                              onClick={() => {
+                                handleDelete();
+                                toggleMenu();
+                              }}
+                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                            >
+                              삭제
+                            </li>
+                          </ul>
+                        ) : (
+                          <ul>
+                            <li
+                              onClick={() => {
+                                handleReport();
+                                toggleMenu();
+                              }}
+                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                            >
+                              신고
+                            </li>
+                          </ul>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="flex flex-row items-center py-3">
-                  {bookmarked ? (
-                    <a onClick={bookmarkClick}>
-                      <Image
-                        src={like_maincolor}
-                        width={20}
-                        height={20}
-                        alt="북마크"
-                        className="like_btn m-auto mr-1"
-                      />
-                    </a>
-                  ) : (
-                    <a onClick={bookmarkClick}>
-                      <Image
-                        src={unlike_black}
-                        width={20}
-                        height={20}
-                        alt="북마크"
-                        className="like_btn m-auto mr-1"
-                      />
-                    </a>
-                  )}
-                  <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
+                {/* 갤러리 */}
+                <div className="pt-3">
+                  <ImageSlider imageUrls={itemlist} />
                 </div>
-              </div>
-              {userAccessToken ? (
-                <div>
-                  <CommentForm
-                    value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
-                    onSubmit={handleCommentSubmit}
-                    onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
-                  />
+                <div className="mt-3">
+                  <div className="flex flex-row items-center py-3">
+                    <p className="text-xl font-semibold ml-1">판매가격</p>
+                    <p className="text-xl font-bold ml-auto mr-1">
+                      {post.boardCommercial.price.toLocaleString()}원
+                    </p>
+                  </div>
                 </div>
-              ) : (
-                <p
-                  className="cursor-pointer"
-                  onClick={() => {
-                    handleLogin();
-                  }}
-                >
-                  로그인 후 댓글을 작성할 수 있습니다.
-                </p>
-              )}
+
+                {/* 내용 */}
+                <div className="pb-4 pt-4">
+                  <p className="text-lg my-2 break-all">{post.description}</p>
+                </div>
+
+                <hr className="border-t border-gray-300 my-1" />
+                <div className="flex flex-row justify-between items-center py-3">
+                  <div className="flex flex-row items-center py-3">
+                    <p className="text-lg font-semibold ml-1 mr-2">댓글</p>
+                    <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
+                  </div>
+                  <div className="flex flex-row items-center py-3">
+                    {bookmarked ? (
+                      <a onClick={bookmarkClick}>
+                        <Image
+                          src={like_maincolor}
+                          width={20}
+                          height={20}
+                          alt="북마크"
+                          className="like_btn m-auto mr-1"
+                        />
+                      </a>
+                    ) : (
+                      <a onClick={bookmarkClick}>
+                        <Image
+                          src={unlike_black}
+                          width={20}
+                          height={20}
+                          alt="북마크"
+                          className="like_btn m-auto mr-1"
+                        />
+                      </a>
+                    )}
+                    <p className="text-lg font-semibold mr-2">{bookmarkCnt}</p>
+                  </div>
+                </div>
+                {userAccessToken ? (
+                  <div>
+                    <CommentForm
+                      value={commentFormValue} // 전달할 댓글 폼의 값을 설정합니다.
+                      onSubmit={handleCommentSubmit}
+                      onChange={(value: string) => setCommentFormValue(value)} // 댓글 폼 값이 변경될 때마다 업데이트합니다.
+                    />
+                  </div>
+                ) : (
+                  <p
+                    className="cursor-pointer"
+                    onClick={() => {
+                      handleLogin();
+                    }}
+                  >
+                    로그인 후 댓글을 작성할 수 있습니다.
+                  </p>
+                )}
               </div>
             </PC>
             <Mobile>
               {/* <BackButton /> */}
-              <h2 className="mx-2 text-2xl font-bold pt-[55px]">{post.title}</h2>
+              <h2 className="mx-2 text-2xl font-bold pt-[55px]">
+                {post.title}
+              </h2>
               <div className="mx-2 flex items-center my-2 relative">
                 <img
                   className="w-10 h-10 rounded-full border-2 cursor-pointer"
@@ -697,17 +714,21 @@ export default function MarketPostsView() {
                     )}
                   </div>
                 )}
-                 <div className="ml-2 ">
-                    <p className="font-bold cursor-pointer" onClick={profileMenu}>
-                      {post.UserInfo.nickname}
+                <div className="ml-2 ">
+                  <p className="font-bold cursor-pointer" onClick={profileMenu}>
+                    {post.UserInfo.nickname}
+                  </p>
+                  <div className="flex">
+                    <p className="text-gray-500 text-[12px]">{postWriteDate}</p>
+                    <p className="ml-1 text-gray-500 text-[12px]">
+                      {postWriteTime}
                     </p>
-                    <div className="flex">
-                      <p className="text-gray-500 text-[12px]">{postWriteDate}</p>
-                      <p className="ml-1 text-gray-500 text-[12px]">{postWriteTime}</p>
-                      <p className="ml-2 text-gray-500 text-[12px]">조회 {post.view}</p>
-                    </div>
+                    <p className="ml-2 text-gray-500 text-[12px]">
+                      조회 {post.view}
+                    </p>
                   </div>
-                
+                </div>
+
                 <div className="relative ml-auto">
                   <button
                     onClick={toggleMenu}
@@ -756,25 +777,24 @@ export default function MarketPostsView() {
                 </div>
               </div>
               {/* 갤러리 */}
-              <div className=''>
+              <div className="">
                 <ImageSlider imageUrls={itemlist} />
               </div>
               {/* 상세 설명 */}
               <div className="ml-4 mr-4">
                 {/* 가격 */}
                 <div className="flex flex-row items-center py-3">
-                    <p className="text-xl font-semibold ">판매가격</p>
-                    <p className="text-xl font-bold ml-auto mr-1">
-                      {post.boardCommercial.price.toLocaleString()}원
-                    </p>
-                  </div>
-                  <div>
-                    <p className="mx-2 my-6 break-all">{post.description}</p>
-                    <hr className="border-t border-gray-300" />
-                  </div>
+                  <p className="text-xl font-semibold ">판매가격</p>
+                  <p className="text-xl font-bold ml-auto mr-1">
+                    {post.boardCommercial.price.toLocaleString()}원
+                  </p>
+                </div>
+                <div>
+                  <p className="mx-2 my-6 break-all">{post.description}</p>
+                  <hr className="border-t border-gray-300" />
+                </div>
               </div>
-              
-              
+
               <div className="flex flex-row justify-between items-center py-3 ml-4 mr-4">
                 <div className="flex flex-row items-center py-3">
                   <p className="text-lg font-semibold ml-1 mr-2">댓글</p>

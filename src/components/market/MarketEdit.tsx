@@ -231,7 +231,9 @@ export default function MarketEdit() {
       setSelectedGender(post?.boardCommercial.gender || "");
       setSelectedSize(post?.boardCommercial.size || "");
 
-      setPrice(handleCommaReplace(post?.boardCommercial.price.toString()) || "");
+      setPrice(
+        handleCommaReplace(post?.boardCommercial.price.toString()) || ""
+      );
       setDescription(post?.description || "");
       setBoardCommercialIdx(post?.boardCommercial.idx || "");
       setAllFiles(
@@ -256,9 +258,9 @@ export default function MarketEdit() {
     getData();
   }, []);
 
-  useEffect(() => { }, [allFiles]);
+  useEffect(() => {}, [allFiles]);
 
-  useEffect(() => { }, [deletedFiles]);
+  useEffect(() => {}, [deletedFiles]);
 
   const handleVarietyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVariety = e.target.value;
@@ -355,10 +357,16 @@ export default function MarketEdit() {
     onSuccess: (data) => {
       Swal.fire({
         text: "게시글 수정이 완료되었습니다.",
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        confirmButtonText: "확인",
+        confirmButtonColor: "#7A75F7",
+        customClass: {
+          container: "z-[11111]", // Tailwind CSS class for z-index
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.history.back();
+        }
       });
-      window.history.back();
     },
     onError: (data) => {
       alert(data);
@@ -370,7 +378,7 @@ export default function MarketEdit() {
     e.preventDefault();
 
     setIsLoading(true);
-    let priceReplace = price.replace(regExp, '');
+    let priceReplace = price.replace(regExp, "");
 
     const requestData = {
       state: selling,
@@ -485,22 +493,35 @@ export default function MarketEdit() {
     }
   };
 
-  const handlePriceChange = (value: String, event: ChangeEvent<HTMLInputElement>) => {
+  const handlePriceChange = (
+    value: String,
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
     const inputValue = event.target.value;
     const num = /[0-9]/g;
     const eng = /[a-zA-Z]/g;
     const kor = /[\ㄱ-ㅎㅏ-ㅣ가-힣]/g;
     const regExpTotal = /[\{\}\[\]\/?.;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
 
-    if (inputValue.search(eng) == -1 && inputValue.search(kor) == -1 && inputValue.search(regExpTotal) == -1) {
-      if (inputValue == "" || inputValue.search(num) != -1 || inputValue.search(regExp) != -1) {
+    if (
+      inputValue.search(eng) == -1 &&
+      inputValue.search(kor) == -1 &&
+      inputValue.search(regExpTotal) == -1
+    ) {
+      if (
+        inputValue == "" ||
+        inputValue.search(num) != -1 ||
+        inputValue.search(regExp) != -1
+      ) {
         // console.log("***1");
 
-        let replaceComma = inputValue.replace(regExp, '');
+        let replaceComma = inputValue.replace(regExp, "");
 
         if (replaceComma.length <= 9) {
           // console.log("***2");
-          let transComma = replaceComma.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          let transComma = replaceComma
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
           if (value == "price") {
             setPrice(transComma);
@@ -512,8 +533,7 @@ export default function MarketEdit() {
   const handleCommaReplace = (price: String) => {
     let transComma = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return transComma;
-
-  }
+  };
 
   const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.target.value;
@@ -565,12 +585,22 @@ export default function MarketEdit() {
 
       <PC>
         <DndProvider backend={HTML5Backend}>
-          <ImageSelecterEdit handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} allFiles={allFiles} moveFile={moveFile}></ImageSelecterEdit>
+          <ImageSelecterEdit
+            handleFileSelect={handleFileSelect}
+            handleRemoveItem={handleRemoveItem}
+            allFiles={allFiles}
+            moveFile={moveFile}
+          ></ImageSelecterEdit>
         </DndProvider>
       </PC>
       <Mobile>
         <DndProvider backend={TouchBackend}>
-          <ImageSelecterEdit handleFileSelect={handleFileSelect} handleRemoveItem={handleRemoveItem} allFiles={allFiles} moveFile={moveFile}></ImageSelecterEdit>
+          <ImageSelecterEdit
+            handleFileSelect={handleFileSelect}
+            handleRemoveItem={handleRemoveItem}
+            allFiles={allFiles}
+            moveFile={moveFile}
+          ></ImageSelecterEdit>
         </DndProvider>
       </Mobile>
 
@@ -614,30 +644,28 @@ export default function MarketEdit() {
             value={description}
             onChange={handleDescriptionChange}
             rows={10} // 세로 행의 개수를 조절합니다.
-            style={{ resize: 'none' }}
+            style={{ resize: "none" }}
           />
         </div>
       </div>
-      {
-        !isLoading ? (
-          <form onSubmit={onSubmitHandler}>
-            <button
-              type="submit"
-              className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
-            >
-              등록
-            </button>
-          </form>
-        ) : (
+      {!isLoading ? (
+        <form onSubmit={onSubmitHandler}>
           <button
-            type="button"
-            className="items-center cursor-not-allowed inline-flex justify-center text-center align-middle bg-gray-300 text-gray-500 font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
-            disabled
+            type="submit"
+            className="items-center cursor-pointer inline-flex justify-center text-center align-middle bg-main-color text-white font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
           >
-            등록 중...
+            등록
           </button>
-        )
-      }
+        </form>
+      ) : (
+        <button
+          type="button"
+          className="items-center cursor-not-allowed inline-flex justify-center text-center align-middle bg-gray-300 text-gray-500 font-bold rounded-[12px] text-[16px] h-[52px] w-full my-10"
+          disabled
+        >
+          등록 중...
+        </button>
+      )}
     </div>
   );
 }
