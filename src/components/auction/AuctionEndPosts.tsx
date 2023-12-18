@@ -50,7 +50,7 @@ export default function AuctionEndPosts() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board?page=${page}&size=20&${sort}&category=auctionEnd`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/auction?page=${page}&size=20&${sort}&category=auctionEnd`
       );
       setData(
         (prevData) =>

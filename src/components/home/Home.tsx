@@ -25,7 +25,7 @@ export default function HomePosts() {
     try {
       //옥션 게시글 목록 api
       const response1 = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board?page=1&size=5&order=DESC&orderCriteria=created&category=auction`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/auction?page=1&size=5&order=DESC&orderCriteria=created&category=auctionSelling`
       );
       setData1(
         (prevData) =>
