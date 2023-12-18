@@ -6,7 +6,7 @@ import { Mobile, PC } from "../ResponsiveLayout";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
 import { Posts, getResponse } from "@/service/my/board";
-import PostCard from "../BoardCard";
+import BoardCard from "../BoardCard";
 import BannerSlider from "../BannerSlider";
 
 interface Option {
@@ -62,7 +62,7 @@ export default function FreePosts() {
             },
           } as getResponse)
       );
-      
+
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
@@ -114,7 +114,7 @@ export default function FreePosts() {
           profilePath: item.UserInfo.profilePath,
         }))
       : [];
-      
+
   return (
     <section>
       <BannerSlider />
@@ -159,7 +159,7 @@ export default function FreePosts() {
         {data !== null && data.result.items ? (
           <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
             {itemlist.map((post) => (
-                <PostCard post={post} key={post.idx}/>
+              <BoardCard post={post} key={post.idx} />
             ))}
           </ul>
         ) : (
@@ -173,7 +173,7 @@ export default function FreePosts() {
         {data !== null && data.result.items ? (
           <ul className="grid grid-cols-2 gap-x-4 gap-y-4 ml-4 mr-4">
             {itemlist.map((post) => (
-                <PostCard post={post}  key={post.idx}/>
+              <BoardCard post={post} key={post.idx} />
             ))}
           </ul>
         ) : (

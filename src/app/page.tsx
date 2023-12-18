@@ -1,9 +1,9 @@
-import AdoptionPosts from "@/components/adoption/AdoptionPosts";
+import HomePosts from "@/components/home/Home";
 
 export default function Home() {
   return (
     <div>
-      <AdoptionPosts />
+      <HomePosts />
     </div>
   );
 }

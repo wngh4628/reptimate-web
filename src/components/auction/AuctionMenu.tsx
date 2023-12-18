@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { Mobile, PC } from "../ResponsiveLayout";
 
 export default function AiMenu(props: any) {
-
   const pathName = usePathname();
   return (
     <div className="w-full mx-auto max-w-screen-xl pl-[40px]">
@@ -15,15 +14,19 @@ export default function AiMenu(props: any) {
             <Link
               href="/auction"
               className={`${
-                pathName === "/auction" ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+                pathName === "/auction"
+                  ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]"
+                  : ""
               } group hover:text-main-color pb-[6px]`}
             >
               진행중
             </Link>
             <Link
-              href="/auction"
+              href="/auction/end"
               className={`${
-                pathName === "/ai/linebreeding" ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]" : ""
+                pathName === "/auction/end"
+                  ? "text-[#6D71E6] font-bold border-b-2 border-[#6D71E6]"
+                  : ""
               } group hover:text-main-color pb-[6px]`}
               // onClick={resetState}
             >
@@ -46,9 +49,9 @@ export default function AiMenu(props: any) {
               진행중
             </Link>
             <Link
-              href="/auction"
+              href="/auction/end"
               className={`${
-                pathName === "/ai/linebreeding" ? "text-[#6D71E6]" : ""
+                pathName === "/auction/end" ? "text-[#6D71E6]" : ""
               } group hover:text-main-color`}
               // onClick={resetState}
             >
