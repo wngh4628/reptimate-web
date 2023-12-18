@@ -50,19 +50,19 @@ export default function AuctionPosts() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board?page=${page}&size=20&${sort}&category=auction`
+        `${process.env.NEXT_PUBLIC_API_URL}/board?page=${page}&size=20&${sort}&category=auctionSelling`
       );
       setData(
         (prevData) =>
-        ({
-          result: {
-            items: [
-              ...(prevData?.result.items || []),
-              ...response.data.result.items,
-            ],
-            existsNextPage: response.data.result.existsNextPage,
-          },
-        } as getResponseAuction)
+          ({
+            result: {
+              items: [
+                ...(prevData?.result.items || []),
+                ...response.data.result.items,
+              ],
+              existsNextPage: response.data.result.existsNextPage,
+            },
+          } as getResponseAuction)
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
@@ -104,24 +104,24 @@ export default function AuctionPosts() {
   const itemlist: Auction[] =
     data !== null && data.result.items
       ? data.result.items.map((item) => ({
-        idx: item.idx,
-        view: item.view,
-        userIdx: item.userIdx,
-        title: item.title,
-        category: item.category,
-        createdAt: new Date(item.writeDate),
-        thumbnail: item.thumbnail,
-        nickname: item.UserInfo.nickname,
-        currentPrice: item.boardAuction?.currentPrice,
-        endTime: item.boardAuction?.endTime,
-        gender: item.boardAuction?.gender,
-        size: item.boardAuction?.size,
-        variety: item.boardAuction?.variety,
-        state: item.boardAuction?.state,
-        unit: item.boardAuction?.unit,
-        boardIdx: item.boardAuction?.boardIdx,
-        profilePath: item.UserInfo.profilePath,
-      }))
+          idx: item.idx,
+          view: item.view,
+          userIdx: item.userIdx,
+          title: item.title,
+          category: item.category,
+          createdAt: new Date(item.writeDate),
+          thumbnail: item.thumbnail,
+          nickname: item.UserInfo.nickname,
+          currentPrice: item.boardAuction?.currentPrice,
+          endTime: item.boardAuction?.endTime,
+          gender: item.boardAuction?.gender,
+          size: item.boardAuction?.size,
+          variety: item.boardAuction?.variety,
+          state: item.boardAuction?.state,
+          unit: item.boardAuction?.unit,
+          boardIdx: item.boardAuction?.boardIdx,
+          profilePath: item.UserInfo.profilePath,
+        }))
       : [];
 
   return (
@@ -130,7 +130,7 @@ export default function AuctionPosts() {
         <div className="mt-24">
           {/* 광고 배너 */}
           <BannerSlider />
-          <div className="flex items-center relative ml-10 mr-10" >
+          <div className="flex items-center relative ml-10 mr-10">
             <h2 className="font-bold text-[20px]">경매</h2>
             <div className="relative ml-auto">
               <select
@@ -173,9 +173,9 @@ export default function AuctionPosts() {
       </Mobile>
       <PC>
         {data !== null && data.result.items ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10" >
+          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
             {itemlist.map((post) => (
-                <AuctionPostCard post={post} key={post.idx}/>
+              <AuctionPostCard post={post} key={post.idx} />
             ))}
           </ul>
         ) : (
