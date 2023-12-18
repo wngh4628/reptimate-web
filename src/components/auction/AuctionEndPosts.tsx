@@ -5,8 +5,8 @@ import axios from "axios";
 import { Mobile, PC } from "../ResponsiveLayout";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
-import { Posts, getResponse } from "@/service/my/board";
-import BoardCard from "../BoardCard";
+import { getResponseAuction, Auction } from "@/service/my/auction";
+import AuctionPostCard from "./AucutionPostCard";
 import BannerSlider from "../BannerSlider";
 
 interface Option {
@@ -19,16 +19,21 @@ const sortOption: Option[] = [
   { value: "order=ASC&orderCriteria=created", label: "오래된 순" },
   { value: "order=DESC&orderCriteria=view", label: "조회 높은 순" },
   { value: "order=ASC&orderCriteria=view", label: "조회 낮은 순" },
+  { value: "order=DESC&orderCriteria=price", label: "가격 높은 순" },
+  { value: "order=ASC&orderCriteria=price", label: "가격 낮은 순" },
 ];
 
-export default function AskPosts() {
-  const [data, setData] = useState<getResponse | null>(null);
+export default function AuctionEndPosts() {
+  const [data, setData] = useState<getResponseAuction | null>(null);
   const [page, setPage] = useState(1);
   const [existNextPage, setENP] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sort, setSort] = useState("order=DESC&orderCriteria=created");
   const isLogin = useRecoilValue(userAtom);
   const target = useRef(null);
+
+  const setUser = useSetRecoilState(userAtom);
+  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
 
   const options = {
     threshold: 1.0,
@@ -45,7 +50,7 @@ export default function AskPosts() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board?page=${page}&size=20&${sort}&category=ask`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/auction?page=${page}&size=20&${sort}&category=auctionEnd`
       );
       setData(
         (prevData) =>
@@ -57,7 +62,7 @@ export default function AskPosts() {
               ],
               existsNextPage: response.data.result.existsNextPage,
             },
-          } as getResponse)
+          } as getResponseAuction)
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
@@ -93,10 +98,10 @@ export default function AskPosts() {
 
   const handleWriteClick = () => {
     // Handle the logic for opening the write page
-    location.href = `ask/write`;
+    location.href = `auction/write`;
   };
 
-  const itemlist: Posts[] =
+  const itemlist: Auction[] =
     data !== null && data.result.items
       ? data.result.items.map((item) => ({
           idx: item.idx,
@@ -104,63 +109,73 @@ export default function AskPosts() {
           userIdx: item.userIdx,
           title: item.title,
           category: item.category,
-          writeDate: new Date(item.writeDate),
+          createdAt: new Date(item.writeDate),
           thumbnail: item.thumbnail,
           nickname: item.UserInfo.nickname,
+          currentPrice: item.boardAuction?.currentPrice,
+          endTime: item.boardAuction?.endTime,
+          gender: item.boardAuction?.gender,
+          size: item.boardAuction?.size,
+          variety: item.boardAuction?.variety,
+          state: item.boardAuction?.state,
+          unit: item.boardAuction?.unit,
+          boardIdx: item.boardAuction?.boardIdx,
           profilePath: item.UserInfo.profilePath,
         }))
       : [];
 
   return (
     <section>
-      {/* 광고 배너 */}
-      <BannerSlider />
-      {/* 솔트링 콤보 박스 PC */}
       <PC>
-        <div className="flex items-center relative ml-[40px] mr-[40px]">
-          <h2 className="text-xl font-bold ml-1">질문 게시판</h2>
-          <div className="relative ml-auto">
-            <select
-              className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 "
-              value={sort}
-              onChange={handleSortChange}
-            >
-              {sortOption.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+        <div className="mt-24">
+          {/* 광고 배너 */}
+          <BannerSlider />
+          <div className="flex items-center relative ml-10 mr-10">
+            <h2 className="font-bold text-[20px]">경매</h2>
+            <div className="relative ml-auto">
+              <select
+                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2 "
+                value={sort}
+                onChange={handleSortChange}
+              >
+                {sortOption.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </PC>
-      {/* 솔트링 콤보 박스 모바일 */}
+
       <Mobile>
-        <div className="flex items-center relative  ml-[16px] mr-[16px]">
-          <h2 className="text-lg font-bold my-2">질문 게시판</h2>
-          <div className="relative ml-auto">
-            <select
-              className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2"
-              value={sort}
-              onChange={handleSortChange}
-            >
-              {sortOption.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+        <div className="mt-11">
+          <BannerSlider />
+          {/* 솔트링 콤보 박스 모바일 */}
+          <div className="flex items-center relative  ml-4 mr-4">
+            <h2 className="text-lg font-bold my-2">경매</h2>
+            <div className="relative ml-auto">
+              <select
+                className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-sm my-2"
+                value={sort}
+                onChange={handleSortChange}
+              >
+                {sortOption.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </Mobile>
-      {/* 게시글 목록 PC */}
       <PC>
         {data !== null && data.result.items ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-[40px] mr-[40px]">
+          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
             {itemlist.map((post) => (
-              <li key={post.idx}>
-                <BoardCard post={post} />
-              </li>
+              <AuctionPostCard post={post} key={post.idx} />
             ))}
           </ul>
         ) : (
@@ -168,20 +183,12 @@ export default function AskPosts() {
             <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
           </div>
         )}
-        {existNextPage && (
-          <div className="flex justify-center">
-            <div
-              className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"
-              ref={target}
-            ></div>
-          </div>
-        )}
       </PC>
       <Mobile>
         {data !== null && data.result.items ? (
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-[16px] pr-[16px]">
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 ml-4 mr-4">
             {itemlist.map((post) => (
-              <BoardCard post={post} key={post.idx} />
+              <AuctionPostCard post={post} key={post.idx} />
             ))}
           </ul>
         ) : (
@@ -189,15 +196,15 @@ export default function AskPosts() {
             <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
           </div>
         )}
-        {existNextPage && (
-          <div className="flex justify-center">
-            <div
-              className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"
-              ref={target}
-            ></div>
-          </div>
-        )}
       </Mobile>
+      {existNextPage && (
+        <div className="flex justify-center">
+          <div
+            className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"
+            ref={target}
+          ></div>
+        </div>
+      )}
 
       <PC>
         {isLogin && (
@@ -213,9 +220,9 @@ export default function AskPosts() {
       </PC>
       <Mobile>
         {isLogin && (
-          <div className="fixed bottom-6 right-6 z-50">
+          <div className="fixed bottom-6 right-6 z-[1000]">
             <button
-              className="w-12 h-12 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
+              className="w-16 h-16 rounded-full bg-main-color text-white flex justify-center items-center text-5xl"
               onClick={handleWriteClick}
             >
               +

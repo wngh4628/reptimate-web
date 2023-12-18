@@ -43,10 +43,14 @@ export default function Header() {
 
   const [isChatVisisible, setIsChatVisisible] =
     useRecoilState(chatVisisibleState);
-  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
+  const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(
+    chatRoomVisisibleState
+  );
 
-  const [isNotiVisisible, setIsNotiVisisible] = useRecoilState(notiVisisibleState);
-  const [receivedNewChat, setreceivedNewChat] = useRecoilState(receivedNewChatState);
+  const [isNotiVisisible, setIsNotiVisisible] =
+    useRecoilState(notiVisisibleState);
+  const [receivedNewChat, setreceivedNewChat] =
+    useRecoilState(receivedNewChatState);
 
   const setUser = useSetRecoilState(userAtom);
   const setCookieLoggedIn = useSetRecoilState(isLoggedInState);
@@ -119,8 +123,8 @@ export default function Header() {
       setIsMobile(window.innerWidth <= 768);
     }
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const [fcm, setfcm] = useRecoilState(fcmState);
@@ -138,19 +142,17 @@ export default function Header() {
     setIsSearchModalHidden(true);
   }, [pathName]);
 
-
   useEffect(() => {
-    if(isSearchModalHidden){
-      document.body.style.overflow = 'auto';
-    }else{
-      document.body.style.overflow = 'hidden';
+    if (isSearchModalHidden) {
+      document.body.style.overflow = "auto";
+    } else {
+      document.body.style.overflow = "hidden";
     }
-
   }, [isSearchModalHidden]);
 
   useEffect(() => {}, [receivedNewChat]);
   useEffect(() => {
-    console.log("==========",isLoggedIn);
+    console.log("==========", isLoggedIn);
     if (!isLoggedIn) {
       localStorage.removeItem("recoil-persist");
     }
@@ -173,7 +175,6 @@ export default function Header() {
         if (currentToken) {
           setfcm(currentToken);
         } else {
-
         }
       })
       .catch((err) => {
@@ -197,7 +198,6 @@ export default function Header() {
   };
 
   const handleLogin = () => {
-    
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
@@ -216,7 +216,7 @@ export default function Header() {
   function chattingClick() {
     if (isLoggedIn) {
       // console.log("채팅 목록 켜기");
-      
+
       if (isChatVisisible) {
         setIsChatVisisible(false);
       } else {
@@ -248,7 +248,7 @@ export default function Header() {
   function pageReload() {
     // router.refresh();
     // router.push("/")
-    window.location.href = "/"
+    window.location.href = "/";
     // window.location.reload();
   }
 
@@ -269,29 +269,46 @@ export default function Header() {
   ];
 
   const isAuctionRoute = pathName.startsWith("/auction");
-  const isCommunityRoute = pathName.startsWith("/");
   const isAIRoute = pathName.startsWith("/ai");
+  const isMyRoute = pathName.startsWith("/my");
+  const isCommunityRoute = pathName.startsWith("/");
 
-  // Set the link based on whether it's an "auction" route or not
-  const link = isAuctionRoute ? "/auction" : "/";
+  let link = "/";
 
   if (typeof window !== "undefined") {
     if (window.innerWidth <= 768) {
       if (pathName.startsWith("/streamhost")) return null;
+      // 웹뷰에서는 로고 클릭 시 각 메뉴의 메인 페이지로 이동됨.
+      if (isAuctionRoute) {
+        link = "/auction";
+      } else if (isAIRoute) {
+        link = "/ai";
+      } else if (isMyRoute) {
+        // Change "/my" to something else, e.g., "/custom"
+        link = "/my";
+      } else {
+        link = "/";
+      }
     }
   }
 
   return (
     <header
-      className="w-full fixed top-0 bg-white z-[9999]" style={{ boxShadow: '0 1px 0 0 rgba(0, 0, 0, 0.1)' }} 
-      >
+      className="w-full fixed top-0 bg-white z-[9999]"
+      style={{ boxShadow: "0 1px 0 0 rgba(0, 0, 0, 0.1)" }}
+    >
       {/* PC 화면(반응형) */}
       <PC>
-
         {/* 검색 모달 */}
-        <Search isHidden={isSearchModalHidden} setHidden={setIsSearchModalHidden} />
+        <Search
+          isHidden={isSearchModalHidden}
+          setHidden={setIsSearchModalHidden}
+        />
 
-        <div className="flex justify-end pt-2 gap-2 max-w-screen-xl mx-auto " style={{paddingRight:40}}>
+        <div
+          className="flex justify-end pt-2 gap-2 max-w-screen-xl mx-auto "
+          style={{ paddingRight: 40 }}
+        >
           {isLoggedIn ? (
             <button
               className="group hover:text-main-color"
@@ -301,16 +318,31 @@ export default function Header() {
             </button>
           ) : (
             <>
-              <Link href="/login" className="group hover:text-main-color" style={{ height: 14, paddingRight: 10 }}>
-                <p style={{ fontSize: 12, color: "#222222CC", height: 14 }}>로그인</p>
+              <Link
+                href="/login"
+                className="group hover:text-main-color"
+                style={{ height: 14, paddingRight: 10 }}
+              >
+                <p style={{ fontSize: 12, color: "#222222CC", height: 14 }}>
+                  로그인
+                </p>
               </Link>
-              <Link href="/join" className="group hover:text-main-color" style={{ height: 14 }}>
-                <p style={{ fontSize: 12, color: "#222222CC", height: 14 }}>회원가입</p>
+              <Link
+                href="/join"
+                className="group hover:text-main-color"
+                style={{ height: 14 }}
+              >
+                <p style={{ fontSize: 12, color: "#222222CC", height: 14 }}>
+                  회원가입
+                </p>
               </Link>
             </>
           )}
         </div>
-        <div className="flex justify-between items-center py-4 max-w-screen-xl mx-auto" style={{ paddingLeft: 40, paddingRight: 40 }}>
+        <div
+          className="flex justify-between items-center py-4 max-w-screen-xl mx-auto"
+          style={{ paddingLeft: 40, paddingRight: 40 }}
+        >
           <Link href={link}>
             <div className="flex w-[170px]">
               <img src="/img/main_logo2.png" style={{ height: 32 }} />
@@ -318,42 +350,47 @@ export default function Header() {
           </Link>
           <nav className="flex gap-4 ">
             <Link
-              href="/"
-              className={`${pathName === "/" || pathName.startsWith("/community") ? "font-bold" : ""
-                }`}
+              href="/community/adoption"
+              className={`${
+                pathName.startsWith("/community") ? "font-bold" : ""
+              }`}
               style={{ fontSize: 18, color: "#222222" }}
             >
               COMMUNITY
             </Link>
             <Link
               href="/auction"
-              className={`${pathName.startsWith("/auction") ? "font-bold" : ""
-                }`}
+              className={`${
+                pathName.startsWith("/auction") ? "font-bold" : ""
+              }`}
               style={{ fontSize: 18, color: "#222222" }}
             >
               AUCTION
             </Link>
             <Link
               href="/ai"
-              className={`${pathName.startsWith("/ai") ? "font-bold" : ""
-                } `}
+              className={`${pathName.startsWith("/ai") ? "font-bold" : ""} `}
               style={{ fontSize: 18, color: "#222222" }}
             >
               AI
             </Link>
-            {isLoggedIn ?
-            <div className="flex justify-between items-center "  style={{width: 100}} >
-              <Link
-                href="/my"
-                className={`${
-                  pathName === "/my" ? "font-bold" : ""
-                } font-normal`}
-                style={{fontSize:18, color:"#222222",}}
+            {isLoggedIn ? (
+              <div
+                className="flex justify-between items-center "
+                style={{ width: 100 }}
               >
-                MY
-              </Link>
-              <Link href="">
-                  <Image src="/img/chat.png" 
+                <Link
+                  href="/my"
+                  className={`${
+                    pathName === "/my" ? "font-bold" : ""
+                  } font-normal`}
+                  style={{ fontSize: 18, color: "#222222" }}
+                >
+                  MY
+                </Link>
+                <Link href="">
+                  <Image
+                    src="/img/chat.png"
                     width={18}
                     height={18}
                     alt="chat-icon"
@@ -364,38 +401,50 @@ export default function Header() {
                   )}
                 </Link>
                 <Link href="">
-                  <Image src="/img/notification.png"
+                  <Image
+                    src="/img/notification.png"
                     width={18}
                     height={18}
                     alt="alert-icon"
-                   />
-              </Link> 
-            </div>: ""}
-            <div className="flex w-[20px] h-5 my-0.5 relative hover:cursor-pointer" style={{paddingTop:4}}>
-              <img src="/img/search.png" onClick={() => {setIsSearchModalHidden(false)}} />
+                  />
+                </Link>
+              </div>
+            ) : (
+              ""
+            )}
+            <div
+              className="flex w-[20px] h-5 my-0.5 relative hover:cursor-pointer"
+              style={{ paddingTop: 4 }}
+            >
+              <img
+                src="/img/search.png"
+                onClick={() => {
+                  setIsSearchModalHidden(false);
+                }}
+              />
             </div>
           </nav>
         </div>
         {/* 두번째  메뉴 */}
         <div>
-          {pathName === "/" || pathName.startsWith("/community") ? <CommunityMenu /> : ""}
+          {pathName === "/" || pathName.startsWith("/community") ? (
+            <CommunityMenu />
+          ) : (
+            ""
+          )}
         </div>
+        <div>{pathName.startsWith("/auction") ? <AuctionMenu /> : ""}</div>
+        <div>{pathName.startsWith("/ai") ? <AiMenu /> : ""}</div>
         <div>
-          {pathName.startsWith("/auction") ? <AuctionMenu /> : ""}
+          {pathName.startsWith("/searchresult/") ? <SearchResultMenu /> : ""}
         </div>
-        <div>
-          {pathName.startsWith("/ai") ? <AiMenu /> : ""}
-        </div>
-        <div>
-          { pathName.startsWith("/searchresult/") ? <SearchResultMenu /> : ""}
-        </div>
-       
 
         <div
-          className={`${isChatVisisible
-            ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
-            : "hidden"
-            }`}
+          className={`${
+            isChatVisisible
+              ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
+              : "hidden"
+          }`}
         >
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
@@ -412,10 +461,11 @@ export default function Header() {
         </div>
 
         <div
-          className={`${isNotiVisisible
-            ? "bg-white w-[450px] h-[500px] z-[10000] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
-            : "hidden"
-            }`}
+          className={`${
+            isNotiVisisible
+              ? "bg-white w-[450px] h-[500px] z-[10000] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
+              : "hidden"
+          }`}
         >
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
@@ -434,32 +484,38 @@ export default function Header() {
 
 
       <Mobile>
-        <Search isHidden={isSearchModalHidden} setHidden={setIsSearchModalHidden} />
+        <Search
+          isHidden={isSearchModalHidden}
+          setHidden={setIsSearchModalHidden}
+        />
         <div className="flex justify-start pt-2 pl-3 pr-3 pb-2">
           
           <Link href={link}>
             <div className="flex w-32 p1-0">
-              <img src="/img/main_logo2.png"/>
+              <img src="/img/main_logo2.png" />
             </div>
           </Link>
-          <nav className={`${isMobile ? "" : "gap-4"
-            } flex font-bold ml-auto`}>
-            {isLoggedIn ?
+          <nav className={`${isMobile ? "" : "gap-4"} flex font-bold ml-auto`}>
+            {isLoggedIn ? (
               <Link href="">
                 <div
                   className="flex w-[23px] h-5 my-0.5 relative"
-                  onClick={chattingClick} >
+                  onClick={chattingClick}
+                >
                   <img src="/img/chat.png" />
                   {receivedNewChat && (
                     <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
                   )}
                 </div>
               </Link>
-              : ""}
+            ) : (
+              ""
+            )}
 
             <a onClick={notiClick}>
-              <div className={`${isMobile ? "hidden" : "flex gap-4 w-5 my-0.5"
-                }`}>
+              <div
+                className={`${isMobile ? "hidden" : "flex gap-4 w-5 my-0.5"}`}
+              >
                 <img src="/img/notification.png" />
               </div>
             </a>
@@ -476,7 +532,77 @@ export default function Header() {
             </div>
 
           </nav>
+          </div>
+        <div
+          className={`${menuVisible
+            ? "bg-white w-full z-[9999] fixed top-[40px] border-[2px] border-gray-300 flex flex-col shadow-md"
+            : "hidden"
+            }`}
+        >
+          {isAuctionRoute ? (
+            <>
+              <div className=
+              {`${pathName.startsWith("/auction") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/auction"}>진행중</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/auction") ? "" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/auction"}>종료</Link>
+              </div>
+            </>
+          ) : (<></>)}
 
+          {!isAIRoute && !isAuctionRoute ? (
+            <>
+              <div className=
+              {`${!pathName.startsWith("/community/market") && !pathName.startsWith("/community/free") && !pathName.startsWith("/community/ask") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/"}>분양 글</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/community/market") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/community/market"}>중고 거래</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/community/free") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/community/free"}>자유 게시판</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/community/ask") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/community/ask"}>질문 게시판</Link>
+              </div>
+            </>
+          ) : (<></>)}
+
+          {isAIRoute ? (
+            <>
+              <div className=
+              {`${pathName.startsWith("/ai/valueanalysis") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/ai/valueanalysis"}>가치 판단</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/ai/linebreeding") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/ai/linebreeding"}>브리딩 추천</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/ai/gender") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/ai/gender"}>암수 구분</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/ai/aibreeder") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/ai/aibreeder"}>사육 챗봇</Link>
+              </div>
+            </>
+          ) : (<></>)}
         </div>
         <div
           className={`${menuVisible
@@ -552,12 +678,13 @@ export default function Header() {
 
 
         </div>
-        
+
         <div
-          className={`${isChatVisisible
-            ? "bg-white w-full h-[460px] z-[9999] fixed top-0 border-[2px] border-gray-300 flex flex-col shadow-md"
-            : "hidden"
-            }`}
+          className={`${
+            isChatVisisible
+              ? "bg-white w-full h-[460px] z-[9999] fixed top-0 border-[2px] border-gray-300 flex flex-col shadow-md"
+              : "hidden"
+          }`}
         >
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
@@ -573,10 +700,11 @@ export default function Header() {
           <PersonalChat></PersonalChat>
         </div>
         <div
-          className={`${isNotiVisisible
-            ? "bg-white w-full h-full z-[10000] fixed bottom-0 border-[2px] border-gray-300 flex flex-col shadow-md"
-            : "hidden"
-            }`}
+          className={`${
+            isNotiVisisible
+              ? "bg-white w-full h-full z-[10000] fixed bottom-0 border-[2px] border-gray-300 flex flex-col shadow-md"
+              : "hidden"
+          }`}
         >
           <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
             <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
