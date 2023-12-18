@@ -149,7 +149,7 @@ export default function Header() {
 
   useEffect(() => {}, [receivedNewChat]);
   useEffect(() => {
-    console.log("==========",isLoggedIn);
+    console.log("==========", isLoggedIn);
     if (!isLoggedIn) {
       localStorage.removeItem("recoil-persist");
     }
@@ -195,7 +195,6 @@ export default function Header() {
   };
 
   const handleLogin = () => {
-    
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
@@ -258,13 +257,25 @@ export default function Header() {
   ];
 
   const isAuctionRoute = pathName.startsWith("/auction");
+  const isAIRoute = pathName.startsWith("/ai");
+  const isMyRoute = pathName.startsWith("/my");
 
-  // Set the link based on whether it's an "auction" route or not
-  const link = isAuctionRoute ? "/auction" : "/";
+  let link = "/";
 
   if (typeof window !== "undefined") {
     if (window.innerWidth <= 768) {
       if (pathName.startsWith("/streamhost")) return null;
+      // 웹뷰에서는 로고 클릭 시 각 메뉴의 메인 페이지로 이동됨.
+      if (isAuctionRoute) {
+        link = "/auction";
+      } else if (isAIRoute) {
+        link = "/ai";
+      } else if (isMyRoute) {
+        // Change "/my" to something else, e.g., "/custom"
+        link = "/my";
+      } else {
+        link = "/";
+      }
     }
   }
 
@@ -458,7 +469,10 @@ export default function Header() {
       </PC>
       {/* 모바일 화면(반응형) */}
       <Mobile>
-        <Search isHidden={isSearchModalHidden} setHidden={setIsSearchModalHidden} />
+        <Search
+          isHidden={isSearchModalHidden}
+          setHidden={setIsSearchModalHidden}
+        />
         <div className="flex justify-start pt-2 pl-3 pr-3 pb-2">
           <Link href={link}>
             <div className="flex w-32 p1-0">
