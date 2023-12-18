@@ -122,6 +122,7 @@ export default function Header() {
     function handleResize() {
       setIsMobile(window.innerWidth <= 768);
     }
+    handleLogin();
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -203,7 +204,7 @@ export default function Header() {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA && userData.USER_DATA.accessToken) {
         const accessToken = userData.USER_DATA.accessToken;
-        // setIsLoggedIn(true);
+        setIsLoggedIn(true);
       }
     }
   };
