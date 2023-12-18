@@ -122,7 +122,6 @@ export default function Header() {
     function handleResize() {
       setIsMobile(window.innerWidth <= 768);
     }
-    handleLogin();
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -133,7 +132,7 @@ export default function Header() {
     useRecoilState(fcmNotificationState);
 
   useEffect(() => {
-    // handleLogin();
+    handleLogin();
     const user = navigator.userAgent;
     if (user.indexOf("iPhone") > -1 || user.indexOf("Android") > -1) {
     } else {
