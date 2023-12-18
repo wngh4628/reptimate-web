@@ -153,9 +153,9 @@ export default function Header() {
   useEffect(() => {}, [receivedNewChat]);
   useEffect(() => {
     console.log("==========", isLoggedIn);
-    if (!isLoggedIn) {
-      localStorage.removeItem("recoil-persist");
-    }
+    // if (!isLoggedIn) {
+    //   localStorage.removeItem("recoil-persist");
+    // }
   }, [isLoggedIn]);
 
   const onMessageFCM = async () => {
@@ -557,7 +557,7 @@ export default function Header() {
           {!isAIRoute && !isAuctionRoute ? (
             <>
               <div className=
-              {`${!pathName.startsWith("/community/market") && !pathName.startsWith("/community/free") && !pathName.startsWith("/community/ask") ? "text-main-color" : ""
+              {`${pathName.startsWith("/community/adoption") ? "text-main-color" : ""
                 } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
                 <Link className="ml-3" href={"/"}>분양 글</Link>
               </div>
