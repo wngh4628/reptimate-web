@@ -610,15 +610,14 @@ export default function StreamingChatView() {
         socketBidRef.current.emit("join-room", message);
       }
       setroomEnter(true);
-
       fetchBidData();
     });
     // 메시지 리스너
     socketBid.on("Auction_message", (message: IMessage) => {
       setchattingBidData((chattingData) => [...chattingData, message]);
-      console.log("======경매 입찰 채팅 수신=======");
-      console.log("bid message  :  ", message);
-      console.log("========================");
+      // console.log("======경매 입찰 채팅 수신=======");
+      // console.log("bid message  :  ", message);
+      // console.log("========================");
       if (bidContainerRef.current) {
         bidContainerRef.current.scrollTop =
           bidContainerRef.current.scrollHeight;
@@ -714,6 +713,16 @@ export default function StreamingChatView() {
   };
   //메시지 발송하는 함수
   const sendBidMsg = async () => {
+    if(isInputDisabled) {
+      Swal.fire({
+        text: " 경매가 종료되어 입찰이 불가합니다.",
+        icon: "warning",
+        confirmButtonText: "완료", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
+      return;
+    }
+
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
