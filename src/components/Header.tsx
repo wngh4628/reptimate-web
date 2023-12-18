@@ -22,13 +22,15 @@ import {
   receivedNewChatState,
 } from "@/recoil/chatting";
 import PersonalChat from "@/components/chat/personalChat";
-
+import menu_btn from "../../public/img/menu_btn.png"
 import { initializeApp } from "firebase/app";
 import { getMessaging, onMessage, getToken } from "firebase/messaging";
 import Search from "./search/Search";
 import AiMenu from "@/components/ai/AiMenu";
 import AuctionMenu from "@/components/auction/AuctionMenu";
 import SearchResultMenu from "./search/SearchResultMenu";
+
+
 export default function Header() {
   const login = false;
   const pathName = usePathname() || "";
@@ -54,7 +56,7 @@ export default function Header() {
   const [moblieView, setMoblieView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isSearchModalHidden, setIsSearchModalHidden] = useState(true);
-
+  const [menuVisible, setMenuVisible] = useState(false);
 
   function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -250,6 +252,15 @@ export default function Header() {
     // window.location.reload();
   }
 
+  function menuClick() {
+    //상단 메뉴 아이콘 클릭
+    if (menuVisible) {
+      setMenuVisible(false);
+    } else {
+      setMenuVisible(true);
+    }
+  }
+
   const communityPathnames = [
     "/",
     "/community/market",
@@ -258,6 +269,8 @@ export default function Header() {
   ];
 
   const isAuctionRoute = pathName.startsWith("/auction");
+  const isCommunityRoute = pathName.startsWith("/");
+  const isAIRoute = pathName.startsWith("/ai");
 
   // Set the link based on whether it's an "auction" route or not
   const link = isAuctionRoute ? "/auction" : "/";
@@ -418,9 +431,12 @@ export default function Header() {
         </div>
       </PC>
       {/* 모바일 화면(반응형) */}
+
+
       <Mobile>
         <Search isHidden={isSearchModalHidden} setHidden={setIsSearchModalHidden} />
         <div className="flex justify-start pt-2 pl-3 pr-3 pb-2">
+          
           <Link href={link}>
             <div className="flex w-32 p1-0">
               <img src="/img/main_logo2.png"/>
@@ -448,12 +464,92 @@ export default function Header() {
               </div>
             </a>
 
-              <div className={`${
-                  isMobile ? "hidden" : "flex w-5 my-0.5"
-                  }`}>
-                  <img src="/img/search.png" />
-              </div>
+            <div className={`${
+                isMobile ? "hidden" : "flex w-5 my-0.5"
+                }`}>
+                <img src="/img/search.png" />
+            </div>
+
+            <div className="flex w-[22px] h-[22px] self-center"
+              onClick={menuClick} >
+              <img src="/img/menu_btn copy.png" />
+            </div>
+
           </nav>
+
+        </div>
+        <div
+          className={`${menuVisible
+            ? "bg-white w-full z-[9999] fixed top-[40px] border-[2px] border-gray-300 flex flex-col shadow-md"
+            : "hidden"
+            }`}
+        >
+          {isAuctionRoute ? (
+            <>
+              <div className=
+              {`${pathName.startsWith("/auction") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/auction"}>진행중</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/auction") ? "" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/auction"}>종료</Link>
+              </div>
+            </>
+          ) : (<></>)}
+
+          {!isAIRoute && !isAuctionRoute ? (
+            <>
+              <div className=
+              {`${!pathName.startsWith("/community/market") && !pathName.startsWith("/community/free") && !pathName.startsWith("/community/ask") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/"}>분양 글</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/community/market") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/community/market"}>중고 거래</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/community/free") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/community/free"}>자유 게시판</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/community/ask") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/community/ask"}>질문 게시판</Link>
+              </div>
+            </>
+          ) : (<></>)}
+
+          {isAIRoute ? (
+            <>
+              <div className=
+              {`${pathName.startsWith("/ai/valueanalysis") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/ai/valueanalysis"}>가치 판단</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/ai/linebreeding") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/ai/linebreeding"}>브리딩 추천</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/ai/gender") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/ai/gender"}>암수 구분</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/ai/aibreeder") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-3" href={"/ai/aibreeder"}>사육 챗봇</Link>
+              </div>
+            </>
+          ) : (<></>)}
+          
+
 
         </div>
         
