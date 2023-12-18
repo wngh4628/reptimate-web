@@ -299,8 +299,13 @@ export default function HomePosts() {
           </div>
         </ul>
         {/* 경매 게시글 목록 PC */}
-        <div className="flex items-center relative ml-10 mr-10 my-2">
+        <div className="flex items-center relative ml-10 mr-12 my-2">
           <p className="font-bold text-[20px]">경매</p>
+          <div className="relative ml-auto">
+            <Link href={`/auction`}>
+              <p className="text-gray-500 font-semibold">더보기</p>
+            </Link>
+          </div>
         </div>
         {data1 !== null && data1.result.items ? (
           <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
@@ -316,8 +321,13 @@ export default function HomePosts() {
           </div>
         )}
         {/* 분양 게시글 목록 PC */}
-        <div className="flex items-center relative ml-10 mr-10 mb-2">
+        <div className="flex items-center relative ml-10 mr-12 mb-2">
           <p className="font-bold text-[20px]">분양글</p>
+          <div className="relative ml-auto">
+            <Link href={`/community/adoption`}>
+              <p className="text-gray-500 font-semibold">더보기</p>
+            </Link>
+          </div>
         </div>
         {data2 !== null && data2.result.items ? (
           <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
@@ -333,8 +343,13 @@ export default function HomePosts() {
           </div>
         )}
         {/* 중고 거래 게시글 목록 PC */}
-        <div className="flex items-center relative ml-10 mr-10 mb-2">
+        <div className="flex items-center relative ml-10 mr-12 mb-2">
           <p className="font-bold text-[20px]">중고 거래</p>
+          <div className="relative ml-auto">
+            <Link href={`/community/market`}>
+              <p className="text-gray-500 font-semibold">더보기</p>
+            </Link>
+          </div>
         </div>
         {data3 !== null && data3.result.items ? (
           <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
@@ -350,8 +365,13 @@ export default function HomePosts() {
           </div>
         )}
         {/* 자유 게시글 목록 PC */}
-        <div className="flex items-center relative ml-10 mr-10 mb-2">
+        <div className="flex items-center relative ml-10 mr-12 mb-2">
           <p className="font-bold text-[20px]">자유 게시판</p>
+          <div className="relative ml-auto">
+            <Link href={`/community/free`}>
+              <p className="text-gray-500 font-semibold">더보기</p>
+            </Link>
+          </div>
         </div>
         {data4 !== null && data4.result.items ? (
           <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
@@ -367,8 +387,13 @@ export default function HomePosts() {
           </div>
         )}
         {/* 질문 게시글 목록 PC */}
-        <div className="flex items-center relative ml-10 mr-10 mb-2">
+        <div className="flex items-center relative ml-10 mr-12 mb-2">
           <p className="font-bold text-[20px]">질문 게시판</p>
+          <div className="relative ml-auto">
+            <Link href={`/community/ask`}>
+              <p className="text-gray-500 font-semibold">더보기</p>
+            </Link>
+          </div>
         </div>
         {data5 !== null && data5.result.items ? (
           <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">

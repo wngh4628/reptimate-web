@@ -95,7 +95,7 @@ export default function AdoptionPosts() {
 
   const handleWriteClick = () => {
     // Handle the logic for opening the write page
-    location.href = `community/adoption/write`;
+    location.href = `adoption/write`;
   };
 
   const itemlist: Adpotion[] =
@@ -122,7 +122,7 @@ export default function AdoptionPosts() {
     <section>
       {/* 광고 배너 */}
       <BannerSlider />
-       {/* 솔트링 콤보 박스 PC */}
+      {/* 솔트링 콤보 박스 PC */}
       <PC>
         <div className="flex items-center relative ml-10 mr-10">
           <p className="font-bold text-[20px]">분양글</p>
@@ -176,19 +176,19 @@ export default function AdoptionPosts() {
           </div>
         )}
       </PC>
-       {/* 게시글 목록 모바일 */}
+      {/* 게시글 목록 모바일 */}
       <Mobile>
         {data !== null && data.result.items ? (
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-4 pr-4">
-              {itemlist.map((post) => (
-                  <PostCard  key={post.idx} post={post} />
-              ))}
-            </ul>
-          ) : (
-            <div className="flex items-center justify-center h-screen">
-              <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
-            </div>
-          )}
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-4 pr-4">
+            {itemlist.map((post) => (
+              <PostCard key={post.idx} post={post} />
+            ))}
+          </ul>
+        ) : (
+          <div className="flex items-center justify-center h-screen">
+            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          </div>
+        )}
       </Mobile>
 
       {existNextPage && (
