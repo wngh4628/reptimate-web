@@ -29,7 +29,7 @@ import Search from "./search/Search";
 import AiMenu from "@/components/ai/AiMenu";
 import AuctionMenu from "@/components/auction/AuctionMenu";
 import SearchResultMenu from "./search/SearchResultMenu";
-
+import HomeMenu from "./HomeMenu";
 
 export default function Header() {
   const login = false;
@@ -350,6 +350,13 @@ export default function Header() {
           </Link>
           <nav className="flex gap-4 ">
             <Link
+              href="/"
+              className={`${pathName === "/" ? "font-bold" : ""}`}
+              style={{ fontSize: 18, color: "#222222" }}
+            >
+              HOME
+            </Link>
+            <Link
               href="/community/adoption"
               className={`${
                 pathName.startsWith("/community") ? "font-bold" : ""
@@ -426,13 +433,8 @@ export default function Header() {
           </nav>
         </div>
         {/* 두번째  메뉴 */}
-        <div>
-          {pathName === "/" || pathName.startsWith("/community") ? (
-            <CommunityMenu />
-          ) : (
-            ""
-          )}
-        </div>
+        <div>{pathName === "/" ? <HomeMenu /> : ""}</div>
+        <div>{pathName.startsWith("/community") ? <CommunityMenu /> : ""}</div>
         <div>{pathName.startsWith("/auction") ? <AuctionMenu /> : ""}</div>
         <div>{pathName.startsWith("/ai") ? <AiMenu /> : ""}</div>
         <div>
