@@ -167,16 +167,15 @@ export default function AuctionPostsView() {
       });
       setIsLoggedIn(true);
     }
+    const match = pathName.match(/\/auction\/posts\/(\d+)/);
+    const extractedNumber = match ? match[1] : "";
+    setroomName(extractedNumber);
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
       if (userData.USER_DATA.accessToken) {
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
-        const match = pathName.match(/\/auction\/posts\/(\d+)/);
-        const extractedNumber = match ? match[1] : "";
-        setroomName(extractedNumber);
-
         setUserIdx(userData.USER_DATA.idx);
         setNickname(userData.USER_DATA.nickname);
         setProfilePath(userData.USER_DATA.profilePath);
@@ -229,18 +228,12 @@ export default function AuctionPostsView() {
   const auctionRegisterMutation = useMutation({
     mutationFn: auctionRegisterBookmark,
     onSuccess: (data) => {
-      console.log("===auctionRegisterMutation====");
-      console.log(data);
-      console.log("==============================");
     },
   });
   // 북마크 삭제
   const auctionDeleteMutation = useMutation({
     mutationFn: auctionDeleteBookmark,
     onSuccess: (data) => {
-      console.log("===auctionDeleteMutation====");
-      console.log(data);
-      console.log("============================");
     },
   });
 
@@ -423,11 +416,11 @@ export default function AuctionPostsView() {
       setBookmarked(response.data.result.hasBookmarked);
 
       setData(response.data);
-      console.log("==========getData : view.tsx===========");
-      console.log("*");
-      console.log(response.data);
-      console.log("*");
-      console.log("========================================");
+      // console.log("==========getData : view.tsx===========");
+      // console.log("*");
+      // console.log(response.data);
+      // console.log("*");
+      // console.log("========================================");
       if (response.data.result.UserInfo.idx === userIdx) {
         setIsInputDisabled(true);
       }
@@ -935,7 +928,16 @@ export default function AuctionPostsView() {
 
     const handleChatClick = () => {
       //현재 경매의 실시간 입찰을 볼 수 있는 버튼
-      setBidVisible(true);
+      
+      if(isInputDisabled) {
+        Swal.fire({
+          text: "경매가 종료 되어 입찰이 불가합니다.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
+      } else {
+        setBidVisible(true);
+      }
     };
     const onChangeBid = (event: { target: { value: string } }) => {
       const numericInput = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
