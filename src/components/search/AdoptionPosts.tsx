@@ -6,7 +6,7 @@ import PostCard from "../PostCard";
 import { Mobile, PC } from "../ResponsiveLayout";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "@/recoil/user";
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams } from "next/navigation";
 import { Adpotion, getSearchResponse } from "@/service/my/adoption";
 
 interface Option {
@@ -31,10 +31,10 @@ export default function AdoptionPosts() {
   const [loading, setLoading] = useState(false);
   const isLogin = useRecoilValue(userAtom);
   const target = useRef(null);
-  
+
   const searchParams = useSearchParams();
 
-  const searchKeyword = searchParams ? searchParams.get('keyword') : '';
+  const searchKeyword = searchParams ? searchParams.get("keyword") : "";
 
   const options = {
     threshold: 1.0,
@@ -57,20 +57,16 @@ export default function AdoptionPosts() {
       setData(
         (prevData) =>
           ({
-            result: [
-                ...(prevData?.result || []),
-                ...response.data.result,
-              ]
+            result: [...(prevData?.result || []), ...response.data.result],
           } as getSearchResponse)
       );
 
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
-
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    
+
     setLoading(false);
   }, [page]);
 
@@ -100,32 +96,32 @@ export default function AdoptionPosts() {
 
   const handleWriteClick = () => {
     // Handle the logic for opening the write page
-    location.href = `community/adoption/write`;
+    location.href = `adoption/write`;
   };
 
   const itemlist: Adpotion[] =
     data !== null && data.result
       ? data.result.map((item) => ({
-        idx: 1,
-        userIdx: 123,
-        title: '예시 입양',
-        category: 'adoption',
-        writeDate: new Date('2023-01-01T12:00:00Z'),
-        thumbnail: '예시 썸네일.jpg',
-        nickname: '예시 닉네임',
-        profilePath: '예시 프로필 경로',
-        price: 100,
-        gender: '수컷',
-        size: '중형',
-        variety: '예시 종류',
-        state: '입양 가능',
-        view: 1,
+          idx: 1,
+          userIdx: 123,
+          title: "예시 입양",
+          category: "adoption",
+          writeDate: new Date("2023-01-01T12:00:00Z"),
+          thumbnail: "예시 썸네일.jpg",
+          nickname: "예시 닉네임",
+          profilePath: "예시 프로필 경로",
+          price: 100,
+          gender: "수컷",
+          size: "중형",
+          variety: "예시 종류",
+          state: "입양 가능",
+          view: 1,
         }))
       : [];
 
   return (
     <section>
-       {/* 솔트링 콤보 박스 PC */}
+      {/* 솔트링 콤보 박스 PC */}
       <PC>
         <div className="flex items-center relative ml-[40px] mr-[40px] mt-36">
           <p className="font-bold text-[20px]">{searchKeyword}</p>
@@ -179,19 +175,19 @@ export default function AdoptionPosts() {
           </div>
         )}
       </PC>
-       {/* 게시글 목록 모바일 */}
+      {/* 게시글 목록 모바일 */}
       <Mobile>
         {data !== null && data.result ? (
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-[16px] pr-[16px]">
-              {itemlist.map((post) => (
-                  <PostCard  key={post.idx} post={post} />
-              ))}
-            </ul>
-          ) : (
-            <div className="flex items-center justify-center h-screen">
-              <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
-            </div>
-          )}
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-[16px] pr-[16px]">
+            {itemlist.map((post) => (
+              <PostCard key={post.idx} post={post} />
+            ))}
+          </ul>
+        ) : (
+          <div className="flex items-center justify-center h-screen">
+            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          </div>
+        )}
       </Mobile>
 
       {existNextPage && (

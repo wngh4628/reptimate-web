@@ -426,8 +426,16 @@ export default function AdoptionEdit() {
       birthDate !== "" &&
       description !== ""
     ) {
-      if (allFiles.length + addFiles.length + deletedFiles.length === 0) {
-        mutation.mutate(requestData);
+      if (allFiles.length === 0) {
+        setIsLoading(false);
+        Swal.fire({
+          text: "한 개 이상의 사진이나 동영상을 첨부해야 합니다.",
+          confirmButtonText: "확인",
+          confirmButtonColor: "#7A75F7",
+          customClass: {
+            container: "z-[11111]", // Tailwind CSS class for z-index
+          },
+        });
       } else {
         const formData = new FormData();
         addFiles.forEach((fileItem) => {
@@ -437,6 +445,7 @@ export default function AdoptionEdit() {
         const modifySqenceArr = allFiles.map((item) => item.mediaSequence);
         const deleteIdxArr = deletedFiles;
         const FileIdx = addFiles.map((item) => item.mediaSequence);
+
         // Append JSON data to the FormData object
         formData.append("modifySqenceArr", JSON.stringify(modifySqenceArr));
         formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
