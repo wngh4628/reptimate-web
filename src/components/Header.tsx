@@ -290,6 +290,9 @@ export default function Header() {
         link = "/";
       }
     }
+    if(pathName.startsWith("/streamhost")) {
+      return null;
+    }
   }
 
   return (
@@ -395,6 +398,7 @@ export default function Header() {
                 >
                   MY
                 </Link>
+                <div className="flex flex-row relative">
                 <Link href="">
                   <Image
                     src="/img/chat.png"
@@ -407,6 +411,8 @@ export default function Header() {
                     <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
                   )}
                 </Link>
+                </div>
+               
                 <Link href="">
                   <Image
                     src="/img/notification.png"
