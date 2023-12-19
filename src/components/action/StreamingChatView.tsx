@@ -161,15 +161,6 @@ export default function StreamingChatView() {
         // console.log("당신은 이 방송의 host입니다.======================");
       }
 
-      setNowBid(
-        formatNumberWithCommas(response.data.result.boardAuction.currentPrice)
-      );
-      setBidUnit(
-        formatNumberWithCommas(response.data.result.boardAuction.unit)
-      );
-      setBidStartPrice(
-        formatNumberWithCommas(response.data.result.boardAuction.startPrice)
-      );
       setEndTime(response.data.result.boardAuction.endTime);
 
       const endTime1 = new Date(
@@ -615,6 +606,7 @@ export default function StreamingChatView() {
     // 메시지 리스너
     socketBid.on("Auction_message", (message: IMessage) => {
       setchattingBidData((chattingData) => [...chattingData, message]);
+      
       // console.log("======경매 입찰 채팅 수신=======");
       // console.log("bid message  :  ", message);
       // console.log("========================");
@@ -622,7 +614,7 @@ export default function StreamingChatView() {
         bidContainerRef.current.scrollTop =
           bidContainerRef.current.scrollHeight;
       }
-      setNowBid(message.message);
+      setNowBid(Number(message.message).toLocaleString());
       // console.log("bid message", message);
     });
     socketBid.on("Auction_End", (message: string) => {
@@ -738,7 +730,6 @@ export default function StreamingChatView() {
     }
     if (bidMsg.trim() !== "") {
       const numericValue = parseInt(bidMsg.trim().replace(/,/g, ""), 10);
-
       if (numericValue % parseInt(bidUnit) !== 0) {
         // 입력값이 bidUnit의 배수가 아니면 초기화
         Swal.fire({
@@ -885,8 +876,8 @@ export default function StreamingChatView() {
         {sideView === "bid" ? (
           <div className="min-h-screen w-full">
             <div className="flex items-start flex-col">
-              <div className="flex-1 h-96 w-full border-gray-100 border-r-[1px] border-l-[1px]">
-                <div className="flex-1 min-h-[62vh] max-h-[62vh] overflow-auto bg-white pb-1">
+              <div className="flex-1 h-[320px] w-full border-gray-100 border-r-[1px] border-l-[1px]">
+                <div className="flex-1 min-h-[500px] max-h-[500px] overflow-auto bg-white pb-1">
                   {chattingBidData.map((chattingBidData, i) => (
                     <BidItem
                       chatData={chattingBidData}
@@ -917,7 +908,7 @@ export default function StreamingChatView() {
                 <div className="flex flex-row pl-[3px] pt-[5px] basis-1/2">
                   <p className="text-[17px]">현재 입찰 : </p>
                   <p className="text-[17px] px-1 text-main-color font-semibold">
-                    {nowBid}
+                    {nowBid.toLocaleString()}
                   </p>
                   <p className="text-[17px]"> 원</p>
                 </div>

@@ -43,7 +43,7 @@ const PersonalChatItem = forwardRef((props :{
 				:
 				<div id="outer" className='pr-[5px]' style={{maxWidth:"250px",marginTop:"12px", marginLeft:"auto",display: "flex",justifyContent: "flex-end"}}>
 					<div className='flex ml-auto'>
-						<div className='text-[12px] self-baseline pt-[12px] mr-[4px]'>{props.chatData.action === "send" ? "1" : ""}</div>
+						{/* <div className='text-[12px] self-baseline pt-[12px] mr-[4px]'>{props.chatData.action === "send" ? "1" : ""}</div> */}
 						<div className=' px-[10px] py-[5px]' style={{marginLeft:"auto",borderRadius:"20px",backgroundColor:"#7A75F7"}}> 
 							<div style={{fontSize:"15px", wordBreak:"break-all", color:'white',textAlign:"left"}}>{props.chatData.message}</div>
 						</div>
