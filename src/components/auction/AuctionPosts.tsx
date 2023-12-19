@@ -172,28 +172,48 @@ export default function AuctionPosts() {
         </div>
       </Mobile>
       <PC>
-        {data !== null && data.result.items ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
-            {itemlist.map((post) => (
-              <AuctionPostCard post={post} key={post.idx} />
-            ))}
-          </ul>
+        {data?.result.items.length === 0 ? (
+          <div className="flex items-center justify-center h-[233.59px]">
+            <p className="font-semibold text-[18px] text-gray-500">
+              현재 진행중인 경매가 없습니다.
+            </p>
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-screen">
-            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          <div>
+            {data !== null && data.result.items ? (
+              <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
+                {itemlist.map((post) => (
+                  <AuctionPostCard post={post} key={post.idx} />
+                ))}
+              </ul>
+            ) : (
+              <div className="flex items-center justify-center h-screen">
+                <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
           </div>
         )}
       </PC>
       <Mobile>
-        {data !== null && data.result.items ? (
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 ml-4 mr-4">
-            {itemlist.map((post) => (
-              <AuctionPostCard post={post} key={post.idx} />
-            ))}
-          </ul>
+        {data?.result.items.length === 0 ? (
+          <div className="flex items-center justify-center h-[183.5px]">
+            <p className="font-semibold text-[18px] text-gray-500">
+              현재 진행중인 경매가 없습니다.
+            </p>
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-screen">
-            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          <div>
+            {data !== null && data.result.items ? (
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-4 ml-4 mr-4">
+                {itemlist.map((post) => (
+                  <AuctionPostCard post={post} key={post.idx} />
+                ))}
+              </ul>
+            ) : (
+              <div className="flex items-center justify-center h-screen">
+                <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
           </div>
         )}
       </Mobile>
