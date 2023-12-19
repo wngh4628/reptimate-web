@@ -189,16 +189,10 @@ export default function AuctionPostsView() {
     onSuccess: (data) => {
       Swal.fire({
         text: "게시글이 삭제되었습니다.",
-        confirmButtonText: "확인",
-        confirmButtonColor: "#7A75F7",
-        customClass: {
-          container: "z-[11111]", // Tailwind CSS class for z-index
-        },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          router.replace("/auction");
-        }
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
       });
+      router.replace("/auction");
     },
   });
   /*********************
@@ -212,7 +206,7 @@ export default function AuctionPostsView() {
       setBookmarkCnt(bookmarkCnt - 1);
       auctionDeleteMutation.mutate({
         userAccessToken: accessToken,
-        boardIdx: data!.result.boardAuction.boardIdx,
+        boardIdx: data!.result.boardAuction.boardIdx
       });
     } else {
       setBookmarked(true);
@@ -220,7 +214,7 @@ export default function AuctionPostsView() {
       auctionRegisterMutation.mutate({
         userAccessToken: accessToken,
         boardIdx: data!.result.boardAuction.boardIdx,
-        userIdx: userIdx,
+        userIdx: userIdx
       });
     }
   };
@@ -473,6 +467,7 @@ export default function AuctionPostsView() {
       const countdownInterval = setInterval(updateCountdown, 1000);
       updateCountdown(); // Initial call to set the countdown
 
+
       return () => {
         clearInterval(countdownInterval);
       };
@@ -507,15 +502,15 @@ export default function AuctionPostsView() {
       );
       setCommentData(
         (prevData) =>
-          ({
-            result: {
-              items: [
-                ...(prevData?.result.items || []),
-                ...response.data.result.items,
-              ],
-              existsNextPage: response.data.result.existsNextPage,
-            },
-          } as getCommentResponse)
+        ({
+          result: {
+            items: [
+              ...(prevData?.result.items || []),
+              ...response.data.result.items,
+            ],
+            existsNextPage: response.data.result.existsNextPage,
+          },
+        } as getCommentResponse)
       );
       setENP(response.data?.result.existsNextPage);
       setPage((prevPage) => prevPage + 1);
@@ -741,8 +736,8 @@ export default function AuctionPostsView() {
       }
       setNowBid(formatNumberWithCommas(message.message));
     });
-    socketBid.on("Auction_End", (message: string) => {});
-    socketBid.on("error", (message: string) => {});
+    socketBid.on("Auction_End", (message: string) => { });
+    socketBid.on("error", (message: string) => { });
     //경매 입찰과 동시에 입찰자 명단 정보를 추가하는 리스너
     socketBid.on("auction_participate", (message: userInfo) => {
       setUserInfoBidData((prevUserInfoData) => ({
@@ -950,6 +945,8 @@ export default function AuctionPostsView() {
       location.href = `/auction/posts/${idx}/live`;
     };
 
+
+
     const handleLiveClick = () => {
       //웹뷰에서 버튼 클릭시 안드로이드 rtmp 송신 액티비티로 이동
       if (window.Android) {
@@ -985,8 +982,8 @@ export default function AuctionPostsView() {
           <div className="max-w-screen-sm mx-auto">
             <PC>
               <div className="mt-[150px]">
-                {/* 제목 */}
-                <p className="text-4xl font-bold text-[27px]">{post.title}</p>
+              {/* 제목 */}
+              <p className="text-4xl font-bold text-[27px]">{post.title}</p>
                 <div className="flex items-center my-2 relative">
                   <Image
                     className="w-11 h-11 rounded-full border-2 cursor-pointer"
@@ -1014,22 +1011,13 @@ export default function AuctionPostsView() {
                     </div>
                   )}
                   <div className="ml-2 ">
-                    <p
-                      className="font-bold cursor-pointer"
-                      onClick={profileMenu}
-                    >
+                    <p className="font-bold cursor-pointer" onClick={profileMenu}>
                       {post.UserInfo.nickname}
                     </p>
                     <div className="flex">
-                      <p className="text-gray-500 text-[12px]">
-                        {postWriteDate}
-                      </p>
-                      <p className="ml-1 text-gray-500 text-[12px]">
-                        {postWriteTime}
-                      </p>
-                      <p className="ml-2 text-gray-500 text-[12px]">
-                        조회 {post.view}
-                      </p>
+                      <p className="text-gray-500 text-[12px]">{postWriteDate}</p>
+                      <p className="ml-1 text-gray-500 text-[12px]">{postWriteTime}</p>
+                      <p className="ml-2 text-gray-500 text-[12px]">조회 {post.view}</p>
                     </div>
                   </div>
                   <div className="relative ml-auto">
@@ -1091,7 +1079,7 @@ export default function AuctionPostsView() {
                   <div className="flex flex-row items-center py-3">
                     <p className="text-lg font-semibold ml-1">즉시 구입가</p>
                     <p className="text-xl font-bold ml-auto mr-1">
-                      {post.boardAuction.startPrice.toLocaleString()}원
+                      {post.boardAuction.buyPrice.toLocaleString()}원
                     </p>
                   </div>
                   <div className="flex flex-row items-center py-3">
@@ -1101,92 +1089,80 @@ export default function AuctionPostsView() {
                     </p>
                   </div>
                   <div className="pb-6">
-                    <div className="flex flex-row items-center justify-center">
-                      <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                        <p className="pt-1 text-lg font-bold">시작 가격</p>
-                        <p className="pb-1 text-lg">
-                          {post.boardAuction.startPrice}원
-                        </p>
-                      </div>
-                      <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                        <p className="pt-1 text-lg font-bold">경매 단위</p>
-                        <p className="pb-1 text-lg">
-                          {post.boardAuction.unit}원
-                        </p>
-                      </div>
-                      <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                        <p className="pt-1 text-lg font-bold">마감 룰</p>
-                        <p className="pb-1 text-lg">
-                          {post.boardAuction.extensionRule === 1
-                            ? "적용"
-                            : "미적용"}
-                        </p>
-                      </div>
+                  <div className="flex flex-row items-center justify-center">
+                    <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">시작 가격</p>
+                      <p className="pb-1 text-lg">
+                        {post.boardAuction.startPrice}원
+                      </p>
                     </div>
-                    <div className="flex flex-row items-center justify-center mt-1">
-                      <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                        <p className="pt-1 text-lg font-bold">품종</p>
-                        <p className="pb-1 text-lg">
-                          {post.boardAuction.variety}
-                        </p>
-                      </div>
-                      <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                        <p className="pt-1 text-lg font-bold">성별</p>
-                        <p className="pb-1 text-lg">
-                          {post.boardAuction.gender}
-                        </p>
-                      </div>
-                      <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                        <p className="pt-1 text-lg font-bold">크기</p>
-                        <p className="pb-1 text-lg">{post.boardAuction.size}</p>
-                      </div>
+                    <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">경매 단위</p>
+                      <p className="pb-1 text-lg">{post.boardAuction.unit}원</p>
                     </div>
-                    <div className="flex flex-row items-center justify-center mt-1">
-                      <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                        <p className="pt-1 text-lg font-bold">모프</p>
-                        <p className="pb-1 text-lg">
-                          {post.boardAuction.pattern}
-                        </p>
-                      </div>
-                      <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                        <p className="pt-1 text-lg font-bold">출생</p>
-                        <p className="pb-1 text-lg">
-                          {post.boardAuction.birthDate}
-                        </p>
-                      </div>
-                      <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
-                        <p className="pt-1 text-lg font-bold">상태</p>
-                        {post.boardAuction.state === "reservation" ? (
-                          <p className="pb-1 text-lg text-red-600">예약중</p>
-                        ) : post.boardAuction.state === "end" ? (
-                          <p className="pb-1 text-lg text-gray-500">판매완료</p>
-                        ) : (
-                          <p className="pb-1 text-lg text-blue-600">판매중</p>
-                        )}
-                      </div>
+                    <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">마감 룰</p>
+                      <p className="pb-1 text-lg">
+                        {post.boardAuction.extensionRule === 1 ? "적용" : "미적용"}
+                      </p>
                     </div>
                   </div>
-
+                  <div className="flex flex-row items-center justify-center mt-1">
+                    <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">품종</p>
+                      <p className="pb-1 text-lg">{post.boardAuction.variety}</p>
+                    </div>
+                    <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">성별</p>
+                      <p className="pb-1 text-lg">{post.boardAuction.gender}</p>
+                    </div>
+                    <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">크기</p>
+                      <p className="pb-1 text-lg">{post.boardAuction.size}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-row items-center justify-center mt-1">
+                    <div className="w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">모프</p>
+                      <p className="pb-1 text-lg">{post.boardAuction.pattern}</p>
+                    </div>
+                    <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">출생</p>
+                      <p className="pb-1 text-lg">{post.boardAuction.birthDate}</p>
+                    </div>
+                    <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
+                      <p className="pt-1 text-lg font-bold">상태</p>
+                      {post.boardAuction.state === "reservation" ? (
+                        <p className="pb-1 text-lg text-red-600">예약중</p>
+                      ) : post.boardAuction.state === "end" ? (
+                        <p className="pb-1 text-lg text-gray-500">판매완료</p>
+                      ) : (
+                        <p className="pb-1 text-lg text-blue-600">판매중</p>
+                      )}
+                    </div>
+                  </div>
+                  </div>
+                  
                   <p className="text-lg my-7 break-all">{post.description}</p>
                   <hr className="border-t border-gray-300 my-1" />
                 </div>
-
+                
                 <div className="flex flex-row justify-between items-center py-3">
                   <div className="flex flex-row items-center py-3">
                     <p className="text-lg font-semibold ml-1 mr-2">댓글</p>
                     <p className="text-lg font-semibold mr-2">{commentCnt}개</p>
                   </div>
                   <div className="flex flex-row items-center py-3">
-                    {bookmarked ? (
-                      <a onClick={bookmarkClick}>
-                        <Image
-                          src={like_maincolor}
-                          width={20}
-                          height={20}
-                          alt="북마크"
-                          className="like_btn m-auto mr-1"
-                        />
-                      </a>
+                  {bookmarked ? (
+                    <a onClick={bookmarkClick}>
+                      <Image
+                        src={like_maincolor}
+                        width={20}
+                        height={20}
+                        alt="북마크"
+                        className="like_btn m-auto mr-1"
+                      />
+                    </a>
                     ) : (
                       <a onClick={bookmarkClick}>
                         <Image
@@ -1223,9 +1199,7 @@ export default function AuctionPostsView() {
             </PC>
             <Mobile>
               {/* <BackButton /> */}
-              <h2 className="mx-2 text-2xl font-bold pt-[55px]">
-                {post.title}
-              </h2>
+              <h2 className="mx-2 text-2xl font-bold pt-[55px]">{post.title}</h2>
               <div className="mx-2 flex items-center my-2 relative">
                 <img
                   className="w-10 h-10 rounded-full border-2 cursor-pointer"
@@ -1256,12 +1230,8 @@ export default function AuctionPostsView() {
                   </p>
                   <div className="flex">
                     <p className="text-gray-500 text-[12px]">{postWriteDate}</p>
-                    <p className="ml-1 text-gray-500 text-[12px]">
-                      {postWriteTime}
-                    </p>
-                    <p className="ml-2 text-gray-500 text-[12px]">
-                      조회 {post.view}
-                    </p>
+                    <p className="ml-1 text-gray-500 text-[12px]">{postWriteTime}</p>
+                    <p className="ml-2 text-gray-500 text-[12px]">조회 {post.view}</p>
                   </div>
                 </div>
 
@@ -1312,8 +1282,8 @@ export default function AuctionPostsView() {
                   )}
                 </div>
               </div>
-              {/* 갤러리 */}
-              <div className="">
+               {/* 갤러리 */}
+              <div className=''>
                 <ImageSlider imageUrls={itemlist} />
               </div>
               {/* 상세 설명 */}
@@ -1348,9 +1318,7 @@ export default function AuctionPostsView() {
                   <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                     <p className="pt-1 text-lg font-bold">마감 룰</p>
                     <p className="pb-1 text-md">
-                      {post.boardAuction.extensionRule === 1
-                        ? "적용"
-                        : "미적용"}
+                      {post.boardAuction.extensionRule === 1 ? "적용" : "미적용"}
                     </p>
                   </div>
                 </div>
@@ -1375,9 +1343,7 @@ export default function AuctionPostsView() {
                   </div>
                   <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                     <p className="pt-1 text-lg font-bold">출생</p>
-                    <p className="pb-1 text-md">
-                      {post.boardAuction.birthDate}
-                    </p>
+                    <p className="pb-1 text-md">{post.boardAuction.birthDate}</p>
                   </div>
                   <div className="ml-2 w-52 flex flex-col items-center justify-center rounded border-2 border-gray-300">
                     <p className="pt-1 text-lg font-bold">상태</p>
@@ -1391,9 +1357,9 @@ export default function AuctionPostsView() {
                   </div>
                 </div>
                 <div>
-                  <p className="mx-2 my-6 break-all">{post.description}</p>
-                  <hr className="border-t border-gray-300" />
-                </div>
+                    <p className="mx-2 my-6 break-all">{post.description}</p>
+                    <hr className="border-t border-gray-300" />
+                  </div>
               </div>
               <div className="flex flex-row justify-between items-center py-3 ml-4 mr-4">
                 <div className="flex flex-row items-center py-3">
@@ -1435,7 +1401,7 @@ export default function AuctionPostsView() {
                 </div>
               ) : (
                 <p
-                  className="cursor-pointer ml-4 mr-14"
+                  className="cursor-pointer"
                   onClick={() => {
                     handleLogin();
                   }}
@@ -1474,11 +1440,10 @@ export default function AuctionPostsView() {
               </div>
 
               <div
-                className={`${
-                  bidVisible
-                    ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
-                    : "hidden"
-                }`}
+                className={`${bidVisible
+                  ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
+                  : "hidden"
+                  }`}
               >
                 <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
                   <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
@@ -1612,11 +1577,10 @@ export default function AuctionPostsView() {
               </div>
 
               <div
-                className={`${
-                  bidVisible
-                    ? "bg-white w-full h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 flex flex-col shadow-md"
-                    : "hidden"
-                }`}
+                className={`${bidVisible
+                  ? "bg-white w-full h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 flex flex-col shadow-md"
+                  : "hidden"
+                  }`}
               >
                 <div className="border-b-[1px] border-gray-300 h-[40px] flex justify-between">
                   <p className="text-[20px] text-black self-center ml-[16px] pt-[2px]">
@@ -1693,42 +1657,22 @@ export default function AuctionPostsView() {
               </div>
             </Mobile>
 
-            <Mobile>
-              <ul className="mt-6 mr-4 ml-4">
-                {commentList !== null && commentList ? (
-                  commentList.map((comment) => (
-                    <li key={comment.idx}>
-                      <CommentCard
-                        comment={comment}
-                        onDelete={handleCommentDelete}
-                        onReplyWrite={handleReplyWrite}
-                        onReplyDelete={handleReplyDelete}
-                      />
-                    </li>
-                  ))
-                ) : (
-                  <li></li>
-                )}
-              </ul>
-            </Mobile>
-            <PC>
-              <ul className="mt-6">
-                {commentList !== null && commentList ? (
-                  commentList.map((comment) => (
-                    <li key={comment.idx}>
-                      <CommentCard
-                        comment={comment}
-                        onDelete={handleCommentDelete}
-                        onReplyWrite={handleReplyWrite}
-                        onReplyDelete={handleReplyDelete}
-                      />
-                    </li>
-                  ))
-                ) : (
-                  <li></li>
-                )}
-              </ul>
-            </PC>
+            <ul className="mt-6">
+              {commentList !== null && commentList ? (
+                commentList.map((comment) => (
+                  <li key={comment.idx}>
+                    <CommentCard
+                      comment={comment}
+                      onDelete={handleCommentDelete}
+                      onReplyWrite={handleReplyWrite}
+                      onReplyDelete={handleReplyDelete}
+                    />
+                  </li>
+                ))
+              ) : (
+                <li></li>
+              )}
+            </ul>
             {existNextPage && (
               <div className="flex justify-center">
                 <div

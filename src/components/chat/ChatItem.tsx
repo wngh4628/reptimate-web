@@ -43,7 +43,6 @@ const ChatItem = forwardRef((props :{
 							<div style={{fontSize:"15px", wordBreak:"break-all", color:'white',textAlign:"left"}}>{props.chatData.message}</div>
 						</div>
 					</div>
-					
 				</div>
 			}
 		</div>
