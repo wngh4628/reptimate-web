@@ -195,7 +195,7 @@ export default function Header() {
         title: title,
       });
     });
-  };
+  }
 
   const handleLogin = () => {
     const storedData = localStorage.getItem("recoil-persist");
@@ -271,7 +271,7 @@ export default function Header() {
   const isAuctionRoute = pathName.startsWith("/auction");
   const isAIRoute = pathName.startsWith("/ai");
   const isMyRoute = pathName.startsWith("/my");
-  const isCommunityRoute = pathName.startsWith("/");
+  const isCommunityRoute = pathName.startsWith("/community");
 
   let link = "/";
 
@@ -547,14 +547,14 @@ export default function Header() {
                 <Link className="ml-3" href={"/auction"}>진행중</Link>
               </div>
               <div className=
-              {`${pathName.startsWith("/auction") ? "" : ""
+              {`${pathName.startsWith("/auction/end") ? "" : ""
                 } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-3" href={"/auction"}>종료</Link>
+                <Link className="ml-3" href={"/auction/end"}>종료</Link>
               </div>
             </>
           ) : (<></>)}
 
-          {!isAIRoute && !isAuctionRoute ? (
+          {isCommunityRoute ? (
             <>
               <div className=
               {`${pathName.startsWith("/community/adoption") ? "text-main-color" : ""
@@ -603,80 +603,6 @@ export default function Header() {
               </div>
             </>
           ) : (<></>)}
-        </div>
-        <div
-          className={`${menuVisible
-            ? "bg-white w-full z-[9999] fixed top-[40px] border-[2px] border-gray-300 flex flex-col shadow-md"
-            : "hidden"
-            }`}
-        >
-          {isAuctionRoute ? (
-            <>
-              <div className=
-              {`${pathName.startsWith("/auction") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-3" href={"/auction"}>진행중</Link>
-              </div>
-              <div className=
-              {`${pathName.startsWith("/auction") ? "" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-3" href={"/auction"}>종료</Link>
-              </div>
-            </>
-          ) : (<></>)}
-
-          {!isAIRoute && !isAuctionRoute ? (
-            <>
-              <div className=
-              {`${!pathName.startsWith("/community/market") && !pathName.startsWith("/community/free") && !pathName.startsWith("/community/ask") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-3" href={"/"}>분양 글</Link>
-              </div>
-              <div className=
-              {`${pathName.startsWith("/community/market") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-3" href={"/community/market"}>중고 거래</Link>
-              </div>
-              <div className=
-              {`${pathName.startsWith("/community/free") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-3" href={"/community/free"}>자유 게시판</Link>
-              </div>
-              <div className=
-              {`${pathName.startsWith("/community/ask") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-3" href={"/community/ask"}>질문 게시판</Link>
-              </div>
-            </>
-          ) : (<></>)}
-
-          {isAIRoute ? (
-            <>
-              <div className=
-              {`${pathName.startsWith("/ai/valueanalysis") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-3" href={"/ai/valueanalysis"}>가치 판단</Link>
-              </div>
-              <div className=
-              {`${pathName.startsWith("/ai/linebreeding") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-3" href={"/ai/linebreeding"}>브리딩 추천</Link>
-              </div>
-              <div className=
-              {`${pathName.startsWith("/ai/gender") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-3" href={"/ai/gender"}>암수 구분</Link>
-              </div>
-              <div className=
-              {`${pathName.startsWith("/ai/aibreeder") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-3" href={"/ai/aibreeder"}>사육 챗봇</Link>
-              </div>
-            </>
-          ) : (<></>)}
-          
-
-
         </div>
 
         <div
