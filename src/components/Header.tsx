@@ -521,17 +521,20 @@ export default function Header() {
                 <img src="/img/notification.png" />
               </div>
             </a>
-
+            
             <div className={`${
                 isMobile ? "hidden" : "flex w-5 my-0.5"
                 }`}>
                 <img src="/img/search.png" />
             </div>
 
-            <div className="flex w-[22px] h-[22px] self-center"
+            {isAuctionRoute || isCommunityRoute || isAIRoute ? 
+              <div className="flex w-[22px] h-[22px] self-center"
               onClick={menuClick} >
-              <img src="/img/menu_btn copy.png" />
-            </div>
+                <img src="/img/menu_btn copy.png" />
+              </div>
+             : <></>}
+            
 
           </nav>
           </div>
