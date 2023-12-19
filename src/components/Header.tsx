@@ -285,7 +285,7 @@ export default function Header() {
         link = "/ai";
       } else if (isMyRoute) {
         // Change "/my" to something else, e.g., "/custom"
-        link = "/my";
+        link = "/my/board";
       } else {
         link = "/";
       }
@@ -380,7 +380,7 @@ export default function Header() {
                 style={{ width: 100 }}
               >
                 <Link
-                  href="/my"
+                  href="/my/board"
                   className={`${
                     pathName === "/my" ? "font-bold" : ""
                   } font-normal`}
