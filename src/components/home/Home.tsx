@@ -307,17 +307,27 @@ export default function HomePosts() {
             </Link>
           </div>
         </div>
-        {data1 !== null && data1.result.items ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
-            {itemlist1.map((post) => (
-              <li key={post.idx}>
-                <AuctionPostCard post={post} />
-              </li>
-            ))}
-          </ul>
+        {data1?.result.items.length === 0 ? (
+          <div className="flex items-center justify-center h-[233.59px]">
+            <p className="font-semibold text-[18px] text-gray-500">
+              현재 진행중인 경매가 없습니다.
+            </p>
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-auto">
-            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          <div>
+            {data1 !== null && data1.result.items ? (
+              <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
+                {itemlist1.map((post) => (
+                  <li key={post.idx}>
+                    <AuctionPostCard post={post} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="flex items-center justify-center h-auto">
+                <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
           </div>
         )}
         {/* 분양 게시글 목록 PC */}
@@ -329,17 +339,27 @@ export default function HomePosts() {
             </Link>
           </div>
         </div>
-        {data2 !== null && data2.result.items ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
-            {itemlist2.map((post) => (
-              <li key={post.idx}>
-                <PostCard post={post} />
-              </li>
-            ))}
-          </ul>
+        {data2?.result.items.length === 0 ? (
+          <div className="flex items-center justify-center h-[233.59px]">
+            <p className="font-semibold text-[18px] text-gray-500">
+              작성된 게시글이 없습니다.
+            </p>
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-auto">
-            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          <div>
+            {data2 !== null && data2.result.items ? (
+              <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
+                {itemlist2.map((post) => (
+                  <li key={post.idx}>
+                    <PostCard post={post} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="flex items-center justify-center h-auto">
+                <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
           </div>
         )}
         {/* 중고 거래 게시글 목록 PC */}
@@ -351,17 +371,27 @@ export default function HomePosts() {
             </Link>
           </div>
         </div>
-        {data3 !== null && data3.result.items ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
-            {itemlist3.map((post) => (
-              <li key={post.idx}>
-                <PostCard post={post} />
-              </li>
-            ))}
-          </ul>
+        {data3?.result.items.length === 0 ? (
+          <div className="flex items-center justify-center h-[233.59px]">
+            <p className="font-semibold text-[18px] text-gray-500">
+              작성된 게시글이 없습니다.
+            </p>
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-auto">
-            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          <div>
+            {data3 !== null && data3.result.items ? (
+              <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
+                {itemlist3.map((post) => (
+                  <li key={post.idx}>
+                    <PostCard post={post} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="flex items-center justify-center h-auto">
+                <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
           </div>
         )}
         {/* 자유 게시글 목록 PC */}
@@ -373,17 +403,27 @@ export default function HomePosts() {
             </Link>
           </div>
         </div>
-        {data4 !== null && data4.result.items ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
-            {itemlist4.map((post) => (
-              <li key={post.idx}>
-                <BoardCard post={post} />
-              </li>
-            ))}
-          </ul>
+        {data4?.result.items.length === 0 ? (
+          <div className="flex items-center justify-center h-[233.59px]">
+            <p className="font-semibold text-[18px] text-gray-500">
+              작성된 게시글이 없습니다.
+            </p>
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-auto">
-            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          <div>
+            {data4 !== null && data4.result.items ? (
+              <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
+                {itemlist4.map((post) => (
+                  <li key={post.idx}>
+                    <BoardCard post={post} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="flex items-center justify-center h-auto">
+                <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
           </div>
         )}
         {/* 질문 게시글 목록 PC */}
@@ -395,17 +435,27 @@ export default function HomePosts() {
             </Link>
           </div>
         </div>
-        {data5 !== null && data5.result.items ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
-            {itemlist5.map((post) => (
-              <li key={post.idx}>
-                <BoardCard post={post} />
-              </li>
-            ))}
-          </ul>
+        {data5?.result.items.length === 0 ? (
+          <div className="flex items-center justify-center h-[233.59px]">
+            <p className="font-semibold text-[18px] text-gray-500">
+              작성된 게시글이 없습니다.
+            </p>
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-auto">
-            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          <div>
+            {data5 !== null && data5.result.items ? (
+              <ul className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 ml-10 mr-10">
+                {itemlist5.map((post) => (
+                  <li key={post.idx}>
+                    <BoardCard post={post} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="flex items-center justify-center h-auto">
+                <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
           </div>
         )}
       </PC>
@@ -413,76 +463,151 @@ export default function HomePosts() {
         {/* 경매 게시글 목록 모바일 */}
         <div className="flex items-center relative ml-4 mr-4 my-2">
           <h2 className="text-lg font-bold my-2">경매</h2>
+          <div className="relative ml-auto">
+            <Link href={`/auction`}>
+              <p className="text-gray-500 font-semibold">더보기</p>
+            </Link>
+          </div>
         </div>
-        {data1 !== null && data1.result.items ? (
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-4 pr-4">
-            {itemlist1.map((post) => (
-              <AuctionPostCard key={post.idx} post={post} />
-            ))}
-          </ul>
+        {data1?.result.items.length === 0 ? (
+          <div className="flex items-center justify-center h-[183.5px]">
+            <p className="font-semibold text-[18px] text-gray-500">
+              현재 진행중인 경매가 없습니다.
+            </p>
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-screen">
-            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          <div>
+            {data1 !== null && data1.result.items ? (
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-4 pr-4">
+                {itemlist1.map((post) => (
+                  <AuctionPostCard key={post.idx} post={post} />
+                ))}
+              </ul>
+            ) : (
+              <div className="flex items-center justify-center h-screen">
+                <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
           </div>
         )}
         {/* 분양 게시글 목록 모바일 */}
         <div className="flex items-center relative ml-4 mr-4 my-2">
           <h2 className="text-lg font-bold my-2">분양글</h2>
+          <div className="relative ml-auto">
+            <Link href={`/community/adoption`}>
+              <p className="text-gray-500 font-semibold">더보기</p>
+            </Link>
+          </div>
         </div>
-        {data2 !== null && data2.result.items ? (
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-4 pr-4">
-            {itemlist2.map((post) => (
-              <PostCard key={post.idx} post={post} />
-            ))}
-          </ul>
+        {data2?.result.items.length === 0 ? (
+          <div className="flex items-center justify-center h-[183.5px]">
+            <p className="font-semibold text-[18px] text-gray-500">
+              작성된 게시글이 없습니다.
+            </p>
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-screen">
-            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          <div>
+            {data2 !== null && data2.result.items ? (
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-4 pr-4">
+                {itemlist2.map((post) => (
+                  <PostCard key={post.idx} post={post} />
+                ))}
+              </ul>
+            ) : (
+              <div className="flex items-center justify-center h-screen">
+                <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
           </div>
         )}
         {/* 중고 거래 게시글 목록 모바일 */}
         <div className="flex items-center relative ml-4 mr-4 my-2">
           <h2 className="text-lg font-bold my-2">중고 거래</h2>
+          <div className="relative ml-auto">
+            <Link href={`/community/market`}>
+              <p className="text-gray-500 font-semibold">더보기</p>
+            </Link>
+          </div>
         </div>
-        {data3 !== null && data3.result.items ? (
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-4 pr-4">
-            {itemlist3.map((post) => (
-              <PostCard key={post.idx} post={post} />
-            ))}
-          </ul>
+        {data3?.result.items.length === 0 ? (
+          <div className="flex items-center justify-center h-[183.5px]">
+            <p className="font-semibold text-[18px] text-gray-500">
+              작성된 게시글이 없습니다.
+            </p>
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-screen">
-            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          <div>
+            {data3 !== null && data3.result.items ? (
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-4 pr-4">
+                {itemlist3.map((post) => (
+                  <PostCard key={post.idx} post={post} />
+                ))}
+              </ul>
+            ) : (
+              <div className="flex items-center justify-center h-screen">
+                <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
           </div>
         )}
         {/* 자유 게시글 목록 모바일 */}
         <div className="flex items-center relative ml-4 mr-4 my-2">
           <h2 className="text-lg font-bold my-2">자유 게시판</h2>
+          <div className="relative ml-auto">
+            <Link href={`/community/free`}>
+              <p className="text-gray-500 font-semibold">더보기</p>
+            </Link>
+          </div>
         </div>
-        {data4 !== null && data4.result.items ? (
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-4 pr-4">
-            {itemlist4.map((post) => (
-              <BoardCard key={post.idx} post={post} />
-            ))}
-          </ul>
+        {data4?.result.items.length === 0 ? (
+          <div className="flex items-center justify-center h-[183.5px]">
+            <p className="font-semibold text-[18px] text-gray-500">
+              작성된 게시글이 없습니다.
+            </p>
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-screen">
-            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          <div>
+            {data4 !== null && data4.result.items ? (
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-4 pr-4">
+                {itemlist4.map((post) => (
+                  <BoardCard key={post.idx} post={post} />
+                ))}
+              </ul>
+            ) : (
+              <div className="flex items-center justify-center h-screen">
+                <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
           </div>
         )}
         {/* 질문 게시글 목록 모바일 */}
         <div className="flex items-center relative ml-4 mr-4 my-2">
           <h2 className="text-lg font-bold my-2">질문 게시판</h2>
+          <div className="relative ml-auto">
+            <Link href={`/community/ask`}>
+              <p className="text-gray-500 font-semibold">더보기</p>
+            </Link>
+          </div>
         </div>
-        {data5 !== null && data5.result.items ? (
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-4 pr-4">
-            {itemlist5.map((post) => (
-              <BoardCard key={post.idx} post={post} />
-            ))}
-          </ul>
+        {data5?.result.items.length === 0 ? (
+          <div className="flex items-center justify-center h-[183.5px]">
+            <p className="font-semibold text-[18px] text-gray-500">
+              작성된 게시글이 없습니다.
+            </p>
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-screen">
-            <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+          <div>
+            {data5 !== null && data5.result.items ? (
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-4 pl-4 pr-4">
+                {itemlist5.map((post) => (
+                  <BoardCard key={post.idx} post={post} />
+                ))}
+              </ul>
+            ) : (
+              <div className="flex items-center justify-center h-screen">
+                <div className="w-16 h-16 border-t-4 border-main-color border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
           </div>
         )}
       </Mobile>
