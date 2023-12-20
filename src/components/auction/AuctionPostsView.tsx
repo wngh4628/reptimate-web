@@ -821,11 +821,33 @@ export default function AuctionPostsView() {
   };
   //메시지 발송하는 함수
   const sendBidMsg = async () => {
+    if(isInputDisabled) {
+      Swal.fire({
+        text: " 경매가 종료되어 입찰이 불가합니다.",
+        icon: "warning",
+        confirmButtonText: "완료", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
+      return;
+    }
+
+    const storedData = localStorage.getItem("recoil-persist");
+    if (storedData) {
+      const userData = JSON.parse(storedData);
+      if (!userData.USER_DATA.accessToken) {
+        Swal.fire({
+          text: "로그인이 필요합니다.",
+          icon: "warning",
+          confirmButtonText: "완료", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
+        return;
+      }
+    }
     if (bidMsg.trim() !== "") {
       const numericValue = parseInt(bidMsg.trim().replace(/,/g, ""), 10);
-
       if (numericValue % parseInt(bidUnit) !== 0) {
-        // 입력값이 1000의 배수가 아니면 초기화
+        // 입력값이 bidUnit의 배수가 아니면 초기화
         Swal.fire({
           text: "입찰 단위를 확인해 주시기 바랍니다.",
           icon: "error",
@@ -834,7 +856,7 @@ export default function AuctionPostsView() {
         });
         return;
       }
-      if (numericValue < parseInt(bidStartPrice)) {
+      if (parseInt(bidMsg.trim()) < parseInt(bidStartPrice)) {
         Swal.fire({
           text: "입찰 시작가 보다 큰 금액을 입력해 주세요",
           icon: "error",
@@ -1555,7 +1577,8 @@ export default function AuctionPostsView() {
                         Live
                       </button>
                     )}
-                    <button
+                    {isLogin && (
+                      <button
                       className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-1"
                       onClick={handleChatClick}
                     >
@@ -1564,6 +1587,8 @@ export default function AuctionPostsView() {
                         className="w-9 h-9 filter invert"
                       />
                     </button>
+                    )}
+                    
                   </div>
                 )}
                 {LiveMenuOpen && (
