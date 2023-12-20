@@ -21,6 +21,14 @@ export default function ValueAnalysisResult(props:any) {
   const [userIdx, setUserIdx] = useState("")
   const reGenerateTokenMutation = useReGenerateTokenMutation();
   
+  const isFromMyPage = props.isFromMyPage;
+
+  // 마이페이지에서 온 경우에는 뒤로가기 구현을 위해서 state 초기화를 위해 props로 setValueAnalysisResult가 전달되지만, 그 외에는 전달되지 않는다.
+  let setValueAnalysisResult:(analysisResult:{} | null) => {};
+  if(props.setValueAnalysisResult){
+    setValueAnalysisResult = props.setValueAnalysisResult;
+  }
+
   const valueAnalysisResultData =  props.valueAnalysisResult.data;
 
   const morph = valueAnalysisResultData.morph;
@@ -212,7 +220,7 @@ export default function ValueAnalysisResult(props:any) {
         )}
 
           {/* 가치 판단 결과 */}
-          <div className="max-w-screen-lg mx-auto mt-40">
+          <div className={`max-w-screen-lg mx-auto ${isFromMyPage ? 'mt-32' : 'mt-40'}`}>
           
           <h2 className="text-3xl font-bold">가치 판단 결과</h2>
 
@@ -243,11 +251,21 @@ export default function ValueAnalysisResult(props:any) {
             
             {/* 결과 */}
             <div className="relative mt-5 " style={{ flex: '2' }}>
+              {/* 마이페이지로부터 왔으면 '뒤로가기'버튼을, 아니라면 '저장'버튼을 보여준다 */}
+              {isFromMyPage ?
                 <button
-                className={`absolute right-0 bg-main-color text-white font-bold py-2 px-4 rounded ${accessToken.length === 0 ? 'hidden' : ''}`}
-                onClick={() => setShowModal(true)}>
+                  className={`absolute right-0 bg-main-color text-white font-bold py-2 px-4 rounded`}
+                  onClick={() => setValueAnalysisResult(null)}>
+                  뒤로가기
+                </button>
+                :
+                <button
+                  className={`absolute right-0 bg-main-color text-white font-bold py-2 px-4 rounded ${accessToken.length === 0 ? 'hidden' : ''}`}
+                  onClick={() => setShowModal(true)}>
                   저장
                 </button>
+              }
+                
 
                 <div className="flex flex-col items-center w-full shadow-md shadow-gray-400 rounded-lg bg-gray-100 mt-12 ">
                 
@@ -375,7 +393,8 @@ export default function ValueAnalysisResult(props:any) {
         )}
 
           {/* 가치 판단 결과 */}
-          <div className="max-w-screen-lg mx-auto mt-10 p-4">
+          {/* <div className="max-w-screen-lg mx-auto mt-10 p-4"> */}
+          <div className={`max-w-screen-lg mx-auto ${isFromMyPage ? 'mt-10' : 'mt-10'}`}>
           
           <h2 className="text-2xl font-bold">가치 판단 결과</h2>
           <div
@@ -414,11 +433,20 @@ export default function ValueAnalysisResult(props:any) {
             
             {/* 결과 */}
             <div className="relative mt-5 " style={{ flex: '2' }}>
-                <button
-                className={`absolute right-0 bg-main-color text-white font-bold py-2 px-4 rounded ${accessToken.length === 0 ? 'hidden' : ''}`}
-                onClick={() => setShowModal(true)}>
-                  저장
-                </button>
+              {/* 마이페이지로부터 왔으면 '뒤로가기'버튼을, 아니라면 '저장'버튼을 보여준다 */}
+                {isFromMyPage ?
+                  <button
+                    className={`absolute right-0 bg-main-color text-white font-bold py-2 px-4 rounded`}
+                    onClick={() => setValueAnalysisResult(null)}>
+                    뒤로가기
+                  </button>
+                  :
+                  <button
+                    className={`absolute right-0 bg-main-color text-white font-bold py-2 px-4 rounded ${accessToken.length === 0 ? 'hidden' : ''}`}
+                    onClick={() => setShowModal(true)}>
+                    저장
+                  </button>
+                }
 
                 <div className="flex flex-col items-center w-full shadow-md shadow-gray-400 rounded-lg bg-gray-100 mt-12 ">
                 
