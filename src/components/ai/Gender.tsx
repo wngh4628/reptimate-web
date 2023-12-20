@@ -134,41 +134,37 @@ export default function Gender(props:any) {
       )}
 
       {/* 모프 정보 */}
-      <div className="flex flex-col p-4 mt-8 ml-1">
-          <h2 className="text-2xl font-bold">암수 구분</h2>
-
-          <div className="mt-8">
-
+      <div className="flex flex-col p-4 mt-8 ml-1 ">
+        <h2 className="text-2xl font-bold">암수 구분</h2>
+        <div className="mt-8">
           <h3 className="text-xl font-bold">천공 사진</h3>
+
           <p className="mt-3">도마뱀 천공 사진을 예제 사진과 같이 확대해서 올려주세요.</p>
 
-          <div className="flex mt-5">
+          <div className="flex mt-5 grid grid-cols-2 gap-x-6 mt-2.5">
+            <div
+              className={`relative flex flex-col items-center w-[165px] h-[165px] shadow-md shadow-gray-400 rounded-lg bg-gray-100`}
+            >
+              <img
+                className={`max-w-full max-h-full object-cover w-full h-full shadow-md shadow-gray-400 rounded-lg`}
+                src={'/img/perforation.jpeg'}
+                style={{ zIndex: 1 }}
+              />
 
-          <div
-            className={`relative flex flex-col items-center w-[165px] h-[165px] shadow-md shadow-gray-400 rounded-lg bg-gray-100`}
-          >
-            <img
-              className={`max-w-full max-h-full object-cover w-full h-full shadow-md shadow-gray-400 rounded-lg`}
-              src={'/img/perforation.jpeg'}
-              style={{ zIndex: 1 }}
-            />
+              <p className="text-lg absolute bottom-0 mb-5 z-10">
+                <strong>예제 사진</strong>
+              </p>
+            </div>
 
-            <p className="text-lg absolute bottom-0 mb-5 z-10">
-              <strong>예제 사진</strong>
-            </p>
-          </div>
-
-              
             <div className="mx-auto">
               <MorphCard imgPath="/img/file_upload.png" type="perforation" handleFileChange={handleFileChange} setImgFile={setImgFilePerforation} imgFile={imgPerforation} />
             </div>
-
-          </div>
-          </div>
+        </div>  
+      </div>
                   
-          <div className="mt-8 mb-4 flex justify-center">
+          <div className="mt-12 mb-4 flex justify-center">
             <button 
-            className=" bg-main-color text-white font-bold py-2 px-4 rounded w-1/2"
+            className=" bg-main-color text-white font-bold py-2 px-4 rounded w-3/4"
             onClick={handleUpload}>
               실행
               </button>

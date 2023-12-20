@@ -11,7 +11,6 @@ import { Mobile, PC } from "@/components/ResponsiveLayout";
 export default function MarketWritePage() {
   return (
     <div>
-      <CommunityMenu />
       <MarketWrite />
     </div>
   );

@@ -100,7 +100,7 @@ export default function MorphCard(props: any) {
 
         <Mobile>
           <div
-            className={`flex flex-col justify-center items-center w-[165px] h-[165px] shadow-md shadow-gray-400 rounded-lg bg-gray-100 ${
+            className={`flex flex-col justify-center items-center w-44 h-44 shadow-md shadow-gray-400 rounded-lg bg-gray-100 ${
               type !== "example" && type !== "result"
                 ? "hover:border-2 hover:border-main-color rounded-lg cursor-pointer"
                 : ""
