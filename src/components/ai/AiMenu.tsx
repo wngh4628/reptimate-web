@@ -15,9 +15,9 @@ export default function AiMenu(props: any) {
 
   const pathName = usePathname();
   return (
-    <div className="w-full mx-auto max-w-screen-xl pl-[40px]">
+    <div className="w-full mx-auto max-w-screen-xl pl-10">
       <PC>
-        <div className="flex justify-between items-center pt-[15px]">
+        <div className="flex justify-between items-center pt-4">
           <nav className="flex gap-4">
             <Link
               href="/ai/valueanalysis"
