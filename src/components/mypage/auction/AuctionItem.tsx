@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Auction } from "@/service/my/auction";
 import Image from "next/image";
 import Link from "next/link";
