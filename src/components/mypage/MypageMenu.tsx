@@ -91,6 +91,16 @@ export default function MypageMenu() {
             >
               북마크
             </Link>
+            <Link
+              href="/my/valueanalysisresults"
+              className={`${
+                pathName === "/my/valueanalysisresults"
+                  ? "text-white bg-[#6D71E6]"
+                  : "hover:text-[#6D71E6] bg-white"
+              } group  h-[60px] flex items-center pl-2`}
+            >
+              가치판단 결과
+            </Link>
           </nav>
         </div>
       </PC>
@@ -127,6 +137,16 @@ export default function MypageMenu() {
               } group  h-[50px] flex items-center justify-center text-center px-5 w-1/3 text-[13px]`}
             >
               북마크
+            </Link>
+            <Link
+              href="/my/valueanalysisresults"
+              className={`${
+                pathName === "/my/valueanalysisresults"
+                  ? "bg-[#6D71E6] text-white"
+                  : "hover:text-[#6D71E6] "
+              } group  h-[50px] flex items-center justify-center text-center px-5 w-1/3 text-[13px]`}
+            >
+              가치판단 결과
             </Link>
           </nav>
         </div>

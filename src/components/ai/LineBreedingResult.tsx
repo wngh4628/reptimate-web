@@ -12,7 +12,6 @@ export default function LineBreedingResult(props:any) {
     const lineBreedingResultData = props.lineBreedingResult.data;
     const setValueAnalysisResult = props.setValueAnalysisResult;
     const morphInfo = props.morphInfo;
-    
 
     const topImgPath = lineBreedingResultData.recommend_data ? lineBreedingResultData.recommend_data.top_img : '';
     const leftImgPath = lineBreedingResultData.recommend_data ? lineBreedingResultData.recommend_data.left_img : '';
