@@ -13,18 +13,19 @@ export default function AiBreeder(props:any) {
   const [inputValue, setInputValue] = useState('');
   const [chattingData, setchattingData] = useState<getMessage[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isPC, setIsPC] = useState(true); 
   const inputRef_PC = useRef<HTMLInputElement>(null);
   const inputRef_Mobile = useRef<HTMLInputElement>(null);  
   const btnRef = useRef<HTMLButtonElement>(null);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef_PC = useRef<HTMLDivElement>(null);
+  const chatContainerRef_Mobile = useRef<HTMLDivElement>(null);
   const recommendKeywordContainerRef = useRef<HTMLDivElement>(null);
-  
 
   // 입장하자마자 챗봇이 인사
   useEffect(() => {    
     
     const helloChat = {
-      message: '안녕하세요 AI 사육사 입니다. 크레스티드 개코에 대해 무엇이든 물어보세요!',
+      message: '안녕하세요! 저는 사육자를 돕는 랩티봇라고 합니다. ^*^ 반가워요~ 궁금한게 있으면 무엇이든 물어보세요.',
       isUser: false
     }
     setchattingData([helloChat])
@@ -32,12 +33,18 @@ export default function AiBreeder(props:any) {
   }, []);
 
 
-  // 채팅이 추가될 때마다 스크롤을 맨 아래로 이동
+
+  // 채팅이 추가되거나, PC mode와 Mobile mode간의 전환이 이루어질때 스크롤을 맨 아래로 이동
   useEffect(() => {
 
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    if(chatContainerRef_PC.current) {
+      chatContainerRef_PC.current.scrollTop = chatContainerRef_PC.current.scrollHeight;
     }
+
+    if(chatContainerRef_Mobile.current){
+      chatContainerRef_Mobile.current.scrollTop = chatContainerRef_Mobile.current.scrollHeight;
+    }
+
     }, [chattingData]);
 
   // 채팅을 입력할때마다 버튼 활성화 여부 결정
@@ -147,7 +154,7 @@ export default function AiBreeder(props:any) {
           setchattingData(ChattingData_responseChatAdded)
           setLoading(false);
           if(inputRef_PC.current){
-            inputRef_PC.current.disabled = false; 
+            inputRef_PC.current.disabled = false;
           }
           if(inputRef_Mobile.current){
             inputRef_Mobile.current.disabled = false; 
@@ -156,17 +163,16 @@ export default function AiBreeder(props:any) {
             recommendKeywordContainerRef.current.classList.remove('hidden');
             btnRef.current.disabled = false;
           }
-  
       })
     }
-    
   }
+  
 
   return (
 
-    <div>
-      <PC>
+    <div>      
 
+      <PC>
       <div className="max-w-screen-md mx-auto  mt-[130px]">
 
         <h2 className="text-3xl font-bold pt-5">사육 챗봇</h2>
@@ -177,7 +183,7 @@ export default function AiBreeder(props:any) {
           {/* 채팅 내용 */}
           <div
             className="border-t border-r border-l border-gray-300 h-96 p-3 overflow-y-auto"
-            ref={chatContainerRef}
+            ref={chatContainerRef_PC}
             >
             {chattingData.map((chatData, i) => (
                   <AiChatItem chatData={chatData} key={i} />
@@ -225,16 +231,15 @@ export default function AiBreeder(props:any) {
                   placeholder="AI 사육사에게 질문해주세요."
                   />
                 <button 
-                  className="bg-gray-400 text-white font-bold py-2.5 px-4 rounded ml-3"
+                  className= {`${inputValue.length === 0 ? 'bg-gray-400' : 'bg-main-color'} text-white font-bold py-2.5 px-4 rounded ml-3`}
                   onClick={() => {handleSend(inputValue)}}
                   ref={btnRef}
-                  style={{ cursor: 'not-allowed' }}
+                  // style={{ cursor: 'not-allowed' }}
+                  style={{ cursor: inputValue.length === 0 ? 'not-allowed' : 'pointer' }}
                   >
                   전송
                 </button>
               </form>
-
-            
           </div>
         </div>
 
@@ -242,6 +247,7 @@ export default function AiBreeder(props:any) {
     </PC>
 
     <Mobile>
+
       <div className="max-w-screen-md mx-auto mt-8 p-4">
         <h2 className="text-2xl font-bold">개인 사육사 챗봇</h2>
 
@@ -251,7 +257,7 @@ export default function AiBreeder(props:any) {
           {/* 채팅 내용 */}
           <div
             className="border-t border-r border-l border-gray-300 h-96 p-3 overflow-y-auto"
-            ref={chatContainerRef}
+            ref={chatContainerRef_Mobile}
             >
             {chattingData.map((chatData, i) => (
                   <AiChatItem chatData={chatData} key={i} />
@@ -305,10 +311,12 @@ export default function AiBreeder(props:any) {
                   placeholder="AI 사육사에게 질문해주세요."
                   />
                 <button 
-                  className="bg-gray-400 text-white font-bold py-2.5 px-4 rounded ml-3"
+                  className= {`${inputValue.length === 0 ? 'bg-gray-400' : 'bg-main-color'} text-white font-bold py-2.5 px-4 rounded ml-3`}
                   onClick={() => {handleSend(inputValue)}}
                   ref={btnRef}
-                  style={{ cursor: 'not-allowed' }}
+                  // style={{ cursor: 'not-allowed' }}
+                  style={{ cursor: inputValue.length === 0 ? 'not-allowed' : 'pointer' }}
+
                   >
                   전송
                 </button>
