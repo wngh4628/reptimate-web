@@ -8,7 +8,7 @@ interface getMessage {
   message: string;
   isUser: boolean;
 }
-
+ 
 export default function AiBreeder(props:any) {    
   const [inputValue, setInputValue] = useState('');
   const [chattingData, setchattingData] = useState<getMessage[]>([]);
@@ -23,13 +23,11 @@ export default function AiBreeder(props:any) {
 
   // 입장하자마자 챗봇이 인사
   useEffect(() => {    
-    
     const helloChat = {
       message: '안녕하세요! 저는 사육자를 돕는 랩티봇라고 합니다. ^*^ 반가워요~ 궁금한게 있으면 무엇이든 물어보세요.',
       isUser: false
     }
     setchattingData([helloChat])
-    
   }, []);
 
 
