@@ -8,7 +8,7 @@ interface getMessage {
   message: string;
   isUser: boolean;
 }
- 
+
 export default function AiBreeder(props:any) {    
   const [inputValue, setInputValue] = useState('');
   const [chattingData, setchattingData] = useState<getMessage[]>([]);
@@ -19,15 +19,18 @@ export default function AiBreeder(props:any) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const chatContainerRef_PC = useRef<HTMLDivElement>(null);
   const chatContainerRef_Mobile = useRef<HTMLDivElement>(null);
-  const recommendKeywordContainerRef = useRef<HTMLDivElement>(null);
+  const recommendKeywordContainerRef_PC = useRef<HTMLDivElement>(null);
+  const recommendKeywordContainerRef_Mobile = useRef<HTMLDivElement>(null);
 
   // 입장하자마자 챗봇이 인사
   useEffect(() => {    
+    
     const helloChat = {
       message: '안녕하세요! 저는 사육자를 돕는 랩티봇라고 합니다. ^*^ 반가워요~ 궁금한게 있으면 무엇이든 물어보세요.',
       isUser: false
     }
     setchattingData([helloChat])
+    
   }, []);
 
 
@@ -86,14 +89,20 @@ export default function AiBreeder(props:any) {
       if(inputRef_Mobile.current){
         inputRef_Mobile.current.disabled = true;
       }
-      if (btnRef.current && recommendKeywordContainerRef.current) {
+      if (btnRef.current) {
         
         btnRef.current.classList.remove('bg-main-color');
         btnRef.current.classList.add('bg-gray-400');
         btnRef.current.style.cursor = 'not-allowed'; // 커서를 변경하여 비활성화된 상태를 강조
 
-        recommendKeywordContainerRef.current.classList.add('hidden');
+      }
 
+      if(recommendKeywordContainerRef_PC.current){
+        recommendKeywordContainerRef_PC.current.classList.add('hidden');
+      }
+
+      if(recommendKeywordContainerRef_Mobile.current){
+        recommendKeywordContainerRef_Mobile.current.classList.add('hidden');
       }
 
       const requestChat = {
@@ -142,9 +151,14 @@ export default function AiBreeder(props:any) {
           if(inputRef_Mobile.current){
             inputRef_Mobile.current.disabled = false;
           }
-          if (recommendKeywordContainerRef.current && btnRef.current) {
-            recommendKeywordContainerRef.current.classList.remove('hidden');
+          if (btnRef.current) {
             btnRef.current.disabled = false;
+          }
+          if(recommendKeywordContainerRef_PC.current){
+            recommendKeywordContainerRef_PC.current.classList.remove('hidden');
+          }
+          if(recommendKeywordContainerRef_Mobile.current){
+            recommendKeywordContainerRef_Mobile.current.classList.remove('hidden');
           }
         })
           .catch((error)=>{console.log('요청실패')
@@ -164,9 +178,14 @@ export default function AiBreeder(props:any) {
           if(inputRef_Mobile.current){
             inputRef_Mobile.current.disabled = false; 
           }
-          if (recommendKeywordContainerRef.current && btnRef.current) {
-            recommendKeywordContainerRef.current.classList.remove('hidden');
+          if (btnRef.current) {
             btnRef.current.disabled = false;
+          }
+          if(recommendKeywordContainerRef_PC.current){
+            recommendKeywordContainerRef_PC.current.classList.remove('hidden');
+          }
+          if(recommendKeywordContainerRef_Mobile.current){
+            recommendKeywordContainerRef_Mobile.current.classList.remove('hidden');
           }
       })
     }
@@ -205,8 +224,8 @@ export default function AiBreeder(props:any) {
           <div className="border border-gray-300 h-1/2 p-3 ">
             {/* 추천 질문 */}
             <div 
-              className="flex justify-center text-main-color text-base mb-3 hidden"
-              ref={recommendKeywordContainerRef}>
+              className="flex justify-center text-main-color text-base mb-3"
+              ref={recommendKeywordContainerRef_PC}>
               <div className="border border-main-color bord rounded-2xl py-2.5 px-12 hover:cursor-pointer mx-auto" onClick={() => {handleSend('크레 수분')}}>
                 크레 수분
               </div>
@@ -233,8 +252,7 @@ export default function AiBreeder(props:any) {
                   value={inputValue}
                   onChange={handleInputChange}
                   ref={inputRef_PC}
-                  placeholder="AI 사육사에게 질문해주세요."
-                  disabled
+                  placeholder="AI 사육사에게 질문해주세요."                  
                   />
                 <button 
                   className= {`${inputValue.length === 0 ? 'bg-gray-400' : 'bg-main-color'} text-white font-bold py-2.5 px-4 rounded ml-3`}
@@ -280,13 +298,13 @@ export default function AiBreeder(props:any) {
           <div className="border border-gray-300 h-1/2 p-3 ">
             {/* 추천 질문 */}
             <div 
-              className="flex text-main-color text-base mb-3 hidden"
+              className="flex text-main-color text-base mb-3"
               style={{
                   overflowX: 'auto',
                   maxWidth: '100%',
                   scrollSnapType: 'x mandatory',
                 }}
-                ref={recommendKeywordContainerRef}
+                ref={recommendKeywordContainerRef_Mobile}
                 >
                 <div className="border border-main-color bord rounded-2xl py-2.5 px-6 hover:cursor-pointer mr-2" onClick={() => {handleSend('크레 수분')}} style={{ flex: '0 0 auto' }}>
                   크레 수분
@@ -315,7 +333,6 @@ export default function AiBreeder(props:any) {
                   onChange={handleInputChange}
                   ref={inputRef_Mobile}
                   placeholder="AI 사육사에게 질문해주세요."
-                  disabled
                   />
                 <button 
                   className= {`${inputValue.length === 0 ? 'bg-gray-400' : 'bg-main-color'} text-white font-bold py-2.5 px-4 rounded ml-3`}
@@ -323,7 +340,6 @@ export default function AiBreeder(props:any) {
                   ref={btnRef}
                   // style={{ cursor: 'not-allowed' }}
                   style={{ cursor: inputValue.length === 0 ? 'not-allowed' : 'pointer' }}
-
                   >
                   전송
                 </button>
