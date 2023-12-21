@@ -100,10 +100,14 @@ export default function AiBreeder(props:any) {
         message: inputText,
         isUser: true
       }
-  
-      const ChattingData_requestChatAdded = [...chattingData, requestChat];
-  
-      setchattingData(ChattingData_requestChatAdded)
+
+      let ChattingData_requestChatAdded:getMessage[] = [];
+
+      // 입장하자마자 '안녕?'이라고 인사하는 채팅은 채팅목록에 추가되지 않도록 처리
+      if(chattingData.length !== 0){
+        ChattingData_requestChatAdded = [...chattingData, requestChat];  
+        setchattingData(ChattingData_requestChatAdded)
+      }
   
       axios({
         method:'post',
@@ -123,8 +127,11 @@ export default function AiBreeder(props:any) {
             message: result.data.document,
             isUser: false
           }
+
+          let ChattingData_responseChatAdded: getMessage[]
+
+          ChattingData_responseChatAdded = [...ChattingData_requestChatAdded, responseChat];
   
-          const ChattingData_responseChatAdded = [...ChattingData_requestChatAdded, responseChat];
           setchattingData(ChattingData_responseChatAdded)
           setLoading(false);
 
@@ -144,7 +151,7 @@ export default function AiBreeder(props:any) {
           console.log(error)  
   
           const responseChat = {
-            message: '질문을 잘 이해하지 못했어요.',
+            message: '서버에 문제가 생겼어요! 다시 시도하거나 관리자에게 문의해주세요!',
             isUser: false
           }
   
@@ -198,7 +205,7 @@ export default function AiBreeder(props:any) {
           <div className="border border-gray-300 h-1/2 p-3 ">
             {/* 추천 질문 */}
             <div 
-              className="flex justify-center text-main-color text-base mb-3"
+              className="flex justify-center text-main-color text-base mb-3 hidden"
               ref={recommendKeywordContainerRef}>
               <div className="border border-main-color bord rounded-2xl py-2.5 px-12 hover:cursor-pointer mx-auto" onClick={() => {handleSend('크레 수분')}}>
                 크레 수분
@@ -227,6 +234,7 @@ export default function AiBreeder(props:any) {
                   onChange={handleInputChange}
                   ref={inputRef_PC}
                   placeholder="AI 사육사에게 질문해주세요."
+                  disabled
                   />
                 <button 
                   className= {`${inputValue.length === 0 ? 'bg-gray-400' : 'bg-main-color'} text-white font-bold py-2.5 px-4 rounded ml-3`}
@@ -272,7 +280,7 @@ export default function AiBreeder(props:any) {
           <div className="border border-gray-300 h-1/2 p-3 ">
             {/* 추천 질문 */}
             <div 
-              className="flex text-main-color text-base mb-3"
+              className="flex text-main-color text-base mb-3 hidden"
               style={{
                   overflowX: 'auto',
                   maxWidth: '100%',
@@ -307,6 +315,7 @@ export default function AiBreeder(props:any) {
                   onChange={handleInputChange}
                   ref={inputRef_Mobile}
                   placeholder="AI 사육사에게 질문해주세요."
+                  disabled
                   />
                 <button 
                   className= {`${inputValue.length === 0 ? 'bg-gray-400' : 'bg-main-color'} text-white font-bold py-2.5 px-4 rounded ml-3`}
