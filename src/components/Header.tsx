@@ -524,7 +524,7 @@ export default function Header() {
             {isLoggedIn ? (
               <Link href="">
                 <div
-                  className="flex w-[23px] h-5 my-0.5 relative"
+                  className="flex w-[23px] h-5 my-0.5 relative mr-[5px]"
                   onClick={chattingClick}
                 >
                   <img src="/img/chat.png" />
@@ -539,28 +539,20 @@ export default function Header() {
 
             <a onClick={notiClick}>
               <div
-                className={`${isMobile ? "hidden" : "flex gap-4 w-5 my-0.5"}`}
+                className={`${isMobile ? "hidden" : "flex gap-4 w-5 my-0.5 mr-[5px]"}`}
               >
                 <img src="/img/notification.png" />
               </div>
             </a>
-            
             <div className={`${
-                isMobile ? "hidden" : "flex w-5 my-0.5"
+                isMobile ? "hidden" : "flex w-5 my-0.5 mr-[5px]"
                 }`}>
                 <img src="/img/search.png" />
             </div>
-
-            {/* {isAuctionRoute || isCommunityRoute || isAIRoute ? 
-              <div className="flex w-[22px] h-[22px] self-center"
-              onClick={menuClick} >
-                <img src="/img/menu_btn copy.png" />
-              </div>
-             : <></>} */}
-              <div className="flex w-[22px] h-[22px] self-center"
-              onClick={menuClick} >
-                <img src="/img/menu_btn copy.png" />
-              </div>
+            <div className="flex w-[22px] h-[22px] self-center mr-[3px]"
+            onClick={menuClick} >
+              <img src="/img/menu_btn copy.png" />
+            </div>
             
 
           </nav>
