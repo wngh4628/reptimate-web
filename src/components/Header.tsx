@@ -514,12 +514,20 @@ export default function Header() {
           setHidden={setIsSearchModalHidden}
         />
         <div className="flex justify-start pt-2 pl-3 pr-3 pb-2">
-          
+        {loginApp ? (
+          <div className="flex w-32 p1-0">
+            <img src="/img/main_logo2.png" />
+          </div>
+        ):(
           <Link href={link}>
-            <div className="flex w-32 p1-0">
-              <img src="/img/main_logo2.png" />
-            </div>
-          </Link>
+          <div className="flex w-32 p1-0">
+            <img src="/img/main_logo2.png" />
+          </div>
+        </Link>
+        )}
+          
+
+
           <nav className={`${isMobile ? "" : "gap-4"} flex font-bold ml-auto`}>
             {isLoggedIn ? (
               <Link href="">
