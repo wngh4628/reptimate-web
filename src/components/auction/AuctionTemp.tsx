@@ -206,7 +206,7 @@ export default function AuctionTemp() {
   const [startPrice, setstartPrice] = useState("");
   const [unit, setunit] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [endTime12, setEndTime12] = useState("");
+  const [endTime12, setEndTime12] = useState("마감 시간을 선택해주세요.");
   const [rule, setRule] = useState("");
   const [alretTime, setAlretTime] = useState("");
   const [streamKey, setStreamKey] = useState("");
@@ -946,15 +946,12 @@ export default function AuctionTemp() {
         <div className="mb-4">
           <p className="font-bold text-xl my-2">마감 시간</p>
           <div className="flex flex-row">
-            <p className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-5/6 bg-white">
-              {endTime12}
-            </p>
-            <button
-              className={`w-1/6 py-2 rounded text-md text-white font-bold flex-1 bg-main-color`}
+            <p
+              className="focus:outline-none py-[8px] border-b-[1px] text-[17px] bg-white cursor-pointer"
               onClick={handleOpenModal}
             >
-              선택
-            </button>
+              {endTime12}
+            </p>
           </div>
         </div>
         <div className="mb-4">
