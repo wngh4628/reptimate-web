@@ -377,126 +377,137 @@ export default function MarketEdit() {
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setIsLoading(true);
-    let priceReplace = price.replace(regExp, "");
+    if (price == "" || price.length < 4) {
+      Swal.fire({
+        text: "가격은 1000원 이상이여야 합니다.",
+        confirmButtonText: "확인",
+        confirmButtonColor: "#7A75F7",
+        customClass: {
+          container: "z-[11111]", // Tailwind CSS class for z-index
+        },
+      });
+    } else {
+      setIsLoading(true);
+      let priceReplace = price.replace(regExp, "");
 
-    const requestData = {
-      state: selling,
-      boardIdx: idx,
-      boardCommercialIdx: boardCommercialIdx,
-      userIdx: currentUserIdx || 0,
-      title: title,
-      category: "market",
-      description: description,
-      price: priceReplace,
-      // gender: selectedGender || "",
-      // size: selectedSize || "",
-      // variety: variety,
-      // pattern: pattern,
-      // birthDate: birthDate,
-      userAccessToken: userAccessToken || "",
-      fileUrl: "",
-    };
+      const requestData = {
+        state: selling,
+        boardIdx: idx,
+        boardCommercialIdx: boardCommercialIdx,
+        userIdx: currentUserIdx || 0,
+        title: title,
+        category: "market",
+        description: description,
+        price: priceReplace,
+        // gender: selectedGender || "",
+        // size: selectedSize || "",
+        // variety: variety,
+        // pattern: pattern,
+        // birthDate: birthDate,
+        userAccessToken: userAccessToken || "",
+        fileUrl: "",
+      };
 
-    if (
-      title !== "" &&
-      price !== "" &&
-      // selectedGender !== "" &&
-      // selectedSize !== "" &&
-      // variety !== "" &&
-      // pattern !== "" &&
-      // birthDate !== "" &&
-      description !== ""
-    ) {
-      if (allFiles.length === 0) {
-        Swal.fire({
-          text: "한 개 이상의 사진이나 동영상을 첨부해야 합니다.",
-          confirmButtonText: "확인",
-          confirmButtonColor: "#7A75F7",
-          customClass: {
-            container: "z-[11111]", // Tailwind CSS class for z-index
-          },
-        });
-      } else {
-        const formData = new FormData();
-        addFiles.forEach((fileItem) => {
-          formData.append("files", fileItem.file || "");
-        });
+      if (
+        title !== "" &&
+        price !== "" &&
+        // selectedGender !== "" &&
+        // selectedSize !== "" &&
+        // variety !== "" &&
+        // pattern !== "" &&
+        // birthDate !== "" &&
+        description !== ""
+      ) {
+        if (allFiles.length === 0) {
+          Swal.fire({
+            text: "한 개 이상의 사진이나 동영상을 첨부해야 합니다.",
+            confirmButtonText: "확인",
+            confirmButtonColor: "#7A75F7",
+            customClass: {
+              container: "z-[11111]", // Tailwind CSS class for z-index
+            },
+          });
+        } else {
+          const formData = new FormData();
+          addFiles.forEach((fileItem) => {
+            formData.append("files", fileItem.file || "");
+          });
 
-        const modifySqenceArr = allFiles.map((item) => item.mediaSequence);
-        const deleteIdxArr = deletedFiles;
-        const FileIdx = addFiles.map((item) => item.mediaSequence);
-        // Append JSON data to the FormData object
-        formData.append("modifySqenceArr", JSON.stringify(modifySqenceArr));
-        formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
-        formData.append("FileIdx", JSON.stringify(FileIdx));
+          const modifySqenceArr = allFiles.map((item) => item.mediaSequence);
+          const deleteIdxArr = deletedFiles;
+          const FileIdx = addFiles.map((item) => item.mediaSequence);
+          // Append JSON data to the FormData object
+          formData.append("modifySqenceArr", JSON.stringify(modifySqenceArr));
+          formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
+          formData.append("FileIdx", JSON.stringify(FileIdx));
 
-        try {
-          // Send both FormData and JSON data to the server
-          const response = await axios.patch(
-            `https://www.reptimate.store/conv/board/update/${idx}`,
-            formData,
-            {
-              headers: {
-                Authorization: `Bearer ${userAccessToken}`,
-                "Content-Type": "multipart/form-data",
-              },
+          try {
+            // Send both FormData and JSON data to the server
+            const response = await axios.patch(
+              `https://www.reptimate.store/conv/board/update/${idx}`,
+              formData,
+              {
+                headers: {
+                  Authorization: `Bearer ${userAccessToken}`,
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+            if (response.status === 201) {
+              const responseData = response.data;
+              // Now, you can send additional data to the API server
+              const requestData1 = {
+                state: selling,
+                boardIdx: idx,
+                boardCommercialIdx: boardCommercialIdx,
+                userIdx: currentUserIdx || 0,
+                title: title,
+                category: "market",
+                description: description,
+                price: priceReplace,
+                // gender: selectedGender || "",
+                // size: selectedSize || "",
+                // variety: variety,
+                // pattern: pattern,
+                // birthDate: birthDate,
+                userAccessToken: userAccessToken || "",
+                fileUrl: "",
+              };
+              mutation.mutate(requestData1);
+            } else {
+              console.error("Error uploading files to the first server.");
+              // alert("Error uploading files. Please try again later.");
+              setIsLoading(false);
             }
-          );
-          if (response.status === 201) {
-            const responseData = response.data;
-            // Now, you can send additional data to the API server
-            const requestData1 = {
-              state: selling,
-              boardIdx: idx,
-              boardCommercialIdx: boardCommercialIdx,
-              userIdx: currentUserIdx || 0,
-              title: title,
-              category: "market",
-              description: description,
-              price: priceReplace,
-              // gender: selectedGender || "",
-              // size: selectedSize || "",
-              // variety: variety,
-              // pattern: pattern,
-              // birthDate: birthDate,
-              userAccessToken: userAccessToken || "",
-              fileUrl: "",
-            };
-            mutation.mutate(requestData1);
-          } else {
-            console.error("Error uploading files to the first server.");
-            // alert("Error uploading files. Please try again later.");
+          } catch (error) {
+            console.error("Error:", error);
+            // alert("An error occurred. Please try again later.");
             setIsLoading(false);
           }
-        } catch (error) {
-          console.error("Error:", error);
-          // alert("An error occurred. Please try again later.");
-          setIsLoading(false);
         }
+      } else {
+        // Create a list of missing fields
+        const missingFields = [];
+        if (title === "") missingFields.push("제목");
+        if (variety === "품종을 선택하세요") missingFields.push("품종");
+        if (pattern === "모프를 선택하세요") missingFields.push("모프");
+        if (birthDate === "") missingFields.push("생년월일");
+        if (selectedGender == null) missingFields.push("성별");
+        if (selectedSize == null) missingFields.push("크기");
+        if (price === "") missingFields.push("가격");
+        if (description === "") missingFields.push("내용");
+
+        // Create the alert message based on missing fields
+        let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
+        alertMessage += missingFields.join(", ");
+
+        Swal.fire({
+          text: alertMessage,
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
+        setIsLoading(false);
       }
-    } else {
-      // Create a list of missing fields
-      const missingFields = [];
-      if (title === "") missingFields.push("제목");
-      if (variety === "품종을 선택하세요") missingFields.push("품종");
-      if (pattern === "모프를 선택하세요") missingFields.push("모프");
-      if (birthDate === "") missingFields.push("생년월일");
-      if (selectedGender == null) missingFields.push("성별");
-      if (selectedSize == null) missingFields.push("크기");
-      if (price === "") missingFields.push("가격");
-      if (description === "") missingFields.push("내용");
-
-      // Create the alert message based on missing fields
-      let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
-      alertMessage += missingFields.join(", ");
-
-      Swal.fire({
-        text: alertMessage,
-        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-      });
-      setIsLoading(false);
     }
   };
 
@@ -505,6 +516,12 @@ export default function MarketEdit() {
     event: ChangeEvent<HTMLInputElement>
   ) => {
     const inputValue = event.target.value;
+
+    if (inputValue.length === 1 && inputValue === "0") {
+      // Do nothing or show an error message
+      return;
+    }
+
     const num = /[0-9]/g;
     const eng = /[a-zA-Z]/g;
     const kor = /[\ㄱ-ㅎㅏ-ㅣ가-힣]/g;
@@ -631,7 +648,7 @@ export default function MarketEdit() {
           <p className="font-bold text-xl my-2">가격</p>
           <input
             type="text"
-            placeholder="가격을 입력해주세요. (원)"
+            placeholder="가격을 입력해주세요. (최소 1000원 이상)"
             className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
             value={price}
             onChange={(e) => handlePriceChange("price", e)}
