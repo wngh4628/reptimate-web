@@ -62,6 +62,11 @@ export default function Header() {
   const [isSearchModalHidden, setIsSearchModalHidden] = useState(true);
   const [menuVisible, setMenuVisible] = useState(false);
 
+  const [loginApp, setLoginApp] = useState(false);
+  const [communityOpen, setCommunityOpen] = useState(false);
+  const [auctionOpen, setAuctionOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
+
   function getCookie(name: string) {
     const value = "; " + document.cookie;
     const parts = value.split("; " + name + "=");
@@ -99,6 +104,7 @@ export default function Header() {
         nickname: nickname || "",
       });
       setCookieLoggedIn(true);
+      setLoginApp(true);
     }
     if (chatQueryParam == "1") {
       setIsChatVisisible(true);
@@ -140,6 +146,10 @@ export default function Header() {
     }
 
     setIsSearchModalHidden(true);
+    setMenuVisible(false);
+    setAuctionOpen(false);
+    setCommunityOpen(false);
+    setAiOpen(false);
   }, [pathName]);
 
   useEffect(() => {
@@ -244,6 +254,15 @@ export default function Header() {
   }
   function notiClose() {
     setIsNotiVisisible(false);
+  }
+  function auctionMenuOpen() {
+    setAuctionOpen(!auctionOpen);
+  }
+  function communityMenuOpen() {
+    setCommunityOpen(!communityOpen);
+  }
+  function aiMenuOpen() {
+    setAiOpen(!aiOpen);
   }
   function pageReload() {
     // router.refresh();
@@ -443,9 +462,7 @@ export default function Header() {
         <div>{pathName.startsWith("/community") ? <CommunityMenu /> : ""}</div>
         <div>{pathName.startsWith("/auction") ? <AuctionMenu /> : ""}</div>
         <div>{pathName.startsWith("/ai") ? <AiMenu /> : ""}</div>
-        <div>
-          {pathName.startsWith("/searchresult/") ? <SearchResultMenu /> : ""}
-        </div>
+        <div>{pathName.startsWith("/searchresult/") ? <SearchResultMenu /> : ""}</div>
 
         <div
           className={`${
@@ -534,24 +551,30 @@ export default function Header() {
                 <img src="/img/search.png" />
             </div>
 
-            {isAuctionRoute || isCommunityRoute || isAIRoute ? 
+            {/* {isAuctionRoute || isCommunityRoute || isAIRoute ? 
               <div className="flex w-[22px] h-[22px] self-center"
               onClick={menuClick} >
                 <img src="/img/menu_btn copy.png" />
               </div>
-             : <></>}
+             : <></>} */}
+              <div className="flex w-[22px] h-[22px] self-center"
+              onClick={menuClick} >
+                <img src="/img/menu_btn copy.png" />
+              </div>
             
 
           </nav>
-          </div>
-        <div
+        </div>
+
+        {loginApp ? (
+          <div
           className={`${menuVisible
             ? "bg-white w-full z-[9999] fixed top-[40px] border-[2px] border-gray-300 flex flex-col shadow-md"
             : "hidden"
-            }`}
-        >
-          {isAuctionRoute ? (
-            <>
+            }`} >
+
+          {isAuctionRoute && (
+            <div>
               <div className=
               {`${pathName.startsWith("/auction") ? "text-main-color" : ""
                 } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
@@ -562,15 +585,14 @@ export default function Header() {
                 } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
                 <Link className="ml-3" href={"/auction/end"}>종료</Link>
               </div>
-            </>
-          ) : (<></>)}
-
+            </div>
+          )}
           {isCommunityRoute ? (
-            <>
+            <div>
               <div className=
               {`${pathName.startsWith("/community/adoption") ? "text-main-color" : ""
                 } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-3" href={"/"}>분양 글</Link>
+                <Link className="ml-3" href={"/community/adoption"}>분양 글</Link>
               </div>
               <div className=
               {`${pathName.startsWith("/community/market") ? "text-main-color" : ""
@@ -587,11 +609,10 @@ export default function Header() {
                 } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
                 <Link className="ml-3" href={"/community/ask"}>질문 게시판</Link>
               </div>
-            </>
+            </div>
           ) : (<></>)}
-
           {isAIRoute ? (
-            <>
+            <div>
               <div className=
               {`${pathName.startsWith("/ai/valueanalysis") ? "text-main-color" : ""
                 } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
@@ -612,9 +633,97 @@ export default function Header() {
                 } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
                 <Link className="ml-3" href={"/ai/aibreeder"}>사육 챗봇</Link>
               </div>
-            </>
+            </div>
           ) : (<></>)}
+          </div>
+
+        ) : (
+
+          <div
+            className={`${menuVisible
+              ? "bg-white w-full z-[9999] fixed top-[40px] border-[2px] border-gray-300 flex flex-col shadow-md"
+              : "hidden"
+              }`}>
+            <div onClick={auctionMenuOpen}
+              className={`${pathName.startsWith("/auction") ? "text-main-color" : ""
+              } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+              <p className="ml-2">AUCTION</p>
+              {auctionOpen ? (<img src="/img/ic_back.png" className=" -rotate-90 w-[11px] h-[11px] ml-3"/>) : (<img src="/img/ic_back.png" className="-scale-x-90 w-[11px] h-[11px] ml-3"/>) }
+            </div>
+            {auctionOpen && (
+              <>
+                <div className={`${pathName.startsWith("/auction") ? "text-main-color" : ""} border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                  <Link className="ml-4" href={"/auction"}>진행중</Link>
+                </div>
+                <div className={`${pathName.startsWith("/auction/end") ? "" : ""} border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                  <Link className="ml-4" href={"/auction/end"}>종료</Link>
+                </div>
+              </>
+            )}
+
+          <div onClick={communityMenuOpen}
+            className={`${pathName.startsWith("/community") ? "text-main-color" : ""
+            } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+              <p className="ml-2">COMMUNITY</p>
+              {communityOpen ? (<img src="/img/ic_back.png" className=" -rotate-90 w-[11px] h-[11px] ml-3"/>) : (<img src="/img/ic_back.png" className="-scale-x-90 w-[11px] h-[11px] ml-3"/>) }
+          </div>
+          {communityOpen && (
+            <>
+              <div className=
+              {`${pathName.startsWith("/community/adoption") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-4" href={"/community/adoption"}>분양 글</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/community/market") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-4" href={"/community/market"}>중고 거래</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/community/free") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-4" href={"/community/free"}>자유 게시판</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/community/ask") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-4" href={"/community/ask"}>질문 게시판</Link>
+              </div>
+            </>
+          )}
+          <div onClick={aiMenuOpen}
+            className={`${pathName.startsWith("/ai") ? "text-main-color" : ""
+            } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+              <p className="ml-2">AI</p>
+              {aiOpen ? (<img src="/img/ic_back.png" className=" -rotate-90 w-[11px] h-[11px] ml-3"/>) : (<img src="/img/ic_back.png" className="-scale-x-90 w-[11px] h-[11px] ml-3"/>) }
+          </div>
+          {aiOpen && (
+            <>
+              <div className=
+              {`${pathName.startsWith("/ai/valueanalysis") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-4" href={"/ai/valueanalysis"}>가치 판단</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/ai/linebreeding") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-4" href={"/ai/linebreeding"}>브리딩 추천</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/ai/gender") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-4" href={"/ai/gender"}>암수 구분</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/ai/aibreeder") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
+                <Link className="ml-4" href={"/ai/aibreeder"}>사육 챗봇</Link>
+              </div>
+            </>
+          )}
         </div>
+        )}
+        
 
         <div
           className={`${
