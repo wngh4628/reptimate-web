@@ -651,14 +651,14 @@ export default function Header() {
               {auctionOpen ? (<img src="/img/ic_back.png" className=" -rotate-90 w-[11px] h-[11px] ml-3"/>) : (<img src="/img/ic_back.png" className="-scale-x-90 w-[11px] h-[11px] ml-3"/>) }
             </div>
             {auctionOpen && (
-              <>
-                <div className={`${pathName.startsWith("/auction") ? "text-main-color" : ""} border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                  <Link className="ml-4" href={"/auction"}>진행중</Link>
+              <div>
+                <div className={`${pathName.startsWith("/auction") ? "text-main-color" : ""} border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+                  <Link className="ml-4 w-full" href={"/auction"}>진행중</Link>
                 </div>
-                <div className={`${pathName.startsWith("/auction/end") ? "" : ""} border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                  <Link className="ml-4" href={"/auction/end"}>종료</Link>
+                <div className={`${pathName.startsWith("/auction/end") ? "" : ""} border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+                  <Link className="ml-4 w-full" href={"/auction/end"}>종료</Link>
                 </div>
-              </>
+              </div>
             )}
 
           <div onClick={communityMenuOpen}
@@ -671,23 +671,23 @@ export default function Header() {
             <>
               <div className=
               {`${pathName.startsWith("/community/adoption") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-4" href={"/community/adoption"}>분양 글</Link>
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+                <Link className="ml-4 w-full" href={"/community/adoption"}>분양 글</Link>
               </div>
               <div className=
               {`${pathName.startsWith("/community/market") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-4" href={"/community/market"}>중고 거래</Link>
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+                <Link className="ml-4 w-full" href={"/community/market"}>중고 거래</Link>
               </div>
               <div className=
               {`${pathName.startsWith("/community/free") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-4" href={"/community/free"}>자유 게시판</Link>
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+                <Link className="ml-4 w-full" href={"/community/free"}>자유 게시판</Link>
               </div>
               <div className=
               {`${pathName.startsWith("/community/ask") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-4" href={"/community/ask"}>질문 게시판</Link>
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+                <Link className="ml-4 w-full" href={"/community/ask"}>질문 게시판</Link>
               </div>
             </>
           )}
@@ -701,23 +701,23 @@ export default function Header() {
             <>
               <div className=
               {`${pathName.startsWith("/ai/valueanalysis") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-4" href={"/ai/valueanalysis"}>가치 판단</Link>
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+                <Link className="ml-4 w-full" href={"/ai/valueanalysis"}>가치 판단</Link>
               </div>
               <div className=
               {`${pathName.startsWith("/ai/linebreeding") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-4" href={"/ai/linebreeding"}>브리딩 추천</Link>
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+                <Link className="ml-4 w-full" href={"/ai/linebreeding"}>브리딩 추천</Link>
               </div>
               <div className=
               {`${pathName.startsWith("/ai/gender") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-4" href={"/ai/gender"}>암수 구분</Link>
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+                <Link className="ml-4 w-full" href={"/ai/gender"}>암수 구분</Link>
               </div>
               <div className=
               {`${pathName.startsWith("/ai/aibreeder") ? "text-main-color" : ""
-                } border-b-[1px] border-gray-300 h-[45px] flex items-center`}>
-                <Link className="ml-4" href={"/ai/aibreeder"}>사육 챗봇</Link>
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+                <Link className="ml-4 w-full" href={"/ai/aibreeder"}>사육 챗봇</Link>
               </div>
             </>
           )}

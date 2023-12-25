@@ -115,18 +115,18 @@ export default function FreePostsView() {
   const boardRegisterMutation = useMutation({
     mutationFn: boardRegisterBookmark,
     onSuccess: (data) => {
-      console.log("===auctionRegisterMutation====");
-      console.log(data);
-      console.log("==============================");
+      // console.log("===auctionRegisterMutation====");
+      // console.log(data);
+      // console.log("==============================");
     },
   });
   // 북마크 삭제
   const boardDeleteMutation = useMutation({
     mutationFn: boardDeleteBookmark,
     onSuccess: (data) => {
-      console.log("===auctionDeleteMutation====");
-      console.log(data);
-      console.log("============================");
+      // console.log("===auctionDeleteMutation====");
+      // console.log(data);
+      // console.log("============================");
     },
   });
 

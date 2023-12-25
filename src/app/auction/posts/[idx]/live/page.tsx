@@ -126,18 +126,18 @@ export default function ActionPage({ params: { slug } }: Props) {
   const auctionRegisterMutation = useMutation({
     mutationFn: auctionRegisterBookmark,
     onSuccess: (data) => {
-      console.log("===auctionRegisterMutation====");
-      console.log(data);
-      console.log("==============================");
+      // console.log("===auctionRegisterMutation====");
+      // console.log(data);
+      // console.log("==============================");
     },
   });
   // 북마크 삭제
   const auctionDeleteMutation = useMutation({
     mutationFn: auctionDeleteBookmark,
     onSuccess: (data) => {
-      console.log("===auctionDeleteMutation====");
-      console.log(data);
-      console.log("============================");
+      // console.log("===auctionDeleteMutation====");
+      // console.log(data);
+      // console.log("============================");
     },
   });
 
