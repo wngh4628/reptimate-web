@@ -18,9 +18,9 @@ export const login = async ({
   };
   // const config = {"Content-Type": 'application/json'};
   const result = await instance.post("/auth", data);
-  console.log("로그인 시도 : email : " + email)
-  console.log("로그인 시도 : password : " + password)
-  console.log("로그인 시도 : fbToken : " + fbToken)
+  // console.log("로그인 시도 : email : " + email)
+  // console.log("로그인 시도 : password : " + password)
+  // console.log("로그인 시도 : fbToken : " + fbToken)
   return result;
 };
 
@@ -42,7 +42,7 @@ export const socialLogin = async ({
   
   const result = await instance.post("/auth/social", data);
 
-  console.log("로그인 시도(login.ts) - social"+socialType+" : fbToken : " + fbToken)
+  // console.log("로그인 시도(login.ts) - social"+socialType+" : fbToken : " + fbToken)
 
   return result;
 };
@@ -66,7 +66,7 @@ export const socialAppleLogin = async ({
   };
   // const config = {"Content-Type": 'application/json'};
   const result = await instance.post("/auth/social", data);
-  console.log("로그인 시도(login.ts)  - social - apple : fbToken : " + fbToken)
+  // console.log("로그인 시도(login.ts)  - social - apple : fbToken : " + fbToken)
   return result;
 };
 
