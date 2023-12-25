@@ -66,25 +66,24 @@ export default function AuctionItem({
                   } absolute inset-0 z-10`}
                 ></div>
                 <div style={imgStyle}>
-                <img
-                  className="object-cover absolute w-full h-full inset-0"
-                  src={
-                    thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
-                  }
-                  alt={""}
-                  style={{ zIndex: 1 }}
-                />
+                  <img
+                    className="object-cover absolute w-full h-full inset-0"
+                    src={
+                      thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
+                    }
+                    alt={""}
+                    style={{ zIndex: 1 }}
+                  />
                 </div>
-                
               </div>
-              <div className="absolute right-4 mt-2 flex items-center z-[999]">
+              <div className="absolute right-2 mt-2 flex items-center z-[999]">
                 <p
                   className={`${
                     state === "selling"
-                      ? "text-red-500 font-bold"
+                      ? "text-white bg-red-500 px-1 rounded-md"
                       : state === "end"
                       ? "text-white bg-black px-1 rounded-md"
-                      : "text-main-color font-bold"
+                      : "text-white bg-main-color px-1 rounded-md"
                   } text-lg z-[999] relative`}
                 >
                   {setStateString(state)}
@@ -115,10 +114,10 @@ export default function AuctionItem({
                 <p
                   className={`${
                     state === "selling"
-                      ? "text-red-500 font-bold"
+                      ? "text-white bg-red-500 px-1 rounded-md"
                       : state === "end"
                       ? "text-white bg-black px-1 rounded-md"
-                      : "text-main-color font-bold"
+                      : "text-white bg-main-color px-1 rounded-md"
                   } text-lg z-[999] relative`}
                 >
                   {setStateString(state)}

@@ -445,190 +445,222 @@ export default function AuctionTemp() {
       const nowMinutes = now.getMinutes().toString().padStart(2, "0");
       const currentTime = `${nowHours}:${nowMinutes}`;
 
-      // Update the endTime state only if the selected time is not before the current time
-      if (endTime >= currentTime) {
+      if (price == "" || price.length < 4) {
         Swal.fire({
-          text: "경매글을 등록하면 다시 임시 저장 상태로 되돌릴 수 없습니다.\n경매글을 등록하시겠습니까?",
-          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-          showCancelButton: true,
-          cancelButtonText: "취소",
-        }).then(async function () {
-          // 이벤트
-          setIsLoading(true);
-
-          const today = new Date();
-          const year = today.getFullYear();
-          const month = String(today.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷
-          const day = String(today.getDate()).padStart(2, "0"); // 일자를 2자리로 포맷
-
-          const formattedDate = `${year}-${month}-${day}`;
-
-          const minutesToSubtract = parseInt(alretTime, 10);
-
-          const newTime = new Date(today.getTime() - minutesToSubtract * 60000);
-
-          // newTime을 원하는 형식으로 포맷팅하기 (예: "2023-09-14 12:30" 형태)
-          const newYear = newTime.getFullYear();
-          const newMonth = String(newTime.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 1을 더하고 두 자리로 포맷팅
-          const newDay = String(newTime.getDate()).padStart(2, "0");
-          const hours = String(newTime.getHours()).padStart(2, "0");
-          const minutes = String(newTime.getMinutes()).padStart(2, "0");
-
-          const formattedTime = `${newYear}-${newMonth}-${newDay}T${hours}:${minutes}`;
-
-          let priceReplace = price.replace(regExp, "");
-          let startPriceReplace = startPrice.replace(regExp, "");
-          let unitReplace = unit.replace(regExp, "");
-          const requestData = {
-            auctionIdx: auctionIdx,
-            state: "selling",
-            boardIdx: idx || "",
-            userIdx: currentUserIdx?.toString() || "",
-            title: title,
-            category: "auction",
-            description: description,
-            price: priceReplace,
-            gender: selectedGender || "",
-            size: selectedSize || "",
-            variety: variety,
-            pattern: pattern,
-            startPrice: startPriceReplace,
-            unit: unitReplace,
-            endTime: formattedDate + "T" + endTime,
-            alertTime: formattedTime,
-            extensionRule: rule,
-            birthDate: birthDate,
-            streamKey: streamKey,
-            userAccessToken: userAccessToken || "",
-            fileUrl: "",
-          };
-
-          if (
-            title !== "" &&
-            price !== "" &&
-            selectedGender !== "" &&
-            selectedSize !== "" &&
-            variety !== "" &&
-            pattern !== "" &&
-            startPrice !== "" &&
-            unit !== "" &&
-            endTime !== "" &&
-            rule !== "" &&
-            birthDate !== ""
-          ) {
-            if (allFiles.length === 0) {
-              Swal.fire({
-                text: "한 개 이상의 사진이나 동영상을 첨부해야 합니다.",
-                confirmButtonText: "확인",
-                confirmButtonColor: "#7A75F7",
-                customClass: {
-                  container: "z-[11111]", // Tailwind CSS class for z-index
-                },
-              });
-            } else {
-              const formData = new FormData();
-              addFiles.forEach((fileItem) => {
-                formData.append("files", fileItem.file || "");
-              });
-
-              const modifySqenceArr = allFiles.map(
-                (item) => item.mediaSequence
-              );
-              const deleteIdxArr = deletedFiles;
-              const FileIdx = addFiles.map((item) => item.mediaSequence);
-              // Append JSON data to the FormData object
-              formData.append(
-                "modifySqenceArr",
-                JSON.stringify(modifySqenceArr)
-              );
-              formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
-              formData.append("FileIdx", JSON.stringify(FileIdx));
-
-              try {
-                // Send both FormData and JSON data to the server
-                const response = await axios.patch(
-                  `https://www.reptimate.store/conv/board/update/${idx}`,
-                  formData,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${userAccessToken}`,
-                      "Content-Type": "multipart/form-data",
-                    },
-                  }
-                );
-                if (response.status === 201) {
-                  const responseData = response.data;
-                  // Now, you can send additional data to the API server
-                  const requestData1 = {
-                    auctionIdx: auctionIdx,
-                    state: "selling",
-                    boardIdx: idx,
-                    userIdx: currentUserIdx?.toString() || "",
-                    title: title,
-                    category: "auction",
-                    description: description,
-                    price: priceReplace,
-                    gender: selectedGender || "",
-                    size: selectedSize || "",
-                    variety: variety,
-                    pattern: pattern,
-                    startPrice: startPriceReplace,
-                    unit: unitReplace,
-                    endTime: formattedDate + "T" + endTime,
-                    alertTime: formattedTime,
-                    extensionRule: rule,
-                    birthDate: birthDate,
-                    streamKey: streamKey,
-                    userAccessToken: userAccessToken || "",
-                    fileUrl: responseData.result, // Use the response from the first server
-                  };
-                  mutation.mutate(requestData1);
-                } else {
-                  console.error("Error uploading files to the first server.");
-                  // alert("Error uploading files. Please try again later.");
-                  setIsLoading(false);
-                }
-              } catch (error) {
-                console.error("Error:", error);
-                // alert("An error occurred. Please try again later.");
-                setIsLoading(false);
-              }
-            }
-          } else {
-            // Create a list of missing fields
-            const missingFields = [];
-            if (title === "") missingFields.push("제목");
-            if (price === "") missingFields.push("시작 가격");
-            if (variety === "") missingFields.push("품종");
-            if (pattern === "") missingFields.push("모프");
-            if (startPrice === "" || "null") missingFields.push("시작 가격");
-            if (unit === "" || "null") missingFields.push("경매 단위");
-            if (endTime === "" || "null") missingFields.push("마감 시간");
-            if (rule === "" || "null") missingFields.push("연장 룰");
-            if (birthDate === "") missingFields.push("생년월일");
-            if (selectedGender === "" || "null") missingFields.push("성별");
-            if (selectedSize === "" || "null") missingFields.push("크기");
-
-            // Create the alert message based on missing fields
-            let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
-            alertMessage += missingFields.join(", ");
-
-            Swal.fire({
-              text: alertMessage,
-              confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-              confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-            });
-            setIsLoading(false);
-          }
+          text: "즉시 구입가는 1000원 이상이여야 합니다.",
+          confirmButtonText: "확인",
+          confirmButtonColor: "#7A75F7",
+          customClass: {
+            container: "z-[11111]", // Tailwind CSS class for z-index
+          },
+        });
+      } else if (startPrice == "" || startPrice.length < 4) {
+        Swal.fire({
+          text: "시작 가격은 1000원 이상이여야 합니다.",
+          confirmButtonText: "확인",
+          confirmButtonColor: "#7A75F7",
+          customClass: {
+            container: "z-[11111]", // Tailwind CSS class for z-index
+          },
+        });
+      } else if (unit == "" || unit.length < 4) {
+        Swal.fire({
+          text: "경매 단위는 1000원 이상이여야 합니다.",
+          confirmButtonText: "확인",
+          confirmButtonColor: "#7A75F7",
+          customClass: {
+            container: "z-[11111]", // Tailwind CSS class for z-index
+          },
         });
       } else {
-        // You can optionally provide feedback to the user (e.g., show an error message)
-        Swal.fire({
-          text: "마감 시간은 현재 시간 이후의 시간만 선택 가능합니다.",
-          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
-        });
+        // Update the endTime state only if the selected time is not before the current time
+        if (endTime >= currentTime) {
+          Swal.fire({
+            text: "경매글을 등록하면 다시 임시 저장 상태로 되돌릴 수 없습니다.\n경매글을 등록하시겠습니까?",
+            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+            confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+            showCancelButton: true,
+            cancelButtonText: "취소",
+          }).then(async function () {
+            // 이벤트
+            setIsLoading(true);
+
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷
+            const day = String(today.getDate()).padStart(2, "0"); // 일자를 2자리로 포맷
+
+            const formattedDate = `${year}-${month}-${day}`;
+
+            const minutesToSubtract = parseInt(alretTime, 10);
+
+            const newTime = new Date(
+              today.getTime() - minutesToSubtract * 60000
+            );
+
+            // newTime을 원하는 형식으로 포맷팅하기 (예: "2023-09-14 12:30" 형태)
+            const newYear = newTime.getFullYear();
+            const newMonth = String(newTime.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 1을 더하고 두 자리로 포맷팅
+            const newDay = String(newTime.getDate()).padStart(2, "0");
+            const hours = String(newTime.getHours()).padStart(2, "0");
+            const minutes = String(newTime.getMinutes()).padStart(2, "0");
+
+            const formattedTime = `${newYear}-${newMonth}-${newDay}T${hours}:${minutes}`;
+
+            let priceReplace = price.replace(regExp, "");
+            let startPriceReplace = startPrice.replace(regExp, "");
+            let unitReplace = unit.replace(regExp, "");
+            const requestData = {
+              auctionIdx: auctionIdx,
+              state: "selling",
+              boardIdx: idx || "",
+              userIdx: currentUserIdx?.toString() || "",
+              title: title,
+              category: "auction",
+              description: description,
+              price: priceReplace,
+              gender: selectedGender || "",
+              size: selectedSize || "",
+              variety: variety,
+              pattern: pattern,
+              startPrice: startPriceReplace,
+              unit: unitReplace,
+              endTime: formattedDate + "T" + endTime,
+              alertTime: formattedTime,
+              extensionRule: rule,
+              birthDate: birthDate,
+              streamKey: streamKey,
+              userAccessToken: userAccessToken || "",
+              fileUrl: "",
+            };
+
+            if (
+              title !== "" &&
+              price !== "" &&
+              selectedGender !== "" &&
+              selectedSize !== "" &&
+              variety !== "" &&
+              pattern !== "" &&
+              startPrice !== "" &&
+              unit !== "" &&
+              endTime !== "" &&
+              rule !== "" &&
+              birthDate !== ""
+            ) {
+              if (allFiles.length === 0) {
+                Swal.fire({
+                  text: "한 개 이상의 사진이나 동영상을 첨부해야 합니다.",
+                  confirmButtonText: "확인",
+                  confirmButtonColor: "#7A75F7",
+                  customClass: {
+                    container: "z-[11111]", // Tailwind CSS class for z-index
+                  },
+                });
+                setIsLoading(false);
+              } else {
+                const formData = new FormData();
+                addFiles.forEach((fileItem) => {
+                  formData.append("files", fileItem.file || "");
+                });
+
+                const modifySqenceArr = allFiles.map(
+                  (item) => item.mediaSequence
+                );
+                const deleteIdxArr = deletedFiles;
+                const FileIdx = addFiles.map((item) => item.mediaSequence);
+                // Append JSON data to the FormData object
+                formData.append(
+                  "modifySqenceArr",
+                  JSON.stringify(modifySqenceArr)
+                );
+                formData.append("deleteIdxArr", JSON.stringify(deleteIdxArr));
+                formData.append("FileIdx", JSON.stringify(FileIdx));
+
+                try {
+                  // Send both FormData and JSON data to the server
+                  const response = await axios.patch(
+                    `https://www.reptimate.store/conv/board/update/${idx}`,
+                    formData,
+                    {
+                      headers: {
+                        Authorization: `Bearer ${userAccessToken}`,
+                        "Content-Type": "multipart/form-data",
+                      },
+                    }
+                  );
+                  if (response.status === 201) {
+                    const responseData = response.data;
+                    // Now, you can send additional data to the API server
+                    const requestData1 = {
+                      auctionIdx: auctionIdx,
+                      state: "selling",
+                      boardIdx: idx,
+                      userIdx: currentUserIdx?.toString() || "",
+                      title: title,
+                      category: "auction",
+                      description: description,
+                      price: priceReplace,
+                      gender: selectedGender || "",
+                      size: selectedSize || "",
+                      variety: variety,
+                      pattern: pattern,
+                      startPrice: startPriceReplace,
+                      unit: unitReplace,
+                      endTime: formattedDate + "T" + endTime,
+                      alertTime: formattedTime,
+                      extensionRule: rule,
+                      birthDate: birthDate,
+                      streamKey: streamKey,
+                      userAccessToken: userAccessToken || "",
+                      fileUrl: responseData.result, // Use the response from the first server
+                    };
+                    mutation.mutate(requestData1);
+                  } else {
+                    console.error("Error uploading files to the first server.");
+                    // alert("Error uploading files. Please try again later.");
+                    setIsLoading(false);
+                  }
+                } catch (error) {
+                  console.error("Error:", error);
+                  // alert("An error occurred. Please try again later.");
+                  setIsLoading(false);
+                }
+              }
+            } else {
+              // Create a list of missing fields
+              const missingFields = [];
+              if (title === "") missingFields.push("제목");
+              if (price === "") missingFields.push("시작 가격");
+              if (variety === "") missingFields.push("품종");
+              if (pattern === "") missingFields.push("모프");
+              if (startPrice === "" || "null") missingFields.push("시작 가격");
+              if (unit === "" || "null") missingFields.push("경매 단위");
+              if (endTime === "" || "null") missingFields.push("마감 시간");
+              if (rule === "" || "null") missingFields.push("연장 룰");
+              if (birthDate === "") missingFields.push("생년월일");
+              if (selectedGender === "" || "null") missingFields.push("성별");
+              if (selectedSize === "" || "null") missingFields.push("크기");
+
+              // Create the alert message based on missing fields
+              let alertMessage = "아래 입력칸들은 공백일 수 없습니다. :\n";
+              alertMessage += missingFields.join(", ");
+
+              Swal.fire({
+                text: alertMessage,
+                confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+              });
+              setIsLoading(false);
+            }
+          });
+        } else {
+          // You can optionally provide feedback to the user (e.g., show an error message)
+          Swal.fire({
+            text: "마감 시간은 현재 시간 이후의 시간만 선택 가능합니다.",
+            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+            confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+          });
+        }
       }
     }
   };
@@ -638,6 +670,12 @@ export default function AuctionTemp() {
     event: ChangeEvent<HTMLInputElement>
   ) => {
     const inputValue = event.target.value;
+
+    if (inputValue.length === 1 && inputValue === "0") {
+      // Do nothing or show an error message
+      return;
+    }
+
     const num = /[0-9]/g;
     const eng = /[a-zA-Z]/g;
     const kor = /[\ㄱ-ㅎㅏ-ㅣ가-힣]/g;
@@ -854,7 +892,7 @@ export default function AuctionTemp() {
           <p className="font-bold text-xl my-2">즉시 구입가</p>
           <input
             type="text"
-            placeholder="즉시 구입가를 입력해주세요. (원)"
+            placeholder="즉시 구입가를 입력해주세요. (최소 1000원 이상)"
             className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
             value={price}
             onChange={(e) => handlePriceChange("price", e)}
@@ -865,7 +903,7 @@ export default function AuctionTemp() {
           <p className="font-bold text-xl my-2">시작 가격</p>
           <input
             type="text"
-            placeholder="시작 가격을 입력해주세요. (원)"
+            placeholder="시작 가격을 입력해주세요. (최소 1000원 이상)"
             className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
             value={startPrice}
             onChange={(e) => handlePriceChange("startPrice", e)}
@@ -876,7 +914,7 @@ export default function AuctionTemp() {
           <p className="font-bold text-xl my-2">경매 단위</p>
           <input
             type="text"
-            placeholder="경매 단위를 입력해주세요. (원)"
+            placeholder="경매 단위를 입력해주세요. (최소 1000원 이상)"
             className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-full"
             value={unit}
             onChange={(e) => handlePriceChange("unit", e)}
@@ -888,11 +926,12 @@ export default function AuctionTemp() {
             <input
               type="time"
               readOnly
-              className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-[90%]"
+              disabled
+              className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-5/6 bg-white"
               value={endTime}
             />
             <button
-              className={`w-[10%] py-2 rounded text-md text-white font-bold flex-1 bg-main-color`}
+              className={`w-1/6 py-2 rounded text-md text-white font-bold flex-1 bg-main-color`}
               onClick={handleOpenModal}
             >
               선택
