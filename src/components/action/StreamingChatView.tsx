@@ -203,7 +203,7 @@ export default function StreamingChatView() {
   }, []);
 
   useEffect(() => {
-    joinRoom();
+    joinRoom(userIdx, roomName, profilePath, nickname);
     joinBidRoom();
   }, [profilePath]);
 
@@ -230,7 +230,12 @@ export default function StreamingChatView() {
   // 방에 들어왔을 때 작동하는 함수
   // joinRoom() 정상작동엔 userIdx, roomName, profilePath, nickname 필요.
   // state에 값이 할당 되지 않을 경우 에러 발생
-  const joinRoom = () => {
+  const joinRoom = (userIdx: number, roomName:string, profilePath:string, nickname:string) => {
+    if (userIdx == 0 || !isLoggedIn || nickname == "") {
+      // console.log("return : joinRoom")
+      return;
+    }
+    // console.log("access : joinRoom")
     const socket = io("https://socket.reptimate.store/LiveChat", {
       path: "/socket.io",
     });
@@ -585,6 +590,11 @@ export default function StreamingChatView() {
    *************************************/
   //방에 들어왔을 때 작동하는 함수
   const joinBidRoom = () => {
+    if (userIdx == 0 || !isLoggedIn || nickname == "") {
+      // console.log("return : joinBidRoom");
+      return;
+    }
+    // console.log("access : joinBidRoom");
     const socketBid = io("https://socket.reptimate.store/AuctionChat", {
       path: "/socket.io",
     });

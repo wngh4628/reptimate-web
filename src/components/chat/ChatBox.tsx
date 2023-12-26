@@ -67,7 +67,7 @@ export default function PersonalChatBox() {
   const socketRef = useRef<Socket | null>(null);
 
   const reGenerateTokenMutation = useReGenerateTokenMutation();
-  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+  // const setIsLoggedIn = useSetRecoilState(isLoggedInState);
 
   const setchatRoomState = useSetRecoilState(chatRoomState);
   const [chatRoomVisisible, setchatRoomVisisibleState] = useRecoilState(chatRoomVisisibleState);
@@ -75,6 +75,7 @@ export default function PersonalChatBox() {
   const [isNewChat, setisNewChatState] = useRecoilState(isNewChatState);
   const [isNewChatIdx, setisNewChatIdx] = useRecoilState(isNewChatIdxState);
   const [receivedNewChat, setreceivedNewChat] = useRecoilState(receivedNewChatState);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   // const [chatRoom, setchatRoom] = useRecoilState(chatRoomState);
 
   const chatDivRef = useRef(null);
@@ -359,6 +360,11 @@ export default function PersonalChatBox() {
   //     }
   // }
   const joinRoom = () => {
+    if (userIdx == 0 || !isLoggedIn || nickname == "") {
+      console.log("return : joinRoom : personalchat");
+      return;
+    }
+    console.log("access : joinRoom : personalchat");
     const socket = io("https://socket.reptimate.store/chat", {
       path: "/socket.io",
     });
