@@ -86,20 +86,28 @@ export default function FreePostsView() {
    *
    ********************/
   const bookmarkClick = () => {
-    if (bookmarked) {
-      setBookmarked(false);
-      setBookmarkCnt(bookmarkCnt - 1);
-      boardDeleteMutation.mutate({
-        userAccessToken: accessToken,
-        boardIdx: data!.result.idx,
-      });
+    if(isLogin) {
+      if (bookmarked) {
+        setBookmarked(false);
+        setBookmarkCnt(bookmarkCnt - 1);
+        boardDeleteMutation.mutate({
+          userAccessToken: accessToken,
+          boardIdx: data!.result.idx,
+        });
+      } else {
+        setBookmarked(true);
+        setBookmarkCnt(bookmarkCnt + 1);
+        boardRegisterMutation.mutate({
+          userAccessToken: accessToken,
+          boardIdx: data!.result.idx,
+          userIdx: userIdx,
+        });
+      }
     } else {
-      setBookmarked(true);
-      setBookmarkCnt(bookmarkCnt + 1);
-      boardRegisterMutation.mutate({
-        userAccessToken: accessToken,
-        boardIdx: data!.result.idx,
-        userIdx: userIdx,
+      Swal.fire({
+        text: "로그인이 필요한 기능입니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
       });
     }
   };
@@ -107,18 +115,18 @@ export default function FreePostsView() {
   const boardRegisterMutation = useMutation({
     mutationFn: boardRegisterBookmark,
     onSuccess: (data) => {
-      console.log("===auctionRegisterMutation====");
-      console.log(data);
-      console.log("==============================");
+      // console.log("===auctionRegisterMutation====");
+      // console.log(data);
+      // console.log("==============================");
     },
   });
   // 북마크 삭제
   const boardDeleteMutation = useMutation({
     mutationFn: boardDeleteBookmark,
     onSuccess: (data) => {
-      console.log("===auctionDeleteMutation====");
-      console.log(data);
-      console.log("============================");
+      // console.log("===auctionDeleteMutation====");
+      // console.log(data);
+      // console.log("============================");
     },
   });
 
