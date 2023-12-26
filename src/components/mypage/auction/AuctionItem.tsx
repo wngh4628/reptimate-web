@@ -78,13 +78,9 @@ export default function AuctionItem({
               </div>
               <div className="absolute right-2 mt-2 flex items-center z-[999]">
                 <p
-                  className={`${
-                    state === "selling"
-                      ? "text-white bg-red-500 px-1 rounded-md"
-                      : state === "end"
-                      ? "text-white bg-black px-1 rounded-md"
-                      : "text-white bg-main-color px-1 rounded-md"
-                  } text-lg z-[999] relative`}
+                  className={
+                    "text-white bg-black px-1 rounded-md text-lg z-[999] relative"
+                  }
                 >
                   {setStateString(state)}
                 </p>
@@ -112,13 +108,9 @@ export default function AuctionItem({
               </div>
               <div className="absolute right-2 mt-2 flex items-center z-[999]">
                 <p
-                  className={`${
-                    state === "selling"
-                      ? "text-white bg-red-500 px-1 rounded-md"
-                      : state === "end"
-                      ? "text-white bg-black px-1 rounded-md"
-                      : "text-white bg-main-color px-1 rounded-md"
-                  } text-lg z-[999] relative`}
+                  className={
+                    "text-white bg-black px-1 rounded-md text-lg z-[999] relative"
+                  }
                 >
                   {setStateString(state)}
                 </p>
