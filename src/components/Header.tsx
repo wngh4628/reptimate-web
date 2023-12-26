@@ -721,7 +721,39 @@ export default function Header() {
               </div>
             </>
           )}
+          {isLoggedIn ? (
+            <>
+            <div className=
+              {`${pathName.startsWith("/my") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+                <Link className="ml-2 w-full" href={"/my"}>마이페이지</Link>
+              </div>
+            <div className=
+            {`border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+              <div className="ml-2 w-full" onClick={handleLogout}>로그아웃</div>
+            </div>
+          </>
+          ) : (
+            <>
+              <div className=
+              {`${pathName.startsWith("/login") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+                <Link className="ml-2 w-full" href={"/login"}>로그인</Link>
+              </div>
+              <div className=
+              {`${pathName.startsWith("/join") ? "text-main-color" : ""
+                } border-b-[1px] border-gray-300 h-[45px] flex items-center w-full`}>
+                <Link className="ml-2 w-full" href={"/join"}>회원가입</Link>
+              </div>
+            </>
+          )}
         </div>
+
+              
+
+          
+          
+
         )}
         
 
