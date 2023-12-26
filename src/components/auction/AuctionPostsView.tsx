@@ -201,20 +201,28 @@ export default function AuctionPostsView() {
    *
    ********************/
   const bookmarkClick = () => {
-    if (bookmarked) {
-      setBookmarked(false);
-      setBookmarkCnt(bookmarkCnt - 1);
-      auctionDeleteMutation.mutate({
-        userAccessToken: accessToken,
-        boardIdx: data!.result.boardAuction.boardIdx,
-      });
+    if (isLogin) {
+      if (bookmarked) {
+        setBookmarked(false);
+        setBookmarkCnt(bookmarkCnt - 1);
+        auctionDeleteMutation.mutate({
+          userAccessToken: accessToken,
+          boardIdx: data!.result.boardAuction.boardIdx,
+        });
+      } else {
+        setBookmarked(true);
+        setBookmarkCnt(bookmarkCnt + 1);
+        auctionRegisterMutation.mutate({
+          userAccessToken: accessToken,
+          boardIdx: data!.result.boardAuction.boardIdx,
+          userIdx: userIdx,
+        });
+      }
     } else {
-      setBookmarked(true);
-      setBookmarkCnt(bookmarkCnt + 1);
-      auctionRegisterMutation.mutate({
-        userAccessToken: accessToken,
-        boardIdx: data!.result.boardAuction.boardIdx,
-        userIdx: userIdx,
+      Swal.fire({
+        text: "로그인이 필요한 기능입니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
       });
     }
   };
