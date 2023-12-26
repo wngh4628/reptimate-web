@@ -206,6 +206,7 @@ export default function AuctionTemp() {
   const [startPrice, setstartPrice] = useState("");
   const [unit, setunit] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [endTime12, setEndTime12] = useState("마감 시간을 선택해주세요.");
   const [rule, setRule] = useState("");
   const [alretTime, setAlretTime] = useState("");
   const [streamKey, setStreamKey] = useState("");
@@ -283,6 +284,9 @@ export default function AuctionTemp() {
       );
       setunit(handleCommaReplace(post?.boardAuction.unit.toString()) || "");
       setEndTime(post?.boardAuction.endTime.split(" ")[1] || "");
+      setEndTime12(
+        convertTo12HourFormat(post?.boardAuction.endTime.split(" ")[1] || "")
+      );
       setRule(post?.boardAuction.extensionRule.toString() || "");
       if (post && post.boardAuction && post.boardAuction.AlertTime) {
         setAlretTime(post.boardAuction.AlertTime.split(" ")[1] || "");
@@ -743,6 +747,7 @@ export default function AuctionTemp() {
     // Update the endTime state only if the selected time is not before the current time
     if (selectedTime >= currentTime) {
       setEndTime(selectedTime);
+      setEndTime12(selectedTime);
     } else {
       // You can optionally provide feedback to the user (e.g., show an error message)
       Swal.fire({
@@ -753,6 +758,24 @@ export default function AuctionTemp() {
     }
     // You can perform further actions with the selected time
   };
+
+  function convertTo12HourFormat(time24: string) {
+    // Split the time into hours and minutes
+    const [hours, minutes] = time24.split(":");
+
+    // Convert hours to 12-hour format
+    let hours12 = parseInt(hours, 10);
+    const ampm = hours12 >= 12 ? "오후" : "오전";
+    hours12 = hours12 % 12 || 12; // Handle midnight (0) as 12
+
+    // Add leading zero to minutes if needed
+    const minutesWithLeadingZero = minutes.padStart(2, "0");
+
+    // Form the 12-hour time string with AM/PM
+    const time12 = `${ampm} ${hours12}:${minutesWithLeadingZero}`;
+
+    return time12;
+  }
 
   return (
     <div className="max-w-screen-md mx-auto mt-20 px-7">
@@ -923,19 +946,12 @@ export default function AuctionTemp() {
         <div className="mb-4">
           <p className="font-bold text-xl my-2">마감 시간</p>
           <div className="flex flex-row">
-            <input
-              type="time"
-              readOnly
-              disabled
-              className="focus:outline-none py-[8px] border-b-[1px] text-[17px] w-5/6 bg-white"
-              value={endTime}
-            />
-            <button
-              className={`w-1/6 py-2 rounded text-md text-white font-bold flex-1 bg-main-color`}
+            <p
+              className="focus:outline-none py-[8px] border-b-[1px] text-[17px] bg-white cursor-pointer"
               onClick={handleOpenModal}
             >
-              선택
-            </button>
+              {endTime12}
+            </p>
           </div>
         </div>
         <div className="mb-4">
