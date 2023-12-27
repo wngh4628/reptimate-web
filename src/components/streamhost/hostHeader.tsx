@@ -9,6 +9,7 @@ import { IMessage, connectMessage, userInfo } from "@/service/chat/chat";
 import { bannedUserState, noChatUserState } from "@/recoil/chatting";
 import axios from "axios";
 import { useRecoilState } from "recoil";
+import { isLoggedInState } from "@/recoil/user";
 import Swal from "sweetalert2";
 
 interface UserInfoData {
@@ -76,6 +77,7 @@ export default function HostStreamingInfoView() {
   const [countdown, setCountdown] = useState("");
 
   const [isInputDisabled, setIsInputDisabled] = useState(false); // 채팅 입력란 입력 가능여부
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
 
   useEffect(() => {
     const storedData = localStorage.getItem("recoil-persist");
@@ -215,6 +217,10 @@ export default function HostStreamingInfoView() {
 
   //방에 들어왔을 때 작동하는 함수
   const joinRoom = () => {
+    if (userIdx == 0 || !isLoggedIn || nickname == "") {
+      // console.log("return : joinRoom : personalchat");
+      return;
+    }
     const socket = io("https://socket.reptimate.store/LiveChat", {
       path: "/socket.io",
     });

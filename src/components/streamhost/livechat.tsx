@@ -211,6 +211,10 @@ export default function HostStreamingChatView() {
 
   //방에 들어왔을 때 작동하는 함수
   const joinRoom = () => {
+    if (userIdx == 0 || nickname == "") {
+      // console.log("return : joinRoom")
+      return;
+    }
     const socket = io("https://socket.reptimate.store/LiveChat", {
       path: "/socket.io",
     });
@@ -587,6 +591,10 @@ export default function HostStreamingChatView() {
    *************************************/
   //방에 들어왔을 때 작동하는 함수
   const joinBidRoom = () => {
+    if (userIdx == 0 || nickname == "") {
+      // console.log("return : joinRoom")
+      return;
+    }
     const socketBid = io("https://socket.reptimate.store/AuctionChat", {
       path: "/socket.io",
     });

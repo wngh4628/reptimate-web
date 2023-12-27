@@ -122,9 +122,6 @@ export default function PersonalChatBox() {
   
     fetchData(); // 함수 호출
 
-
-
-
   }, [])
 
   useEffect(() => {
@@ -361,10 +358,10 @@ export default function PersonalChatBox() {
   // }
   const joinRoom = () => {
     if (userIdx == 0 || !isLoggedIn || nickname == "") {
-      console.log("return : joinRoom : personalchat");
+      // console.log("return : joinRoom : personalchat");
       return;
     }
-    console.log("access : joinRoom : personalchat");
+    // console.log("access : joinRoom : personalchat");
     const socket = io("https://socket.reptimate.store/chat", {
       path: "/socket.io",
     });
