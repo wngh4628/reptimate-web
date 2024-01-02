@@ -37,7 +37,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ imageUrls }) => {
           <img
             src={currentImage.path}
             alt={`Image ${currentIndex}`}
-            className="absolute inset-0 w-full h-full object-contain bg-white object-cover"
+            className="absolute inset-0 w-full h-full object-contain bg-white"
           />
           <div className="absolute inset-x-0 bottom-2 flex justify-center">
             {imageUrls.map((_, index) => (
