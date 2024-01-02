@@ -565,12 +565,14 @@ export default function AskPostsView() {
                     </div>
                   </div>
                   <div className="relative ml-auto">
-                    <button
-                      onClick={toggleMenu}
-                      className="text-gray-500 cursor-pointer "
-                    >
-                      <p className="text-[24px]">⁝</p>
-                    </button>
+                    {isCurrentUserComment && (
+                      <button
+                        onClick={toggleMenu}
+                        className="text-gray-500 cursor-pointer "
+                      >
+                        <p className="text-[24px]">⁝</p>
+                      </button>
+                    )}
                     {menuOpen && (
                       <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
                         {isCurrentUserComment ? (
@@ -595,17 +597,19 @@ export default function AskPostsView() {
                             </li>
                           </ul>
                         ) : (
-                          <ul>
-                            <li
-                              onClick={() => {
-                                handleReport();
-                                toggleMenu();
-                              }}
-                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                            >
-                              신고
-                            </li>
-                          </ul>
+                          <></>
+                          // <ul>
+                          //   <li
+                          //     onClick={() => {
+                          //       handleReport();
+                          //       toggleMenu();
+                          //     }}
+                          //     className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                          //   >
+                          //     신고
+                          //   </li>
+                          // </ul>
+
                         )}
                       </div>
                     )}
@@ -708,15 +712,19 @@ export default function AskPostsView() {
                   </div>
                 </div>
                 <div className="relative ml-auto">
-                  <button
-                    onClick={toggleMenu}
-                    className="text-gray-500 cursor-pointer text-xl"
-                  >
-                    ⁝
-                  </button>
+                  
+                  {isCurrentUserComment && (
+                      <button
+                        onClick={toggleMenu}
+                        className="text-gray-500 cursor-pointer text-xl"
+                      >
+                        <p className="text-[24px]">⁝</p>
+                      </button>
+                  )}
                   {menuOpen && (
-                    <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
+                    <div>
                       {isCurrentUserComment ? (
+                        <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
                         <ul>
                           <li
                             onClick={() => {
@@ -737,18 +745,22 @@ export default function AskPostsView() {
                             삭제
                           </li>
                         </ul>
+                        </div>
                       ) : (
-                        <ul>
-                          <li
-                            onClick={() => {
-                              handleReport();
-                              toggleMenu();
-                            }}
-                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                          >
-                            신고
-                          </li>
-                        </ul>
+                        <></>
+                        // <div className="flex items-center justify-center absolute right-0 mt-1 w-20 bg-white border border-gray-200 shadow-lg rounded z-50">
+                        //   <ul>
+                        //     <li
+                        //       onClick={() => {
+                        //         handleReport();
+                        //         toggleMenu();
+                        //       }}
+                        //       className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                        //     >
+                        //       신고
+                        //     </li>
+                        //   </ul>
+                        // </div>
                       )}
                     </div>
                   )}
