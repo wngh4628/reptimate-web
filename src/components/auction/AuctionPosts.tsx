@@ -240,7 +240,7 @@ export default function AuctionPosts() {
       </PC>
       <Mobile>
         {isLogin && (
-          <div className="fixed bottom-6 right-6 z-[1000]">
+          <div className="fixed bottom-12 right-6 z-[1000]">
             <button
               className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-4xl"
               onClick={handleWriteClick}
