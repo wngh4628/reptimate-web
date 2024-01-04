@@ -122,7 +122,7 @@ export default function BoardCard({
       </Mobile>
       <PC>
         <div className="mt-1 mb-6 flex flex-col">
-          <div style={{ marginLeft: 10 }}>
+          <div style={{ marginLeft: 1, marginRight: 5 }}>
             <h3 className="text-[14px]">{title}</h3>
             <div className="flex items-center ">
               <p className="text-[13px] text-[#606060]">조회수</p>
