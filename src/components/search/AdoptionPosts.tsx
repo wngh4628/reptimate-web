@@ -116,6 +116,7 @@ export default function AdoptionPosts() {
           variety: "예시 종류",
           state: "입양 가능",
           view: 1,
+          hasBookmarked: false,
         }))
       : [];
 
