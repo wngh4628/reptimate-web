@@ -66,10 +66,26 @@ export default function ActionPage({ params: { slug } }: Props) {
     }
   }, []);
 
+  let userAccessToken: string | null = null;
+  let currentUserIdx: number | null = 0;
+  let userProfilePath: string | null = null;
+  let userNickname: string | null = null;
+  if (typeof window !== "undefined") {
+    // Check if running on the client side
+    const storedData = localStorage.getItem("recoil-persist");
+    if (storedData != null) {
+      const userData = JSON.parse(storedData || "");
+      currentUserIdx = userData.USER_DATA.idx;
+      userAccessToken = userData.USER_DATA.accessToken;
+      userProfilePath = userData.USER_DATA.profilePath;
+      userNickname = userData.USER_DATA.nickname;
+    }
+  }
+
   const getData = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${userIdx}`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${currentUserIdx}`
       );
       // Assuming your response data has a 'result' property
       console.log(response.data);
