@@ -341,6 +341,8 @@ export default function MarketPostsView() {
         `${process.env.NEXT_PUBLIC_API_URL}/board/${idx}?userIdx=${currentUserIdx}`
       );
       setCommentCnt(response.data.result.commentCnt);
+      setBookmarkCnt(response.data.result.bookmarkCounts);
+      setBookmarked(response.data.result.hasBookmarked);
       // Assuming your response data has a 'result' property
       setData(response.data);
     } catch (error) {

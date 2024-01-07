@@ -90,7 +90,7 @@ export default function AdoptionPostsView() {
    *
    ********************/
   const bookmarkClick = () => {
-    if(isLogin) {
+    if (isLogin) {
       if (bookmarked) {
         setBookmarked(false);
         setBookmarkCnt(bookmarkCnt - 1);
@@ -327,6 +327,8 @@ export default function AdoptionPostsView() {
       // Assuming your response data has a 'result' property
       setData(response.data);
       setCommentCnt(response.data.result.commentCnt);
+      setBookmarkCnt(response.data.result.bookmarkCounts);
+      setBookmarked(response.data.result.hasBookmarked);
     } catch (error) {
       // console.error("Error fetching data:", error);
     }

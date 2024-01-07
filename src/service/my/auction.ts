@@ -53,6 +53,7 @@ export interface getResponseAuction {
         state: string;
         streamKey: string;
       };
+      hasBookmarked: boolean;
     }>;
   };
 }
@@ -71,6 +72,7 @@ export type Auction = {
   thumbnail: string;
   profilePath: string;
   nickname: string;
+  hasBookmarked: boolean;
 };
 export interface getResponseBid {
   status: number;
@@ -106,6 +108,7 @@ export interface getResponseBid {
         commentCnt: number;
         status: string;
       };
+      hasBookmarked: boolean;
     }>;
   };
 }
@@ -121,6 +124,7 @@ export type Bid = {
   message: number;
   action: string;
   title: string;
+  hasBookmarked: boolean;
 };
 
 export interface GetAuctionPostsView {
@@ -184,6 +188,8 @@ export interface GetAuctionPostsView {
       endTime: string;
       state: number;
     };
+    bookmarkCounts: number;
+    hasBookmarked: boolean;
   };
 }
 
@@ -247,5 +253,7 @@ export interface GetAuctionPostsBid {
       state: string;
       streamKey: string;
     };
+    bookmarkCounts: number;
+    hasBookmarked: boolean;
   };
 }

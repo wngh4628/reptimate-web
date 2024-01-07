@@ -87,7 +87,7 @@ export default function AskPostsView() {
    *
    ********************/
   const bookmarkClick = () => {
-    if(isLogin) {
+    if (isLogin) {
       if (bookmarked) {
         setBookmarked(false);
         setBookmarkCnt(bookmarkCnt - 1);
@@ -323,6 +323,8 @@ export default function AskPostsView() {
       );
       // Assuming your response data has a 'result' property
       setCommentCnt(response.data.result.commentCnt);
+      setBookmarkCnt(response.data.result.bookmarkCounts);
+      setBookmarked(response.data.result.hasBookmarked);
       setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);

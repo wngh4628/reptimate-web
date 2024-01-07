@@ -15,6 +15,7 @@ export interface getResponseBoard {
       description: string;
       writeDate: string;
     }>;
+    hasBookmarked: boolean;
   };
 }
 export type Board = {
@@ -24,6 +25,7 @@ export type Board = {
   title: string;
   view: number;
   writeDate: Date;
+  hasBookmarked: boolean;
 };
 
 export interface getResponse {
@@ -54,6 +56,7 @@ export interface getResponse {
         path: string;
         coverImgPath: string | null;
       }>;
+      hasBookmarked: boolean;
       UserInfo: {
         idx: number;
         nickname: string;
@@ -73,6 +76,7 @@ export type Posts = {
   writeDate: Date;
   nickname: string;
   profilePath: string;
+  hasBookmarked: boolean;
 };
 
 export interface GetPostsView {
@@ -103,6 +107,8 @@ export interface GetPostsView {
       nickname: string;
       profilePath: string;
     };
+    bookmarkCounts: number;
+    hasBookmarked: boolean;
   };
 }
 

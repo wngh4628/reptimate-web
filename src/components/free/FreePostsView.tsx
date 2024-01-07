@@ -86,7 +86,7 @@ export default function FreePostsView() {
    *
    ********************/
   const bookmarkClick = () => {
-    if(isLogin) {
+    if (isLogin) {
       if (bookmarked) {
         setBookmarked(false);
         setBookmarkCnt(bookmarkCnt - 1);
@@ -333,6 +333,8 @@ export default function FreePostsView() {
       );
       // Assuming your response data has a 'result' property
       setCommentCnt(response.data.result.commentCnt);
+      setBookmarkCnt(response.data.result.bookmarkCounts);
+      setBookmarked(response.data.result.hasBookmarked);
       setData(response.data);
       console.log("==========getData : freepostview.tsx===========");
       console.log("*");

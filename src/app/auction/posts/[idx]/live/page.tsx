@@ -77,6 +77,8 @@ export default function ActionPage({ params: { slug } }: Props) {
       if (response.data && response.data.result) {
         setActionTitle(response.data.result.title);
         setDescription(response.data.result.description);
+        setBookmarkCnt(response.data.result.bookmarkCounts);
+        setBookmarked(response.data.result.hasBookmarked);
         if (response.data.result.UserInfo) {
           setNickname(response.data.result.UserInfo.nickname);
           setProfilePath(response.data.result.UserInfo.profilePath);
@@ -96,7 +98,7 @@ export default function ActionPage({ params: { slug } }: Props) {
    *
    ********************/
   const bookmarkClick = () => {
-    if(isLogin) {
+    if (isLogin) {
       if (bookmarked) {
         setBookmarked(false);
         setBookmarkCnt(bookmarkCnt - 1);
@@ -120,7 +122,6 @@ export default function ActionPage({ params: { slug } }: Props) {
         confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
       });
     }
-    
   };
   // 북마크 등록
   const auctionRegisterMutation = useMutation({
@@ -218,7 +219,7 @@ export default function ActionPage({ params: { slug } }: Props) {
                       width={20}
                       height={20}
                       alt="북마크"
-                      className="like_btn m-auto mr-1"
+                      className="like_btn m-auto mr-1 mt-1"
                     />
                   </a>
                 ) : (
@@ -228,7 +229,7 @@ export default function ActionPage({ params: { slug } }: Props) {
                       width={20}
                       height={20}
                       alt="북마크"
-                      className="like_btn m-auto mr-1"
+                      className="like_btn m-auto mr-1 mt-1"
                     />
                   </a>
                 )}

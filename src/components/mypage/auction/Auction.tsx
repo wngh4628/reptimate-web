@@ -104,8 +104,6 @@ export default function AuctionList() {
           setENP(response.data?.result.existsNextPage);
           setBoardPage((prevPage) => prevPage + 1);
           // console.log(data);
-          
-
         } else {
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_API_URL}/mypage/bid?page=${replyPage}&size=20&order=DESC`,
@@ -230,6 +228,7 @@ export default function AuctionList() {
     state: item.boardAuction?.state,
     unit: item.boardAuction?.unit,
     boardIdx: item.boardAuction?.boardIdx,
+    hasBookmarked: item.hasBookmarked,
   }));
   const replyItemlist: Bid[] = (replyData?.result.items ?? []).map((item) => ({
     idx: item.board.idx,
@@ -243,6 +242,7 @@ export default function AuctionList() {
     message: item.message,
     action: item.action,
     title: item.board.title,
+    hasBookmarked: item.hasBookmarked,
   }));
 
   return (

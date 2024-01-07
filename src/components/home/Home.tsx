@@ -11,6 +11,8 @@ import { Posts } from "@/service/my/board";
 import AuctionPostCard from "../auction/AucutionPostCard";
 import BoardCard from "../BoardCard";
 import Link from "next/link";
+import { useRecoilState } from "recoil";
+import { isLoggedInState } from "@/recoil/user";
 
 export default function HomePosts() {
   const [data1, setData1] = useState<getResponseAuction | null>(null); // 옥션 데이터
@@ -19,13 +21,30 @@ export default function HomePosts() {
   const [data4, setData4] = useState<getResponse | null>(null); // 자유 데이터
   const [data5, setData5] = useState<getResponse | null>(null); // 질문 데이터
   const [loading, setLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+
+  let userAccessToken: string | null = null;
+  let currentUserIdx: number | null = 0;
+  let userProfilePath: string | null = null;
+  let userNickname: string | null = null;
+  if (typeof window !== "undefined") {
+    // Check if running on the client side
+    const storedData = localStorage.getItem("recoil-persist");
+    if (storedData != null) {
+      const userData = JSON.parse(storedData || "");
+      currentUserIdx = userData.USER_DATA.idx;
+      userAccessToken = userData.USER_DATA.accessToken;
+      userProfilePath = userData.USER_DATA.profilePath;
+      userNickname = userData.USER_DATA.nickname;
+    }
+  }
 
   const getItems = useCallback(async () => {
     setLoading(true);
     try {
       //옥션 게시글 목록 api
       const response1 = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board/auction?page=1&size=5&order=DESC&orderCriteria=created&category=auctionSelling`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/auction?page=1&size=5&order=DESC&orderCriteria=created&category=auctionSelling&userIdx=${currentUserIdx}`
       );
       setData1(
         (prevData) =>
@@ -42,7 +61,7 @@ export default function HomePosts() {
 
       // 분양글 게시글 목록 api
       const response2 = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board?page=1&size=5&order=DESC&orderCriteria=created&category=adoption`
+        `${process.env.NEXT_PUBLIC_API_URL}/board?page=1&size=5&order=DESC&orderCriteria=created&category=adoption&userIdx=${currentUserIdx}`
       );
       setData2(
         (prevData) =>
@@ -57,9 +76,11 @@ export default function HomePosts() {
           } as getResponse)
       );
 
+      console.log(response2);
+
       // 중고거래 게시글 목록 api
       const response3 = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board?page=1&size=5&order=DESC&orderCriteria=created&category=market`
+        `${process.env.NEXT_PUBLIC_API_URL}/board?page=1&size=5&order=DESC&orderCriteria=created&category=market&userIdx=${currentUserIdx}`
       );
       setData3(
         (prevData) =>
@@ -76,7 +97,7 @@ export default function HomePosts() {
 
       // 자유 게시글 목록 api
       const response4 = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board?page=1&size=5&order=DESC&orderCriteria=created&category=free`
+        `${process.env.NEXT_PUBLIC_API_URL}/board?page=1&size=5&order=DESC&orderCriteria=created&category=free&userIdx=${currentUserIdx}`
       );
       setData4(
         (prevData) =>
@@ -93,7 +114,7 @@ export default function HomePosts() {
 
       // 질문 게시글 목록 api
       const response5 = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board?page=1&size=5&order=DESC&orderCriteria=created&category=ask`
+        `${process.env.NEXT_PUBLIC_API_URL}/board?page=1&size=5&order=DESC&orderCriteria=created&category=ask&userIdx=${currentUserIdx}`
       );
       setData5(
         (prevData) =>
@@ -138,6 +159,7 @@ export default function HomePosts() {
           unit: item.boardAuction?.unit,
           boardIdx: item.boardAuction?.boardIdx,
           profilePath: item.UserInfo.profilePath,
+          hasBookmarked: item.hasBookmarked,
         }))
       : [];
 
@@ -159,6 +181,7 @@ export default function HomePosts() {
           size: item.boardCommercial.size,
           variety: item.boardCommercial.variety,
           state: item.boardCommercial.state,
+          hasBookmarked: item.hasBookmarked,
         }))
       : [];
 
@@ -180,6 +203,7 @@ export default function HomePosts() {
           size: item.boardCommercial.size,
           variety: item.boardCommercial.variety,
           state: item.boardCommercial.state,
+          hasBookmarked: item.hasBookmarked,
         }))
       : [];
 
@@ -196,6 +220,7 @@ export default function HomePosts() {
           thumbnail: item.thumbnail,
           nickname: item.UserInfo.nickname,
           profilePath: item.UserInfo.profilePath,
+          hasBookmarked: item.hasBookmarked,
         }))
       : [];
 
@@ -212,6 +237,7 @@ export default function HomePosts() {
           thumbnail: item.thumbnail,
           nickname: item.UserInfo.nickname,
           profilePath: item.UserInfo.profilePath,
+          hasBookmarked: item.hasBookmarked,
         }))
       : [];
 
