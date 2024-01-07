@@ -14,8 +14,8 @@ export interface getResponseBoard {
       view: number;
       description: string;
       writeDate: string;
+      hasBookmarked: boolean;
     }>;
-    hasBookmarked: boolean;
   };
 }
 export type Board = {
