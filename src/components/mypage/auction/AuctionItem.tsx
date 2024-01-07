@@ -18,6 +18,7 @@ export default function AuctionItem({
     state,
     title,
     thumbnail,
+    hasBookmarked,
   },
 }: Props) {
   function formatDateToCustomString(date: Date): string {
@@ -76,6 +77,18 @@ export default function AuctionItem({
                   />
                 </div>
               </div>
+              {/*북마크 여부*/}
+              <div className="absolute bottom-0 right-2 mb-2 flex items-center z-[999]">
+                {hasBookmarked && (
+                  <Image
+                    className="mr-1 w-6 h-6"
+                    width={10}
+                    height={10}
+                    src="/img/like_maincolor.png"
+                    alt=""
+                  />
+                )}
+              </div>
               <div className="absolute right-2 mt-2 flex items-center z-[999]">
                 <p
                   className={
@@ -105,6 +118,18 @@ export default function AuctionItem({
                     style={{ zIndex: 1 }}
                   />
                 </div>
+              </div>
+              {/*북마크 여부*/}
+              <div className="absolute bottom-0 right-0 mb-1 flex items-center z-[999]">
+                {hasBookmarked && (
+                  <Image
+                    className="mr-1 w-5 h-5"
+                    width={10}
+                    height={10}
+                    src="/img/like_maincolor.png"
+                    alt=""
+                  />
+                )}
               </div>
               <div className="absolute right-2 mt-2 flex items-center z-[999]">
                 <p

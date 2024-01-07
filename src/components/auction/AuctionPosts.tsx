@@ -46,11 +46,27 @@ export default function AuctionPosts() {
     setData(null);
   };
 
+  let userAccessToken: string | null = null;
+  let currentUserIdx: number | null = 0;
+  let userProfilePath: string | null = null;
+  let userNickname: string | null = null;
+  if (typeof window !== "undefined") {
+    // Check if running on the client side
+    const storedData = localStorage.getItem("recoil-persist");
+    if (storedData != null) {
+      const userData = JSON.parse(storedData || "");
+      currentUserIdx = userData.USER_DATA.idx;
+      userAccessToken = userData.USER_DATA.accessToken;
+      userProfilePath = userData.USER_DATA.profilePath;
+      userNickname = userData.USER_DATA.nickname;
+    }
+  }
+
   const getItems = useCallback(async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/board/auction?page=${page}&size=20&${sort}&category=auctionSelling`
+        `${process.env.NEXT_PUBLIC_API_URL}/board/auction?page=${page}&size=20&${sort}&category=auctionSelling&userIdx=${currentUserIdx}`
       );
       setData(
         (prevData) =>
@@ -121,6 +137,7 @@ export default function AuctionPosts() {
           unit: item.boardAuction?.unit,
           boardIdx: item.boardAuction?.boardIdx,
           profilePath: item.UserInfo.profilePath,
+          hasBookmarked: item.hasBookmarked,
         }))
       : [];
 

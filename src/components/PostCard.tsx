@@ -19,6 +19,7 @@ export default function PostCard({
     price,
     gender,
     size,
+    hasBookmarked,
   },
 }: Props) {
   const imgStyle = {
@@ -59,6 +60,18 @@ export default function PostCard({
                 alt={""}
               />
               <p className="text-white font-semibold ml-1">{nickname}</p>
+            </div>
+            {/*북마크 여부*/}
+            <div className="absolute bottom-0 right-2 mb-2 flex items-center z-[999]">
+              {hasBookmarked && (
+                <Image
+                  className="mr-1 w-6 h-6"
+                  width={10}
+                  height={10}
+                  src="/img/like_maincolor.png"
+                  alt=""
+                />
+              )}
             </div>
           </Link>
         </div>
@@ -104,6 +117,18 @@ export default function PostCard({
                 <p className="text-white font-semibold text-sm ml-1">
                   {nickname}
                 </p>
+              </div>
+              {/*북마크 여부*/}
+              <div className="absolute bottom-0 right-0 mb-1 flex items-center z-[999]">
+                {hasBookmarked && (
+                  <Image
+                    className="mr-1 w-5 h-5"
+                    width={10}
+                    height={10}
+                    src="/img/like_maincolor.png"
+                    alt=""
+                  />
+                )}
               </div>
             </div>
           </div>
