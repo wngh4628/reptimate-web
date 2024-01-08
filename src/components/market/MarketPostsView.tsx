@@ -186,8 +186,17 @@ export default function MarketPostsView() {
 
   const handleChat = () => {
     //1:1채팅 코드
-    setIsChatVisisible(true);
-    checkChatRoom(accessToken);
+    if (isLogin) {
+      setIsChatVisisible(true);
+      checkChatRoom(accessToken);
+    } else {
+      // 로그인 상태가 아닐 때
+      Swal.fire({
+        text: "로그인이 필요한 기능입니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
+    }
   };
   function intoChatting(
     idx: number,
