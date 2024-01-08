@@ -251,9 +251,17 @@ export default function AuctionPostsView() {
 
   const handleChat = () => {
     //1:1채팅 코드
-    setIsChatVisisible(true);
-    checkChatRoom(accessToken);
-    console.log("accesscode? : ", accessToken);
+    if (isLogin) {
+      setIsChatVisisible(true);
+      checkChatRoom(accessToken);
+    } else {
+      // 로그인 상태가 아닐 때
+      Swal.fire({
+        text: "로그인이 필요한 기능입니다.",
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+      });
+    }
   };
   function intoChatting(
     idx: number,
@@ -826,7 +834,7 @@ export default function AuctionPostsView() {
   };
   //메시지 발송하는 함수
   const sendBidMsg = async () => {
-    if(isInputDisabled) {
+    if (isInputDisabled) {
       Swal.fire({
         text: " 경매가 종료되어 입찰이 불가합니다.",
         icon: "warning",
@@ -1614,16 +1622,15 @@ export default function AuctionPostsView() {
                     )}
                     {isLogin && (
                       <button
-                      className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-1"
-                      onClick={handleChatClick}
-                    >
-                      <img
-                        src="/img/chat_view.png"
-                        className="w-9 h-9 filter invert"
-                      />
-                    </button>
+                        className="w-14 h-14 rounded-full bg-main-color text-white flex justify-center items-center text-xl font-bold mb-1"
+                        onClick={handleChatClick}
+                      >
+                        <img
+                          src="/img/chat_view.png"
+                          className="w-9 h-9 filter invert"
+                        />
+                      </button>
                     )}
-                    
                   </div>
                 )}
                 {LiveMenuOpen && (
