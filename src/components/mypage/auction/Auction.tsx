@@ -30,6 +30,17 @@ import AuctionItem from "./AuctionItem";
 import AuctionBidItem from "./AuctionBidItem";
 import Swal from "sweetalert2";
 
+interface Option {
+  value: string;
+  label: string;
+}
+
+const sortOption: Option[] = [
+  { value: "auctionTemp", label: "임시저장" },
+  { value: "auctionSelling", label: "진행중" },
+  { value: "auctionEnd", label: "종료" },
+];
+
 export default function AuctionList() {
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
   const reGenerateTokenMutation = useReGenerateTokenMutation();
@@ -51,9 +62,20 @@ export default function AuctionList() {
 
   const [myAuctionType, setMyAuctionType] = useState(0);
 
+  const [sort, setSort] = useState("auctionTemp");
+
   const pathName = usePathname() || "";
   const options = {
     threshold: 1.0,
+  };
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedSort = e.target.value;
+    setSort(selectedSort);
+    setBoardPage(1);
+
+    setData(null);
+    setMyAuctionType(0);
   };
 
   function onMyAuctionTypeChange() {
@@ -76,7 +98,7 @@ export default function AuctionList() {
   }
 
   const getItems = useCallback(
-    async (accessToken: any, myAuctionType: number) => {
+    async (accessToken: any, myAuctionType: number, category: string) => {
       setLoading(true);
       try {
         const config = {
@@ -86,7 +108,7 @@ export default function AuctionList() {
         };
         if (myAuctionType == 0) {
           const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_API_URL}/mypage/auction?page=${boardPage}&size=20&order=DESC&category=auction`,
+            `${process.env.NEXT_PUBLIC_API_URL}/mypage/auction?page=${boardPage}&size=20&order=DESC&category=${category}`,
             config
           );
           setData(
@@ -141,7 +163,7 @@ export default function AuctionList() {
                 {
                   onSuccess: (data) => {
                     // api call 재선언
-                    getItems(data, myAuctionType);
+                    getItems(data, myAuctionType, sort);
                   },
                   onError: () => {
                     router.replace("/");
@@ -178,7 +200,7 @@ export default function AuctionList() {
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
 
-        getItems(extractedAccessToken, myAuctionType);
+        getItems(extractedAccessToken, myAuctionType, sort);
       } else {
         router.replace("/");
         setIsLoggedIn(false);
@@ -189,13 +211,13 @@ export default function AuctionList() {
         });
       }
     }
-  }, [myAuctionType]);
+  }, [myAuctionType, sort]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting && !loading && existNextPage) {
-          getItems(accessToken, myAuctionType);
+          getItems(accessToken, myAuctionType, sort);
         }
       });
     }, options);
@@ -290,7 +312,27 @@ export default function AuctionList() {
           </div>
 
           {myAuctionType == 0 ? (
-            <ul className="w-full mt-5 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
+            <div className="flex items-center relative mr-2">
+              <div className="relative ml-auto">
+                <select
+                  className="text-black bg-white p-1 border-[1px] rounded-md focus:outline-none text-lg font-semibold my-2 "
+                  value={sort}
+                  onChange={handleSortChange}
+                >
+                  {sortOption.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          ) : (
+            <div></div>
+          )}
+
+          {myAuctionType == 0 ? (
+            <ul className="w-full grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
               {boardItemlist.map((post) => (
                 <li key={post.idx}>
                   <AuctionItem post={post} />
