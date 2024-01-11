@@ -113,7 +113,7 @@ export default function FreeEdit() {
       setData(response.data);
       const post = response.data.result;
       setTitle(post?.title || "");
-      setDescription(post?.description || "");
+      setDescription(post?.description.replace(/<br>/g, "\n") || "");
       setAllFiles(
         post.images.map((item: Images) => ({
           idx: item.idx,
@@ -235,7 +235,7 @@ export default function FreeEdit() {
       userIdx: currentUserIdx || 0,
       title: title,
       category: "free",
-      description: description,
+      description: description.replace(/\n/g, "<br>"),
       userAccessToken: userAccessToken || "",
       fileUrl: "",
     };
@@ -278,7 +278,7 @@ export default function FreeEdit() {
               userIdx: currentUserIdx || 0,
               title: title,
               category: "free",
-              description: description,
+              description: description.replace(/\n/g, "<br>"),
               userAccessToken: userAccessToken || "",
               fileUrl: "",
             };

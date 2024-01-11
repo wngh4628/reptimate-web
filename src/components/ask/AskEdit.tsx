@@ -114,7 +114,7 @@ export default function AskEdit() {
       setData(response.data);
       const post = response.data.result;
       setTitle(post?.title || "");
-      setDescription(post?.description || "");
+      setDescription(post?.description.replace(/<br>/g, "\n") || "");
       setAllFiles(
         post.images.map((item: Images) => ({
           idx: item.idx,
@@ -236,7 +236,7 @@ export default function AskEdit() {
       userIdx: currentUserIdx || 0,
       title: title,
       category: "ask",
-      description: description,
+      description: description.replace(/\n/g, "<br>"),
       userAccessToken: userAccessToken || "",
       fileUrl: "",
     };
@@ -278,7 +278,7 @@ export default function AskEdit() {
               userIdx: currentUserIdx || 0,
               title: title,
               category: "ask",
-              description: description,
+              description: description.replace(/\n/g, "<br>"),
               userAccessToken: userAccessToken || "",
               fileUrl: "",
             };

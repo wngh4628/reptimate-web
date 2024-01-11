@@ -142,7 +142,7 @@ export default function FreeWrite() {
       userIdx: userIdx || "",
       title: title,
       category: "free",
-      description: description,
+      description: description.replace(/\n/g, "<br>"),
       userAccessToken: userAccessToken || "",
       fileUrl: "",
     };
@@ -173,7 +173,7 @@ export default function FreeWrite() {
               userIdx: userIdx || "",
               title: title,
               category: "free",
-              description: description,
+              description: description.replace(/\n/g, "<br>"),
               userAccessToken: userAccessToken || "",
               fileUrl: responseData.result, // Use the response from the first server
             };
