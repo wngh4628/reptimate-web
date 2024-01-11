@@ -278,7 +278,7 @@ export default function AuctionTemp() {
       setPrice(
         handleCommaReplace(post?.boardAuction.buyPrice.toString()) || ""
       );
-      setDescription(post?.description || "");
+      setDescription(post?.description.replace(/<br>/g, "\n") || "");
       setstartPrice(
         handleCommaReplace(post?.boardAuction.startPrice.toString()) || ""
       );
@@ -521,7 +521,7 @@ export default function AuctionTemp() {
               userIdx: currentUserIdx?.toString() || "",
               title: title,
               category: "auction",
-              description: description,
+              description: description.replace(/\n/g, "<br>"),
               price: priceReplace,
               gender: selectedGender || "",
               size: selectedSize || "",
@@ -602,7 +602,7 @@ export default function AuctionTemp() {
                       userIdx: currentUserIdx?.toString() || "",
                       title: title,
                       category: "auction",
-                      description: description,
+                      description: description.replace(/\n/g, "<br>"),
                       price: priceReplace,
                       gender: selectedGender || "",
                       size: selectedSize || "",

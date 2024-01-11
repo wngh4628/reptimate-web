@@ -94,9 +94,9 @@ export default function ReplyCard({
   const editMutation = useMutation({
     mutationFn: commentEdit,
     onSuccess: (data) => {
-      setEditedComment(data.data.result.description);
+      setEditedComment(data.data.result.description.replace(/<br>/g, "\n"));
       setIsEditing(false);
-      onEdit(idx, data.data.result.description);
+      onEdit(idx, data.data.result.description.replace(/<br>/g, "\n"));
     },
   });
 
@@ -105,7 +105,7 @@ export default function ReplyCard({
       boardIdx: boardIdx,
       category: "reply",
       commentIdx: idx,
-      description: editComment,
+      description: editComment.replace(/\n/g, "<br>"),
       userAccessToken: userAccessToken || "",
     };
 
@@ -140,7 +140,7 @@ export default function ReplyCard({
             </div>
           ) : (
             <div>
-              <p className="ml-10">{editedComment}</p>
+              <p className="ml-10  whitespace-pre-wrap">{editedComment}</p>
               <div className="flex items-center my-1 text-sm ml-10">
                 <p className="text-gray-500">{postWriteDate}</p>
                 <p className="ml-1 text-gray-500">{postWriteTime}</p>

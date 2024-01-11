@@ -403,7 +403,7 @@ export default function MarketPostsView() {
         boardIdx: item.boardIdx,
         boardState: item.boardState,
         filePath: item.filePath,
-        description: item.description,
+        description: item.description.replace(/<br>/g, "\n"),
         replyCnt: item.replyCnt,
         nickname: item.UserInfo.nickname,
         profilePath: item.UserInfo.profilePath,
@@ -455,7 +455,7 @@ export default function MarketPostsView() {
         boardIdx: data.data.result.boardIdx,
         boardState: data.data.result.boardState,
         filePath: null,
-        description: data.data.result.description,
+        description: data.data.result.description.replace(/<br>/g, "\n"),
         replyCnt: data.data.result.replyCnt,
         nickname: userNickname || "",
         profilePath: userProfilePath || "",
@@ -484,7 +484,7 @@ export default function MarketPostsView() {
       const requestData = {
         boardIdx: post.idx,
         category: "comment",
-        description: comment,
+        description: comment.replace(/\n/g, "<br>"),
         userAccessToken: userAccessToken || "",
       };
 
@@ -642,7 +642,9 @@ export default function MarketPostsView() {
 
                 {/* 내용 */}
                 <div className="pb-4 pt-4">
-                  <p className="text-lg my-2 break-all">{post.description}</p>
+                  <p className="text-lg my-2 break-all whitespace-pre-wrap">
+                    {post.description.replace(/<br>/g, "\n")}
+                  </p>
                 </div>
 
                 <hr className="border-t border-gray-300 my-1" />
@@ -801,7 +803,9 @@ export default function MarketPostsView() {
                   </p>
                 </div>
                 <div>
-                  <p className="mx-2 my-6 break-all">{post.description}</p>
+                  <p className="mx-2 my-6 break-all whitespace-pre-wrap">
+                    {post.description.replace(/<br>/g, "\n")}
+                  </p>
                   <hr className="border-t border-gray-300" />
                 </div>
               </div>

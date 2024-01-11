@@ -121,7 +121,7 @@ export default function CommentCard({
           boardIdx: item.boardIdx,
           boardState: item.boardState,
           filePath: item.filePath,
-          description: item.description,
+          description: item.description.replace(/<br>/g, "\n"),
           replyCnt: item.replyCnt,
           nickname: item.UserInfo.nickname,
           profilePath: item.UserInfo.profilePath,
@@ -152,7 +152,7 @@ export default function CommentCard({
         boardIdx: data.data.result.boardIdx,
         boardState: data.data.result.boardState,
         filePath: null,
-        description: data.data.result.description,
+        description: data.data.result.description.replace(/<br>/g, "\n"),
         replyCnt: data.data.result.replyCnt,
         nickname: userNickname || "",
         profilePath: userProfilePath || "",
@@ -168,7 +168,7 @@ export default function CommentCard({
       boardIdx: boardIdx,
       category: "reply",
       commentIdx: idx,
-      description: replyData,
+      description: replyData.replace(/\n/g, "<br>"),
       userAccessToken: userAccessToken || "",
     };
 
@@ -221,7 +221,7 @@ export default function CommentCard({
   const editMutation = useMutation({
     mutationFn: commentEdit,
     onSuccess: (data) => {
-      setEditedComment(data.data.result.description);
+      setEditedComment(data.data.result.description.replace(/<br>/g, "\n"));
       setIsEditing(false);
     },
   });
@@ -231,7 +231,7 @@ export default function CommentCard({
       boardIdx: boardIdx,
       category: "comment",
       commentIdx: idx,
-      description: editComment,
+      description: editComment.replace(/\n/g, "<br>"),
       userAccessToken: userAccessToken || "",
     };
 
@@ -287,7 +287,7 @@ export default function CommentCard({
           </div>
         ) : (
           <div>
-            <p className="ml-10">{editedComment}</p>
+            <p className="ml-10 whitespace-pre-wrap">{editedComment}</p>
             <div className="flex items-center my-1 text-sm ml-10">
               <p className="text-gray-500">{postWriteDate}</p>
               <p className="ml-1 text-gray-500">{postWriteTime}</p>

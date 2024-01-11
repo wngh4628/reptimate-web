@@ -398,7 +398,7 @@ export default function AskPostsView() {
         boardIdx: item.boardIdx,
         boardState: item.boardState,
         filePath: item.filePath,
-        description: item.description,
+        description: item.description.replace(/<br>/g, "\n"),
         replyCnt: item.replyCnt,
         nickname: item.UserInfo.nickname,
         profilePath: item.UserInfo.profilePath,
@@ -450,7 +450,7 @@ export default function AskPostsView() {
         boardIdx: data.data.result.boardIdx,
         boardState: data.data.result.boardState,
         filePath: null,
-        description: data.data.result.description,
+        description: data.data.result.description.replace(/<br>/g, "\n"),
         replyCnt: data.data.result.replyCnt,
         nickname: userNickname || "",
         profilePath: userProfilePath || "",
@@ -479,7 +479,7 @@ export default function AskPostsView() {
       const requestData = {
         boardIdx: post.idx,
         category: "comment",
-        description: comment,
+        description: comment.replace(/\n/g, "<br>"),
         userAccessToken: userAccessToken || "",
       };
 
@@ -627,7 +627,9 @@ export default function AskPostsView() {
                   </div>
                 </div>
                 <ImageSlider imageUrls={itemlist} />
-                <p className="text-lg my-7 break-all">{post.description}</p>
+                <p className="text-lg my-7 break-all whitespace-pre-wrap">
+                  {post.description.replace(/<br>/g, "\n")}
+                </p>
                 <hr className="border-t border-gray-300 my-1" />
                 <div className="flex flex-row justify-between items-center py-3">
                   <div className="flex flex-row items-center py-3">
@@ -784,7 +786,9 @@ export default function AskPostsView() {
               {/* 상세 설명 */}
               <div className="ml-4 mr-4">
                 <div>
-                  <p className="mx-2 my-6 break-all">{post.description}</p>
+                  <p className="mx-2 my-6 break-all whitespace-pre-wrap">
+                    {post.description.replace(/<br>/g, "\n")}
+                  </p>
                   <hr className="border-t border-gray-300" />
                 </div>
               </div>

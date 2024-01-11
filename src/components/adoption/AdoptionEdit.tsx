@@ -251,7 +251,7 @@ export default function AdoptionEdit() {
         setPrice(
           handleCommaReplace(post?.boardCommercial.price.toString()) || ""
         );
-        setDescription(post?.description || "");
+        setDescription(post?.description.replace(/<br>/g, "\n") || "");
         setBoardCommercialIdx(post?.boardCommercial.idx || "");
         setAllFiles(
           post.images.map((item: Images) => ({
@@ -415,7 +415,7 @@ export default function AdoptionEdit() {
         userIdx: currentUserIdx || 0,
         title: title,
         category: "adoption",
-        description: description,
+        description: description.replace(/\n/g, "<br>"),
         price: priceReplace,
         gender: selectedGender || "",
         size: selectedSize || "",
@@ -485,7 +485,7 @@ export default function AdoptionEdit() {
                 userIdx: currentUserIdx || 0,
                 title: title,
                 category: "adoption",
-                description: description,
+                description: description.replace(/\n/g, "<br>"),
                 price: priceReplace,
                 gender: selectedGender || "",
                 size: selectedSize || "",
