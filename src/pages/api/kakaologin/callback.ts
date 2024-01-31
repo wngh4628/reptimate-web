@@ -1,12 +1,5 @@
-
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
-import { useSetRecoilState } from "recoil";
-import { socialLogin } from "@/api/login/login";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/router";
-import { userAtom } from "@/recoil/user";
-import { useEffect } from "react";
 
 export default async function handle(
   req: NextApiRequest,
@@ -54,15 +47,8 @@ export default async function handle(
 
       // No need to continue the rest of the code here
       return;
-
-
-    }catch{
-
-    }
+    } catch {}
   } else {
     res.status(200).json({ error: "code가 없습니다." });
   }
 }
-
-
-
