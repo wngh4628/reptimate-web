@@ -24,6 +24,8 @@ export default function JoinInput() {
   const [emailCode, setEmailCode] = useState("");
   const [emailCodeChk, setEmailCodeChk] = useState("");
 
+  const [isEmailChked, setIsEmailChked] = useState(false);
+
   const [isPremium, setIsPremium] = useState(false);
 
   const [agreement, setagreement] = useState(false);
@@ -79,9 +81,19 @@ export default function JoinInput() {
       if (err.response.status == 409) {
         if (err.response.data.errorCode == "EXIST_EMAIL") {
           setemailErrM(true);
+          Swal.fire({
+            text: "이메일이 중복되었습니다. 다른 이메일을 사용해주세요.",
+            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+            confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+          });
         } else {
           setnickErrM(true);
           setJoinTry(true);
+          Swal.fire({
+            text: "닉네임이 중복되었습니다. 다른 닉네임을 사용해주세요.",
+            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+            confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+          });
         }
       } else {
       }
@@ -89,22 +101,44 @@ export default function JoinInput() {
   });
   const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // 리프레시 막기
-    if (
-      validateEmail(email) &&
-      validateNickname(nickName) &&
-      validatePassword(password) &&
-      password === checkPassword
-    ) {
-      mutation.mutate({
-        email: email,
-        nickName: nickName,
-        password: password,
-        agreeWithMarketing: agreeWithMarketing,
-        loginMethod: "",
-      });
+    if (isEmailChked) {
+      if (!agreement) {
+        Swal.fire({
+          text: "이용약관에 동의 해주세요.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
+      } else if (!privacy) {
+        Swal.fire({
+          text: "개인정보 처리 방침에 동의 해주세요.",
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+        });
+      } else {
+        if (
+          validateEmail(email) &&
+          validateNickname(nickName) &&
+          validatePassword(password) &&
+          password === checkPassword
+        ) {
+          mutation.mutate({
+            email: email,
+            nickName: nickName,
+            password: password,
+            agreeWithMarketing: agreeWithMarketing,
+            loginMethod: "",
+          });
+        } else {
+          Swal.fire({
+            text: "회원가입에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.",
+            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+            confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
+          });
+        }
+      }
     } else {
       Swal.fire({
-        text: "회원가입에 실패했습니다. 입력란을 확인 후 다시 시도해주세요.",
+        text: "이메일 인증을 완료해주세요.",
         confirmButtonText: "확인", // confirm 버튼 텍스트 지정
         confirmButtonColor: "#7A75F7", // confrim 버튼 색깔 지정
       });
@@ -146,9 +180,7 @@ export default function JoinInput() {
         confirmButtonColor: "#7A75F7",
       });
       // 이메일, 인증코드 입력란 비활성화
-
-
-
+      setIsEmailChked(true);
     } else {
       Swal.fire({
         text: "이메일 인증 코드를 다시 확인해주세요.",
@@ -251,7 +283,7 @@ export default function JoinInput() {
                   className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"
                 />
               </div>
-              { password !== checkPassword && (
+              {password !== checkPassword && (
                 <p className="block absolute leading-[16px] text-xs text-main-color">
                   비밀번호가 일치하지 않습니다.
                 </p>
@@ -270,6 +302,11 @@ export default function JoinInput() {
                   className="focus:outline-none py-[8px] border-b-[1px] text-[15px] leading-[22px] tracking-[-.15px] w-full"
                 />
               </div>
+              {!validateNickname(nickName) && (
+                <p className="block absolute leading-[16px] text-xs text-main-color">
+                  닉네임은 특수문자 제외 2~8까지 가능합니다.
+                </p>
+              )}
               {!nickErrM && isJoinTry && (
                 <p className="text-xs text-main-color">
                   중복되는 닉네임이 존재합니다.
@@ -307,7 +344,7 @@ export default function JoinInput() {
                         />
                       )}
                       <span className="pl-[8px] tracking-[-.07px] text-[14px] align-text-top ml-3">
-                        이용약관 동의
+                        (필수) 이용약관 동의
                       </span>
                     </label>
                     <a
@@ -347,7 +384,7 @@ export default function JoinInput() {
                         />
                       )}
                       <span className="pl-[8px] tracking-[-.07px] text-[14px] align-text-top ml-3">
-                        개인정보 수집 및 이용 동의
+                        (필수) 개인정보 수집 및 이용 동의
                       </span>
                     </label>
                     <a
@@ -387,7 +424,7 @@ export default function JoinInput() {
                         />
                       )}
                       <span className="pl-[8px] tracking-[-.07px] text-[14px] align-text-top ml-3">
-                        [선택] 광고성 정보 수신에 모두 동의합니다.
+                        (선택) 광고성 정보 수신에 모두 동의합니다.
                       </span>
                     </label>
                   </div>
