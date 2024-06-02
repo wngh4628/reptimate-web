@@ -105,9 +105,6 @@ export default function AiMain() {
                   <img
                     className="object-cover w-full h-full"
                     src={"/img/ai_value.png"}
-                    width={500}
-                    height={300}
-                    alt={""}
                     style={{ zIndex: 1 }}
                   />
                 </div>
